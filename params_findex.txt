@@ -7,9 +7,9 @@
 2.5 		          # smoothing width in muHz [float]
 1		          # check crude background fit? [boolean]
 8.	                  # lower frequency limit to use [float or None]
-4167.                   # upper frequency limit to use [float or None]
+4167.                     # upper frequency limit to use [float or None]
 1		          # enable plotting? [boolean]
 0		          # long cadence data? [boolean]
 1  	    	          # check results step by step? [boolean]
-3                       # number of trials [int]
-1                       # save plots?
+3                         # number of trials [int]
+1                         # save plots?
