@@ -11,9 +11,9 @@ All files required to run SYD reside in SYD/Files. For a basic first iteration, 
 SYD/Files/todo requires both the light curve and power spectrum text file formatted in such a way that ID_LC.txt and ID_PS.txt, where ID exactly matches that in the todo.txt file one directory up. The output will be in this same repo within a results/ folder.
 
 #### SYD/Code
-utils.py : bulk of the SYD pipeline
-functions.py : models, distributions, ffts, smoothing functions are all in this file
-SYD.py : initiates SYD through utils.main
+utils.py : bulk of the SYD pipeline \n
+functions.py : models, distributions, ffts, smoothing functions are all in this file \n
+SYD.py : initiates SYD through utils.main \n
 
 ## Example: alpha Mensae (TIC 141810080)
 
