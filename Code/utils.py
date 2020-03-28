@@ -53,8 +53,8 @@ def make_dict(verbose, findex, fitbg, mass_sun = 1.9891e33, radius_sun = 6.95508
               numax_sun = 3090., width_sun = 1300., G = 6.67428e-8, teff_sun = 5777., 
               dnu_sun = 135.1, path = '../Info/todo', star_info = '../Info/star_info.csv',
               tau_sun = [5.2e6, 1.8e5, 1.7e4, 2.5e3, 280., 80.], findex_file = 
-              'Files/params_findex.txt', tau_sun_single = [3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.],  
-              fitbg_file = 'Files/params_fitbg.txt'):
+              '../Files/params_findex.txt', tau_sun_single = [3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.],  
+              fitbg_file = '../Files/params_fitbg.txt'):
 
     params = {}
     params['path'] = path
