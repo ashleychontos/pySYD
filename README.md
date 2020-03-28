@@ -14,6 +14,7 @@ SYD/Files/todo requires both the light curve and power spectrum text file format
 - utils.py : bulk of the SYD pipeline
 - functions.py : models, distributions, ffts, smoothing functions are all in this file
 - SYD.py : initiates SYD through utils.main
+- QUAKES.py : asteroseismology tools created in parallel to SYD
 
 ## Example: alpha Mensae (TIC 141810080)
 
