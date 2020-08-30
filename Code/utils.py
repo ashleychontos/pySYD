@@ -6,14 +6,17 @@ import pandas as pd
 from functions import *
 from QUAKES import delta_nu
 from scipy import interpolate
+from astropy.convolution import convolve, Gaussian1DKernel, Box1DKernel
+from astropy.stats import mad_std
 import matplotlib.pyplot as plt
 from scipy.stats import chisquare
 from scipy.optimize import curve_fit
 from scipy.interpolate import InterpolatedUnivariateSpline
 from matplotlib.colors import LogNorm, PowerNorm, Normalize
 from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter, ScalarFormatter
+import pdb
 
-matplotlib.rcParams['backend'] = 'TkAgg'
+#matplotlib.rcParams['backend'] = 'TkAgg'
 
 plt.style.use('dark_background')
 plt.rcParams['agg.path.chunksize'] = 10000
@@ -127,9 +130,8 @@ def read_excess_params(findex_file, params):
     print('# FIND EXCESS PARAMS: %d valid lines read'%i)
 
     params['findex'] = dict(zip(pars, vals))
-
     if params['findex']['save'] and not os.path.exists(params['path']+'/results'):
-        os.makedirs(path+'/results')
+        os.makedirs(params['path']+'/results')
 
     return params
 
@@ -153,7 +155,7 @@ def write_excess(target, results, params):
 
 def read_bg_params(fitbg_file, params):
 
-    pars = ['lower_limit', 'upper_limit', 'num_MC_iter', 'n_laws', 'lower_noise', 'upper_noise', 'box_filter', 'ind_width', 'n_rms', 'lower_numax', 'upper_numax', 'lower_lag', 'upper_lag', 'n_peaks', 'smooth_PS', 'plot', 'force', 'guess', 'save', 'clip', 'clip_value', 'ech_smooth', 'ech_filter']
+    pars = ['lower_limit', 'upper_limit', 'num_MC_iter', 'n_laws', 'lower_noise', 'upper_noise', 'fix_wn', 'ind_width', 'n_rms', 'lower_numax', 'upper_numax', 'lower_lag', 'upper_lag', 'n_peaks', 'smooth_PS', 'plot', 'force', 'guess', 'save', 'clip', 'clip_value', 'ech_smooth', 'ech_filter']
     dtype = [False, False, True, True, False, False, False, True, True, False, False, False, False, True, False, True, True, False, True, True, False, True, False]
     vals = []
 
@@ -199,7 +201,7 @@ def write_bgfit(target, results, params):
     return
 
 
-def get_star_info(star_info, params, cols = ['rad', 'logg', 'teff']):
+def get_star_info(star_info, params, cols = ['rad', 'logg', 'teff','numax_in']):
 
     if os.path.exists(star_info):
         df = pd.read_csv(star_info)
@@ -213,8 +215,12 @@ def get_star_info(star_info, params, cols = ['rad', 'logg', 'teff']):
                 params[todo]['mass'] = (((params[todo]['rad']*params['radius_sun'])**(2.))*10**(params[todo]['logg'])/params['G'])/params['mass_sun']
                 params[todo]['nuMax'] = params['numax_sun']*params[todo]['mass']*(params[todo]['rad']**(-2.))*((params[todo]['teff']/params['teff_sun'])**(-0.5))
                 params[todo]['dNu'] = params['dnu_sun']*(params[todo]['mass']**(0.5))*(params[todo]['rad']**(-1.5))  
+                if (params[todo]['numax_in'] > 0.):
+                    params[todo]['nuMax'] = params[todo]['numax_in']
             else:
                 print('Target %d did not have star info supplied.'%todo)
+                
+        
 
         print('# STAR INFO: %d valid lines read'%len(df.targets.values.tolist()))
         return params
@@ -265,7 +271,7 @@ def find_excess(params):
 
         if params['findex']['plot']:
 
-            fig = plt.figure(figsize = (12,8))
+            fig = plt.figure(figsize = (8,6))
             plt.ion()
             plt.show()
         
@@ -323,8 +329,8 @@ def find_excess(params):
             else:
                 smooth_pow = bin_pow[:]
 
-            resolution = np.nanmedian((np.diff(frequency)))
-            params['resolution'] = resolution
+            #resolution = np.nanmedian((np.diff(frequency)))
+            params['resolution'] = frequency[1]-frequency[0]
             boxsize = np.ceil(float(params['findex']['smooth_width'])/resolution)
             box_kernel = Box1DKernel(boxsize)
             smooth_pow = convolve(bin_pow, box_kernel)
@@ -494,6 +500,7 @@ def find_excess(params):
 
 def fit_background(params):
 
+    
     for target in params['todo']:
 
         if os.path.exists(params['path']+'/%d_findex.txt'%target):
@@ -552,7 +559,7 @@ def fit_background(params):
 
         cad = int(np.nanmedian(np.diff(time)*24.*60.*60.))
         nyq = 10**6/(2.*cad)
-        res = np.nanmedian(np.diff(frequency))*oversample
+        res = frequency[1]-frequency[0]
         print('time series cadence: %d seconds'%cad)
         print('power spectrum resolution: %.6f muHz'%res)
         width = params['width_sun']*(params[target]['maxp']/params['numax_sun'])
@@ -574,6 +581,8 @@ def fit_background(params):
             else:
                 maxpower = [params[target]['maxp']-times*params[target]['delnu'],params[target]['maxp']+times*params[target]['delnu']]
 
+        #pdb.set_trace()
+
         # Create independent frequency points (need to if oversampled)
         if not oversample:
             orig_freq = frequency[oversample-1::oversample]
@@ -585,6 +594,8 @@ def fit_background(params):
         nlaws = params['fitbg']['n_laws']
 
         for i in range(params['fitbg']['num_MC_iter']):
+        
+            print('iteration',i)
 
             dnu_exp = params[target]['delnu']
         
@@ -595,11 +606,11 @@ def fit_background(params):
 
             xo = orig_freq[:]
             yo = synth_pow[:]
-
+            
             xo_bin, yo_bin, erro_bin = mean_smooth_ind(xo, yo, params['fitbg']['ind_width'])
             binned_res = np.nanmedian(np.diff(xo_bin))
             params['binned_resolution'] = binned_res
-            print('binned resolution: %.2f muHz'%binned_res)
+            #print('binned resolution: %.2f muHz'%binned_res)
 
             if params['fitbg']['upper_noise'] is not None:
                 noise = np.mean(yo[(xo>params['fitbg']['lower_noise'])&(xo<params['fitbg']['upper_noise'])])
@@ -619,7 +630,9 @@ def fit_background(params):
             x_bin = xo_bin[~msk]
             y_bin = yo_bin[~msk]
             err_bin = erro_bin[~msk]
-            s = smooth(y, params['fitbg']['box_filter'], params, silent = True)
+                        
+            # smoothed power spectrum for display only. Use fixed width of 1 muHz
+            s = smooth(y, 1., params, silent = True)
 
             scale = params['numax_sun']/((maxpower[1]+maxpower[0])/2.)
 
@@ -659,11 +672,22 @@ def fit_background(params):
                 pars[2*n] = a[n]
                 pars[2*n+1] = b[n]
 
+            # Test n different models
+            bounds = []
+            for law in range(params['fitbg']['n_laws']):
+                b = np.zeros((2,2*(law+1)+1)).tolist()
+                for z in range(2*(law+1)):
+                    b[0][z] = -np.inf
+                    b[1][z] = np.inf
+                b[0][-1] = pars[-1]-0.1
+                b[1][-1] = pars[-1]+0.1
+                bounds.append(tuple(b))
+
             if i == 0:
 
                 if params['fitbg']['plot']:
 
-                    fig = plt.figure(figsize = (12,12))
+                    fig = plt.figure(figsize = (12,9))
                     plt.ion()
                     plt.show()
 
@@ -710,63 +734,69 @@ def fit_background(params):
                     plt.draw()
                     plt.show()
 
-                print('Comparing %d different models:'%(params['fitbg']['n_laws']*2))
-                # Test n different models
-                bounds = []
-                for law in range(params['fitbg']['n_laws']):
-                    b = np.zeros((2,2*(law+1)+1)).tolist()
-                    for z in range(2*(law+1)):
-                        b[0][z] = -np.inf
-                        b[1][z] = np.inf
-                    b[0][-1] = pars[-1]-0.1
-                    b[1][-1] = pars[-1]+0.1
-                    bounds.append(tuple(b))
+                #pdb.set_trace()
+                if (params['fitbg']['fix_wn'] == -1):
+                
+                    print('Comparing %d different models:'%(params['fitbg']['n_laws']*2))
 
-                reduced_chi2 = []
-                paras = []
-                paras_errs = []
-                obs = y[:]
-                tt = np.arange(2*params['fitbg']['n_laws'])
-                names = ['one', 'one', 'two', 'two', 'three', 'three']
-                dict1 = dict(zip(tt,names[:2*params['fitbg']['n_laws']]))
-                for t in range(2*params['fitbg']['n_laws']):
-                    if t%2 == 0:
-                        print('%d: %s harvey model w/ white noise free parameter'%(t+1, dict1[t]))
-                        delta = 2*(params['fitbg']['n_laws']-(t//2+1))
-                        pams = list(pars[:(-delta-1)])
-                        pams.append(pars[-1])
-                        pp, cv = curve_fit(params['fitbg']['functions'][t//2+1], x_bin, y_bin, p0 = pams, sigma = err_bin)
-                        pe = np.sqrt(np.diag(cv))
-                        paras.append(pp)
-                        paras_errs.append(pe)
-                        exp = harvey(x, pp, total = True)
-                        chi, p = chisquare(f_obs = obs, f_exp = exp)
-                        reduced_chi2.append(chi/(len(x)-len(pams)))
+                    reduced_chi2 = []
+                    paras = []
+                    paras_errs = []
+                    obs = y[:]
+                    tt = np.arange(2*params['fitbg']['n_laws'])
+                    names = ['one', 'one', 'two', 'two', 'three', 'three']
+                    dict1 = dict(zip(tt,names[:2*params['fitbg']['n_laws']]))
+                
+                    for t in range(2*params['fitbg']['n_laws']):
+                        if t%2 == 0:
+                            print('%d: %s harvey model w/ white noise free parameter'%(t+1, dict1[t]))
+                            delta = 2*(params['fitbg']['n_laws']-(t//2+1))
+                            pams = list(pars[:(-delta-1)])
+                            pams.append(pars[-1])
+                            pp, cv = curve_fit(params['fitbg']['functions'][t//2+1], x_bin, y_bin, p0 = pams, sigma = err_bin)
+                            pe = np.sqrt(np.diag(cv))
+                            paras.append(pp)
+                            paras_errs.append(pe)
+                            exp = harvey(x, pp, total = True)
+                            chi, p = chisquare(f_obs = obs, f_exp = exp)
+                            reduced_chi2.append(chi/(len(x)-len(pams)))
+                        else:
+                            print('%d: %s harvey model w/ white noise fixed'%(t+1, dict1[t]))
+                            delta = 2*(params['fitbg']['n_laws']-(t//2+1))
+                            pams = list(pars[:(-delta-1)])
+                            pams.append(pars[-1])
+                            pp, cv = curve_fit(params['fitbg']['functions'][t//2+1], x_bin, y_bin, p0 = pams, sigma = err_bin, bounds = bounds[t//2])
+                            pe = np.sqrt(np.diag(cv))
+                            paras.append(pp)
+                            paras_errs.append(pe)
+                            exp = harvey(x, pp, total = True)
+                            chi, p = chisquare(f_obs = obs, f_exp = exp)
+                            reduced_chi2.append(chi/(len(x)-len(pams)+1))
+
+                    model = reduced_chi2.index(min(reduced_chi2))+1
+                    print('Based on reduced chi-squared statistic: choosing model %d'%model)
+                    
+                    if model == 5 or model == 6:
+                        nlaws = 3
+                    elif model == 3 or model == 4:
+                        nlaws = 2
                     else:
-                        print('%d: %s harvey model w/ white noise fixed'%(t+1, dict1[t]))
-                        delta = 2*(params['fitbg']['n_laws']-(t//2+1))
-                        pams = list(pars[:(-delta-1)])
-                        pams.append(pars[-1])
-                        pp, cv = curve_fit(params['fitbg']['functions'][t//2+1], x_bin, y_bin, p0 = pams, sigma = err_bin, bounds = bounds[t//2])
-                        pe = np.sqrt(np.diag(cv))
-                        paras.append(pp)
-                        paras_errs.append(pe)
-                        exp = harvey(x, pp, total = True)
-                        chi, p = chisquare(f_obs = obs, f_exp = exp)
-                        reduced_chi2.append(chi/(len(x)-len(pams)+1))
-
-                model = reduced_chi2.index(min(reduced_chi2))+1
-                print('Based on reduced chi-squared statistic: choosing model %d'%model)
-                if model == 5 or model == 6:
-                    nlaws = 3
-                elif model == 3 or model == 4:
-                    nlaws = 2
+                        nlaws = 1
+                    pars = paras[model-1]
+                    pars_errs = paras_errs[model-1]
+                    params.update({'best_model':model-1, 'n_laws':nlaws})
                 else:
-                    nlaws = 1
-                pars = paras[model-1]
-                pars_errs = paras_errs[model-1]
+                    pams = list(pars)
+                    if (params['fitbg']['fix_wn'] == 0):
+                        pp, cv = curve_fit(params['fitbg']['functions'][nlaws], x_bin, y_bin, p0 = pams, sigma = err_bin, bounds = bounds[nlaws-1])
+                    else:
+                        pp, cv = curve_fit(params['fitbg']['functions'][nlaws], x_bin, y_bin, p0 = pams, sigma = err_bin)
+                    pe = np.sqrt(np.diag(cv))
+                    pars=pp
+                    pars_errs=pe
+                    params.update({'best_model':nlaws, 'n_laws':nlaws})
+                    
                 final_pars = np.zeros((params['fitbg']['num_MC_iter'],nlaws*2+1+11))
-                params.update({'best_model':model-1, 'n_laws':nlaws})
 
                 # get rid of edge effects if numax is close to nyquist frequency
                 if (params['nyquist']-params[target]['maxp']) < 1000.:
@@ -811,13 +841,27 @@ def fit_background(params):
 
             else:
 
-                pars, cv = curve_fit(params['fitbg']['functions'][params['best_model']//2+1], x_bin, y_bin, p0 = pams, sigma = err_bin, bounds = bounds[params['best_model']//2])
-                pars_errs = np.sqrt(np.diag(cv))
+                if (params['fitbg']['fix_wn'] == -1):
+                    pars, cv = curve_fit(params['fitbg']['functions'][params['best_model']//2+1], x_bin, y_bin, p0 = pams, sigma = err_bin, bounds = bounds[params['best_model']//2])
+                    pars_errs = np.sqrt(np.diag(cv))
+                else:
+                    if (params['fitbg']['fix_wn'] == 0):
+                        pars, cv = curve_fit(params['fitbg']['functions'][nlaws], x_bin, y_bin, p0 = pams, sigma = err_bin, bounds = bounds[nlaws-1])
+                    else:
+                        pars, cv = curve_fit(params['fitbg']['functions'][nlaws], x_bin, y_bin, p0 = pams, sigma = err_bin)
+                    
 
             xtemp = orig_freq[:]
-            ytemp = list(synth_pow[:])
+            ytemp = synth_pow[:]
 
-            pssm = smooth_gauss(ytemp+y_add, sm_par*dnu_exp/params['resolution'], params, silent = True)
+            #pssm = smooth_gauss(ytemp+y_add, sm_par*dnu_exp/params['resolution'], params, silent = True)
+            fwhm=sm_par*dnu_exp/params['resolution']
+            sig  = fwhm/np.sqrt(8*np.log(2))
+            gauss_kernel = Gaussian1DKernel(int(sig))
+            pssm = convolve(ytemp, gauss_kernel)
+            #plt.clf()
+            #plt.plot(xtemp,pssm)
+            #plt.plot(xtemp,smoothed_data_gauss)
             model = harvey(xtemp, pars, total = True)
             
             # fix any residual slope in gaussian fit and correct it
@@ -848,7 +892,7 @@ def fit_background(params):
 
             pssm_0 = pssm-model
             pssm_corr = final_y[:]
-            pssm_bgcor = pssm_corr-model
+            pssm_bgcor = pssm-model
 
             xt = list(xtemp[msk])
             ptt = list(pssm_0[msk])
@@ -859,7 +903,7 @@ def fit_background(params):
             numax = xt[idx]
             maxamp1 = ptt[idx1]
             numax1 = xt[idx1]
-
+            
             # somehow test if numax is close to maxp
 
             if i == 0:
@@ -885,6 +929,7 @@ def fit_background(params):
                 b[1][3] = np.max(xu) - np.min(xu)
                 bounds.append(tuple(b))
 
+                #pdb.set_trace()
                 p_gauss, p_cov = curve_fit(gaussian, xu, yu, p0 = [0., max(yu), numax, min_sig], bounds = bounds[0])
 
                 if i == 0 and params['fitbg']['plot']:
@@ -925,12 +970,12 @@ def fit_background(params):
                     plt.draw()
                     plt.show()
 
-            final_pars[i,0:2*nlaws+1] = pars
-            final_pars[i,2*nlaws+2] = numax
-            final_pars[i,2*nlaws+3] = maxamp
-            final_pars[i,2*nlaws+4] = p_gauss[1]
-            final_pars[i,2*nlaws+5] = p_gauss[2]
-            final_pars[i,2*nlaws+6] = p_gauss[3]
+            #final_pars[i,0:2*nlaws+1] = pars
+            final_pars[i,2*nlaws+1] = numax
+            final_pars[i,2*nlaws+2] = maxamp
+            final_pars[i,2*nlaws+3] = p_gauss[1]
+            final_pars[i,2*nlaws+4] = p_gauss[2]
+            final_pars[i,2*nlaws+5] = p_gauss[3]
 
             f_cor = orig_freq[:]
             a_cor = synth_pow[:]
@@ -978,21 +1023,34 @@ def fit_background(params):
                 plt.draw()
                 plt.show()
 
-            lag, auto = corr(freq, psd, params)
+            #lag, auto = corr(freq, psd, params)
+            # use FFTs to calculate autocorrelation
+            lag=np.arange(0.,len(psd))*params['resolution']
+            auto = np.real(np.fft.fft(np.fft.ifft(psd)*np.conj(np.fft.ifft(psd))))
+            um=np.where((lag > params['fitbg']['lower_lag']) & (lag < params['fitbg']['upper_lag']))[0]
+            lag=lag[um]
+            auto=auto[um]
+
             new_auto = auto - min(auto)
             auto = new_auto[:]
-            indices = max_elements(list(auto), params['fitbg']['n_peaks'], params['resolution'], limit = [True, 20.*params['resolution']])
-            peaks_l = lag[indices]
-            peaks_a = auto[indices]
+            
+            if i == 0:
 
-            ss = np.argsort(peaks_l)
-            peaks_l = peaks_l[ss]
-            peaks_a = peaks_a[ss]
+                indices = max_elements(list(auto), params['fitbg']['n_peaks'], params['resolution'], limit = [True, 20.*params['resolution']])
+                peaks_l = lag[indices]
+                peaks_a = auto[indices]
 
-            temp_a = list(peaks_a)
-            temp_idx = temp_a.index(max(temp_a))
-            best_lag = peaks_l[temp_idx]
-            best_auto = peaks_a[temp_idx]
+                ss = np.argsort(peaks_l)
+                peaks_l = peaks_l[ss]
+                peaks_a = peaks_a[ss]
+            
+                #temp_a = list(peaks_a)
+                #temp_idx = temp_a.index(max(temp_a))
+                # pick the peak closest to dnu_exp
+                temp_idx=np.argmin(np.abs(dnu_exp-peaks_l))
+                best_lag = peaks_l[temp_idx]
+                best_auto = peaks_a[temp_idx]
+                
 
             if i == 0 and params['fitbg']['plot']:
 
@@ -1012,42 +1070,63 @@ def fit_background(params):
                 plt.draw()
                 plt.show()
 
-            rough_sig = best_lag*0.01*2.
+            
+            if i == 0:
+                rough_sig = best_lag*0.01*2.
+                guesses=[np.mean(auto), best_auto-np.mean(auto), best_lag, rough_sig]
+                bounds = []
+                b = np.zeros((2,4)).tolist()
+                b[0][0] = -np.inf
+                b[1][0] = np.inf
+                b[0][1] = 2.*np.min(auto)
+                b[1][1] = 2.*np.max(auto)
+                b[0][2] = best_lag - 0.001*best_lag
+                b[1][2] = best_lag + 0.001*best_lag
+                b[0][3] = 10**-2
+                b[1][3] = np.max(lag) - np.min(lag)
+                bounds.append(tuple(b))
 
-            bounds = []
-            b = np.zeros((2,4)).tolist()
-            b[0][0] = -np.inf
-            b[1][0] = np.inf
-            b[0][1] = 2.*np.min(auto)
-            b[1][1] = 2.*np.max(auto)
-            b[0][2] = best_lag - 0.001*best_lag
-            b[1][2] = best_lag + 0.001*best_lag
-            b[0][3] = 10**-2
-            b[1][3] = np.max(lag) - np.min(lag)
-            bounds.append(tuple(b))
+            # roughly mask out the ACF peak closest to dnu_exp, and fit a Gaussian
+            # NB: this is different from the original SYD pipeline, which used a numerical FWHM
+            mask = (lag >= dnu_exp-dnu_exp/4.)&(lag <= dnu_exp+dnu_exp/4.)
+            lag = lag[mask]
+            auto = auto[mask]
 
-            p_gauss, p_cov = curve_fit(gaussian, lag, auto, p0 = [np.mean(auto), best_auto-np.mean(auto), best_lag, rough_sig], bounds = bounds[0])
+
+            p_gauss, p_cov = curve_fit(gaussian, lag, auto, p0 = guesses)#, bounds = bounds[0])
             p_gauss_errs = np.sqrt(np.diag(p_cov))
+            #pdb.set_trace()
 
-            acf_region = [best_lag - 1.5*p_gauss[3]*np.sqrt(8.*np.log(2.)), best_lag + 1.5*p_gauss[3]*np.sqrt(8.*np.log(2.))]
-            mask = (lag >= acf_region[0])&(lag <= acf_region[1])
-            zoom_lag = lag[mask]
-            zoom_auto = auto[mask]
+            
+            #acf_region = [best_lag - 1.5*p_gauss[3]*np.sqrt(8.*np.log(2.)), best_lag + 1.5*p_gauss[3]*np.sqrt(8.*np.log(2.))]
+            #mask = (lag >= acf_region[0])&(lag <= acf_region[1])
+            zoom_lag = lag#[mask]
+            zoom_auto = auto#[mask]
             fit = gaussian(zoom_lag, p_gauss[0], p_gauss[1], p_gauss[2], p_gauss[3])
-
-            plot_lower = min(zoom_auto)
-            if min(fit) < plot_lower:
-                plot_lower = min(fit)
-
-            plot_upper = max(zoom_auto)
-            if max(fit) > plot_upper:
-                plot_upper = max(fit)
-
+            
+            #plt.clf()
+            #plt.plot(lag,auto)
+            #plt.plot(lag,fit)
+            #pdb.set_trace()
+            
             gauss = list(fit)
-            dnu = zoom_lag[gauss.index(max(gauss))]
-            final_pars[i,2*nlaws+7] = dnu
-
+            try:
+                dnu = zoom_lag[gauss.index(max(gauss))]
+            except:
+                pdb.set_trace()
+            final_pars[i,2*nlaws+6] = dnu
+            #print(dnu)
+            
             if i == 0 and params['fitbg']['plot']:
+                ax6.plot(zoom_lag, zoom_auto,color='red')
+
+                plot_lower = min(zoom_auto)
+                if min(fit) < plot_lower:
+                    plot_lower = min(fit)
+
+                plot_upper = max(zoom_auto)
+                if max(fit) > plot_upper:
+                    plot_upper = max(fit)
 
                 ax7 = fig.add_subplot(3,3,7)
                 ax7.plot(zoom_lag, zoom_auto, 'w-', zorder = 0, linewidth = 1.0)
@@ -1065,17 +1144,34 @@ def fit_background(params):
                 plt.draw()
                 plt.show()
 
-            if params['fitbg']['force']:
-                dnu = params['fitbg']['guess']
+            #if params['fitbg']['force']:
+            #    dnu = params['fitbg']['guess']
 
-            freq = f_cor[:]
-            psd = a_cor[:]/model
+                freq = f_cor[:]
+                psd = a_cor[:]/model
+                
+                fig = get_ridges(freq, psd, dnu, params, msk, fig, i)
+                if params['fitbg']['save']:
+                    plt.savefig(params['path']+'/results/%d_fitbg.png'%target, dpi = 150)
+                #plt.show() 
+        
+        if (params['fitbg']['num_MC_iter'] > 1):
+            print('numax (smoothed):',final_pars[0,2*nlaws+1],mad_std(final_pars[:,2*nlaws+1]))
+            print('maxamp (smoothed):',final_pars[0,2*nlaws+2],mad_std(final_pars[:,2*nlaws+2]))
+            print('numax (gauss):',final_pars[0,2*nlaws+4],mad_std(final_pars[:,2*nlaws+4]))
+            print('maxamp (gauss):',final_pars[0,2*nlaws+3],mad_std(final_pars[:,2*nlaws+3]))
+            print('fwhm (gauss):',final_pars[0,2*nlaws+5],mad_std(final_pars[:,2*nlaws+5]))
+            print('dnu:',final_pars[0,2*nlaws+6],mad_std(final_pars[:,2*nlaws+6]))  
+        else:
+            print('numax (smoothed):',final_pars[0,2*nlaws+1])
+            print('maxamp (smoothed):',final_pars[0,2*nlaws+2])
+            print('numax (gauss):',final_pars[0,2*nlaws+4])
+            print('maxamp (gauss):',final_pars[0,2*nlaws+3])
+            print('fwhm (gauss):',final_pars[0,2*nlaws+5])
+            print('dnu:',final_pars[0,2*nlaws+6])        
 
-            fig = get_ridges(freq, psd, dnu, params, msk, fig, i)
-            if params['fitbg']['save']:
-                plt.savefig(params['path']+'/results/%d_fitbg.png'%target, dpi = 150)
-            plt.show() 
-
+        plt.show() 
+             
             # for the original data set, we try several SNR cuts drawn from a uniform random
             # distribution to determine the best straightened echelle diagram; for synthetic
             # datasets, we only do this once 
