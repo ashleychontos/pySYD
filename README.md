@@ -1,5 +1,5 @@
 # SYD
-Translating the asteroseismic pipeline SYD from IDL into python with the intent to release the first public, non-expert, user-friendly asteroseismic pipeline to extract global seismic parameters.
+Translation of the asteroseismic SYD pipeline ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) from IDL into python.
 
 SYD works in two major parts:
 1) findex : crudely although automatically finding the excess before fitting for the background
@@ -16,6 +16,4 @@ SYD/Files/todo requires both the light curve and power spectrum text file format
 - SYD.py : initiates SYD through utils.main
 - QUAKES.py : asteroseismology tools created in parallel to SYD
 
-## Example: alpha Mensae (TIC 141810080)
-
-Below is an example of the output 
+Documentation and code under construction.
