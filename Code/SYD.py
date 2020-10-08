@@ -2,4 +2,4 @@
 
 from utils import main
 
-main(findex = False)
+main(findex = True)

@@ -220,8 +220,6 @@ def get_star_info(star_info, params, cols = ['rad', 'logg', 'teff','numax_in']):
             else:
                 print('Target %d did not have star info supplied.'%todo)
                 
-        
-
         print('# STAR INFO: %d valid lines read'%len(df.targets.values.tolist()))
         return params
 
@@ -331,6 +329,7 @@ def find_excess(params):
 
             #resolution = np.nanmedian((np.diff(frequency)))
             params['resolution'] = frequency[1]-frequency[0]
+            resolution=params['resolution']
             boxsize = np.ceil(float(params['findex']['smooth_width'])/resolution)
             box_kernel = Box1DKernel(boxsize)
             smooth_pow = convolve(bin_pow, box_kernel)
@@ -503,6 +502,7 @@ def fit_background(params):
     
     for target in params['todo']:
 
+		# take the numax results from findex first
         if os.path.exists(params['path']+'/%d_findex.txt'%target):
             f = open(params['path']+'/%d_findex.txt'%target)
             lines = f.readlines()
@@ -510,6 +510,7 @@ def fit_background(params):
             for i, var in enumerate(['maxp', 'delnu', 'snr']):
                 params[target][var] = float(line.strip().split()[i+1])
         else:
+        # if that's not available, take the input from star_info.csv
             if target in params.keys():
                 params[target]['maxp'] = params[target]['nuMax']
                 params[target]['delnu'] = params[target]['dNu']
@@ -580,8 +581,6 @@ def fit_background(params):
                 maxpower = [params['fitbg']['lower_numax'], params['fitbg']['upper_numax']]
             else:
                 maxpower = [params[target]['maxp']-times*params[target]['delnu'],params[target]['maxp']+times*params[target]['delnu']]
-
-        #pdb.set_trace()
 
         # Create independent frequency points (need to if oversampled)
         if not oversample:
@@ -1170,7 +1169,8 @@ def fit_background(params):
             print('fwhm (gauss):',final_pars[0,2*nlaws+5])
             print('dnu:',final_pars[0,2*nlaws+6])        
 
-        plt.show() 
+        input(':')
+        #plt.show() 
              
             # for the original data set, we try several SNR cuts drawn from a uniform random
             # distribution to determine the best straightened echelle diagram; for synthetic

@@ -10,8 +10,8 @@
 200	    	               # bin size for independent smoothing [int]
 20                             # number of points for rms component calculation [even int]
 # nu_max determination
-800.                          # lower limit for nuMax (not necessary) [float]
-1800.                          # upper limit for nuMax (not necessary) [float]
+None	                          # lower limit for nuMax (not necessary) [float]
+None	                          # upper limit for nuMax (not necessary) [float]
 # delta_nu determination
 20.		               # lower limit for lag [float]
 200.		               # upper limit for lag [float]
