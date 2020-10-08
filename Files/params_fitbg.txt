@@ -1,7 +1,7 @@
 # general parameters
 100.                             # low frequency limit [float or None]
 4167.		               # upper frequency limit [float or None]
-1		               # number of Monte-Carlo iterations (set 1 for no uncertainties) [int]
+50		               # number of Monte-Carlo iterations (set 1 for no uncertainties) [int]
 # background fit
 2		               # number of Harvey components in background fit [int]
 4000.		               # lower limit for noise estimate [float]
