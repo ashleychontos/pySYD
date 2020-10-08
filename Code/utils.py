@@ -6,7 +6,7 @@ import pandas as pd
 from functions import *
 from QUAKES import delta_nu
 from scipy import interpolate
-from astropy.convolution import convolve, Gaussian1DKernel, Box1DKernel
+from astropy.convolution import convolve, convolve_fft, Gaussian1DKernel, Box1DKernel
 from astropy.stats import mad_std
 import matplotlib.pyplot as plt
 from scipy.stats import chisquare
@@ -15,6 +15,8 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 from matplotlib.colors import LogNorm, PowerNorm, Normalize
 from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter, ScalarFormatter
 import pdb
+import time as timer
+from astropy.io import ascii
 
 #matplotlib.rcParams['backend'] = 'TkAgg'
 
@@ -142,7 +144,6 @@ def write_excess(target, results, params):
     
     f = open(params['path']+'/%d_findex.txt'%target, "w")
     f.write('{:<15}{:<15}{:<15}{:<15} \n'.format(variables[0], variables[1], variables[2], variables[3]))
-    
     values = [str(target), results[0], results[1], results[2]]
     formats = ["<15s", "<15.4f", "<15.4f", "<15.4f"]
     text = '{:{}}'*len(values) + '\n'
@@ -186,15 +187,17 @@ def read_bg_params(fitbg_file, params):
 
 def write_bgfit(target, results, params):
 
-    variables = ['target', 'numax', 'a_']
+    variables = ['target', 'numax(smo)', 's_numax(smo)', 'maxamp(smo)', 's_maxamp(smo)', 'numax(gauss)', 's_numax(gauss)', 'maxamp(gauss)', 's_maxamp(gauss)', 'fwhm', 's_fwhm', 'dnu', 's_dnu']
     
     f = open(params['path']+'/%d_bgfit.txt'%target, "w")
-    f.write('{:<15}{:<15}{:<15}{:<15} \n'.format(variables[0], variables[1], variables[2], variables[3]))
+    f.write('{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15}{:<15} \n'.format(variables[0], variables[1], variables[2], variables[3], variables[4], variables[5], variables[6], variables[7], variables[8], variables[9], variables[10], variables[11], variables[12]))
     
-    values = [str(target), results[0], results[1], results[2]]
-    formats = ["<15s", "<15.4f", "<15.4f", "<15.4f"]
+    results=results[0]
+    values = [str(target), results[0], results[1], results[2], results[3], results[4], results[5], results[6], results[7], results[8], results[9], results[10], results[11]]
+    formats = ["<15s", "<15.4f", "<15.4f", "<15.4f", "<15.4f", "<15.4f", "<15.4f", "<15.4f", "<15.4f", "<15.4f", "<15.4f", "<15.4f", "<15.4f"]
     text = '{:{}}'*len(values) + '\n'
     fmt = sum(zip(values, formats), ())
+    #pdb.set_trace()
     f.write(text.format(*fmt))   
     f.close()
     
@@ -455,7 +458,7 @@ def find_excess(params):
                 if SNR > 100.:
                     SNR = 100.
                 dNu = delta_nu(best_vars[2])
-                results.append([best_vars[2], dNu, SNR])
+                results.append([target,best_vars[2], dNu, SNR])
                 print('power excess trial %d: numax = %.2f +/- %.2f'%(i+1, best_vars[2], np.absolute(best_vars[3])/2.))
                 print('S/N: %.2f'%SNR)
 
@@ -472,7 +475,10 @@ def find_excess(params):
             compare = [each[-1] for each in results]
             best = compare.index(max(compare))
             print('picking model %d'%(best+1))
-            write_excess(target, results[best], params)
+
+            variables = ['target', 'numax', 'dnu', 'snr']
+            ascii.write(np.array(results[best]),params['path']+'/%d_findex.csv'%target,names=variables,delimiter=',')
+            #write_excess(target, results[best], params)
 
             plt.ioff()
             if params['findex']['save']:
@@ -498,9 +504,10 @@ def find_excess(params):
 # 1) Ability to change number of points used to calculate RMS of harvey component (default = 10)
 
 def fit_background(params):
-
     
     for target in params['todo']:
+
+        results = []
 
 		# take the numax results from findex first
         if os.path.exists(params['path']+'/%d_findex.txt'%target):
@@ -850,6 +857,7 @@ def fit_background(params):
                         pars, cv = curve_fit(params['fitbg']['functions'][nlaws], x_bin, y_bin, p0 = pams, sigma = err_bin)
                     
 
+
             xtemp = orig_freq[:]
             ytemp = synth_pow[:]
 
@@ -857,11 +865,17 @@ def fit_background(params):
             fwhm=sm_par*dnu_exp/params['resolution']
             sig  = fwhm/np.sqrt(8*np.log(2))
             gauss_kernel = Gaussian1DKernel(int(sig))
-            pssm = convolve(ytemp, gauss_kernel)
+
+
+            #pssm = convolve(ytemp, gauss_kernel)
+            pssm = convolve_fft(ytemp, gauss_kernel)
+            #pdb.set_trace()
+
             #plt.clf()
             #plt.plot(xtemp,pssm)
             #plt.plot(xtemp,smoothed_data_gauss)
             model = harvey(xtemp, pars, total = True)
+            
             
             # fix any residual slope in gaussian fit and correct it
             msk = (xtemp >= maxpower[0])&(xtemp <= maxpower[1])
@@ -902,7 +916,7 @@ def fit_background(params):
             numax = xt[idx]
             maxamp1 = ptt[idx1]
             numax1 = xt[idx1]
-            
+             
             # somehow test if numax is close to maxp
 
             if i == 0:
@@ -911,6 +925,7 @@ def fit_background(params):
             maxpower0 = [numax-params['times']*dnu_exp, numax+params['times']*dnu_exp]
             msk = (xtemp >= maxpower0[0])&(xtemp <= maxpower0[1])
             useg = list(xtemp[msk])
+
 
             if useg != []:
 
@@ -1108,6 +1123,8 @@ def fit_background(params):
             #plt.plot(lag,fit)
             #pdb.set_trace()
             
+      
+            
             gauss = list(fit)
             try:
                 dnu = zoom_lag[gauss.index(max(gauss))]
@@ -1161,6 +1178,24 @@ def fit_background(params):
             print('maxamp (gauss):',final_pars[0,2*nlaws+3],mad_std(final_pars[:,2*nlaws+3]))
             print('fwhm (gauss):',final_pars[0,2*nlaws+5],mad_std(final_pars[:,2*nlaws+5]))
             print('dnu:',final_pars[0,2*nlaws+6],mad_std(final_pars[:,2*nlaws+6]))  
+            
+            results.append([target,final_pars[0,2*nlaws+1],mad_std(final_pars[:,2*nlaws+1]),final_pars[0,2*nlaws+2],mad_std(final_pars[:,2*nlaws+2]),final_pars[0,2*nlaws+4],mad_std(final_pars[:,2*nlaws+4]),final_pars[0,2*nlaws+3],mad_std(final_pars[:,2*nlaws+3]),final_pars[0,2*nlaws+5],mad_std(final_pars[:,2*nlaws+5]),final_pars[0,2*nlaws+6],mad_std(final_pars[:,2*nlaws+6])])
+
+            if params['fitbg']['plot']:
+                lbls=['numax (smoothed)','maxamp (smoothed)','numax (gauss)','maxamp (gauss)','fwhm (gauss)','dnu']
+                #pdb.set_trace()
+                fig2 = plt.figure(figsize = (8,5))
+                plt.ion()
+                for k in range(1,7):
+            	    ax2 = fig2.add_subplot(3,2,k)
+            	    ax2.hist(final_pars[:,2*nlaws+k]) 
+            	    plt.title(lbls[k-1])
+                plt.tight_layout()
+                plt.draw()
+                plt.show()
+                if params['fitbg']['save']:
+                    plt.savefig(params['path']+'/results/%d_mc.png'%target, dpi = 150)
+           
         else:
             print('numax (smoothed):',final_pars[0,2*nlaws+1])
             print('maxamp (smoothed):',final_pars[0,2*nlaws+2])
@@ -1169,7 +1204,15 @@ def fit_background(params):
             print('fwhm (gauss):',final_pars[0,2*nlaws+5])
             print('dnu:',final_pars[0,2*nlaws+6])        
 
+            results.append([target,final_pars[0,2*nlaws+1],0.,final_pars[0,2*nlaws+2],0.,final_pars[0,2*nlaws+4],0.,final_pars[0,2*nlaws+3],0.,final_pars[0,2*nlaws+5],0.,final_pars[0,2*nlaws+6],0.])
+
+        #write_bgfit(target, results, params)
+        variables = ['target', 'numax(smo)', 's_numax(smo)', 'maxamp(smo)', 's_maxamp(smo)', 'numax(gauss)', 's_numax(gauss)', 'maxamp(gauss)', 's_maxamp(gauss)', 'fwhm', 's_fwhm', 'dnu', 's_dnu']
+        ascii.write(np.array(results[0]),params['path']+'/%d_globalpars.csv'%target,names=variables,delimiter=',')
+    
+        #pdb.set_trace()
         input(':')
+        plt.close()
         #plt.show() 
              
             # for the original data set, we try several SNR cuts drawn from a uniform random

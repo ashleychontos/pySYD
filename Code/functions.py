@@ -38,7 +38,8 @@ def harvey(frequency, pars, mode = 'regular', gaussian = False, total = False):
 
     if mode == 'regular':
         for i in range(nlaws):
-            model += np.array([pars[i*2]/(1.+(pars[(i*2)+1]*f)**2.+(pars[(i*2)+1]*f)**4.) for f in frequency])
+            model += pars[i*2]/(1.+(pars[(i*2)+1]*frequency)**2.+(pars[(i*2)+1]*frequency)**4.)
+            #model += np.array([pars[i*2]/(1.+(pars[(i*2)+1]*f)**2.+(pars[(i*2)+1]*f)**4.) for f in frequency])
     elif mode == 'second':
         for i in range(nlaws):
             model += np.array([pars[i*2]/(1.+(pars[(i*2)+1]*f)**2.) for f in frequency])
