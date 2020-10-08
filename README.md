@@ -30,5 +30,5 @@ To run example code clone/download the repository and then do:
 - cd Code/
 - python SYD.py
 
-This will run the pipeline on the 
+This will run the pipeline on the two stars specified in the todo.txt file (KIC1435467 and KIC2309595), first using the findex module followed by the fitbg module. If you'd like to skip findex (e.g. useful for a handful of high S/N stars where you can visually estimate nu_max and thus specify it manually in star_info.csv), set findex = False in SYD.py.
 
