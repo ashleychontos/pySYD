@@ -3,7 +3,6 @@ from collections import deque
 from scipy.special import erf
 from astropy.convolution import convolve, Box1DKernel, Gaussian1DKernel, convolve_fft
 from scipy.ndimage import filters
-import pdb
 
 ##########################################################################################
 #                                                                                        #
@@ -39,13 +38,12 @@ def harvey(frequency, pars, mode = 'regular', gaussian = False, total = False):
     if mode == 'regular':
         for i in range(nlaws):
             model += pars[i*2]/(1.+(pars[(i*2)+1]*frequency)**2.+(pars[(i*2)+1]*frequency)**4.)
-            #model += np.array([pars[i*2]/(1.+(pars[(i*2)+1]*f)**2.+(pars[(i*2)+1]*f)**4.) for f in frequency])
     elif mode == 'second':
         for i in range(nlaws):
-            model += np.array([pars[i*2]/(1.+(pars[(i*2)+1]*f)**2.) for f in frequency])
+            model += pars[i*2]/(1.+(pars[(i*2)+1]*frequency)**2.)
     elif mode == 'fourth':
         for i in range(nlaws):
-            model += np.array([pars[i*2]/(1.+(pars[(i*2)+1]*f)**4.) for f in frequency])
+            model += pars[i*2]/(1.+(pars[(i*2)+1]*frequency)**4.)
     else:
         print('Wrong mode input for the harvey model function.')
 
@@ -86,7 +84,7 @@ def harvey_one(frequency, a1, b1, white_noise):
 
     model = np.zeros_like(frequency)
 
-    model += np.array([a1/(1.+(b1*f)**2.+(b1*f)**4.) for f in frequency])
+    model += a1/(1.+(b1*frequency)**2.+(b1*frequency)**4.)
     model += white_noise
 
     return model
@@ -96,8 +94,8 @@ def harvey_two(frequency, a1, b1, a2, b2, white_noise):
 
     model = np.zeros_like(frequency)
 
-    model += np.array([a1/(1.+(b1*f)**2.+(b1*f)**4.) for f in frequency])
-    model += np.array([a2/(1.+(b2*f)**2.+(b2*f)**4.) for f in frequency])
+    model += a1/(1.+(b1*frequency)**2.+(b1*frequency)**4.)
+    model += a2/(1.+(b2*frequency)**2.+(b2*frequency)**4.)
     model += white_noise
 
     return model
@@ -107,9 +105,9 @@ def harvey_three(frequency, a1, b1, a2, b2, a3, b3, white_noise):
 
     model = np.zeros_like(frequency)
 
-    model += np.array([a1/(1.+(b1*f)**2.+(b1*f)**4.) for f in frequency])
-    model += np.array([a2/(1.+(b2*f)**2.+(b2*f)**4.) for f in frequency])
-    model += np.array([a3/(1.+(b3*f)**2.+(b3*f)**4.) for f in frequency])
+    model += a1/(1.+(b1*frequency)**2.+(b1*frequency)**4.)
+    model += a2/(1.+(b2*frequency)**2.+(b2*frequency)**4.)
+    model += a3/(1.+(b3*frequency)**2.+(b3*frequency)**4.)
     model += white_noise
 
     return model
@@ -153,13 +151,13 @@ def mean_smooth_ind(x, y, width):
     return sx, sy, se
 
 
-def bin_data(x, y, params, log = True):
-    
+def bin_data(x, y, binning, log = True):
+
     if log:
         mi = min(np.log10(x))
         ma = max(np.log10(x))
-        no = np.int(np.ceil((ma-mi)/params['findex']['binning']))
-        bins = np.logspace(mi, mi+no*params['findex']['binning'], no)
+        no = np.int(np.ceil((ma-mi)/binning))
+        bins = np.logspace(mi, mi+no*binning, no)
     else:
         bins = np.arange(min(x), max(x)+binning, binning)
     
