@@ -1,28 +1,29 @@
 # general parameters
-8.                             # low frequency limit [float or None]
-4167.		               # upper frequency limit [float or None]
-1		               # number of Monte-Carlo iterations (set 1 for no uncertainties) [int]
+100.                             # low frequency limit [float or None] 'lower_limit'
+4167.		                          # upper frequency limit [float or None] 'upper_limit'
+1 		                             # number of Monte-Carlo iterations (set 1 for no uncertainties) [int] 'num_mc_iter'
 # background fit
-3		               # number of Harvey components in background fit [int]
-4000.		               # lower limit for noise estimate [float]
-4167.		               # upper limit for noise estimate [float]
-1.0                            # smooth power box filter (in muHz) [float]
-200	    	               # bin size for independent smoothing [int]
-20                             # number of points for rms component calculation [even int]
+2		                              # number of Harvey components in background fit [int] 'n_laws'
+4000.		                          # lower limit for noise estimate [float] 'lower_noise'
+4167.		                          # upper limit for noise estimate [float] 'upper_noise'
+1                                # fix white noise  [float] 'fix_wn'
+1.0                              # smoothing of PS for plot (in muHz) [float] 'box_filter'
+50 	    	                        # bin size for independent smoothing [int] 'ind_width'
+20                               # number of points for rms component calculation [even int] 'n_rms'
 # nu_max determination
-2600.                          # lower limit for nuMax (not necessary) [float]
-3800.                          # upper limit for nuMax (not necessary) [float]
+None	                            # lower limit for nuMax (not necessary) [float] 'lower_numax'
+None	                            # upper limit for nuMax (not necessary) [float] 'upper_numax'
 # delta_nu determination
-20.		               # lower limit for lag [float]
-200.		               # upper limit for lag [float]
-10		               # number of peaks for fitting ACF [int]
-2.5		               # smoothing of PS (in muHz) [float]
-# misc parameters
-1		               # enable plotting? [boolean]
-1                              # force dNu? [boolean]
-140.24                         # dNu guess [float]
-1		               # save figures? [boolean]
-1                              # clip power on echelle diagram? [boolean]
-0                              # clip value [float]
-1                              # echelle smoothing [boolean]
-2.5		               # smoothing of PS used for echelle diagram (in muHz) [float]
+20.		                            # lower limit for lag [float] 'lower_lag'
+200.		                           # upper limit for lag [float] 'upper_lag'
+5		                              # number of peaks for fitting ACF [int] 'n_peaks'
+2.5		                            # smoothing of PS (in muHz) [float] 'smooth_ps'
+# misc parameters (mostly for plotting)
+1		                              # enable plotting? [boolean] 'plot'
+0                                # force dNu? [boolean] 'force'
+140.24                           # dNu guess [float] 'guess'
+1		                              # save figures? [boolean] 'save'
+1                                # clip power on echelle diagram? [boolean] 'clip'
+0                                # clip value [float] 'clip_value'
+0                                # echelle smoothing [boolean] 'ech_smooth'
+2.5		                            # smoothing of PS used for echelle diagram (in muHz) [float] 'ech_filter'

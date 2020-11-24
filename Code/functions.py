@@ -151,15 +151,15 @@ def mean_smooth_ind(x, y, width):
     return sx, sy, se
 
 
-def bin_data(x, y, params, log = True):
+def bin_data(x, y, binning, log = True):
 
     if log:
         mi = min(np.log10(x))
         ma = max(np.log10(x))
-        no = np.ceil((ma-mi)/params['findex']['binning'])
-        bins = np.logspace(mi, mi+no*params['findex']['binning'], no)
+        no = np.ceil((ma-mi)/binning)
+        bins = np.logspace(mi, mi+no*binning, int(no))
     else:
-        bins = np.arange(min(x), max(x)+params['findex']['binning'], params['findex']['binning'])
+        bins = np.arange(min(x), max(x)+binning, binning)
     
     digitized = np.digitize(x, bins)
     bin_means = [y[digitized == i].mean() for i in range(1, len(bins))]
