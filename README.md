@@ -20,7 +20,7 @@ The pipeline works in two major parts:
 - utils.py : bulk of the SYD pipeline
 - functions.py : models, distributions, ffts, smoothing functions are all in this file
 - SYD.py : initiates SYD through utils.main
-- QUAKES.py : asteroseismology tools created in parallel to SYD
+- QUAKES.py : asteroseismology pipeline created in parallel with SYD under advisor Dan Huber (i.e. a more pythonic approach to asteroseismology). The initial use and intent of this pipeline also considers planet hosts and has additional time domain tools to remove planet transits and other anomalies in the time domain.
 
 Documentation and code under construction.
 
@@ -31,4 +31,3 @@ To run example code clone/download the repository and then do:
 - python SYD.py
 
 This will run the pipeline on the two stars specified in the todo.txt file (KIC1435467 and KIC2309595), first using the findex module followed by the fitbg module. If you'd like to skip findex (e.g. useful for a handful of high S/N stars where you can visually estimate nu_max and thus specify it manually in star_info.csv), set findex = False in SYD.py.
-

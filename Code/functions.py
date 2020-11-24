@@ -161,7 +161,7 @@ def bin_data(x, y, params, log = True):
         no = np.int(np.ceil((ma-mi)/params['findex']['binning']))
         bins = np.logspace(mi, mi+no*params['findex']['binning'], no)
     else:
-        bins = np.arange(min(x), max(x)+params['findex']['binning'], params['findex']['binning'])
+        bins = np.arange(min(x), max(x)+binning, binning)
     
     digitized = np.digitize(x, bins)
     bin_means = [y[digitized == i].mean() for i in range(1, len(bins))]
