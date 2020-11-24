@@ -3,6 +3,7 @@ from collections import deque
 from scipy.special import erf
 from astropy.convolution import convolve, Box1DKernel, Gaussian1DKernel, convolve_fft
 from scipy.ndimage import filters
+import pdb
 
 ##########################################################################################
 #                                                                                        #
@@ -37,7 +38,8 @@ def harvey(frequency, pars, mode = 'regular', gaussian = False, total = False):
 
     if mode == 'regular':
         for i in range(nlaws):
-            model += np.array([pars[i*2]/(1.+(pars[(i*2)+1]*f)**2.+(pars[(i*2)+1]*f)**4.) for f in frequency])
+            model += pars[i*2]/(1.+(pars[(i*2)+1]*frequency)**2.+(pars[(i*2)+1]*frequency)**4.)
+            #model += np.array([pars[i*2]/(1.+(pars[(i*2)+1]*f)**2.+(pars[(i*2)+1]*f)**4.) for f in frequency])
     elif mode == 'second':
         for i in range(nlaws):
             model += np.array([pars[i*2]/(1.+(pars[(i*2)+1]*f)**2.) for f in frequency])
@@ -151,13 +153,13 @@ def mean_smooth_ind(x, y, width):
     return sx, sy, se
 
 
-def bin_data(x, y, binning, log = True):
-
+def bin_data(x, y, params, log = True):
+    
     if log:
         mi = min(np.log10(x))
         ma = max(np.log10(x))
-        no = np.ceil((ma-mi)/binning)
-        bins = np.logspace(mi, mi+no*binning, int(no))
+        no = np.int(np.ceil((ma-mi)/params['findex']['binning']))
+        bins = np.logspace(mi, mi+no*params['findex']['binning'], no)
     else:
         bins = np.arange(min(x), max(x)+binning, binning)
     

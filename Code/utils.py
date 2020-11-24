@@ -9,6 +9,7 @@ from astropy.io import ascii
 from scipy import interpolate
 import matplotlib.pyplot as plt
 from scipy.stats import chisquare
+from astropy.stats import mad_std
 from scipy.optimize import curve_fit
 from scipy.interpolate import InterpolatedUnivariateSpline
 from matplotlib.colors import LogNorm, PowerNorm, Normalize
@@ -18,7 +19,7 @@ from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter, 
 
 
 
-def main(findex=False, fitbg=True, verbose=True):
+def main(findex=True, fitbg=True, verbose=True):
 
     PS = PowerSpectrum(findex, fitbg, verbose)
 
@@ -133,7 +134,6 @@ class PowerSpectrum:
             for target in self.params['todo']:
                 if not os.path.exists(self.params[target]['path']):
                     os.makedirs(self.params[target]['path'])
-        self.findex.update({'variables':['target', 'numax', 'dnu', 'snr'],'formats':["<15s", "<15.4f", "<15.4f", "<15.4f"]})
 
     def read_bg_params(self, fitbg_file):
 
@@ -165,7 +165,6 @@ class PowerSpectrum:
             for target in self.params['todo']:
                 if not os.path.exists(self.params[target]['path']):
                     os.makedirs(self.params[target]['path'])
-        self.fitbg.update({'variables':['target', 'numax', 'a_'],'formats':["<15s", "<15.4f", "<15.4f", "<15.4f"]})
 
     def get_star_info(self, star_info, cols = ['rad', 'logg', 'teff']):
         if os.path.exists(star_info):
@@ -195,25 +194,13 @@ class PowerSpectrum:
 
     def write_excess(self, target, results):
 
-        f = open(self.params[target]['path']+'%d_findex.txt'%target, "w")
-        f.write('{:<19}{:<17}{:<18}{:<15} \n'.format(self.findex['variables'][0], self.findex['variables'][1], self.findex['variables'][2], self.findex['variables'][3]))
-    
-        values = [str(target), results[0], results[1], results[2]]
-        text = '{:{}}'*len(values) + '\n'
-        fmt = sum(zip(values, self.findex['formats']), ())
-        f.write(text.format(*fmt))   
-        f.close()
+        variables = ['target', 'numax', 'dnu', 'snr']
+        ascii.write(np.array(results),self.params[target]['path']+'%d_findex.csv'%target,names=variables,delimiter=',')
 
     def write_bgfit(self, target, results):
 
-        f = open(self.params[target]['path']+'%d_bgfit.txt'%target, "w")
-        f.write('{:<19}{:<19}{:<19}{:<19} \n'.format(self.fitbg['variables'][0], self.fitbg['variables'][1], self.fitbg['variables'][2], self.fitbg['variables'][3]))
-    
-        values = [str(target), results[0], results[1], results[2]]
-        text = '{:{}}'*len(values) + '\n'
-        fmt = sum(zip(values, self.fitbg['formats']), ())
-        f.write(text.format(*fmt))   
-        f.close()
+        variables = ['target', 'numax(smo)', 's_numax(smo)', 'maxamp(smo)', 's_maxamp(smo)', 'numax(gauss)', 's_numax(gauss)', 'maxamp(gauss)', 's_maxamp(gauss)', 'fwhm', 's_fwhm', 'dnu', 's_dnu']
+        ascii.write(np.array(results),self.params[target]['path']+'%d_globalpars.csv'%target,names=variables,delimter=',')
 
     def clean_files(self):
         for target in self.params['todo']:
@@ -290,7 +277,7 @@ class PowerSpectrum:
                 if self.verbose:
                     print('binned to %d datapoints'%len(bf))
 
-                self.resolution = np.nanmedian((np.diff(self.frequency)))
+                self.resolution = self.frequency[1]-self.frequency[0]
                 boxsize = np.ceil(float(self.findex['smooth_width'])/self.resolution)
                 smooth_pow = convolve(bp, Box1DKernel(boxsize))
                 sf = bf[int(boxsize/2):-int(boxsize/2)]
@@ -362,7 +349,7 @@ class PowerSpectrum:
                             snr = 100.
                         self.fit_snr.append(snr)
                         self.fit_gauss.append(best_vars[2])
-                        results.append([best_vars[2], delta_nu(best_vars[2]), snr])
+                        results.append([target, best_vars[2], delta_nu(best_vars[2]), snr])
                         if self.verbose:
                             print('power excess trial %d: numax = %.2f +/- %.2f'%(i+1, best_vars[2], np.absolute(best_vars[3])/2.))
                             print('S/N: %.2f'%snr)
@@ -588,7 +575,7 @@ class PowerSpectrum:
                     else:
                         pars, cv = curve_fit(self.fitbg['functions'][self.params[target]['best_model']//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[self.params[target]['best_model']//2])
 
-                    final_pars[i,0:2*nlaws+1] = pars
+                    final_pars[i,0:2*self.nlaws+1] = pars
 
                     fwhm = self.sm_par*self.params[self.target]['dnu']/self.resolution
                     sig = fwhm/np.sqrt(8*np.log(2))
@@ -639,10 +626,6 @@ class PowerSpectrum:
                         self.bg_corr_smooth = convolve(self.bg_corr, boxkernel)
                     else:
                         self.bg_corr_smooth = np.array(self.bg_corr[:])
-
-                # redetermine power excess using bg-corrected PS
-#                if i == 0:
-#                    excess_pars = confirm_excess(f_cor, a_cor_coadd, p_gauss[2], target, params) 
 
                     self.width = self.params['width_sun']*(p_gauss1[2]/self.params['numax_sun'])
                     self.numax_exp = p_gauss1[2]
@@ -715,7 +698,7 @@ class PowerSpectrum:
                     print('dnu:',final_pars[0,2*nlaws+6])  
                     results.append([target,final_pars[0,2*nlaws+1],0.,final_pars[0,2*nlaws+2],0.,final_pars[0,2*nlaws+4],0.,final_pars[0,2*nlaws+3],0.,final_pars[0,2*nlaws+5],0.,final_pars[0,2*nlaws+6],0.])
 
-            #write_bgfit(target, results, params)
+            self.write_bgfit(target, results)
             variables = ['target', 'numax(smo)', 's_numax(smo)', 'maxamp(smo)', 's_maxamp(smo)', 'numax(gauss)', 's_numax(gauss)', 'maxamp(gauss)', 's_maxamp(gauss)', 'fwhm', 's_fwhm', 'dnu', 's_dnu']
             ascii.write(np.array(results[0]),self.params[self.target]['path']+'/%d_globalpars.csv'%target,names=variables,delimiter=',',overwrite=True)
 
@@ -763,7 +746,7 @@ class PowerSpectrum:
                 if self.verbose:
                     print('# POWER SPECTRUM: %d lines of data read'%len(self.frequency))
             self.oversample = int(round((1./((max(self.time)-min(self.time))*0.0864))/(np.nanmedian(np.diff(self.frequency)))))
-            self.resolution = np.nanmedian(np.diff(self.frequency))*self.oversample
+            self.resolution = (self.frequency[1]-self.frequency[0])*self.oversample
             if self.verbose:
                 print('------------------------------------------')
                 print('Target: %d'%self.target)
@@ -915,7 +898,7 @@ class PowerSpectrum:
         ax2.axvline(self.maxpower[1], color = 'darkorange', linestyle = 'dashed', linewidth = 2., zorder = 1, dashes = (5,5))
         ax2.axhline(self.noise, color = 'blue', linestyle = 'dashed', linewidth = 1.5, zorder = 3, dashes = (5,5))
         ax2.set_xlim([min(self.original_freq), max(self.original_freq)])
-#        ax2.set_ylim([min(self.power), max(self.power)*1.25])
+        ax2.set_ylim([min(self.original_pow), max(self.original_pow)*1.25])
         ax2.set_title(r'$\rm Initial \,\, guesses$')
         ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
@@ -937,7 +920,7 @@ class PowerSpectrum:
         ax3.axhline(self.noise, color = 'blue', linestyle = 'dashed', linewidth = 1.5, zorder = 3, dashes = (5,5))
         ax3.plot(self.original_freq, self.pssm, color = 'yellow', linewidth = 2., linestyle = 'dashed', zorder = 5)
         ax3.set_xlim([min(self.original_freq), max(self.original_freq)])
-#        ax3.set_ylim([min(y), max(y)*1.25])
+        ax3.set_ylim([min(self.original_pow), max(self.original_pow)*1.25])
         ax3.set_title(r'$\rm Fitted \,\, model$')
         ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax3.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
@@ -1038,7 +1021,7 @@ class PowerSpectrum:
 
         plt.tight_layout()
         if self.fitbg['save']:
-            plt.savefig(self.params[self.target]['path']+'%d_findex.png'%self.target, dpi = 300)
+            plt.savefig(self.params[self.target]['path']+'%d_fitbg.png'%self.target, dpi = 300)
         plt.show() 
         plt.close()
 
@@ -1052,9 +1035,6 @@ class PowerSpectrum:
 
         fwhm = self.sm_par*self.params[self.target]['dnu']/self.resolution
         sigma = 2.*fwhm/np.sqrt(8.*np.log(2.))
-        print(self.sm_par*self.params[self.target]['dnu'], self.sm_par*self.params[self.target]['dnu']/np.sqrt(8.*np.log(2.)))
-        print(self.resolution, fwhm)
-        print(sigma)
 
         n = 2*len(array)
         N = np.arange(1,n+1,1)
@@ -1135,13 +1115,41 @@ class PowerSpectrum:
     def corr(self, frequency, power):
 
         lag = np.arange(0., len(power))*self.resolution
-        auto = np.correlate(power - np.mean(power), power - np.mean(power), "full") 
-        auto = auto[int(auto.size/2):]
+        auto = np.real(np.fft.fft(np.fft.ifft(power)*np.conj(np.fft.ifft(power))))
 
-        mask = np.ma.getmask(np.ma.masked_inside(lag, self.fitbg['lower_lag'], self.fitbg['upper_lag']))
+#        lag = np.arange(0., len(power))*self.resolution
+#        auto = np.correlate(power - np.mean(power), power - np.mean(power), "full") 
+#        auto = auto[int(auto.size/2):]
+
+        dnu = self.dnu_exp
+        lower_limit = dnu/4.
+        upper_limit = 2.*dnu + dnu/4.
+
+        mask = np.ma.getmask(np.ma.masked_inside(lag, lower_limit, upper_limit))
         lag = lag[mask]
         auto = auto[mask]
         auto -= min(auto)
         auto /= max(auto)
     
         return lag, auto
+
+##########################################################################################
+#                                                                                        #
+#                                        INITIATE                                        #
+#                                                                                        #
+##########################################################################################
+
+
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description = 'This is a script to run the new version of the SYD PYpeline')
+    parser.add_argument('-e', '-x', '--e', '--x', '-ex', '--ex', '-excess', '--excess', help = 'Use this to turn the find excess function off', dest = 'ex', action = 'store_false')
+    parser.add_argument('-b', '--b', '-bg', '--bg', '-background', '--background', help = 'Use this to disable the background fitting process (although not highly recommended)', dest = 'bg', action = 'store_false')
+    parser.add_argument('-v', '--v', '-verbose', '--verbose', help = 'Turn on verbose', dest = 'verbose', action = 'store_true')
+
+    args = parser.parse_args()
+    ex = args.ex
+    bg = args.bg
+    verbose = args.verbose
+
+    main(ex = ex, bg = bg, verbose = verbose)

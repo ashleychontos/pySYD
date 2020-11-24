@@ -1,0 +1,2 @@
+target         numax(smo)     s_numax(smo)   maxamp(smo)    s_maxamp(smo)  numax(gauss)   s_numax(gauss) maxamp(gauss)  s_maxamp(gauss)fwhm           s_fwhm         dnu            s_dnu           
+2309595        1319.8757      26.4542        1.1330         0.1003         1384.0260      20.4566        1.0840         0.0918         255.0335       21.0415        70.9455        0.2532         
