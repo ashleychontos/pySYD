@@ -195,12 +195,12 @@ class PowerSpectrum:
     def write_excess(self, target, results):
 
         variables = ['target', 'numax', 'dnu', 'snr']
-        ascii.write(np.array(results),self.params[target]['path']+'%d_findex.csv'%target,names=variables,delimiter=',')
+        ascii.write(np.array(results),self.params[target]['path']+'%d_findex.csv'%target,names=variables,delimiter=',',overwrite=True)
 
     def write_bgfit(self, target, results):
 
         variables = ['target', 'numax(smo)', 's_numax(smo)', 'maxamp(smo)', 's_maxamp(smo)', 'numax(gauss)', 's_numax(gauss)', 'maxamp(gauss)', 's_maxamp(gauss)', 'fwhm', 's_fwhm', 'dnu', 's_dnu']
-        ascii.write(np.array(results),self.params[target]['path']+'%d_globalpars.csv'%target,names=variables,delimter=',')
+        ascii.write(np.array(results),self.params[target]['path']+'%d_globalparams.csv'%target,names=variables,delimiter=',',overwrite=True)
 
     def clean_files(self):
         for target in self.params['todo']:
@@ -560,7 +560,7 @@ class PowerSpectrum:
                                 reduced_chi2.append(chi/(len(outer_x)-len(pams)+1))
 
                         self.model = reduced_chi2.index(min(reduced_chi2))+1
-                        self.nlaws = self.model//2
+                        self.nlaws = ((self.model-1)//2)+1
                         if self.verbose:
                             print('Based on reduced chi-squared statistic: choosing model %d'%self.model)
                             print('nlaws = %d'%self.nlaws)
@@ -698,10 +698,7 @@ class PowerSpectrum:
                     print('dnu:',final_pars[0,2*nlaws+6])  
                     results.append([target,final_pars[0,2*nlaws+1],0.,final_pars[0,2*nlaws+2],0.,final_pars[0,2*nlaws+4],0.,final_pars[0,2*nlaws+3],0.,final_pars[0,2*nlaws+5],0.,final_pars[0,2*nlaws+6],0.])
 
-            self.write_bgfit(target, results)
-            variables = ['target', 'numax(smo)', 's_numax(smo)', 'maxamp(smo)', 's_maxamp(smo)', 'numax(gauss)', 's_numax(gauss)', 'maxamp(gauss)', 's_maxamp(gauss)', 'fwhm', 's_fwhm', 'dnu', 's_dnu']
-            ascii.write(np.array(results[0]),self.params[self.target]['path']+'/%d_globalpars.csv'%target,names=variables,delimiter=',',overwrite=True)
-
+                self.write_bgfit(target, results[0])
 
     def load_data(self):
 
