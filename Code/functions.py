@@ -299,3 +299,8 @@ def corr(frequency, power, params):
     auto = auto[mask]
     
     return lag, auto
+
+
+def delta_nu(numax):
+    
+    return 0.22*(numax**0.797)
