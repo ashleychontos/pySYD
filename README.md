@@ -1,6 +1,6 @@
 ## Summary
 
-Translation of the asteroseismic SYD pipeline ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) from IDL into python.
+The SYD PYpline -> asteroseismic SYD pipeline ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) originally written in IDL translated into python
 
 The pipeline works in two major parts:
 1) findex: automatically finds power excess due to solar-like oscillations using a frequency resolved collapsed autocorrelation function
