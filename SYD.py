@@ -19,9 +19,9 @@ from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter, 
 
 
 
-def main(findex=True, fitbg=True, verbose=True):
+def main(findex=True, fitbg=True, verbose=True, show_plots=True):
 
-    PS = PowerSpectrum(findex, fitbg, verbose)
+    PS = PowerSpectrum(findex, fitbg, verbose, show_plots)
 
     for target in PS.params['todo']:
         PS.target = target
@@ -45,12 +45,13 @@ def main(findex=True, fitbg=True, verbose=True):
 
 class PowerSpectrum:
     
-    def __init__(self, findex, fitbg, verbose, correct = False):
+    def __init__(self, findex, fitbg, verbose, show_plots, correct = False):
         self.findex = {}
         self.findex['do'] = findex
         self.fitbg = {}
         self.fitbg['do'] = fitbg
         self.verbose = verbose
+        self.show_plots = show_plots
         self.correct = correct
         self.get_info()
         self.set_plot_params()
@@ -60,6 +61,9 @@ class PowerSpectrum:
         self.params = {}
         with open('Files/todo.txt', "r") as f:
             todo = np.array([int(float(line.strip().split()[0])) for line in f.readlines()])
+        if len(todo) > 1:
+            self.verbose = False
+            self.show_plots = False
         self.params['path'] = 'Files/data/'
         self.params.update({'numax_sun':3090., 'dnu_sun':135.1, 'width_sun':1300., 'todo':todo, 'G':6.67428e-8, 
                             'tau_sun':[5.2e6, 1.8e5, 1.7e4, 2.5e3, 280., 80.], 'teff_sun':5777., 'mass_sun':1.9891e33,
@@ -393,7 +397,8 @@ class PowerSpectrum:
         plt.tight_layout()
         if self.findex['save']:
             plt.savefig(self.params[self.target]['path']+'%d_findex.png'%self.target, dpi = 300)
-        plt.show()
+        if self.show_plots:
+            plt.show()
         plt.close()
 
 
@@ -457,10 +462,12 @@ class PowerSpectrum:
                 else:
                     self.maxpower = [self.params[self.target]['numax']-self.times*self.params[self.target]['dnu'],self.params[self.target]['numax']+self.times*self.params[self.target]['dnu']]
 
+            i = 0
+            self.nlaws = self.fitbg['n_laws']
             # sampling process
-            for i in range(self.fitbg['num_mc_iter']):
+            while i < self.fitbg['num_mc_iter']:
                 self.i = i
-                if i == 0:
+                if self.i == 0:
                     # record original PS information for plotting
                     random_pow = np.copy(self.original_pow)
                     bin_freq, bin_pow, bin_err = mean_smooth_ind(self.original_freq, random_pow, self.fitbg['ind_width'])
@@ -477,8 +484,8 @@ class PowerSpectrum:
                     self.noise = np.mean(random_pow[(self.original_freq>self.fitbg['lower_noise'])&(self.original_freq<self.fitbg['upper_noise'])])
                 else:
                     self.noise = np.mean(random_pow[(self.original_freq>(max(self.original_freq)-0.1*max(self.original_freq)))])
-                pars = np.zeros((self.fitbg['n_laws']*2+1))
-                pars[2*self.fitbg['n_laws']] = self.noise
+                pars = np.zeros((self.nlaws*2+1))
+                pars[2*self.nlaws] = self.noise
 
                 # exclude region with power excess and smooth to estimate red/white noise components
                 boxkernel = Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution)))
@@ -517,11 +524,11 @@ class PowerSpectrum:
                     else:
                         a[j] = np.mean(smooth_pow[idx-int(self.fitbg['n_rms']/2):idx+int(self.fitbg['n_rms']/2)])
 
-                for n in range(self.fitbg['n_laws']):
+                for n in range(self.nlaws):
                     pars[2*n] = a[n]
                     pars[2*n+1] = b[n]
 
-                if i == 0:
+                if self.i == 0:
                     self.bin_freq = bin_freq[~msk]
                     self.bin_pow = bin_pow[~msk]
                     self.bin_err = bin_err[~msk]
@@ -532,10 +539,10 @@ class PowerSpectrum:
                     smooth = convolve(self.original_pow, Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution))))
                     self.smooth_power = np.copy(smooth)
                     if self.verbose:
-                        print('Comparing %d different models:'%(self.fitbg['n_laws']*2))
+                        print('Comparing %d different models:'%(self.nlaws*2))
                     # get best fit model 
                     bounds = []
-                    for law in range(self.fitbg['n_laws']):
+                    for law in range(self.nlaws):
                         b = np.zeros((2,2*(law+1)+1)).tolist()
                         for z in range(2*(law+1)):
                             b[0][z] = -np.inf
@@ -546,12 +553,12 @@ class PowerSpectrum:
                     reduced_chi2 = []
                     paras = []
                     names = ['one', 'one', 'two', 'two', 'three', 'three']
-                    dict1 = dict(zip(np.arange(2*self.fitbg['n_laws']),names[:2*self.fitbg['n_laws']]))
-                    for t in range(2*self.fitbg['n_laws']):
+                    dict1 = dict(zip(np.arange(2*self.nlaws),names[:2*self.nlaws]))
+                    for t in range(2*self.nlaws):
                         if t%2 == 0:
                             if self.verbose:
                                 print('%d: %s harvey model w/ white noise free parameter'%(t+1, dict1[t]))
-                            delta = 2*(self.fitbg['n_laws']-(t//2+1))
+                            delta = 2*(self.nlaws-(t//2+1))
                             pams = list(pars[:(-delta-1)])
                             pams.append(pars[-1])
                             pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err)
@@ -561,7 +568,7 @@ class PowerSpectrum:
                         else:
                             if self.verbose:
                                 print('%d: %s harvey model w/ white noise fixed'%(t+1, dict1[t]))
-                            delta = 2*(self.fitbg['n_laws']-(t//2+1))
+                            delta = 2*(self.nlaws-(t//2+1))
                             pams = list(pars[:(-delta-1)])
                             pams.append(pars[-1])
                             pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[t//2])
@@ -573,19 +580,27 @@ class PowerSpectrum:
                     self.nlaws = ((self.model-1)//2)+1
                     if self.verbose:
                         print('Based on reduced chi-squared statistic: model %d'%self.model)
-                        print('nlaws = %d'%self.nlaws)
                     pars = paras[self.model-1]
                     self.best_model = self.model-1
                     self.pars = pars
-                    final_pars = np.zeros((self.fitbg['num_mc_iter'],self.fitbg['n_laws']*2+12))
+                    final_pars = np.zeros((self.fitbg['num_mc_iter'],self.nlaws*2+12))
 
                     self.sm_par = 4.*(self.params[self.target]['numax']/self.params['numax_sun'])**0.2
                     if self.sm_par < 1.:
                         self.sm_par = 1.
+                    again = False
                 else:
-                    pars, cv = curve_fit(self.fitbg['functions'][self.nlaws], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[self.nlaws-1])
+                    try:
+                        pars, cv = curve_fit(self.fitbg['functions'][self.nlaws], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[self.nlaws-1])
+                    except RuntimeError:
+                        again = True
+                    else:
+                        again = False
 
-                final_pars[i,0:2*self.nlaws+1] = pars
+                if again:
+                    continue
+
+                final_pars[self.i,0:2*self.nlaws+1] = pars
 
                 fwhm = self.sm_par*self.params[self.target]['dnu']/self.resolution
                 sig = fwhm/np.sqrt(8*np.log(2))
@@ -617,16 +632,16 @@ class PowerSpectrum:
                 region_freq = np.copy(self.original_freq[self.params[self.target]['mask']])
                 region_pow = pssm_bgcorr[self.params[self.target]['mask']]
                 idx = self.return_max(region_pow, index=True)
-                final_pars[i,2*self.nlaws+1] = region_freq[idx]
-                final_pars[i,2*self.nlaws+2] = region_pow[idx]
+                final_pars[self.i,2*self.nlaws+1] = region_freq[idx]
+                final_pars[self.i,2*self.nlaws+2] = region_pow[idx]
 
                 if list(region_freq) != []:
                     bb = self.gaussian_bounds(region_freq, region_pow)
                     guesses = [0., max(region_pow), region_freq[idx], (max(region_freq)-min(region_freq))/8./np.sqrt(8.*np.log(2.))]
                     p_gauss1, p_cov = curve_fit(gaussian, region_freq, region_pow, p0 = guesses, bounds = bb[0])
-                    final_pars[i,2*self.nlaws+3] = p_gauss1[1]
-                    final_pars[i,2*self.nlaws+4] = p_gauss1[2]
-                    final_pars[i,2*self.nlaws+5] = p_gauss1[3]
+                    final_pars[self.i,2*self.nlaws+3] = p_gauss1[2]
+                    final_pars[self.i,2*self.nlaws+4] = p_gauss1[1]
+                    final_pars[self.i,2*self.nlaws+5] = p_gauss1[3]
 
                 self.bg_corr = random_pow/harvey(self.original_freq, pars, total=True)
 
@@ -669,16 +684,16 @@ class PowerSpectrum:
                 zoom_auto = auto[mask]
                 fit = gaussian(zoom_lag, p_gauss2[0], p_gauss2[1], p_gauss2[2], p_gauss2[3])
                 idx = self.return_max(fit, index=True)
-                final_pars[i,2*self.nlaws+6] = zoom_lag[idx]
+                final_pars[self.i,2*self.nlaws+6] = zoom_lag[idx]
 
                 if self.fitbg['force']:
                     self.dnu = self.fitbg['guess']
                 else:
                     self.dnu = zoom_lag[idx]
 
-                self.get_ridges(i)
+                self.get_ridges()
 
-                if i == 0:
+                if self.i == 0:
                     self.pssm = pssm
                     self.region_freq = region_freq
                     self.region_pow = region_pow
@@ -694,32 +709,35 @@ class PowerSpectrum:
                     self.zoom_lag = zoom_lag
                     self.zoom_auto = zoom_auto
                     self.gauss_2 = p_gauss2
-                    self.plot_fitbg()
+
+                i += 1
 
             if self.fitbg['num_mc_iter'] > 1:
                 if self.verbose:
-                    print('numax (smoothed):',final_pars[0,2*self.nlaws+1],mad_std(final_pars[:,2*self.nlaws+1]))
-                    print('maxamp (smoothed):',final_pars[0,2*self.nlaws+2],mad_std(final_pars[:,2*self.nlaws+2]))
-                    print('numax (gaussian):',final_pars[0,2*self.nlaws+4],mad_std(final_pars[:,2*self.nlaws+4]))
-                    print('maxamp (gaussian):',final_pars[0,2*self.nlaws+3],mad_std(final_pars[:,2*self.nlaws+3]))
-                    print('fwhm (gaussian):',final_pars[0,2*self.nlaws+5],mad_std(final_pars[:,2*self.nlaws+5]))
-                    print('dnu:',final_pars[0,2*self.nlaws+6],mad_std(final_pars[:,2*self.nlaws+6]))
+                    print('numax (smoothed): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+1],mad_std(final_pars[:,2*self.nlaws+1])))
+                    print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+2],mad_std(final_pars[:,2*self.nlaws+2])))
+                    print('numax (gaussian): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+3],mad_std(final_pars[:,2*self.nlaws+3])))
+                    print('maxamp (gaussian): %.2f +/- %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+4],mad_std(final_pars[:,2*self.nlaws+4])))
+                    print('fwhm (gaussian): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+5],mad_std(final_pars[:,2*self.nlaws+5])))
+                    print('dnu: %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+6],mad_std(final_pars[:,2*self.nlaws+6])))
                     print('-------------------------------------------------')
                     print()
-                results.append([self.target,final_pars[0,2*self.nlaws+1],mad_std(final_pars[:,2*self.nlaws+1]),final_pars[0,2*self.nlaws+2],mad_std(final_pars[:,2*self.nlaws+2]),final_pars[0,2*self.nlaws+4],mad_std(final_pars[:,2*self.nlaws+4]),final_pars[0,2*self.nlaws+3],mad_std(final_pars[:,2*self.nlaws+3]),final_pars[0,2*self.nlaws+5],mad_std(final_pars[:,2*self.nlaws+5]),final_pars[0,2*self.nlaws+6],mad_std(final_pars[:,2*self.nlaws+6])])
+                results.append([self.target,final_pars[0,2*self.nlaws+1],mad_std(final_pars[:,2*self.nlaws+1]),final_pars[0,2*self.nlaws+2],mad_std(final_pars[:,2*self.nlaws+2]),final_pars[0,2*self.nlaws+3],mad_std(final_pars[:,2*self.nlaws+3]),final_pars[0,2*self.nlaws+4],mad_std(final_pars[:,2*self.nlaws+4]),final_pars[0,2*self.nlaws+5],mad_std(final_pars[:,2*self.nlaws+5]),final_pars[0,2*self.nlaws+6],mad_std(final_pars[:,2*self.nlaws+6])])
+                self.plot_mc(final_pars)
 
             else:
                 if self.verbose:
-                    print('numax (smoothed):',final_pars[0,2*self.nlaws+1])
-                    print('maxamp (smoothed):',final_pars[0,2*self.nlaws+2])
-                    print('numax (gaussian):',final_pars[0,2*self.nlaws+4])
-                    print('maxamp (gaussian):',final_pars[0,2*self.nlaws+3])
-                    print('fwhm (gaussian):',final_pars[0,2*self.nlaws+5])
-                    print('dnu:',final_pars[0,2*self.nlaws+6])
+                    print('numax (smoothed): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+1]))
+                    print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+2]))
+                    print('numax (gaussian): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+3]))
+                    print('maxamp (gaussian): %.2f +/- %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+4]))
+                    print('fwhm (gaussian): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+5]))
+                    print('dnu: %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+6]))
                     print('-------------------------------------------------')
                     print()
-                results.append([self.target,final_pars[0,2*self.nlaws+1],0.,final_pars[0,2*self.nlaws+2],0.,final_pars[0,2*self.nlaws+4],0.,final_pars[0,2*self.nlaws+3],0.,final_pars[0,2*self.nlaws+5],0.,final_pars[0,2*self.nlaws+6],0.])
+                results.append([self.target,final_pars[0,2*self.nlaws+1],0.,final_pars[0,2*self.nlaws+2],0.,final_pars[0,2*self.nlaws+3],0.,final_pars[0,2*self.nlaws+4],0.,final_pars[0,2*self.nlaws+5],0.,final_pars[0,2*self.nlaws+6],0.])
 
+            self.plot_fitbg()
             self.write_bgfit(results[0])
 
     def load_data(self):
@@ -824,16 +842,16 @@ class PowerSpectrum:
             modx = self.original_freq%self.dnu
             starty = min(self.original_freq)
 
-            for i in range(len(gridx)):
-                for j in range(len(gridy)):
+            for ii in range(len(gridx)):
+                for jj in range(len(gridy)):
                     use = np.where((modx >= startx)&(modx < startx+self.dnu/n_across)&(self.original_freq >= starty)&(self.original_freq < starty+self.dnu))[0]
                     if len(use) == 0:
-                        arr[i,j] = np.nan
+                        arr[ii,jj] = np.nan
                     else:
-                        arr[i,j] = np.sum(self.bg_corr[use])
-                    gridy[j] = starty + self.dnu/2.
+                        arr[ii,jj] = np.sum(self.bg_corr[use])
+                    gridy[jj] = starty + self.dnu/2.
                     starty += self.dnu
-                gridx[i] = startx + self.dnu/n_across/2.
+                gridx[ii] = startx + self.dnu/n_across/2.
                 starty = min(self.original_freq)
                 startx += self.dnu/n_across
             smoothed = arr
@@ -995,12 +1013,31 @@ class PowerSpectrum:
         ax9.set_ylabel(r'$\rm Collapsed \,\, power$')
         ax9.set_xlim([0., 2.*self.dnu])
         ax9.set_ylim([min(self.yax)-0.025*(max(self.yax)-min(self.yax)), max(self.yax)+0.05*(max(self.yax)-min(self.yax))])
-#        ax9.set_ylim([min(self.yax), max(self.yax)])
 
         plt.tight_layout()
         if self.fitbg['save']:
             plt.savefig(self.params[self.target]['path']+'%d_fitbg.png'%self.target, dpi = 300)
-        plt.show() 
+        if self.show_plots:
+            plt.show() 
+        plt.close()
+
+    def plot_mc(self, final_pars):
+
+        plt.figure(figsize = (12,8))
+
+        titles = [r'$\rm Smoothed \,\, \nu_{max} \,\, [\mu Hz]$', r'$\rm Smoothed \,\, A_{max} \,\, [ppm^{2} \mu Hz^{-1}]$', r'$\rm Gaussian \,\, \nu_{max} \,\, [\mu Hz]$', r'$\rm Gaussian \,\, A_{max} \,\, [ppm^{2} \mu Hz^{-1}]$', r'$\rm Gaussian \,\, FWHM \,\, [\mu Hz]$', r'$\rm \Delta\nu \,\, [\mu Hz]$']
+
+        for i in range(6):
+        
+            ax = plt.subplot(2,3,i+1)
+            ax.hist(final_pars[:,2*self.nlaws+(i+1)], color = 'cyan', histtype = 'step', lw = 2.5, facecolor = '0.75')
+            ax.set_title(titles[i])
+
+        plt.tight_layout()
+        if self.findex['save']:
+            plt.savefig(self.params[self.target]['path']+'%d_mc.png'%self.target, dpi = 300)
+        if self.show_plots:
+            plt.show()
         plt.close()
 
 ##########################################################################################
@@ -1039,6 +1076,8 @@ class PowerSpectrum:
         b = np.zeros((2,4)).tolist()
         b[1][0] = np.inf
         b[1][1] = 2.*np.max(y)
+        if not int(np.max(y)):
+            b[1][1] = np.inf
         if best_x is not None:
             b[0][2] = best_x - 0.001*best_x
             b[1][2] = best_x + 0.001*best_x
