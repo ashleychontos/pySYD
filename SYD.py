@@ -709,6 +709,7 @@ class PowerSpectrum:
                     self.zoom_lag = zoom_lag
                     self.zoom_auto = zoom_auto
                     self.gauss_2 = p_gauss2
+                    self.plot_fitbg()
 
                 i += 1
 
@@ -737,7 +738,6 @@ class PowerSpectrum:
                     print()
                 results.append([self.target,final_pars[0,2*self.nlaws+1],0.,final_pars[0,2*self.nlaws+2],0.,final_pars[0,2*self.nlaws+3],0.,final_pars[0,2*self.nlaws+4],0.,final_pars[0,2*self.nlaws+5],0.,final_pars[0,2*self.nlaws+6],0.])
 
-            self.plot_fitbg()
             self.write_bgfit(results[0])
 
     def load_data(self):
