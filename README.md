@@ -6,13 +6,6 @@ The pipeline works in two major parts:
 1) findex: automatically finds power excess due to solar-like oscillations using a frequency resolved collapsed autocorrelation function
 2) fitbg: perform a fit to the granulation background and measures the frequency of maximum power (nu_max), the large frequency separation (Delta_nu) and oscillation amplitude
 
-NOTE: If you would like to use multiprocessing, you must do the following:
-1) Add 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' to the TOP of your bashrc or zshrc file (or bash_profile - whichever you use).
-2) Close all terminal windows, reopen and it should work.
-
-If you do not do this and are running MacOSX Mojave/High Sierra/Catalina, you will see some version of the error for n threads:
-objc[4182]: +[__NSPlaceholderDictionary initialize] may have been in progress in another thread when fork() was called. We cannot safely call it or ignore it in the fork() child process. Crashing instead. Set a breakpoint on objc_initializeAfterForkError to debug.
-
 ## File Overview
 
 ### Files/
@@ -39,3 +32,13 @@ This will run the pipeline on the two stars specified in the todo.txt file (KIC1
 
 Note: for multiple targets in todo.txt, the text and plot outputs are suppressed. To override this default and see the output in real time, simply run this command instead:
 - python SYD.py -i
+
+## Multiprocessing
+
+If you would like to use multiprocessing for a large number of targets and are running MacOSX Mojave, High Sierra, or Catalina, you must do the following in order to make it work:
+1) Add 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' to the TOP of your bashrc or zshrc file (or bash_profile - whichever you use).
+2) Close all terminal windows, reopen and it should work.
+
+If you do not do this, you will see some version of the error for n threads:
+
+objc[4182]: +[__NSPlaceholderDictionary initialize] may have been in progress in another thread when fork() was called. We cannot safely call it or ignore it in the fork() child process. Crashing instead. Set a breakpoint on objc_initializeAfterForkError to debug.
