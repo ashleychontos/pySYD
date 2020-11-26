@@ -19,9 +19,9 @@ from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter, 
 
 
 
-def main(findex=True, fitbg=True, verbose=True, show_plots=True):
+def main(findex=True, fitbg=True, verbose=True, show_plots=True, ignore=False):
 
-    PS = PowerSpectrum(findex, fitbg, verbose, show_plots)
+    PS = PowerSpectrum(findex, fitbg, verbose, show_plots, ignore)
 
     for target in PS.params['todo']:
         PS.target = target
@@ -45,14 +45,14 @@ def main(findex=True, fitbg=True, verbose=True, show_plots=True):
 
 class PowerSpectrum:
     
-    def __init__(self, findex, fitbg, verbose, show_plots, correct = False):
+    def __init__(self, findex, fitbg, verbose, show_plots, ignore, correct=False):
         self.findex = {}
         self.findex['do'] = findex
         self.fitbg = {}
         self.fitbg['do'] = fitbg
         self.verbose = verbose
         self.show_plots = show_plots
-        self.correct = correct
+        self.ignore = ignore
         self.get_info()
         self.set_plot_params()
 
@@ -61,7 +61,7 @@ class PowerSpectrum:
         self.params = {}
         with open('Files/todo.txt', "r") as f:
             todo = np.array([int(float(line.strip().split()[0])) for line in f.readlines()])
-        if len(todo) > 1:
+        if len(todo) > 1 and not self.ignore:
             self.verbose = False
             self.show_plots = False
         self.params['path'] = 'Files/data/'
@@ -1159,10 +1159,15 @@ if __name__ == '__main__':
     parser.add_argument('-e', '-x', '--e', '--x', '-ex', '--ex', '-excess', '--excess', help = 'Use this to turn the find excess function off', dest = 'ex', action = 'store_false')
     parser.add_argument('-b', '--b', '-bg', '--bg', '-background', '--background', help = 'Use this to disable the background fitting process (although not highly recommended)', dest = 'bg', action = 'store_false')
     parser.add_argument('-v', '--v', '-verbose', '--verbose', help = 'Turn on verbose', dest = 'verbose', action = 'store_false')
+    parser.add_argument('-s', '--s', '-show', '--show', help = 'Show plots', dest = 'show', action = 'store_false')
+    parser.add_argument('-i', '--i', '-ignore', '--ignore', help = 'Ignore multiple target output supression', dest = 'ignore', action = 'store_true')
+
 
     args = parser.parse_args()
     ex = args.ex
     bg = args.bg
     verbose = args.verbose
+    show = args.show
+    ignore = args.ignore
 
-    main(findex = ex, fitbg = bg, verbose = verbose)
+    main(findex = ex, fitbg = bg, verbose = verbose, show_plots = show, ignore = ignore)
