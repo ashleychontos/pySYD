@@ -32,7 +32,7 @@ def main(findex=True, fitbg=True, verbose=True, show_plots=True, ignore=False):
             if PS.fitbg['do']:
                 PS.fit_background()
 
-    if verbose:
+    if PS.verbose:
         print('Combining results into single csv file.')
         print()
         subprocess.call(['python scrape_output.py'], shell=True)
@@ -673,14 +673,13 @@ class PowerSpectrum:
                 zoom_auto = auto[mask]
                 fit = gaussian(zoom_lag, p_gauss2[0], p_gauss2[1], p_gauss2[2], p_gauss2[3])
                 idx = self.return_max(fit, index=True)
-                final_pars[self.i,2*self.nlaws+6] = zoom_lag[idx]
 
                 if self.fitbg['force']:
                     self.dnu = self.fitbg['guess']
                 else:
                     self.dnu = zoom_lag[idx]
-
                 self.get_ridges()
+                final_pars[self.i,2*self.nlaws+6] = self.dnu
 
                 if self.i == 0:
                     self.pssm = pssm
@@ -856,7 +855,7 @@ class PowerSpectrum:
         ax4.plot(self.region_freq, self.region_pow, 'w-', zorder = 0)
         idx = self.return_max(self.region_pow, index=True)
         ax4.plot([self.region_freq[idx]], [self.region_pow[idx]], color = 'red', marker = 's', markersize = 7.5, zorder = 0)
-        ax4.axvline([self.region_freq[idx]], color = 'red', linestyle = '--', linewidth = 1.5, zorder = 0)
+        ax4.axvline([self.region_freq[idx]], color = 'white', linestyle = '--', linewidth = 1.5, zorder = 0)
         gaus = gaussian(self.region_freq, self.gauss_1[0], self.gauss_1[1], self.gauss_1[2], self.gauss_1[3])
         plot_min = 0.
         if min(self.region_pow) < plot_min:
@@ -885,7 +884,7 @@ class PowerSpectrum:
         ax5.set_title(r'$\rm Bg$-$\rm corrected \,\, PS$')
         ax5.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax5.set_ylabel(r'$\rm Power$')
-        ax5.set_xlim([min(self.freq), max(self.freq)])
+        ax5.set_xlim([self.numax-self.width/2., self.numax+self.width/2.])
         ax5.set_ylim([min(self.psd)-0.025*(max(self.psd)-min(self.psd)), max(self.psd)+0.1*(max(self.psd)-min(self.psd))])
 
         # ACF for determining dnu
@@ -928,7 +927,7 @@ class PowerSpectrum:
 #        ax8.imshow(self.ech, extent = self.extent, interpolation = 'kaiser', aspect = 'auto', origin = 'lower', cmap = 'jet')
         ax8.axvline([self.dnu], color = 'white', linestyle = '--', linewidth = 1., dashes=(5,5))
         ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
-        ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, \Delta\nu \,\, [\mu Hz]$')
+        ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$'%self.dnu)
         ax8.set_ylabel(r'$\rm \nu \,\, [\mu Hz]$')
         ax8.set_xlim([0., 2.*self.dnu])
         ax8.set_ylim([self.maxpower[0], self.maxpower[1]])
@@ -936,7 +935,7 @@ class PowerSpectrum:
         ax9 = fig.add_subplot(3,3,9)
         ax9.plot(self.xax, self.yax, color = 'white', linestyle = '-', linewidth = 0.75)
         ax9.set_title(r'$\rm Collapsed \,\, \grave{e}chelle \,\, diagram$')
-        ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, \Delta\nu \,\, [\mu Hz]$')
+        ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$'%self.dnu)
         ax9.set_ylabel(r'$\rm Collapsed \,\, power$')
         ax9.set_xlim([0., 2.*self.dnu])
         ax9.set_ylim([min(self.yax)-0.025*(max(self.yax)-min(self.yax)), max(self.yax)+0.05*(max(self.yax)-min(self.yax))])
@@ -975,6 +974,9 @@ class PowerSpectrum:
 
     def get_ridges(self, start=0.):
 
+        if self.i == 0:
+            self.get_best_dnu()
+
         ech, gridx, gridy, extent = self.echelle()
         N, M = ech.shape[0], ech.shape[1]
         ech_copy = np.array(list(ech.reshape(-1)))
@@ -989,7 +991,7 @@ class PowerSpectrum:
             if len(use) == 0:
                 continue
             xax[k] = np.median(modx[use])
-            yax[k] = np.mean(self.bg_corr[use])
+            yax[k] = np.sum(self.bg_corr[use])
             start += self.resolution
 
         xax = np.array(list(xax)+list(xax+self.dnu))
@@ -1008,6 +1010,31 @@ class PowerSpectrum:
             self.extent = extent
             self.xax = xax
             self.yax = yax
+
+    def get_best_dnu(self):
+
+        dnus = np.arange(self.dnu-0.05*self.dnu, self.dnu+0.05*self.dnu, 0.01)
+        difference = np.zeros_like(dnus)
+
+        for x, d in enumerate(dnus):
+            start = 0.
+            n = int(np.ceil(d/self.resolution))
+            xax = np.zeros(n)
+            yax = np.zeros(n)
+            modx = self.original_freq%d
+
+            for k in range(n):
+                use = np.where((modx >= start)&(modx < start+self.resolution))[0]
+                if len(use) == 0:
+                    continue
+                xax[k] = np.median(modx[use])
+                yax[k] = np.sum(self.bg_corr[use])
+                start += self.resolution
+
+            difference[x] = np.max(yax)-np.mean(yax)
+
+        idx = self.return_max(difference, index=True)
+        self.dnu = dnus[idx]
 
     def echelle(self, n_across=20, startx=0.):
 
