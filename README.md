@@ -19,7 +19,7 @@ The pipeline works in two major parts:
 ### Code
 - functions.py : models, distributions, ffts, smoothing functions are all in this file
 - SYD.py : initiates SYD through main
-- scrape_output.py : grabs each individual target's results and concatenates results into a single csv in Files/ for each submodulel (i.e. findex.csv and globalpars.csv)
+- scrape_output.py : grabs each individual target's results and concatenates results into a single csv in Files/ for each submodulel (i.e. findex.csv and globalpars.csv). This is automatically called at the end of the main SYD module.
 
 Documentation and code under construction.
 
@@ -27,8 +27,6 @@ Documentation and code under construction.
 
 To run example code clone/download the repository and then do:
 - python SYD.py
-To combine the results:
-- python scrape_output.py
 
 This will run the pipeline on the two stars specified in the todo.txt file (KIC1435467 and KIC2309595), one star at a time first using the findex module followed by the fitbg module. If you'd like to skip findex (e.g. useful for a handful of high S/N stars where you can visually estimate nu_max and thus specify it manually in star_info.csv), set findex = False in SYD.py. 
 
