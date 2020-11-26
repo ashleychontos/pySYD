@@ -30,5 +30,7 @@ To run example code clone/download the repository and then do:
 To combine the results:
 - python scrape_output.py
 
-This will run the pipeline on the two stars specified in the todo.txt file (KIC1435467 and KIC2309595), one star at a time first using the findex module followed by the fitbg module. If you'd like to skip findex (e.g. useful for a handful of high S/N stars where you can visually estimate nu_max and thus specify it manually in star_info.csv), set findex = False in SYD.py. Note: for multiple targets in todo.txt, the text and plot outputs are supressed. To ignore this, simply run this command instead:
+This will run the pipeline on the two stars specified in the todo.txt file (KIC1435467 and KIC2309595), one star at a time first using the findex module followed by the fitbg module. If you'd like to skip findex (e.g. useful for a handful of high S/N stars where you can visually estimate nu_max and thus specify it manually in star_info.csv), set findex = False in SYD.py. 
+
+Note: for multiple targets in todo.txt, the text and plot outputs are supressed. To override this default, simply run this command instead:
 - python SYD.py -i
