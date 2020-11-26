@@ -884,7 +884,7 @@ class PowerSpectrum:
         ax5.set_title(r'$\rm Bg$-$\rm corrected \,\, PS$')
         ax5.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax5.set_ylabel(r'$\rm Power$')
-        ax5.set_xlim([self.numax-self.width/2., self.numax+self.width/2.])
+        ax5.set_xlim([min(self.freq), max(self.freq)])
         ax5.set_ylim([min(self.psd)-0.025*(max(self.psd)-min(self.psd)), max(self.psd)+0.1*(max(self.psd)-min(self.psd))])
 
         # ACF for determining dnu
@@ -892,8 +892,6 @@ class PowerSpectrum:
         ax6.plot(self.lag, self.auto, 'w-', zorder = 0, linewidth = 1.)
         ax6.scatter(self.peaks_l, self.peaks_a, s = 30., edgecolor = 'r', marker = '^', facecolor = 'none', linewidths = 1.)
         ax6.axvline(self.best_lag, color = 'white', linestyle = '--', linewidth = 1.5, zorder = 2)
-#        ax6.scatter()
-#        ax6.axvline(peaks_l[idx0], color = 'red', linestyle = '--', linewidth = 1.5, zorder = 2)
         ax6.scatter(self.best_lag, self.best_auto, s = 45., edgecolor = 'lime', marker = 's', facecolor = 'none', linewidths = 1.)
         ax6.plot(self.zoom_lag, self.zoom_auto, 'r-', zorder = 5, linewidth = 1.)
         ax6.set_title(r'$\rm ACF \,\, for \,\, determining \,\, \Delta\nu$')
@@ -924,7 +922,6 @@ class PowerSpectrum:
         # echelle diagram
         ax8 = fig.add_subplot(3,3,8)
         ax8.imshow(self.ech, extent=self.extent, interpolation = 'bilinear', aspect = 'auto', origin = 'lower', cmap = 'jet', norm = LogNorm(vmin = np.nanmedian(self.ech_copy), vmax = np.nanmax(self.ech_copy)))
-#        ax8.imshow(self.ech, extent = self.extent, interpolation = 'kaiser', aspect = 'auto', origin = 'lower', cmap = 'jet')
         ax8.axvline([self.dnu], color = 'white', linestyle = '--', linewidth = 1., dashes=(5,5))
         ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
         ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$'%self.dnu)
