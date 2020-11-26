@@ -35,7 +35,7 @@ Note: for multiple targets in todo.txt, the text and plot outputs are suppressed
 
 ## Multiprocessing
 
-If you would like to use multiprocessing for a large number of targets and are running MacOSX Mojave, High Sierra, or Catalina, you must do the following in order to make it work:
+If you would like to use multiprocessing for a large number of targets and are running MacOSX Mojave, High Sierra, or Catalina, you must do the following before it will execute:
 1) Add 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES' to the TOP of your bashrc or zshrc file (or bash_profile - whichever you use).
 2) Close all terminal windows, reopen and it should work.
 
