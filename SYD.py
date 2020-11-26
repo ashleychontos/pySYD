@@ -1,6 +1,7 @@
 import os
 import glob
 import argparse
+import subprocess
 import matplotlib
 import numpy as np
 import pandas as pd
@@ -31,7 +32,10 @@ def main(findex=True, fitbg=True, verbose=True, show_plots=True, ignore=False):
             if PS.fitbg['do']:
                 PS.fit_background()
 
-#    PS.clean_files()
+    if verbose:
+        print('Combining results into single csv file.')
+        print()
+        subprocess.call(['python scrape_output.py'], shell=True)
 
     return
 
