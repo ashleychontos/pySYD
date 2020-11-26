@@ -206,11 +206,52 @@ class PowerSpectrum:
         variables = ['target', 'numax(smooth)', 'numax(smooth)_err', 'maxamp(smooth)', 'maxamp(smooth)_err', 'numax(gauss)', 'numax(gauss)_err', 'maxamp(gauss)', 'maxamp(gauss)_err', 'fwhm', 'fwhm_err', 'dnu', 'dnu_err']
         ascii.write(np.array(results),self.params[self.target]['path']+'%d_globalpars.csv'%self.target,names=variables,delimiter=',',overwrite=True)
 
-    def clean_files(self):
-        for target in self.params['todo']:
-            shutil.copy(self.params['path']+'%d/%d_LC.txt'%(target, target), self.params[target]['path']+'%d_LC.txt'%(target))
-            shutil.copy(self.params['path']+'%d/%d_PS.txt'%(target, target), self.params[target]['path']+'%d_PS.txt'%(target))
-#            os.rmdir(self.params['path']+'%d'%target)
+    def load_data(self):
+
+        # now done at beginning to make sure it only does this one per target
+        if glob.glob(self.params['path']+'%d_*'%self.target) != []:
+            # load light curve
+            if not os.path.exists(self.params['path']+'%d_LC.txt'%self.target):
+                if self.verbose:
+                    print('Error: %s%d_LC.txt not found'%(self.params['path'], self.target))
+                return False
+            else:
+                self.get_file(self.params['path']+'%d_LC.txt'%self.target)
+                self.time = np.copy(self.x)
+                self.flux = np.copy(self.y)
+                self.cadence = int(np.nanmedian(np.diff(self.time)*24.*60.*60.))
+                self.nyquist = 10**6/(2.*self.cadence)
+                if self.verbose:
+                    print('# LIGHT CURVE: %d lines of data read'%len(self.time))
+
+            # load power spectrum
+            if not os.path.exists(self.params['path']+'%d_PS.txt'%self.target):
+                if self.verbose:
+                    print('Error: %s%d_PS.txt not found'%(self.params['path'], self.target))
+                return False
+            else:
+                self.get_file(self.params['path']+'%d_PS.txt'%self.target)
+                self.frequency = np.copy(self.x)
+                self.power = np.copy(self.y)
+                if self.verbose:
+                    print('# POWER SPECTRUM: %d lines of data read'%len(self.frequency))
+            self.oversample = int(round((1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])))
+            self.resolution = (self.frequency[1]-self.frequency[0])*self.oversample
+            if self.verbose:
+                print('-------------------------------------------------')
+                print('Target: %d'%self.target)
+                if self.oversample == 1:
+                    print('critically sampled')
+                else:
+                    print('oversampled by a factor of %d'%self.oversample)
+                print('time series cadence: %d seconds'%self.cadence)
+                print('power spectrum resolution: %.6f muHz'%self.resolution)
+                print('-------------------------------------------------')
+
+            return True
+        else:
+            print('Error: data not found for target %d'%self.target)
+            return False
 
 ##########################################################################################
 #                                                                                        #
@@ -344,62 +385,6 @@ class PowerSpectrum:
 
             if self.findex['plot']:
                 self.plot_findex()
-
-
-    def plot_findex(self):
-
-        plt.figure(figsize = (12,8))
-        
-        ax1 = plt.subplot(1+self.nrows,3,1)
-        ax1.plot(self.time, self.flux, 'w-')
-        ax1.set_xlim([min(self.time), max(self.time)])
-        ax1.set_title(r'$\rm Time \,\, series$')
-        ax1.set_xlabel(r'$\rm Time \,\, [days]$')
-        ax1.set_ylabel(r'$\rm Flux$')
-  
-        ax2 = plt.subplot(1+self.nrows,3,2)
-        ax2.loglog(self.frequency[self.mask], self.power[self.mask], 'w-')
-        ax2.set_xlim([min(self.frequency[self.mask]), max(self.frequency[self.mask])])
-        ax2.set_ylim([min(self.power[self.mask]), max(self.power[self.mask])*1.25])
-        ax2.set_title(r'$\rm Crude \,\, background \,\, fit$')
-        ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
-        ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
-        if self.findex['binning'] is not None:
-            ax2.loglog(self.bin_freq, self.bin_pow, 'r-')
-        ax2.loglog(self.frequency[self.mask], self.interp_pow, color = 'lime', linestyle = '-', lw = 2.)
-
-        ax3 = plt.subplot(1+self.nrows,3,3)
-        ax3.plot(self.frequency[self.mask], self.bgcorr_pow, 'w-')
-        ax3.set_xlim([min(self.frequency[self.mask]), max(self.frequency[self.mask])])
-        ax3.set_ylim([0., max(self.bgcorr_pow)*1.25])
-        ax3.set_title(r'$\rm Background \,\, corrected \,\, PS$')
-        ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
-        ax3.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
-
-        for i in range(self.findex['n_trials']):
-            xran = max(self.fx[i])-min(self.fx[i])
-            ymax = max(self.cumsum[i])
-            if max(self.fy[i]) > ymax:
-                ymax = max(self.fy[i])
-            yran = np.absolute(ymax)
-            ax = plt.subplot(1+self.nrows,3,4+i)
-            ax.plot(self.md[i], self.cumsum[i], 'w-')
-            ax.axvline(self.fit_numax[i], linestyle = 'dotted', color = 'r', linewidth = 0.75)
-            ax.set_title(r'$\rm Collapsed \,\, ACF \,\, [trial \,\, %d]$'%(i+1))
-            ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
-            ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
-            ax.plot(self.fx[i], self.fy[i], color = 'lime', linestyle = '-', linewidth = 1.5)
-            ax.axvline(self.fit_gauss[i], color = 'lime', linestyle = '--', linewidth = 0.75)
-            ax.set_xlim([min(self.fx[i]), max(self.fx[i])])
-            ax.set_ylim([-0.05, ymax+0.15*yran])
-            ax.annotate(r'$\rm SNR = %3.2f$'%self.fit_snr[i], xy = (min(self.fx[i])+0.05*xran, ymax+0.025*yran), fontsize = 18)
-
-        plt.tight_layout()
-        if self.findex['save']:
-            plt.savefig(self.params[self.target]['path']+'%d_findex.png'%self.target, dpi = 300)
-        if self.show_plots:
-            plt.show()
-        plt.close()
 
 
 ##########################################################################################
@@ -740,132 +725,70 @@ class PowerSpectrum:
 
             self.write_bgfit(results[0])
 
-    def load_data(self):
+##########################################################################################
+#                                                                                        #
+#                                    PLOTTING ROUTINES                                   #
+#                                                                                        #
+##########################################################################################
 
-        if glob.glob(self.params['path']+'%d_*'%self.target) != []:
-            # load light curve
-            if not os.path.exists(self.params['path']+'%d_LC.txt'%self.target):
-                if self.verbose:
-                    print('Error: %s%d_LC.txt not found'%(self.params['path'], self.target))
-                return False
-            else:
-                self.get_file(self.params['path']+'%d_LC.txt'%self.target)
-                self.time = np.copy(self.x)
-                self.flux = np.copy(self.y)
-                self.cadence = int(np.nanmedian(np.diff(self.time)*24.*60.*60.))
-                self.nyquist = 10**6/(2.*self.cadence)
-                if self.verbose:
-                    print('# LIGHT CURVE: %d lines of data read'%len(self.time))
+    def plot_findex(self):
 
-            # load power spectrum
-            if not os.path.exists(self.params['path']+'%d_PS.txt'%self.target):
-                if self.verbose:
-                    print('Error: %s%d_PS.txt not found'%(self.params['path'], self.target))
-                return False
-            else:
-                self.get_file(self.params['path']+'%d_PS.txt'%self.target)
-                self.frequency = np.copy(self.x)
-                self.power = np.copy(self.y)
-                if self.verbose:
-                    print('# POWER SPECTRUM: %d lines of data read'%len(self.frequency))
-            self.oversample = int(round((1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])))
-            self.resolution = (self.frequency[1]-self.frequency[0])*self.oversample
-            if self.verbose:
-                print('-------------------------------------------------')
-                print('Target: %d'%self.target)
-                if self.oversample == 1:
-                    print('critically sampled')
-                else:
-                    print('oversampled by a factor of %d'%self.oversample)
-                print('time series cadence: %d seconds'%self.cadence)
-                print('power spectrum resolution: %.6f muHz'%self.resolution)
-                print('-------------------------------------------------')
+        plt.figure(figsize = (12,8))
+       
+        # time series data 
+        ax1 = plt.subplot(1+self.nrows,3,1)
+        ax1.plot(self.time, self.flux, 'w-')
+        ax1.set_xlim([min(self.time), max(self.time)])
+        ax1.set_title(r'$\rm Time \,\, series$')
+        ax1.set_xlabel(r'$\rm Time \,\, [days]$')
+        ax1.set_ylabel(r'$\rm Flux$')
 
-            return True
-        else:
-            print('Error: data not found for target %d'%self.target)
-            return False
+        # log-log power spectrum with crude background fit
+        ax2 = plt.subplot(1+self.nrows,3,2)
+        ax2.loglog(self.frequency[self.mask], self.power[self.mask], 'w-')
+        ax2.set_xlim([min(self.frequency[self.mask]), max(self.frequency[self.mask])])
+        ax2.set_ylim([min(self.power[self.mask]), max(self.power[self.mask])*1.25])
+        ax2.set_title(r'$\rm Crude \,\, background \,\, fit$')
+        ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
+        ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
+        if self.findex['binning'] is not None:
+            ax2.loglog(self.bin_freq, self.bin_pow, 'r-')
+        ax2.loglog(self.frequency[self.mask], self.interp_pow, color = 'lime', linestyle = '-', lw = 2.)
 
-    def get_ridges(self, start=0.):
+        # crude background-corrected power spectrum
+        ax3 = plt.subplot(1+self.nrows,3,3)
+        ax3.plot(self.frequency[self.mask], self.bgcorr_pow, 'w-')
+        ax3.set_xlim([min(self.frequency[self.mask]), max(self.frequency[self.mask])])
+        ax3.set_ylim([0., max(self.bgcorr_pow)*1.25])
+        ax3.set_title(r'$\rm Background \,\, corrected \,\, PS$')
+        ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
+        ax3.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
 
-        ech, gridx, gridy, extent = self.echelle()
-        N, M = ech.shape[0], ech.shape[1]
-        ech_copy = np.array(list(ech.reshape(-1)))
+        # ACF trials to determine numax
+        for i in range(self.findex['n_trials']):
+            xran = max(self.fx[i])-min(self.fx[i])
+            ymax = max(self.cumsum[i])
+            if max(self.fy[i]) > ymax:
+                ymax = max(self.fy[i])
+            yran = np.absolute(ymax)
+            ax = plt.subplot(1+self.nrows,3,4+i)
+            ax.plot(self.md[i], self.cumsum[i], 'w-')
+            ax.axvline(self.fit_numax[i], linestyle = 'dotted', color = 'r', linewidth = 0.75)
+            ax.set_title(r'$\rm Collapsed \,\, ACF \,\, [trial \,\, %d]$'%(i+1))
+            ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
+            ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
+            ax.plot(self.fx[i], self.fy[i], color = 'lime', linestyle = '-', linewidth = 1.5)
+            ax.axvline(self.fit_gauss[i], color = 'lime', linestyle = '--', linewidth = 0.75)
+            ax.set_xlim([min(self.fx[i]), max(self.fx[i])])
+            ax.set_ylim([-0.05, ymax+0.15*yran])
+            ax.annotate(r'$\rm SNR = %3.2f$'%self.fit_snr[i], xy = (min(self.fx[i])+0.05*xran, ymax+0.025*yran), fontsize = 18)
 
-        n = int(np.ceil(self.dnu/self.resolution))
-        xax = np.zeros(n)
-        yax = np.zeros(n)
-        modx = self.original_freq%self.dnu
-
-        for k in range(n):
-            use = np.where((modx >= start)&(modx < start+self.resolution))[0]
-            if len(use) == 0:
-                continue
-            xax[k] = np.median(modx[use])
-            yax[k] = np.mean(self.bg_corr[use])
-            start += self.resolution
-
-        xax = np.array(list(xax)+list(xax+self.dnu))
-        yax = np.array(list(yax)+list(yax))-min(yax)
-
-        if self.fitbg['clip']:
-            if self.fitbg['clip_value'] != 0.:
-                cut = self.fitbg['clip_value']
-            else:
-                cut = np.nanmax(ech_copy)-(np.nanmax(ech_copy)-np.nanmedian(ech_copy))/2.
-            ech_copy[ech_copy > cut] = cut
-
-        if self.i == 0:
-            self.ech_copy = ech_copy
-            self.ech = ech_copy.reshape((N,M))
-            self.extent = extent
-            self.xax = xax
-            self.yax = yax
-
-    def echelle(self, n_across=20, startx=0.):
-
-        if self.fitbg['ech_smooth']:
-            boxkernel = Box1DKernel(int(np.ceil(self.fitbg['ech_smooth']/self.resolution)))
-            smooth_y = convolve(self.bg_corr, boxkernel)
-
-        nox = n_across
-        noy = int(np.ceil((max(self.original_freq)-min(self.original_freq))/self.dnu))
-
-        if nox > 2 and noy > 5:
-            xax = np.arange(0., self.dnu+(self.dnu/n_across)/2., self.dnu/n_across)
-            yax = np.arange(min(self.original_freq), max(self.original_freq), self.dnu)
-
-            arr = np.zeros((len(xax),len(yax)))
-            gridx = np.zeros(len(xax))
-            gridy = np.zeros(len(yax))
-
-            modx = self.original_freq%self.dnu
-            starty = min(self.original_freq)
-
-            for ii in range(len(gridx)):
-                for jj in range(len(gridy)):
-                    use = np.where((modx >= startx)&(modx < startx+self.dnu/n_across)&(self.original_freq >= starty)&(self.original_freq < starty+self.dnu))[0]
-                    if len(use) == 0:
-                        arr[ii,jj] = np.nan
-                    else:
-                        arr[ii,jj] = np.sum(self.bg_corr[use])
-                    gridy[jj] = starty + self.dnu/2.
-                    starty += self.dnu
-                gridx[ii] = startx + self.dnu/n_across/2.
-                starty = min(self.original_freq)
-                startx += self.dnu/n_across
-            smoothed = arr
-            dim = smoothed.shape
-
-            smoothed_2 = np.zeros((2*dim[0],dim[1]))
-            smoothed_2[0:dim[0],:] = smoothed
-            smoothed_2[dim[0]:(2*dim[0]),:] = smoothed
-            smoothed = np.swapaxes(smoothed_2, 0, 1)
-            extent = [min(gridx)-self.dnu/n_across/2., 2*max(gridx)+self.dnu/n_across/2., min(gridy)-self.dnu/2., max(gridy)+self.dnu/2.]
-        
-            return smoothed, np.array(list(gridx)+list(gridx+self.dnu)), gridy, extent
-
-#def confirm_excess(frequency, power, numax, target, params):
+        plt.tight_layout()
+        if self.findex['save']:
+            plt.savefig(self.params[self.target]['path']+'%d_findex.png'%self.target, dpi = 300)
+        if self.show_plots:
+            plt.show()
+        plt.close()
 
     def plot_fitbg(self):
 
@@ -1046,27 +969,84 @@ class PowerSpectrum:
 #                                                                                        #
 ##########################################################################################
 
-    def smooth_gauss(self, array):
+    def get_ridges(self, start=0.):
 
-        fwhm = self.sm_par*self.params[self.target]['dnu']/self.resolution
-        sigma = 2.*fwhm/np.sqrt(8.*np.log(2.))
+        ech, gridx, gridy, extent = self.echelle()
+        N, M = ech.shape[0], ech.shape[1]
+        ech_copy = np.array(list(ech.reshape(-1)))
 
-        n = 2*len(array)
-        N = np.arange(1,n+1,1)
-        total = np.sum((1./(sigma*np.sqrt(2.*np.pi)))*np.exp(-0.5*(((N-len(array))/sigma)**2.)))
-        weights = ((1./(sigma*np.sqrt(2.*np.pi)))*np.exp(-0.5*(((N-len(array))/sigma)**2.)))/total
+        n = int(np.ceil(self.dnu/self.resolution))
+        xax = np.zeros(n)
+        yax = np.zeros(n)
+        modx = self.original_freq%self.dnu
 
-        forward = array[:]
-        reverse = array[::-1]
-        final = np.array(list(reverse[int(np.ceil(n/4)):])+list(forward[:])+list(reverse[:int(np.ceil(n/4))]))
-        fft = np.fft.irfft(np.fft.rfft(final)*np.fft.rfft(weights))
-        dq = deque(fft)
-        dq.rotate(int(n/2))
-        smoothed = np.array(dq)
-        smoothed_array = smoothed[int(n/4):int(3*n/4)]
-        if self.verbose:
-            print('gaussian kernel using ffts: sigma = %.2f muHz'%(sigma*self.resolution))
-        return smoothed_array
+        for k in range(n):
+            use = np.where((modx >= start)&(modx < start+self.resolution))[0]
+            if len(use) == 0:
+                continue
+            xax[k] = np.median(modx[use])
+            yax[k] = np.mean(self.bg_corr[use])
+            start += self.resolution
+
+        xax = np.array(list(xax)+list(xax+self.dnu))
+        yax = np.array(list(yax)+list(yax))-min(yax)
+
+        if self.fitbg['clip']:
+            if self.fitbg['clip_value'] != 0.:
+                cut = self.fitbg['clip_value']
+            else:
+                cut = np.nanmax(ech_copy)-(np.nanmax(ech_copy)-np.nanmedian(ech_copy))/2.
+            ech_copy[ech_copy > cut] = cut
+
+        if self.i == 0:
+            self.ech_copy = ech_copy
+            self.ech = ech_copy.reshape((N,M))
+            self.extent = extent
+            self.xax = xax
+            self.yax = yax
+
+    def echelle(self, n_across=20, startx=0.):
+
+        if self.fitbg['ech_smooth']:
+            boxkernel = Box1DKernel(int(np.ceil(self.fitbg['ech_smooth']/self.resolution)))
+            smooth_y = convolve(self.bg_corr, boxkernel)
+
+        nox = n_across
+        noy = int(np.ceil((max(self.original_freq)-min(self.original_freq))/self.dnu))
+
+        if nox > 2 and noy > 5:
+            xax = np.arange(0., self.dnu+(self.dnu/n_across)/2., self.dnu/n_across)
+            yax = np.arange(min(self.original_freq), max(self.original_freq), self.dnu)
+
+            arr = np.zeros((len(xax),len(yax)))
+            gridx = np.zeros(len(xax))
+            gridy = np.zeros(len(yax))
+
+            modx = self.original_freq%self.dnu
+            starty = min(self.original_freq)
+
+            for ii in range(len(gridx)):
+                for jj in range(len(gridy)):
+                    use = np.where((modx >= startx)&(modx < startx+self.dnu/n_across)&(self.original_freq >= starty)&(self.original_freq < starty+self.dnu))[0]
+                    if len(use) == 0:
+                        arr[ii,jj] = np.nan
+                    else:
+                        arr[ii,jj] = np.sum(self.bg_corr[use])
+                    gridy[jj] = starty + self.dnu/2.
+                    starty += self.dnu
+                gridx[ii] = startx + self.dnu/n_across/2.
+                starty = min(self.original_freq)
+                startx += self.dnu/n_across
+            smoothed = arr
+            dim = smoothed.shape
+
+            smoothed_2 = np.zeros((2*dim[0],dim[1]))
+            smoothed_2[0:dim[0],:] = smoothed
+            smoothed_2[dim[0]:(2*dim[0]),:] = smoothed
+            smoothed = np.swapaxes(smoothed_2, 0, 1)
+            extent = [min(gridx)-self.dnu/n_across/2., 2*max(gridx)+self.dnu/n_across/2., min(gridy)-self.dnu/2., max(gridy)+self.dnu/2.]
+        
+            return smoothed, np.array(list(gridx)+list(gridx+self.dnu)), gridy, extent
 
     def gaussian_bounds(self, x, y, best_x=None, sigma=None):
 
