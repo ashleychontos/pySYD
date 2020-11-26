@@ -28,9 +28,9 @@ def main(findex=True, fitbg=True, verbose=True, show_plots=True, ignore=False, p
         PS.ignore = False
         if nthreads is None:
             nthreads = mp.cpu_count()-1
-        print()
-        print('Multiprocessing %d targets using %d threads'%(len(PS.params['todo']), nthreads))
-        print()
+#        print()
+#        print('Multiprocessing %d targets using %d threads'%(len(PS.params['todo']), nthreads))
+#        print()
         tasks = []
         for n in range(nthreads):
             if list(PS.params['todo'][n::nthreads]) != []:
