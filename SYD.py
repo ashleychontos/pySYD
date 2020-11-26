@@ -6,6 +6,7 @@ import matplotlib
 import numpy as np
 import pandas as pd
 from functions import *
+import multiprocessing as mp
 from astropy.io import ascii
 from scipy import interpolate
 import matplotlib.pyplot as plt
@@ -19,23 +20,31 @@ from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter, 
 
 
 
-
-def main(findex=True, fitbg=True, verbose=True, show_plots=True, ignore=False):
+def main(findex=True, fitbg=True, verbose=True, show_plots=True, ignore=False, parallel=True, nthreads=None):
 
     PS = PowerSpectrum(findex, fitbg, verbose, show_plots, ignore)
 
-    for target in PS.params['todo']:
-        PS.target = target
-        if PS.load_data():
-            if PS.findex['do']:
-                PS.find_excess()
-            if PS.fitbg['do']:
-                PS.fit_background()
+    if parallel:
+        PS.ignore = False
+        if nthreads is None:
+            nthreads = mp.cpu_count()-1
+        print()
+        print('Multiprocessing %d targets using %d threads'%(len(PS.params['todo']), nthreads))
+        print()
+        tasks = []
+        for n in range(nthreads):
+            if list(PS.params['todo'][n::nthreads]) != []:
+                tasks.append(list(PS.params['todo'][n::nthreads]))
+        with mp.Pool(processes=len(tasks)) as pool:
+            pool.map(PS.assign_tasks, tasks)
+
+    else:
+        PS.assign_tasks(PS.params['todo'])
 
     if PS.verbose:
         print('Combining results into single csv file.')
         print()
-        subprocess.call(['python scrape_output.py'], shell=True)
+    subprocess.call(['python scrape_output.py'], shell=True)
 
     return
 
@@ -49,7 +58,7 @@ def main(findex=True, fitbg=True, verbose=True, show_plots=True, ignore=False):
 
 class PowerSpectrum:
     
-    def __init__(self, findex, fitbg, verbose, show_plots, ignore, correct=False):
+    def __init__(self, findex, fitbg, verbose, show_plots, ignore):
         self.findex = {}
         self.findex['do'] = findex
         self.fitbg = {}
@@ -106,6 +115,16 @@ class PowerSpectrum:
                              'ytick.minor.width':1.25,
                              'ytick.direction': 'inout',
     })
+
+    def assign_tasks(self, targets):
+
+        for target in targets:
+            self.target = target
+            if self.load_data():
+                if self.findex['do']:
+                    self.find_excess()
+                if self.fitbg['do']:
+                    self.fit_background()
 
 ##########################################################################################
 #                                                                                        #
