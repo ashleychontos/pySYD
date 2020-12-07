@@ -736,12 +736,12 @@ class PowerSpectrum:
 
             else:
                 if self.verbose:
-                    print('numax (smoothed): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+1]))
-                    print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+2]))
-                    print('numax (gaussian): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+3]))
-                    print('maxamp (gaussian): %.2f +/- %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+4]))
-                    print('fwhm (gaussian): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+5]))
-                    print('dnu: %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+6]))
+                    print('numax (smoothed): %.2f muHz'%(final_pars[0,2*self.nlaws+1]))
+                    print('maxamp (smoothed): %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+2]))
+                    print('numax (gaussian): %.2f muHz'%(final_pars[0,2*self.nlaws+3]))
+                    print('maxamp (gaussian): %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+4]))
+                    print('fwhm (gaussian): %.2f muHz'%(final_pars[0,2*self.nlaws+5]))
+                    print('dnu: %.2f muHz'%(final_pars[0,2*self.nlaws+6]))
                     print('-------------------------------------------------')
                     print()
                 results.append([self.target,final_pars[0,2*self.nlaws+1],0.,final_pars[0,2*self.nlaws+2],0.,final_pars[0,2*self.nlaws+3],0.,final_pars[0,2*self.nlaws+4],0.,final_pars[0,2*self.nlaws+5],0.,final_pars[0,2*self.nlaws+6],0.])
