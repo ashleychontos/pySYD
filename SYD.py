@@ -504,7 +504,7 @@ class PowerSpectrum:
                                 pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err)
                             except RuntimeError:
                                 paras.append([])
-                                reduced_chi2.append(10**6)
+                                reduced_chi2.append(np.inf)
                             else:
                                 paras.append(pp)
                                 chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
@@ -520,7 +520,7 @@ class PowerSpectrum:
                                 pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[t//2])
                             except RuntimeError:
                                 paras.append([])
-                                reduced_chi2.append(10**6)
+                                reduced_chi2.append(np.inf)
                             else:
                                 paras.append(pp)
                                 chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
