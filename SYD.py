@@ -86,9 +86,9 @@ class PowerSpectrum:
             self.params[target]['path'] = '/'.join(self.params['path'].split('/')[:-2])+'/results/%d/'%target
 
         if self.findex['do']:
-            self.read_excess_params('Files/params_findex.txt')
+            self.get_excess_params()
         if self.fitbg['do']:
-            self.read_bg_params('Files/params_fitbg.txt')
+            self.get_bg_params()
 
         self.get_star_info(star_info)
 
@@ -132,29 +132,10 @@ class PowerSpectrum:
 #                                                                                        #
 ##########################################################################################
 
-    def read_excess_params(self, findex_file):
+    def get_excess_params(self, save=True, box=1., step=0.25, binning=0.005, smooth_width=2.5, n_trials=3):
 
-        pars = ['box', 'step', 'lower_lag', 'upper_lag', 'binning', 'mode', 'smooth_width', 'check', 'lower_limit', 'upper_limit', 'plot', 'long_cadence', 'check_step', 'n_trials', 'save']
-        dtype = [False, False, False, False, False, True, False, True, False, False, True, True, True, True, True]
-        vals = []
-
-        i = 0
-        with open(findex_file, "r") as f:
-            for line in f:
-                if not line.startswith("#"):
-                    val = line.strip().split()[0]
-                    if val == 'None':
-                        vals.append(None)
-                    else:
-                        if dtype[i]:
-                            vals.append(int(float(line.strip().split()[0])))
-                        else:
-                            vals.append(float(line.strip().split()[0]))
-                    i += 1
-
-        if self.verbose:
-            print()
-            print('# FIND EXCESS PARAMS: %d valid lines read'%i)
+        pars = ['save', 'box', 'step', 'binning', 'smooth_width', 'n_trials']
+        vals = [save, box, step, binning, smooth_width, n_trials]
 
         self.findex.update(dict(zip(pars, vals)))
         if self.findex['save']:
@@ -162,29 +143,12 @@ class PowerSpectrum:
                 if not os.path.exists(self.params[target]['path']):
                     os.makedirs(self.params[target]['path'])
 
-    def read_bg_params(self, fitbg_file):
+    def get_bg_params(self, save=True, num_mc_iter=1, n_laws=2, box_filter=1.0, ind_width=50, n_rms=20, n_peaks=5,
+                      smooth_ps=2.5, force=False, guess=140.24, clip=True, ech_smooth=False, ech_filter=2.5,
+                      lower_numax=None, upper_numax=None):
 
-        pars = ['lower_limit', 'upper_limit', 'num_mc_iter', 'n_laws', 'lower_noise', 'upper_noise', 'fix_wn', 'box_filter', 'ind_width', 'n_rms', 'lower_numax', 'upper_numax', 'lower_lag', 'upper_lag', 'n_peaks', 'smooth_ps', 'plot', 'force', 'guess', 'save', 'clip', 'clip_value', 'ech_smooth', 'ech_filter']
-        dtype = [False, False, True, True, False, False, True, False, True, True, False, False, False, False, True, False, True, True, False, True, True, False, True, False]
-        vals = []
-
-        i = 0
-        with open(fitbg_file, "r") as f:
-            for line in f:
-                if not line.startswith("#"):
-                    val = line.strip().split()[0]
-                    if val == 'None':
-                        vals.append(None)
-                    else:
-                        if dtype[i]:
-                            vals.append(int(float(line.strip().split()[0])))
-                        else:
-                            vals.append(float(line.strip().split()[0]))
-                    i += 1
-
-        if self.verbose:
-            print('# FIT BACKGROUND PARAMS: %d valid lines read'%i)
-            print()
+        pars = ['save', 'num_mc_iter', 'n_laws', 'box_filter', 'ind_width', 'n_rms', 'n_peaks', 'smooth_ps', 'lower_numax', 'upper_numax', 'force', 'guess', 'clip', 'ech_smooth', 'ech_filter']
+        dtype = [save, num_mc_iter, n_laws, box_filter, ind_width, n_rms, n_peaks, smooth_ps, lower_numax, upper_numax, force, guess, clip, ech_smooth, ech_filter]
 
         self.fitbg.update(dict(zip(pars, vals)))
         self.fitbg['functions'] = {1:harvey_one, 2:harvey_two, 3:harvey_three}
@@ -291,20 +255,6 @@ class PowerSpectrum:
 
     def find_excess(self):
 
-        if self.findex['lower_limit'] is not None:
-            if self.findex['upper_limit'] is not None:
-                mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.findex['lower_limit'], self.findex['upper_limit']))
-            else:
-                mask = np.ma.getmask(np.ma.masked_greater_equal(self.frequency, self.findex['lower_limit']))
-        else:
-            if self.findex['upper_limit'] is not None:
-                mask = np.ma.getmask(np.ma.masked_less_equal(self.frequency, self.findex['upper_limit']))
-            else:
-                mask = np.ones_like(self.frequency)
-        self.mask = mask
-        frequency = self.frequency[mask]
-        power = self.power[mask]
-
         N = int(self.findex['n_trials']+3)
         if N%3 == 0:
             self.nrows = (N-1)//3
@@ -312,7 +262,7 @@ class PowerSpectrum:
             self.nrows = N//3
 
         if self.findex['binning'] is not None:
-            bf, bp = bin_data(frequency, power, self.findex['binning'])
+            bf, bp = bin_data(self.frequency, self.power, self.findex['binning'])
             self.bin_freq = np.copy(bf)
             self.bin_pow = np.copy(bp)
             if self.verbose:
@@ -437,22 +387,7 @@ class PowerSpectrum:
     def fit_background(self):
 
         if self.check():
-            print(self.target)
             results = []
-            # mask out any unwanted frequencies
-            if self.fitbg['lower_limit'] is not None:
-                if self.fitbg['upper_limit'] is not None:
-                    self.mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.fitbg['lower_limit'], self.fitbg['upper_limit']))
-                else:
-                    self.mask = np.ma.getmask(np.ma.masked_greater_equal(self.frequency, self.fitbg['lower_limit']))
-            else:
-                if self.fitbg['upper_limit'] is not None:
-                    self.mask = np.ma.getmask(np.ma.masked_less_equal(self.frequency, self.fitbg['upper_limit']))
-                else:
-                    self.mask = np.ones_like(self.frequency)
-            self.frequency = list(self.frequency[self.mask])
-            self.power = list(self.power[self.mask])
-
             # create independent frequency points (need to if oversampled)
             if self.oversample != 1:
                 self.original_freq = np.array(self.frequency[self.oversample-1::self.oversample])
@@ -488,10 +423,7 @@ class PowerSpectrum:
                     bin_freq, bin_pow, bin_err = mean_smooth_ind(self.original_freq, random_pow, self.fitbg['ind_width'])
 
                 # estimate white noise level
-                if self.fitbg['upper_noise'] is not None:
-                    self.noise = np.mean(random_pow[(self.original_freq>self.fitbg['lower_noise'])&(self.original_freq<self.fitbg['upper_noise'])])
-                else:
-                    self.noise = np.mean(random_pow[(self.original_freq>(max(self.original_freq)-0.1*max(self.original_freq)))])
+                self.get_white_noise(random_pow)
                 pars = np.zeros((self.nlaws*2+1))
                 pars[2*self.nlaws] = self.noise
 
@@ -568,21 +500,29 @@ class PowerSpectrum:
                                 print('%d: %s harvey model w/ white noise free parameter'%(t+1, dict1[t]))
                             delta = 2*(self.nlaws-(t//2+1))
                             pams = list(pars[:(-delta-1)])
-                            pams.append(pars[-1])
-                            pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err)
-                            paras.append(pp)
-                            chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
-                            reduced_chi2.append(chi/(len(outer_x)-len(pams)))
+                            try:
+                                pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err)
+                            except RuntimeError:
+                                pass
+                            else:
+                                pams.append(pars[-1])
+                                paras.append(pp)
+                                chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
+                                reduced_chi2.append(chi/(len(outer_x)-len(pams)))
                         else:
                             if self.verbose:
                                 print('%d: %s harvey model w/ white noise fixed'%(t+1, dict1[t]))
                             delta = 2*(self.nlaws-(t//2+1))
                             pams = list(pars[:(-delta-1)])
-                            pams.append(pars[-1])
-                            pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[t//2])
-                            paras.append(pp)
-                            chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
-                            reduced_chi2.append(chi/(len(outer_x)-len(pams)+1))
+                            try:
+                                pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[t//2])
+                            except RuntimeError:
+                                pass
+                            else:
+                                pams.append(pars[-1])
+                                paras.append(pp)
+                                chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
+                                reduced_chi2.append(chi/(len(outer_x)-len(pams)+1))
 
                     self.model = reduced_chi2.index(min(reduced_chi2))+1
                     self.nlaws = ((self.model-1)//2)+1
@@ -747,6 +687,17 @@ class PowerSpectrum:
                 results.append([self.target,final_pars[0,2*self.nlaws+1],0.,final_pars[0,2*self.nlaws+2],0.,final_pars[0,2*self.nlaws+3],0.,final_pars[0,2*self.nlaws+4],0.,final_pars[0,2*self.nlaws+5],0.,final_pars[0,2*self.nlaws+6],0.])
 
             self.write_bgfit(results[0])
+
+    def get_white_noise(self, random_pow):
+
+        if self.nyquist < 400.:
+            self.noise = np.mean(random_pow[(self.original_freq>200.)&(self.original_freq<270.)])
+        elif self.nyquist > 400. and self.nyquist < 5000.:
+            self.noise = np.mean(random_pow[(self.original_freq>4000.)&(self.original_freq<4167.)])
+        elif self.nyquist > 5000. and self.nyquist < 9000.:
+            self.noise = np.mean(random_pow[(self.original_freq>8000.)&(self.original_freq<8200.)])
+        else:
+            self.noise = np.mean(random_pow[(self.original_freq>(max(self.original_freq)-0.1*max(self.original_freq)))])
 
 ##########################################################################################
 #                                                                                        #

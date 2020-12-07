@@ -1,12 +1,12 @@
 # general parameters
-100.                             # low frequency limit [float or None] 'lower_limit'
-4167.		                          # upper frequency limit [float or None] 'upper_limit'
+None                             # low frequency limit [float or None] 'lower_limit'
+None 		                          # upper frequency limit [float or None] 'upper_limit'
 1 		                             # number of Monte-Carlo iterations (set 1 for no uncertainties) [int] 'num_mc_iter'
 # background fit
 2		                              # number of Harvey components in background fit [int] 'n_laws'
 4000.		                          # lower limit for noise estimate [float] 'lower_noise'
 4167.		                          # upper limit for noise estimate [float] 'upper_noise'
-1                                # fix white noise  [float] 'fix_wn'
+0                                # fix white noise  [float] 'fix_wn'
 1.0                              # smoothing of PS for plot (in muHz) [float] 'box_filter'
 50 	    	                        # bin size for independent smoothing [int] 'ind_width'
 20                               # number of points for rms component calculation [even int] 'n_rms'
