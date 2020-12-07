@@ -329,8 +329,8 @@ class PowerSpectrum:
                 try:
                     best_vars, covar = curve_fit(gaussian, self.md[i], self.cumsum[i], p0 = [np.mean(self.cumsum[i]), 1.0-np.mean(self.cumsum[i]), self.md[i][idx], self.params['width_sun']*(self.md[i][idx]/self.params['numax_sun'])])
                 except:
-                    pass
-                finally:
+                    results.append([self.target, np.nan, np.nan, -np.inf])
+                else:
                     self.fx.append(np.linspace(min(md), max(md), 10000))
                     self.fy.append(gaussian(self.fx[i], best_vars[0], best_vars[1], best_vars[2], best_vars[3]))
                     snr = max(self.fy[i])/best_vars[0]
