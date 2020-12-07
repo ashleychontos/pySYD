@@ -503,12 +503,14 @@ class PowerSpectrum:
                             try:
                                 pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err)
                             except RuntimeError:
-                                pass
+                                paras.append([])
+                                reduced_chi2.append(10**6)
                             else:
-                                pams.append(pars[-1])
                                 paras.append(pp)
                                 chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
                                 reduced_chi2.append(chi/(len(outer_x)-len(pams)))
+                            finally:
+                                pams.append(pars[-1])
                         else:
                             if self.verbose:
                                 print('%d: %s harvey model w/ white noise fixed'%(t+1, dict1[t]))
@@ -517,12 +519,14 @@ class PowerSpectrum:
                             try:
                                 pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[t//2])
                             except RuntimeError:
-                                pass
+                                paras.append([])
+                                reduced_chi2.append(10**6)
                             else:
-                                pams.append(pars[-1])
                                 paras.append(pp)
                                 chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
                                 reduced_chi2.append(chi/(len(outer_x)-len(pams)+1))
+                            finally:
+                                pams.append(pars[-1])
 
                     self.model = reduced_chi2.index(min(reduced_chi2))+1
                     self.nlaws = ((self.model-1)//2)+1
