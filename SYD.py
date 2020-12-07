@@ -20,7 +20,7 @@ from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter, 
 
 
 
-def main(findex=True, fitbg=True, verbose=True, show_plots=True, ignore=False, parallel=True, nthreads=None):
+def main(findex=True, fitbg=True, verbose=True, show_plots=True, ignore=True, parallel=False, nthreads=None):
 
     PS = PowerSpectrum(findex, fitbg, verbose, show_plots, ignore)
 
@@ -437,7 +437,7 @@ class PowerSpectrum:
     def fit_background(self):
 
         if self.check():
-
+            print(self.target)
             results = []
             # mask out any unwanted frequencies
             if self.fitbg['lower_limit'] is not None:
@@ -590,6 +590,7 @@ class PowerSpectrum:
                         print('Based on reduced chi-squared statistic: model %d'%self.model)
                     pars = paras[self.model-1]
                     self.best_model = self.model-1
+                    self.bounds = bounds[self.nlaws-1]
                     self.pars = pars
                     final_pars = np.zeros((self.fitbg['num_mc_iter'],self.nlaws*2+12))
 
@@ -599,7 +600,7 @@ class PowerSpectrum:
                     again = False
                 else:
                     try:
-                        pars, cv = curve_fit(self.fitbg['functions'][self.nlaws], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[self.nlaws-1])
+                        pars, cv = curve_fit(self.fitbg['functions'][self.nlaws], bin_freq, bin_pow, p0 = self.pars, sigma = bin_err, bounds = self.bounds)
                     except RuntimeError:
                         again = True
                     else:
@@ -1183,18 +1184,18 @@ class PowerSpectrum:
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description = 'This is a script to run the new version of the SYD PYpeline')
-    parser.add_argument('-e', '-x', '--e', '--x', '-ex', '--ex', '-excess', '--excess', help = 'Use this to turn the find excess function off', dest = 'ex', action = 'store_false')
-    parser.add_argument('-b', '--b', '-bg', '--bg', '-background', '--background', help = 'Use this to disable the background fitting process (although not highly recommended)', dest = 'bg', action = 'store_false')
+    parser.add_argument('-e', '-x', '--e', '--x', '-ex', '--ex', '-excess', '--excess', help = 'Use this to turn the find excess function off', dest = 'findex', action = 'store_false')
+    parser.add_argument('-b', '--b', '-bg', '--bg', '-background', '--background', help = 'Use this to disable the background fitting process (although not highly recommended)', dest = 'fitbg', action = 'store_false')
     parser.add_argument('-v', '--v', '-verbose', '--verbose', help = 'Turn on verbose', dest = 'verbose', action = 'store_false')
     parser.add_argument('-s', '--s', '-show', '--show', help = 'Show plots', dest = 'show', action = 'store_false')
     parser.add_argument('-i', '--i', '-ignore', '--ignore', help = 'Ignore multiple target output supression', dest = 'ignore', action = 'store_true')
 
 
     args = parser.parse_args()
-    ex = args.ex
-    bg = args.bg
+    findex = args.findex
+    fitbg = args.fitbg
     verbose = args.verbose
     show = args.show
     ignore = args.ignore
 
-    main(findex = ex, fitbg = bg, verbose = verbose, show_plots = show, ignore = ignore)
+    main(findex = findex, fitbg = fitbg, verbose = verbose, show_plots = show, ignore = ignore)
