@@ -528,20 +528,23 @@ class PowerSpectrum:
                             finally:
                                 pams.append(pars[-1])
 
-                    self.model = reduced_chi2.index(min(reduced_chi2))+1
-                    self.nlaws = ((self.model-1)//2)+1
-                    if self.verbose:
-                        print('Based on reduced chi-squared statistic: model %d'%self.model)
-                    pars = paras[self.model-1]
-                    self.best_model = self.model-1
-                    self.bounds = bounds[self.nlaws-1]
-                    self.pars = pars
-                    final_pars = np.zeros((self.fitbg['num_mc_iter'],self.nlaws*2+12))
+                    if np.isfinite(min(reduced_chi2)):
+                        self.model = reduced_chi2.index(min(reduced_chi2))+1
+                        self.nlaws = ((self.model-1)//2)+1
+                        if self.verbose:
+                            print('Based on reduced chi-squared statistic: model %d'%self.model)
+                        pars = paras[self.model-1]
+                        self.best_model = self.model-1
+                        self.bounds = bounds[self.nlaws-1]
+                        self.pars = pars
+                        final_pars = np.zeros((self.fitbg['num_mc_iter'],self.nlaws*2+12))
 
-                    self.sm_par = 4.*(self.params[self.target]['numax']/self.params['numax_sun'])**0.2
-                    if self.sm_par < 1.:
-                        self.sm_par = 1.
-                    again = False
+                        self.sm_par = 4.*(self.params[self.target]['numax']/self.params['numax_sun'])**0.2
+                        if self.sm_par < 1.:
+                            self.sm_par = 1.
+                        again = False
+                    else:
+                        again = True
                 else:
                     try:
                         pars, cv = curve_fit(self.fitbg['functions'][self.nlaws], bin_freq, bin_pow, p0 = self.pars, sigma = bin_err, bounds = self.bounds)
