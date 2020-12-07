@@ -148,7 +148,7 @@ class PowerSpectrum:
                       lower_numax=None, upper_numax=None):
 
         pars = ['save', 'num_mc_iter', 'n_laws', 'box_filter', 'ind_width', 'n_rms', 'n_peaks', 'smooth_ps', 'lower_numax', 'upper_numax', 'force', 'guess', 'clip', 'ech_smooth', 'ech_filter']
-        dtype = [save, num_mc_iter, n_laws, box_filter, ind_width, n_rms, n_peaks, smooth_ps, lower_numax, upper_numax, force, guess, clip, ech_smooth, ech_filter]
+        vals = [save, num_mc_iter, n_laws, box_filter, ind_width, n_rms, n_peaks, smooth_ps, lower_numax, upper_numax, force, guess, clip, ech_smooth, ech_filter]
 
         self.fitbg.update(dict(zip(pars, vals)))
         self.fitbg['functions'] = {1:harvey_one, 2:harvey_two, 3:harvey_three}
