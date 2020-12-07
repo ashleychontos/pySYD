@@ -1,5 +1,5 @@
+astropy
 matplotlib
 numpy
 pandas
 scipy
-astropy
