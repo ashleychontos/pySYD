@@ -648,7 +648,7 @@ class PowerSpectrum:
                 self.get_ridges()
                 final_pars[self.i,2*self.nlaws+6] = self.dnu
 
-                if self.i == 0:
+                if self.i == 0 and not again:
                     self.pssm = pssm
                     self.region_freq = region_freq
                     self.region_pow = region_pow
@@ -682,16 +682,19 @@ class PowerSpectrum:
                 self.plot_mc(final_pars)
 
             else:
-                if self.verbose:
-                    print('numax (smoothed): %.2f muHz'%(final_pars[0,2*self.nlaws+1]))
-                    print('maxamp (smoothed): %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+2]))
-                    print('numax (gaussian): %.2f muHz'%(final_pars[0,2*self.nlaws+3]))
-                    print('maxamp (gaussian): %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+4]))
-                    print('fwhm (gaussian): %.2f muHz'%(final_pars[0,2*self.nlaws+5]))
-                    print('dnu: %.2f muHz'%(final_pars[0,2*self.nlaws+6]))
-                    print('-------------------------------------------------')
-                    print()
-                results.append([self.target,final_pars[0,2*self.nlaws+1],0.,final_pars[0,2*self.nlaws+2],0.,final_pars[0,2*self.nlaws+3],0.,final_pars[0,2*self.nlaws+4],0.,final_pars[0,2*self.nlaws+5],0.,final_pars[0,2*self.nlaws+6],0.])
+                if again:
+                    results.append([self.target,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan])
+                else:
+                    if self.verbose:
+                        print('numax (smoothed): %.2f muHz'%(final_pars[0,2*self.nlaws+1]))
+                        print('maxamp (smoothed): %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+2]))
+                        print('numax (gaussian): %.2f muHz'%(final_pars[0,2*self.nlaws+3]))
+                        print('maxamp (gaussian): %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+4]))
+                        print('fwhm (gaussian): %.2f muHz'%(final_pars[0,2*self.nlaws+5]))
+                        print('dnu: %.2f muHz'%(final_pars[0,2*self.nlaws+6]))
+                        print('-------------------------------------------------')
+                        print()
+                    results.append([self.target,final_pars[0,2*self.nlaws+1],0.,final_pars[0,2*self.nlaws+2],0.,final_pars[0,2*self.nlaws+3],0.,final_pars[0,2*self.nlaws+4],0.,final_pars[0,2*self.nlaws+5],0.,final_pars[0,2*self.nlaws+6],0.])
 
             self.write_bgfit(results[0])
 
