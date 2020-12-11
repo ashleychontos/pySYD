@@ -129,7 +129,7 @@ def gaussian_skew(frequency, pars):
 
 def mean_smooth_ind(x, y, width):
 
-    step = width - 1
+    step = width-1
     sx = np.zeros_like(x)
     sy = np.zeros_like(x)
     se = np.zeros_like(x)
@@ -151,24 +151,18 @@ def mean_smooth_ind(x, y, width):
     return sx, sy, se
 
 
-def bin_data(x, y, binning, log = True):
+def bin_data(x, y, params):
 
-    if log:
-        mi = min(np.log10(x))
-        ma = max(np.log10(x))
-        no = np.int(np.ceil((ma-mi)/binning))
-        bins = np.logspace(mi, mi+no*binning, no)
-    else:
-        bins = np.arange(min(x), max(x)+binning, binning)
+    mi = np.log10(min(x))
+    ma = np.log10(max(x))
+    no = np.int(np.ceil((ma-mi)/params['binning']))
+    bins = np.logspace(mi, mi+(no+1)*params['binning'], no)
     
     digitized = np.digitize(x, bins)
-    bin_means = [y[digitized == i].mean() for i in range(1, len(bins))]
+    bin_freq = np.array([x[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+    bin_pow = np.array([y[digitized == i].mean() for i in range(1, len(bins)) if len(y[digitized == i]) > 0])
     
-    new_bins = np.zeros((len(bins)-1))
-    for i in range(len(new_bins)):
-        new_bins[i] = (bins[i] + bins[i+1])/2.
-    
-    return new_bins, bin_means
+    return bin_freq, bin_pow
 
 
 def smooth(array, width, params, method = 'box', mode = None, fft = False, silent = False):
