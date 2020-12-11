@@ -132,10 +132,11 @@ class PowerSpectrum:
 #                                                                                        #
 ##########################################################################################
 
-    def get_excess_params(self, save=True, box=1., step=0.25, binning=0.005, smooth_width=2.5, n_trials=3):
+    def get_excess_params(self, save=True, step=0.25, binning=0.005, smooth_width=2.5, n_trials=3,
+                          lower=8., upper=5000.):
 
-        pars = ['save', 'box', 'step', 'binning', 'smooth_width', 'n_trials']
-        vals = [save, box, step, binning, smooth_width, n_trials]
+        pars = ['save', 'step', 'binning', 'smooth_width', 'n_trials', 'lower', 'upper']
+        vals = [save, step, binning, smooth_width, n_trials, lower, upper]
 
         self.findex.update(dict(zip(pars, vals)))
         if self.findex['save']:
@@ -143,12 +144,12 @@ class PowerSpectrum:
                 if not os.path.exists(self.params[target]['path']):
                     os.makedirs(self.params[target]['path'])
 
-    def get_bg_params(self, save=True, num_mc_iter=1, n_laws=2, box_filter=1.0, ind_width=50, n_rms=20, n_peaks=5,
+    def get_bg_params(self, save=True, num_mc_iter=1, box_filter=1.0, ind_width=50, n_rms=20, n_peaks=5,
                       smooth_ps=2.5, force=False, guess=140.24, clip=True, ech_smooth=False, ech_filter=2.5,
-                      lower_numax=None, upper_numax=None):
+                      lower_numax=None, upper_numax=None, clip_value=0., lower=100., upper=None):
 
-        pars = ['save', 'num_mc_iter', 'n_laws', 'box_filter', 'ind_width', 'n_rms', 'n_peaks', 'smooth_ps', 'lower_numax', 'upper_numax', 'force', 'guess', 'clip', 'ech_smooth', 'ech_filter']
-        vals = [save, num_mc_iter, n_laws, box_filter, ind_width, n_rms, n_peaks, smooth_ps, lower_numax, upper_numax, force, guess, clip, ech_smooth, ech_filter]
+        pars = ['save', 'num_mc_iter', 'lower', 'upper', 'box_filter', 'ind_width', 'n_rms', 'n_peaks', 'smooth_ps', 'lower_numax', 'upper_numax', 'force', 'guess', 'clip', 'clip_value', 'ech_smooth', 'ech_filter']
+        vals = [save, num_mc_iter, lower, upper, box_filter, ind_width, n_rms, n_peaks, smooth_ps, lower_numax, upper_numax, force, guess, clip, clip_value, ech_smooth, ech_filter]
 
         self.fitbg.update(dict(zip(pars, vals)))
         self.fitbg['functions'] = {1:harvey_one, 2:harvey_two, 3:harvey_three}
@@ -207,6 +208,10 @@ class PowerSpectrum:
                 self.time = np.copy(self.x)
                 self.flux = np.copy(self.y)
                 self.cadence = int(np.nanmedian(np.diff(self.time)*24.*60.*60.))
+                if self.cadence/60. < 10.:
+                    self.short_cadence = True
+                else:
+                    self.short_cadence = False
                 self.nyquist = 10**6/(2.*self.cadence)
                 if self.verbose:
                     print('# LIGHT CURVE: %d lines of data read'%len(self.time))
@@ -234,7 +239,39 @@ class PowerSpectrum:
                 print('time series cadence: %d seconds'%self.cadence)
                 print('power spectrum resolution: %.6f muHz'%self.resolution)
                 print('-------------------------------------------------')
-
+            # create critically sampled PS
+            if self.oversample != 1:
+                self.freq = np.copy(self.frequency)
+                self.pow = np.copy(self.power)
+                self.frequency = np.array(self.frequency[self.oversample-1::self.oversample])
+                self.power = np.array(self.power[self.oversample-1::self.oversample])
+            else:
+                self.freq = np.copy(self.frequency)
+                self.pow = np.copy(self.power)
+                self.frequency = np.copy(self.frequency)
+                self.power = np.copy(self.power)
+            if hasattr(self, 'findex'):
+                if self.findex['do']:
+                    mask = np.ones_like(self.freq, dtype=bool)
+                    if self.findex['lower'] is not None:
+                        mask *= np.ma.getmask(np.ma.masked_greater_equal(self.freq, self.findex['lower']))
+                    if self.findex['upper'] is not None:
+                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.freq, self.findex['upper']))
+                    else:
+                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.freq, self.nyquist))
+                    self.freq = self.freq[mask]
+                    self.pow = self.pow[mask]
+            if hasattr(self, 'fitbg'):
+                if self.fitbg['do']:
+                    mask = np.ones_like(self.frequency, dtype=bool)
+                    if self.fitbg['lower'] is not None:
+                        mask *= np.ma.getmask(np.ma.masked_greater_equal(self.frequency, self.fitbg['lower']))
+                    if self.fitbg['upper'] is not None:
+                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.frequency, self.fitbg['upper']))
+                    else:
+                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.frequency, self.nyquist))
+                    self.frequency = self.frequency[mask]
+                    self.power = self.power[mask]
             return True
         else:
             print('Error: data not found for target %d'%self.target)
@@ -262,25 +299,26 @@ class PowerSpectrum:
             self.nrows = N//3
 
         if self.findex['binning'] is not None:
-            bf, bp = bin_data(self.frequency, self.power, self.findex['binning'])
-            self.bin_freq = np.copy(bf)
-            self.bin_pow = np.copy(bp)
+            bin_freq, bin_pow = bin_data(self.freq, self.pow, self.findex)
+            self.bin_freq = bin_freq
+            self.bin_pow = bin_pow
             if self.verbose:
-                print('binned to %d datapoints'%len(bf))
+                print('binned to %d datapoints'%len(self.bin_freq))
 
-            boxsize = np.ceil(float(self.findex['smooth_width'])/self.resolution)
-            smooth_pow = convolve(bp, Box1DKernel(boxsize))
-            sf = bf[int(boxsize/2):-int(boxsize/2)]
-            sp = smooth_pow[int(boxsize/2):-int(boxsize/2)]
+            resolution=self.freq[1]-self.freq[0]
+            boxsize = int(np.ceil(float(self.findex['smooth_width'])/(resolution)))
+            sp = convolve(bin_pow, Box1DKernel(boxsize))
+            smooth_freq = bin_freq[int(boxsize/2):-int(boxsize/2)]
+            smooth_pow = sp[int(boxsize/2):-int(boxsize/2)]
 
-            s = InterpolatedUnivariateSpline(sf, sp, k = 1)
-            self.interp_pow = s(frequency)
-            self.bgcorr_pow = power/self.interp_pow
+            s = InterpolatedUnivariateSpline(smooth_freq, smooth_pow, k=1)
+            self.interp_pow = s(self.freq)
+            self.bgcorr_pow = self.pow/self.interp_pow
 
-            if self.findex['long_cadence']:
-                boxes = np.logspace(np.log10(0.5), np.log10(25.), self.findex['n_trials'])*self.findex['box']
+            if not self.short_cadence:
+                boxes = np.logspace(np.log10(0.5), np.log10(25.), self.findex['n_trials'])*1.
             else:
-                boxes = np.logspace(np.log10(50.), np.log10(1000.), self.findex['n_trials'])*self.findex['box']
+                boxes = np.logspace(np.log10(50.), np.log10(500.), self.findex['n_trials'])*1.
 
             results = []
             self.md = []
@@ -293,24 +331,22 @@ class PowerSpectrum:
 
             for i, box in enumerate(boxes):
 
-                subset = np.ceil(box/self.resolution)
-                steps = np.ceil((box*self.findex['step'])/self.resolution)
+                subset = np.ceil(box/resolution)
+                steps = np.ceil((box*self.findex['step'])/resolution)
 
-                cumsum = np.zeros_like(frequency)
-                md = np.zeros_like(frequency)
+                cumsum = np.zeros_like(self.freq)
+                md = np.zeros_like(self.freq)
                 j = 0
                 start = 0
 
                 while True:
-                    if (start+subset) > len(frequency):
+                    if (start+subset) > len(self.freq):
                         break
-                    f = frequency[int(start):int(start+subset)]
+                    f = self.freq[int(start):int(start+subset)]
                     p = self.bgcorr_pow[int(start):int(start+subset)]
 
-                    lag = np.arange(0., len(p))*self.resolution
+                    lag = np.arange(0., len(p))*resolution
                     auto = np.real(np.fft.fft(np.fft.ifft(p)*np.conj(np.fft.ifft(p))))
-                    auto = auto[np.ma.getmask(np.ma.masked_inside(lag, self.findex['lower_lag'], self.findex['upper_lag']))]
-                    lag = lag[np.ma.getmask(np.ma.masked_inside(lag, self.findex['lower_lag'], self.findex['upper_lag']))]
                     corr = np.absolute(auto-np.mean(auto))
 
                     cumsum[j] = np.sum(corr)
@@ -356,8 +392,7 @@ class PowerSpectrum:
             self.width = self.params['width_sun']*(self.params[self.target]['numax']/self.params['numax_sun'])
             self.times = self.width/self.params[self.target]['dnu']
 
-            if self.findex['plot']:
-                self.plot_findex()
+            self.plot_findex()
 
 
 ##########################################################################################
@@ -388,14 +423,6 @@ class PowerSpectrum:
 
         if self.check():
             results = []
-            # create independent frequency points (need to if oversampled)
-            if self.oversample != 1:
-                self.original_freq = np.array(self.frequency[self.oversample-1::self.oversample])
-                self.original_pow = np.array(self.power[self.oversample-1::self.oversample])
-            else:
-                self.original_freq = np.copy(self.frequency)
-                self.original_pow = np.copy(self.power)
-
             # arbitrary snr cut for leaving region out of background fit, ***statistically validate later?
             if self.fitbg['lower_numax'] is not None:
                 self.maxpower = [self.fitbg['lower_numax'], self.fitbg['upper_numax']]
@@ -406,56 +433,48 @@ class PowerSpectrum:
                     self.maxpower = [self.params[self.target]['numax']-self.times*self.params[self.target]['dnu'],self.params[self.target]['numax']+self.times*self.params[self.target]['dnu']]
 
             i = 0
-            self.nlaws = self.fitbg['n_laws']
             # sampling process
             while i < self.fitbg['num_mc_iter']:
                 self.i = i
                 if self.i == 0:
                     # record original PS information for plotting
-                    random_pow = np.copy(self.original_pow)
-                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.original_freq, random_pow, self.fitbg['ind_width'])
+                    random_pow = np.copy(self.power)
+                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.frequency, random_pow, self.fitbg['ind_width'])
                     if self.verbose:
                         print('-------------------------------------------------')
                         print('binned to %d data points'%len(bin_freq))
                 else:
                     # randomize power spectrum to get uncertainty on measured values
-                    random_pow = (np.random.chisquare(2, len(self.original_freq))*self.original_pow)/2.
-                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.original_freq, random_pow, self.fitbg['ind_width'])
+                    random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
+                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.frequency, random_pow, self.fitbg['ind_width'])
 
                 # estimate white noise level
                 self.get_white_noise(random_pow)
-                pars = np.zeros((self.nlaws*2+1))
-                pars[2*self.nlaws] = self.noise
 
                 # exclude region with power excess and smooth to estimate red/white noise components
                 boxkernel = Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution)))
-                self.params[self.target]['mask'] = (self.original_freq>=self.maxpower[0])&(self.original_freq<=self.maxpower[1])
-                outer_x = self.original_freq[~self.params[self.target]['mask']]
+                self.params[self.target]['mask'] = (self.frequency>=self.maxpower[0])&(self.frequency<=self.maxpower[1])
+                outer_x = self.frequency[~self.params[self.target]['mask']]
                 outer_y = random_pow[~self.params[self.target]['mask']]
                 smooth_pow = convolve(outer_y, boxkernel)
 
                 # use scaling relation from sun to get starting points
                 scale = self.params['numax_sun']/((self.maxpower[1]+self.maxpower[0])/2.)
-                if min(self.original_freq) >= 0.01:
-                    taus = np.array(self.params['tau_sun'][int(np.log10(min(self.original_freq)*100.)):])*scale
-                else:
-                    taus = np.array(self.params['tau_sun'])*scale
-
+                taus = np.array(self.params['tau_sun'])*scale
                 b = 2.*np.pi*(taus*1e-6)
                 mnu = (1./taus)*1e5
+                taus = taus[mnu>=min(self.frequency)]
+                b = b[mnu>=min(self.frequency)]
+                mnu = mnu[mnu>=min(self.frequency)]
+                self.nlaws = len(mnu)
+                pars = np.zeros((self.nlaws*2+1))
+                pars[2*self.nlaws] = self.noise
                 a = np.zeros_like(mnu)
-                msk = (bin_freq>self.maxpower[0])&(bin_freq<self.maxpower[1])
-
-                if max(mnu) < min(bin_freq[~msk]):
-                    scup = min(bin_freq[~msk])/max(mnu)
-                    mnu[-1] = scup*mnu[-1]
-                    taus[-1] = 1e5/mnu[-1]
-                    b[-1] = 2.*np.pi*(taus[-1]*1e-6)
 
                 # estimate amplitude for each harvey component
                 for j, nu in enumerate(mnu):
                     idx = 0
-                    while self.original_freq[idx] < nu:
+                    while self.frequency[idx] < nu:
                         idx += 1
                     if idx < self.fitbg['n_rms']:
                         a[j] = np.mean(smooth_pow[:self.fitbg['n_rms']])
@@ -469,27 +488,28 @@ class PowerSpectrum:
                     pars[2*n+1] = b[n]
 
                 if self.i == 0:
+                    msk = (bin_freq>self.maxpower[0])&(bin_freq<self.maxpower[1])
                     self.bin_freq = bin_freq[~msk]
                     self.bin_pow = bin_pow[~msk]
                     self.bin_err = bin_err[~msk]
-                    self.frequency = np.copy(self.original_freq)
-                    self.power = np.copy(self.original_pow)
+                    self.frequency = np.copy(self.frequency)
+                    self.power = np.copy(self.power)
                     self.mnu = mnu
                     self.a = a
-                    smooth = convolve(self.original_pow, Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution))))
+                    smooth = convolve(self.power, Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution))))
                     self.smooth_power = np.copy(smooth)
                     if self.verbose:
                         print('Comparing %d different models:'%(self.nlaws*2))
                     # get best fit model 
                     bounds = []
                     for law in range(self.nlaws):
-                        b = np.zeros((2,2*(law+1)+1)).tolist()
+                        bb = np.zeros((2,2*(law+1)+1)).tolist()
                         for z in range(2*(law+1)):
-                            b[0][z] = -np.inf
-                            b[1][z] = np.inf
-                        b[0][-1] = pars[-1]-0.1
-                        b[1][-1] = pars[-1]+0.1
-                        bounds.append(tuple(b))
+                            bb[0][z] = -np.inf
+                            bb[1][z] = np.inf
+                        bb[0][-1] = pars[-1]-0.1
+                        bb[1][-1] = pars[-1]+0.1
+                        bounds.append(tuple(bb))
                     reduced_chi2 = []
                     paras = []
                     names = ['one', 'one', 'two', 'two', 'three', 'three']
@@ -500,8 +520,9 @@ class PowerSpectrum:
                                 print('%d: %s harvey model w/ white noise free parameter'%(t+1, dict1[t]))
                             delta = 2*(self.nlaws-(t//2+1))
                             pams = list(pars[:(-delta-1)])
+                            pams.append(pars[-1])
                             try:
-                                pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err)
+                                pp, cv = curve_fit(self.fitbg['functions'][t//2+1], self.bin_freq, self.bin_pow, p0 = pams, sigma = self.bin_err)
                             except RuntimeError:
                                 paras.append([])
                                 reduced_chi2.append(np.inf)
@@ -509,15 +530,14 @@ class PowerSpectrum:
                                 paras.append(pp)
                                 chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
                                 reduced_chi2.append(chi/(len(outer_x)-len(pams)))
-                            finally:
-                                pams.append(pars[-1])
                         else:
                             if self.verbose:
                                 print('%d: %s harvey model w/ white noise fixed'%(t+1, dict1[t]))
                             delta = 2*(self.nlaws-(t//2+1))
                             pams = list(pars[:(-delta-1)])
+                            pams.append(pars[-1])
                             try:
-                                pp, cv = curve_fit(self.fitbg['functions'][t//2+1], bin_freq, bin_pow, p0 = pams, sigma = bin_err, bounds = bounds[t//2])
+                                pp, cv = curve_fit(self.fitbg['functions'][t//2+1], self.bin_freq, self.bin_pow, p0 = pams, sigma = self.bin_err, bounds = bounds[t//2])
                             except RuntimeError:
                                 paras.append([])
                                 reduced_chi2.append(np.inf)
@@ -525,8 +545,6 @@ class PowerSpectrum:
                                 paras.append(pp)
                                 chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
                                 reduced_chi2.append(chi/(len(outer_x)-len(pams)+1))
-                            finally:
-                                pams.append(pars[-1])
 
                     if np.isfinite(min(reduced_chi2)):
                         self.model = reduced_chi2.index(min(reduced_chi2))+1
@@ -562,10 +580,10 @@ class PowerSpectrum:
                 sig = fwhm/np.sqrt(8*np.log(2))
                 gauss_kernel = Gaussian1DKernel(int(sig))
                 pssm = convolve_fft(random_pow[:], gauss_kernel)
-                model = harvey(self.original_freq, pars, total=True)
+                model = harvey(self.frequency, pars, total=True)
 
                 # correct for edge effects and residual slope in Gaussian fit
-                x0 = list(self.original_freq[self.params[self.target]['mask']])
+                x0 = list(self.frequency[self.params[self.target]['mask']])
                 t0 = pssm[self.params[self.target]['mask']]
                 t1 = model[self.params[self.target]['mask']]
                 delta_y = t0[-1] - t0[0]
@@ -574,7 +592,7 @@ class PowerSpectrum:
                 b = slope*(-1.*x0[0]) + t0[0]
                 corrected = np.array([x0[z]*slope + b for z in range(len(x0))])
                 corr_pssm = [t0[z]-corrected[z] + t1[z] for z in range(len(t0))]
-                x2 = list(self.original_freq[~self.params[self.target]['mask']])
+                x2 = list(self.frequency[~self.params[self.target]['mask']])
                 t2 = list(model[~self.params[self.target]['mask']])
                 final_x = np.array(x0+x2)
                 final_y = np.array(corr_pssm+t2)
@@ -585,7 +603,7 @@ class PowerSpectrum:
                 pssm = np.copy(final_y)
                 pssm_bgcorr = pssm-harvey(final_x, pars, total=True)
 
-                region_freq = np.copy(self.original_freq[self.params[self.target]['mask']])
+                region_freq = np.copy(self.frequency[self.params[self.target]['mask']])
                 region_pow = pssm_bgcorr[self.params[self.target]['mask']]
                 idx = self.return_max(region_pow, index=True)
                 final_pars[self.i,2*self.nlaws+1] = region_freq[idx]
@@ -599,7 +617,7 @@ class PowerSpectrum:
                     final_pars[self.i,2*self.nlaws+4] = p_gauss1[1]
                     final_pars[self.i,2*self.nlaws+5] = p_gauss1[3]
 
-                self.bg_corr = random_pow/harvey(self.original_freq, pars, total=True)
+                self.bg_corr = random_pow/harvey(self.frequency, pars, total=True)
 
                 # optional smoothing of PS to remove fine structure
                 if self.fitbg['smooth_ps'] is not None:
@@ -614,13 +632,9 @@ class PowerSpectrum:
                 self.dnu = 0.22*(self.numax**0.797)
                 self.times = self.width/self.dnu
                 lim_factor = self.times*self.dnu
-                if self.fitbg['lower_numax'] is not None:
-                    msk = (self.original_freq >= self.fitbg['lower_numax'])&(self.original_freq <= self.fitbg['upper_numax'])
-                else:
-                    msk = (self.original_freq >= self.numax-lim_factor)&(self.original_freq <= self.numax+lim_factor)
 
-                freq = self.original_freq[msk]
-                psd = self.bg_corr_smooth[msk]
+                freq = self.frequency[(self.frequency >= self.numax-lim_factor)&(self.frequency <= self.numax+lim_factor)]
+                psd = self.bg_corr_smooth[(self.frequency >= self.numax-lim_factor)&(self.frequency <= self.numax+lim_factor)]
                 lag, auto = self.corr(freq, psd)
                 peaks_l, peaks_a = self.max_elements(list(lag), list(auto), limit = [True, 20.*self.resolution])
 
@@ -701,13 +715,17 @@ class PowerSpectrum:
     def get_white_noise(self, random_pow):
 
         if self.nyquist < 400.:
-            self.noise = np.mean(random_pow[(self.original_freq>200.)&(self.original_freq<270.)])
+            mask = (self.frequency>200.)&(self.frequency<270.)
+            self.noise = np.mean(random_pow[mask])
         elif self.nyquist > 400. and self.nyquist < 5000.:
-            self.noise = np.mean(random_pow[(self.original_freq>4000.)&(self.original_freq<4167.)])
+            mask = (self.frequency>4000.)&(self.frequency<4167.)
+            self.noise = np.mean(random_pow[mask])
         elif self.nyquist > 5000. and self.nyquist < 9000.:
-            self.noise = np.mean(random_pow[(self.original_freq>8000.)&(self.original_freq<8200.)])
+            mask = (self.frequency>8000.)&(self.frequency<8200.)
+            self.noise = np.mean(random_pow[mask])
         else:
-            self.noise = np.mean(random_pow[(self.original_freq>(max(self.original_freq)-0.1*max(self.original_freq)))])
+            mask = (self.frequency>(max(self.frequency)-0.1*mask(self.frequency)))&(self.frequency<max(self.frequency))
+            self.noise = np.mean(random_pow[mask])
 
 ##########################################################################################
 #                                                                                        #
@@ -729,20 +747,20 @@ class PowerSpectrum:
 
         # log-log power spectrum with crude background fit
         ax2 = plt.subplot(1+self.nrows,3,2)
-        ax2.loglog(self.frequency[self.mask], self.power[self.mask], 'w-')
-        ax2.set_xlim([min(self.frequency[self.mask]), max(self.frequency[self.mask])])
-        ax2.set_ylim([min(self.power[self.mask]), max(self.power[self.mask])*1.25])
+        ax2.loglog(self.freq, self.pow, 'w-')
+        ax2.set_xlim([100., max(self.freq)])
+        ax2.set_ylim([min(self.pow), max(self.pow)*1.25])
         ax2.set_title(r'$\rm Crude \,\, background \,\, fit$')
         ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
         if self.findex['binning'] is not None:
             ax2.loglog(self.bin_freq, self.bin_pow, 'r-')
-        ax2.loglog(self.frequency[self.mask], self.interp_pow, color = 'lime', linestyle = '-', lw = 2.)
+        ax2.loglog(self.freq, self.interp_pow, color = 'lime', linestyle = '-', lw = 2.)
 
         # crude background-corrected power spectrum
         ax3 = plt.subplot(1+self.nrows,3,3)
-        ax3.plot(self.frequency[self.mask], self.bgcorr_pow, 'w-')
-        ax3.set_xlim([min(self.frequency[self.mask]), max(self.frequency[self.mask])])
+        ax3.plot(self.freq, self.bgcorr_pow, 'w-')
+        ax3.set_xlim([100., max(self.freq)])
         ax3.set_ylim([0., max(self.bgcorr_pow)*1.25])
         ax3.set_title(r'$\rm Background \,\, corrected \,\, PS$')
         ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
@@ -788,21 +806,21 @@ class PowerSpectrum:
 
         # initial background guesses
         ax2 = fig.add_subplot(3,3,2)
-        ax2.plot(self.original_freq[self.original_freq<self.maxpower[0]], self.original_pow[self.original_freq<self.maxpower[0]], 'w-', zorder = 0)
-        ax2.plot(self.original_freq[self.original_freq>self.maxpower[1]], self.original_pow[self.original_freq>self.maxpower[1]], 'w-', zorder = 0)
-        ax2.plot(self.original_freq[self.original_freq<self.maxpower[0]], self.smooth_power[self.original_freq<self.maxpower[0]], 'r-', linewidth = 0.75, zorder = 1)
-        ax2.plot(self.original_freq[self.original_freq>self.maxpower[1]], self.smooth_power[self.original_freq>self.maxpower[1]], 'r-', linewidth = 0.75, zorder = 1)
+        ax2.plot(self.frequency[self.frequency<self.maxpower[0]], self.power[self.frequency<self.maxpower[0]], 'w-', zorder = 0)
+        ax2.plot(self.frequency[self.frequency>self.maxpower[1]], self.power[self.frequency>self.maxpower[1]], 'w-', zorder = 0)
+        ax2.plot(self.frequency[self.frequency<self.maxpower[0]], self.smooth_power[self.frequency<self.maxpower[0]], 'r-', linewidth = 0.75, zorder = 1)
+        ax2.plot(self.frequency[self.frequency>self.maxpower[1]], self.smooth_power[self.frequency>self.maxpower[1]], 'r-', linewidth = 0.75, zorder = 1)
         for r in range(self.nlaws):
-            ax2.plot(self.original_freq, harvey(self.original_freq, [self.pars[2*r], self.pars[2*r+1], self.pars[-1]]), color = 'blue', linestyle = ':', linewidth = 1.5, zorder = 3)
-        ax2.plot(self.original_freq, harvey(self.original_freq, self.pars, total=True), color = 'blue', linewidth = 2., zorder = 4)
+            ax2.plot(self.frequency, harvey(self.frequency, [self.pars[2*r], self.pars[2*r+1], self.pars[-1]]), color = 'blue', linestyle = ':', linewidth = 1.5, zorder = 3)
+        ax2.plot(self.frequency, harvey(self.frequency, self.pars, total=True), color = 'blue', linewidth = 2., zorder = 4)
         ax2.errorbar(self.bin_freq, self.bin_pow, yerr = self.bin_err, color = 'lime', markersize = 0., fillstyle = 'none', ls = 'None', marker = 'D', capsize = 3, ecolor = 'lime', elinewidth = 1, capthick = 2, zorder = 2)
         for m, n in zip(self.mnu, self.a):
             ax2.plot(m, n, color = 'blue', fillstyle = 'none', mew = 3., marker = 's', markersize = 5.)
         ax2.axvline(self.maxpower[0], color = 'darkorange', linestyle = 'dashed', linewidth = 2., zorder = 1, dashes = (5,5))
         ax2.axvline(self.maxpower[1], color = 'darkorange', linestyle = 'dashed', linewidth = 2., zorder = 1, dashes = (5,5))
         ax2.axhline(self.noise, color = 'blue', linestyle = 'dashed', linewidth = 1.5, zorder = 3, dashes = (5,5))
-        ax2.set_xlim([min(self.original_freq), max(self.original_freq)])
-        ax2.set_ylim([min(self.original_pow), max(self.original_pow)*1.25])
+        ax2.set_xlim([min(self.frequency), max(self.frequency)])
+        ax2.set_ylim([min(self.power), max(self.power)*1.25])
         ax2.set_title(r'$\rm Initial \,\, guesses$')
         ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
@@ -811,20 +829,20 @@ class PowerSpectrum:
 
         # fitted background
         ax3 = fig.add_subplot(3,3,3)
-        ax3.plot(self.original_freq[self.original_freq<self.maxpower[0]], self.original_pow[self.original_freq<self.maxpower[0]], 'w-', linewidth = 0.75, zorder = 0)
-        ax3.plot(self.original_freq[self.original_freq>self.maxpower[1]], self.original_pow[self.original_freq>self.maxpower[1]], 'w-', linewidth = 0.75, zorder = 0)
-        ax3.plot(self.original_freq[self.original_freq<self.maxpower[0]], self.smooth_power[self.original_freq<self.maxpower[0]], 'r-', linewidth = 0.75, zorder = 1)
-        ax3.plot(self.original_freq[self.original_freq>self.maxpower[1]], self.smooth_power[self.original_freq>self.maxpower[1]], 'r-', linewidth = 0.75, zorder = 1)
+        ax3.plot(self.frequency[self.frequency<self.maxpower[0]], self.power[self.frequency<self.maxpower[0]], 'w-', linewidth = 0.75, zorder = 0)
+        ax3.plot(self.frequency[self.frequency>self.maxpower[1]], self.power[self.frequency>self.maxpower[1]], 'w-', linewidth = 0.75, zorder = 0)
+        ax3.plot(self.frequency[self.frequency<self.maxpower[0]], self.smooth_power[self.frequency<self.maxpower[0]], 'r-', linewidth = 0.75, zorder = 1)
+        ax3.plot(self.frequency[self.frequency>self.maxpower[1]], self.smooth_power[self.frequency>self.maxpower[1]], 'r-', linewidth = 0.75, zorder = 1)
         for r in range(self.nlaws):
-            ax3.plot(self.original_freq, harvey(self.original_freq, [self.pars[2*r], self.pars[2*r+1], self.pars[-1]]), color = 'blue', linestyle = ':', linewidth = 1.5, zorder = 3)
-        ax3.plot(self.original_freq, harvey(self.original_freq, self.pars, total=True), color = 'blue', linewidth = 2., zorder = 4)
+            ax3.plot(self.frequency, harvey(self.frequency, [self.pars[2*r], self.pars[2*r+1], self.pars[-1]]), color = 'blue', linestyle = ':', linewidth = 1.5, zorder = 3)
+        ax3.plot(self.frequency, harvey(self.frequency, self.pars, total=True), color = 'blue', linewidth = 2., zorder = 4)
         ax3.errorbar(self.bin_freq, self.bin_pow, yerr = self.bin_err, color = 'lime', markersize = 0., fillstyle = 'none', ls = 'None', marker = 'D', capsize = 3, ecolor = 'lime', elinewidth = 1, capthick = 2, zorder = 2)
         ax3.axvline(self.maxpower[0], color = 'darkorange', linestyle = 'dashed', linewidth = 2., zorder = 1, dashes = (5,5))
         ax3.axvline(self.maxpower[1], color = 'darkorange', linestyle = 'dashed', linewidth = 2., zorder = 1, dashes = (5,5))
         ax3.axhline(self.noise, color = 'blue', linestyle = 'dashed', linewidth = 1.5, zorder = 3, dashes = (5,5))
-        ax3.plot(self.original_freq, self.pssm, color = 'yellow', linewidth = 2., linestyle = 'dashed', zorder = 5)
-        ax3.set_xlim([min(self.original_freq), max(self.original_freq)])
-        ax3.set_ylim([min(self.original_pow), max(self.original_pow)*1.25])
+        ax3.plot(self.frequency, self.pssm, color = 'yellow', linewidth = 2., linestyle = 'dashed', zorder = 5)
+        ax3.set_xlim([min(self.frequency), max(self.frequency)])
+        ax3.set_ylim([min(self.power), max(self.power)*1.25])
         ax3.set_title(r'$\rm Fitted \,\, model$')
         ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax3.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
@@ -962,7 +980,7 @@ class PowerSpectrum:
         n = int(np.ceil(self.dnu/self.resolution))
         xax = np.zeros(n)
         yax = np.zeros(n)
-        modx = self.original_freq%self.dnu
+        modx = self.frequency%self.dnu
 
         for k in range(n):
             use = np.where((modx >= start)&(modx < start+self.resolution))[0]
@@ -999,7 +1017,7 @@ class PowerSpectrum:
             n = int(np.ceil(d/self.resolution))
             xax = np.zeros(n)
             yax = np.zeros(n)
-            modx = self.original_freq%d
+            modx = self.frequency%d
 
             for k in range(n):
                 use = np.where((modx >= start)&(modx < start+self.resolution))[0]
@@ -1021,22 +1039,22 @@ class PowerSpectrum:
             smooth_y = convolve(self.bg_corr, boxkernel)
 
         nox = n_across
-        noy = int(np.ceil((max(self.original_freq)-min(self.original_freq))/self.dnu))
+        noy = int(np.ceil((max(self.frequency)-min(self.frequency))/self.dnu))
 
         if nox > 2 and noy > 5:
             xax = np.arange(0., self.dnu+(self.dnu/n_across)/2., self.dnu/n_across)
-            yax = np.arange(min(self.original_freq), max(self.original_freq), self.dnu)
+            yax = np.arange(min(self.frequency), max(self.frequency), self.dnu)
 
             arr = np.zeros((len(xax),len(yax)))
             gridx = np.zeros(len(xax))
             gridy = np.zeros(len(yax))
 
-            modx = self.original_freq%self.dnu
-            starty = min(self.original_freq)
+            modx = self.frequency%self.dnu
+            starty = min(self.frequency)
 
             for ii in range(len(gridx)):
                 for jj in range(len(gridy)):
-                    use = np.where((modx >= startx)&(modx < startx+self.dnu/n_across)&(self.original_freq >= starty)&(self.original_freq < starty+self.dnu))[0]
+                    use = np.where((modx >= startx)&(modx < startx+self.dnu/n_across)&(self.frequency >= starty)&(self.frequency < starty+self.dnu))[0]
                     if len(use) == 0:
                         arr[ii,jj] = np.nan
                     else:
@@ -1044,7 +1062,7 @@ class PowerSpectrum:
                     gridy[jj] = starty + self.dnu/2.
                     starty += self.dnu
                 gridx[ii] = startx + self.dnu/n_across/2.
-                starty = min(self.original_freq)
+                starty = min(self.frequency)
                 startx += self.dnu/n_across
             smoothed = arr
             dim = smoothed.shape
