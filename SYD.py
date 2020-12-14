@@ -133,7 +133,7 @@ class PowerSpectrum:
 ##########################################################################################
 
     def get_excess_params(self, save=True, step=0.25, binning=0.005, smooth_width=2.5, n_trials=3,
-                          lower=8., upper=5000.):
+                          lower=8., upper=4000.):
 
         pars = ['save', 'step', 'binning', 'smooth_width', 'n_trials', 'lower', 'upper']
         vals = [save, step, binning, smooth_width, n_trials, lower, upper]
