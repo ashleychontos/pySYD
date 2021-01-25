@@ -135,7 +135,7 @@ class PowerSpectrum:
 ##########################################################################################
 
     def get_excess_params(self, save=True, step=0.25, binning=0.005, n_trials=3,
-                          lower=10., upper=2500.):
+                          lower=10., upper=4000.):
 
         pars = ['save', 'step', 'binning', 'smooth_width', 'n_trials', 'lower', 'upper']
         vals = [save, step, binning, self.smoothing_freq, n_trials, lower, upper]
@@ -710,8 +710,6 @@ class PowerSpectrum:
                 self.numax = p_gauss1[2]
                 self.sm_par = 4.*(self.numax/self.params['numax_sun'])**0.2
                 self.dnu = 0.22*(self.numax**0.797)
-                # manual_dnu=29.#41.
-                # self.dnu = manual_dnu
                 self.times = self.width/self.dnu
                 lim_factor = self.times*self.dnu
 
@@ -742,7 +740,6 @@ class PowerSpectrum:
                 else:
                     self.dnu = zoom_lag[idx]
                 
-                # self.dnu=manual_dnu # aka _m1
                 self.get_ridges()
                 final_pars[self.i,2*self.nlaws+6] = self.dnu
 
@@ -756,22 +753,13 @@ class PowerSpectrum:
                     self.lag = lag            
                     self.auto = auto
                     self.best_lag = best_lag       
-                    # self.best_lag = manual_dnu      # hardcode dnu here if using echelle
                     self.best_auto = best_auto
                     self.peaks_l = peaks_l
                     self.peaks_a = peaks_a
                     self.zoom_lag = zoom_lag
                     self.zoom_auto = zoom_auto
                     self.gauss_2 = p_gauss2
-                    # pdb.set_trace()
-                    savedir='/Users/maryumsayeed/Desktop/Research/Mathur_Kepler_SC/echelle_data/'
-                    save_kics=[3124465,3238211,5871558,6268607,6761569,8823568,10340511,10920182,10920273,11234888]
-                    # if self.target in save_kics:
-                    #     PS_data=np.array([self.freq,self.psd]).T
-                    #     np.savetxt(savedir+'{}_PS.txt'.format(self.target),PS_data,fmt='%s')
-                    #     exit()
                     self.plot_fitbg()
-
 
                 i += 1
 
