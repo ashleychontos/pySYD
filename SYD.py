@@ -1180,12 +1180,11 @@ class PowerSpectrum:
 
     def max_elements(self, x, y):
         s = np.argsort(y)
-        peaks_y = y[s][-self.fitbg['n_peaks']][::-1]
-        peaks_x = x[s][-self.fitbg['n_peaks']][::-1]
+        peaks_y = y[s][-int(self.fitbg['n_peaks']):][::-1]
+        peaks_x = x[s][-int(self.fitbg['n_peaks']):][::-1]
         return peaks_x, peaks_y
 
     def return_max(self, array, index=False, dnu=False):
-
         if dnu:
             exp_dnu = 0.22*(self.numax**0.797)
             lst = list(np.absolute(np.copy(array)-exp_dnu))
@@ -1193,7 +1192,6 @@ class PowerSpectrum:
         else:
             lst = list(array)
             idx = lst.index(max(lst))
-
         if index:
             return idx
         else:
