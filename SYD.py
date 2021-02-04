@@ -1178,31 +1178,11 @@ class PowerSpectrum:
         bb.append(tuple(b))
         return bb
 
-    def max_elements(self, x, y, limit = [False, None]):
-
-        tempy = y[:]
-        indices = []
-        while len(indices) < self.fitbg['n_peaks']:
-            new_max = max(tempy)
-            idx = tempy.index(new_max)
-            add = True
-            if indices != [] and limit[0]:
-                for index in indices:
-                    if np.absolute((index-idx)*self.resolution) < limit[1]:
-                        add = False
-                        break
-            if add:
-                indices.append(idx)
-            tempy[idx] = 0.
-
-        x = np.array(x)
-        y = np.array(y)
-
-        peaks_x = x[indices]
-        peaks_y = y[indices]
-        ss = np.argsort(peaks_x)
-
-        return peaks_x[ss], peaks_y[ss]
+    def max_elements(self, x, y):
+        s = np.argsort(y)
+        peaks_y = y[s][-self.fitbg['n_peaks']][::-1]
+        peaks_x = x[s][-self.fitbg['n_peaks']][::-1]
+        return peaks_x, peaks_y
 
     def return_max(self, array, index=False, dnu=False):
 
