@@ -716,7 +716,7 @@ class PowerSpectrum:
                 freq = self.frequency[(self.frequency >= self.numax-lim_factor)&(self.frequency <= self.numax+lim_factor)]
                 psd = self.bg_corr_smooth[(self.frequency >= self.numax-lim_factor)&(self.frequency <= self.numax+lim_factor)]
                 lag, auto = self.corr(freq, psd)
-                peaks_l, peaks_a = self.max_elements(lag, auto, limit = [True, 20.*self.resolution])
+                peaks_l, peaks_a = self.max_elements(lag, auto)
 
                 # pick the peak closest to the modeled numax
                 idx = self.return_max(peaks_l, index=True, dnu=True)
@@ -957,7 +957,7 @@ class PowerSpectrum:
         ax4.set_ylim([plot_min-0.1*plot_range, plot_max+0.1*plot_range])
 
         # background-corrected ps with n highest peaks
-        peaks_f, peaks_p = self.max_elements(self.freq, self.psd, limit = [True, 2.])
+        peaks_f, peaks_p = self.max_elements(self.freq, self.psd)
         ax5 = fig.add_subplot(3,3,5)
         ax5.plot(self.freq, self.psd, 'w-', zorder = 0, linewidth = 1.0)
         ax5.scatter(peaks_f, peaks_p, s = 25., edgecolor = 'r', marker = 's', facecolor = 'none', linewidths = 1.)
