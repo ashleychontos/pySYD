@@ -3,7 +3,7 @@ from collections import deque
 from scipy.special import erf
 from astropy.convolution import convolve, Box1DKernel, Gaussian1DKernel, convolve_fft
 from scipy.ndimage import filters
-#test
+
 ##########################################################################################
 #                                                                                        #
 #                                   DIFFERENT MODELS                                     #
