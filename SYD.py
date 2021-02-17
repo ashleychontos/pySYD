@@ -20,10 +20,9 @@ from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter, 
 import pdb
 
 
-def main(args, findex=True, fitbg=True, verbose=True, show_plots=True, ignore=True, parallel=False, nthreads=None):
+def main(args, findex=True, fitbg=True, verbose=True, show_plots=True, ignore=True, parallel=False, nthreads=None, keplercorr=False):
 
-    PS = PowerSpectrum(findex, fitbg, verbose, show_plots, ignore, args)
-
+    PS = PowerSpectrum(findex, fitbg, verbose, show_plots, ignore, keplercorr, args)
     if parallel:
         PS.ignore = False
         if nthreads is None:
@@ -58,7 +57,7 @@ def main(args, findex=True, fitbg=True, verbose=True, show_plots=True, ignore=Tr
 
 class PowerSpectrum:
     
-    def __init__(self, findex, fitbg, verbose, show_plots, ignore, args):
+    def __init__(self, findex, fitbg, verbose, show_plots, ignore, keplercorr, args):
         self.findex        = {}
         self.findex['do']  = findex
         self.fitbg         = {}
@@ -66,19 +65,22 @@ class PowerSpectrum:
         self.verbose       = verbose
         self.show_plots    = show_plots
         self.ignore        = ignore
-        self.mission       = args.mission
+        self.mciter        = np.int(args.mciter)
+        self.keplercorr       = keplercorr
         self.smoothing_freq= args.smoothing_freq
         self.get_info()
         self.set_plot_params()
+        
 
     def get_info(self, star_info = 'Files/star_info.csv'):
 
         self.params = {}
         with open('Files/todo.txt', "r") as f:
             todo = np.array([int(float(line.strip().split()[0])) for line in f.readlines()])
-        if len(todo) > 1 and not self.ignore:
-            self.verbose = False
-            self.show_plots = False
+        # commented out: always leave it up to use to show plot and have verbose output
+        #if len(todo) > 1 and not self.ignore:
+        #    self.verbose = False
+        #    self.show_plots = False
         self.params['path'] = 'Files/data/'
         self.params.update({'numax_sun':3090., 'dnu_sun':135.1, 'width_sun':1300., 'todo':todo, 'G':6.67428e-8, 
                             'tau_sun':[5.2e6, 1.8e5, 1.7e4, 2.5e3, 280., 80.], 'teff_sun':5777., 'mass_sun':1.9891e33,
@@ -93,6 +95,7 @@ class PowerSpectrum:
             self.get_bg_params()
 
         self.get_star_info(star_info)
+        
 
     def set_plot_params(self):
 
@@ -146,12 +149,13 @@ class PowerSpectrum:
                 if not os.path.exists(self.params[target]['path']):
                     os.makedirs(self.params[target]['path'])
 
-    def get_bg_params(self, save=True, num_mc_iter=200, box_filter=1.0, ind_width=50, n_rms=20, n_peaks=5,
+    def get_bg_params(self, save=True, box_filter=1.0, ind_width=50, n_rms=20, n_peaks=10,
                       force=False, guess=140.24, clip=True, ech_smooth=False, ech_filter=1.,
-                      lower_numax=None, upper_numax=None, clip_value=0., lower=100., upper=None):
+                      lower_numax=None, upper_numax=None, clip_value=0., lower=10., upper=None):
 
+        
         pars = ['save', 'num_mc_iter', 'lower', 'upper', 'box_filter', 'ind_width', 'n_rms', 'n_peaks', 'smooth_ps', 'lower_numax', 'upper_numax', 'force', 'guess', 'clip', 'clip_value', 'ech_smooth', 'ech_filter']
-        vals = [save, num_mc_iter, lower, upper, box_filter, ind_width, n_rms, n_peaks, self.smoothing_freq, lower_numax, upper_numax, force, guess, clip, clip_value, ech_smooth, ech_filter]
+        vals = [save, self.mciter, lower, upper, box_filter, ind_width, n_rms, n_peaks, self.smoothing_freq, lower_numax, upper_numax, force, guess, clip, clip_value, ech_smooth, ech_filter]
         
         self.fitbg.update(dict(zip(pars, vals)))
         self.fitbg['functions'] = {1:harvey_one, 2:harvey_two, 3:harvey_three}
@@ -250,9 +254,12 @@ class PowerSpectrum:
             flower,fupper=un1[i]-20,un2[i]+20   
             usenoise = np.where( ((f>=flower) & (f<=un1[i])) |\
                                  ((f>=un2[i]) & (f<=fupper)) )[0]
-            m,b =np.polyfit(f[usenoise],a[usenoise],1) # coeffs for linear fit
-            use =np.where( (f >= un1[i]) & (f <= un2[i]) )[0]       #index of artefact frequencies (ie. 240-380 muHz)
-            a[use]=(f[use]*m+b)*np.random.chisquare(2,len(use))/2.  #fill artefact frequencies with noise
+            try:
+            	m,b =np.polyfit(f[usenoise],a[usenoise],1) # coeffs for linear fit
+            	use =np.where( (f >= un1[i]) & (f <= un2[i]) )[0]       #index of artefact frequencies (ie. 240-380 muHz)
+            	a[use]=(f[use]*m+b)*np.random.chisquare(2,len(use))/2.  #fill artefact frequencies with noise
+            except:
+           		continue
         self.y=a
     
     def load_data(self):
@@ -286,11 +293,11 @@ class PowerSpectrum:
                 self.get_file(self.params['path']+'%d_PS.txt'%self.target)
                 self.frequency = np.copy(self.x)
                 self.power = np.copy(self.y)
-                if self.mission == 'Kepler':
+                if self.keplercorr == True:
                     self.remove_artefact(self.frequency,self.power)
                     self.power = np.copy(self.y)
                     if self.verbose:
-                        print('Removing artefacts from %s data.' % self.mission)
+                        print('Removing Kepler artefacts')
 
                 if self.verbose:
                     print('# POWER SPECTRUM: %d lines of data read'%len(self.frequency))
@@ -374,7 +381,9 @@ class PowerSpectrum:
                 print('binned to %d datapoints'%len(self.bin_freq))
 
             resolution=self.freq[1]-self.freq[0]
-            boxsize = int(np.ceil(float(self.findex['smooth_width'])/(resolution)))
+            # NB: boxsize needs to be in units of bin_freq, not self.freq
+            #boxsize = int(np.ceil(float(self.findex['smooth_width'])/(resolution)))
+            boxsize = int(np.ceil(float(self.findex['smooth_width'])/(bin_freq[1]-bin_freq[0])))
             sp = convolve(bin_pow, Box1DKernel(boxsize))
             smooth_freq = bin_freq[int(boxsize/2):-int(boxsize/2)]
             smooth_pow = sp[int(boxsize/2):-int(boxsize/2)]
@@ -382,9 +391,17 @@ class PowerSpectrum:
             s = InterpolatedUnivariateSpline(smooth_freq, smooth_pow, k=1)
             self.interp_pow = s(self.freq)
             self.bgcorr_pow = self.pow/self.interp_pow
-
+            
+            '''
+            plt.loglog(self.freq, self.pow)
+            plt.plot(bin_freq, bin_pow)
+            plt.plot(bin_freq, sp)
+            plt.show()
+            pdb.set_trace()
+			'''
+			
             if not self.short_cadence:
-                boxes = np.logspace(np.log10(0.5), np.log10(25.), self.findex['n_trials'])*1.
+                boxes = np.logspace(np.log10(10.), np.log10(25.), self.findex['n_trials'])*1.
             else:
                 boxes = np.logspace(np.log10(50.), np.log10(500.), self.findex['n_trials'])*1.
 
@@ -422,19 +439,22 @@ class PowerSpectrum:
 
                     start += steps
                     j += 1
-            
+                            
                 self.md.append(md[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))])
                 cumsum = cumsum[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))] - min(cumsum[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))])
                 cumsum = list(cumsum/max(cumsum))
                 idx = cumsum.index(max(cumsum))
                 self.cumsum.append(np.array(cumsum))
                 self.fit_numax.append(self.md[i][idx])
+                
+                #pdb.set_trace()
 
                 try:
                     best_vars, covar = curve_fit(gaussian, self.md[i], self.cumsum[i], p0 = [np.mean(self.cumsum[i]), 1.0-np.mean(self.cumsum[i]), self.md[i][idx], self.params['width_sun']*(self.md[i][idx]/self.params['numax_sun'])])
                 except:
                     results.append([self.target, np.nan, np.nan, -np.inf])
                 else:
+                    #pdb.set_trace()
                     self.fx.append(np.linspace(min(md), max(md), 10000))
                     self.fy.append(gaussian(self.fx[i], best_vars[0], best_vars[1], best_vars[2], best_vars[3]))
                     snr = max(self.fy[i])/best_vars[0]
@@ -452,13 +472,6 @@ class PowerSpectrum:
             if self.verbose:
                 print('picking model %d'%(best+1))
             self.write_excess(results[best])
-
-            # if findex module has been run, let that override star info guesses
-            df = pd.read_csv(self.params[self.target]['path']+'%d_findex.csv'%self.target)
-            for col in ['numax', 'dnu', 'snr']:
-                self.params[self.target][col] = df.loc[0,col]
-            self.width = self.params['width_sun']*(self.params[self.target]['numax']/self.params['numax_sun'])
-            self.times = self.width/self.params[self.target]['dnu']
 
             self.plot_findex()
 
@@ -491,6 +504,27 @@ class PowerSpectrum:
 
         if self.check():
             results = []
+                        
+            # check whether output from findex module exists; if yes, let that override star info guesses
+            if glob.glob(self.params[self.target]['path']+'%d_findex.csv'%self.target) != []:
+            	df = pd.read_csv(self.params[self.target]['path']+'%d_findex.csv'%self.target)
+            	for col in ['numax', 'dnu', 'snr']:
+            		self.params[self.target][col] = df.loc[0,col]
+            else:
+            	# if no output from findex module exists, assume SNR is high enough to run fit_background
+            	self.params[self.target]['snr']=10.
+				
+            self.width = self.params['width_sun']*(self.params[self.target]['numax']/self.params['numax_sun'])
+            self.times = self.width/self.params[self.target]['dnu']
+            self.exp_dnu = 0.22*(self.params[self.target]['numax']**0.797)
+            
+            # adjust the lower frequency limit given numax
+            if (self.params[self.target]['numax'] > 300.):
+            	keep=np.where(self.frequency > 100.)[0]
+            	self.frequency=self.frequency[keep]
+            	self.power=self.power[keep]
+            	self.fitbg['lower']=100.
+
             # arbitrary snr cut for leaving region out of background fit, ***statistically validate later?
             if self.fitbg['lower_numax'] is not None:
                 self.maxpower = [self.fitbg['lower_numax'], self.fitbg['upper_numax']]
@@ -499,11 +533,12 @@ class PowerSpectrum:
                     self.maxpower = [self.params[self.target]['numax']-self.width/2., self.params[self.target]['numax']+self.width/2.]
                 else:
                     self.maxpower = [self.params[self.target]['numax']-self.times*self.params[self.target]['dnu'],self.params[self.target]['numax']+self.times*self.params[self.target]['dnu']]
-
+ 
             i = 0
             # sampling process
             while i < self.fitbg['num_mc_iter']:
                 self.i = i
+                print(i)
                 if self.i == 0:
                     # record original PS information for plotting
                     random_pow = np.copy(self.power)
@@ -535,7 +570,7 @@ class PowerSpectrum:
 
                 # estimate white noise level
                 self.get_white_noise(random_pow)
-
+            
                 # exclude region with power excess and smooth to estimate red/white noise components
                 boxkernel = Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution)))
                 self.params[self.target]['mask'] = (self.frequency>=self.maxpower[0])&(self.frequency<=self.maxpower[1])
@@ -563,7 +598,7 @@ class PowerSpectrum:
                     # pdb.set_trace()
                     pars[2*n] = a[n]
                     pars[2*n+1] = self.b[n]
-
+                    
                 if self.i == 0:
                     msk = (bin_freq>self.maxpower[0])&(bin_freq<self.maxpower[1])
                     self.bin_freq = bin_freq[~msk]
@@ -642,10 +677,11 @@ class PowerSpectrum:
                         again = False
                     else:
                         again = True
+                    print(t)
                 else:
                     try:
-                        # pdb.set_trace()
-                        pars, cv = curve_fit(self.fitbg['functions'][self.nlaws], bin_freq, bin_pow, p0 = self.pars, sigma = bin_err, bounds = self.bounds)
+                        # bounds = self.bounds breaks code, commented out for now
+                        pars, cv = curve_fit(self.fitbg['functions'][self.nlaws], bin_freq, bin_pow, p0 = self.pars, sigma = bin_err)#, bounds = self.bounds)
                     except RuntimeError:
                         again = True
                     else:
@@ -662,7 +698,17 @@ class PowerSpectrum:
                 pssm = convolve_fft(random_pow[:], gauss_kernel)
 
                 model = harvey(self.frequency, pars, total=True)
+                
+                # uncomment this to debug/diagnose background fit
+                '''
+                plt.loglog(bin_freq,bin_pow)
+                plt.plot(self.frequency,model)
+                plt.show()
+                pdb.set_trace()
+                '''
+                
                 # correct for edge effects and residual slope in Gaussian fit
+                '''
                 x0 = list(self.frequency[self.params[self.target]['mask']])
                 t0 = pssm[self.params[self.target]['mask']]
                 t1 = model[self.params[self.target]['mask']]
@@ -682,6 +728,9 @@ class PowerSpectrum:
 
                 pssm = np.copy(final_y)
                 pssm_bgcorr = pssm-harvey(final_x, pars, total=True)
+                '''
+                pssm_bgcorr = pssm-model
+				
 
                 region_freq = np.copy(self.frequency[self.params[self.target]['mask']])
                 region_pow = pssm_bgcorr[self.params[self.target]['mask']]
@@ -705,11 +754,16 @@ class PowerSpectrum:
                     self.bg_corr_smooth = convolve(self.bg_corr, boxkernel)
                 else:
                     self.bg_corr_smooth = np.array(self.bg_corr[:])
-
-                self.width = self.params['width_sun']*(p_gauss1[2]/self.params['numax_sun'])
+                    
                 self.numax = p_gauss1[2]
-                self.sm_par = 4.*(self.numax/self.params['numax_sun'])**0.2
-                self.dnu = 0.22*(self.numax**0.797)
+                
+
+                # use input numax to determine the following parameters to make sure 
+                #frequency range does not change between MC iterations
+                #self.width = self.params['width_sun']*(p_gauss1[2]/self.params['numax_sun'])
+                self.width = self.params['width_sun']*(self.params[self.target]['numax']/self.params['numax_sun'])
+                self.sm_par = 4.*(self.params[self.target]['numax']/self.params['numax_sun'])**0.2
+                self.dnu = 0.22*(self.params[self.target]['numax']**0.797)
                 self.times = self.width/self.dnu
                 lim_factor = self.times*self.dnu
 
@@ -724,15 +778,40 @@ class PowerSpectrum:
                 best_auto = peaks_a[idx]
                 peaks_l[idx] = np.nan
                 peaks_a[idx] = np.nan
-
+                
+                # TODO: code-up part of the IDL pipeline which numerically calculates 
+                # the FWHM of the peak identified as best_lag and uses that FWHM to select 
+                # the mask containing only that peak
+                # currently, we fit a Gaussian to the full ACF array to do this (not ideal, 
+                # since the ACF can have many peaks!)
                 bb = self.gaussian_bounds(lag, auto, best_x=best_lag, sigma=10**-2)
                 guesses = [np.mean(auto), best_auto, best_lag, best_lag*0.01*2.]
                 p_gauss2, p_cov2 = curve_fit(gaussian, lag, auto, p0 = guesses, bounds = bb[0])
-
-                mask = (lag >= best_lag-3.*p_gauss2[3])&(lag <= best_lag+3.*p_gauss2[3])
-                zoom_lag = lag[mask]
-                zoom_auto = auto[mask]
+                mask = (lag >= best_lag-5.*p_gauss2[3])&(lag <= best_lag+5.*p_gauss2[3])
+                
+                # the following lines ensure that we always mask out the same region of the 
+                # ACF for each MC iteration
+                if self.i == 0:
+                	omask=mask
+                	oguesses=guesses
+                	oguess = gaussian(lag,np.mean(auto), best_auto, best_lag, best_lag*0.01*2.)
+                zoom_lag = lag[omask]
+                zoom_auto = auto[omask]
+                
+                # fit the masked out peak with a Gaussian function
+                p_gauss2, p_cov2 = curve_fit(gaussian, zoom_lag, zoom_auto, p0 = oguesses)
                 fit = gaussian(zoom_lag, p_gauss2[0], p_gauss2[1], p_gauss2[2], p_gauss2[3])
+                
+                # uncomment this to debug/diagnose Dnu fit
+                '''
+                plt.plot(lag, auto)
+                plt.plot(zoom_lag, zoom_auto)
+                plt.plot(zoom_lag,fit)
+                plt.plot(lag,oguess,ls='dashed')
+                plt.plot(peaks_l,peaks_a,'o')
+                plt.show()
+                '''
+                
                 idx = self.return_max(fit, index=True)
 
                 if self.fitbg['force']:
@@ -829,7 +908,7 @@ class PowerSpectrum:
         # log-log power spectrum with crude background fit
         ax2 = plt.subplot(1+self.nrows,3,2)
         ax2.loglog(self.freq, self.pow, 'w-')
-        ax2.set_xlim([100., max(self.freq)])
+        ax2.set_xlim([min(self.freq), max(self.freq)])
         ax2.set_ylim([min(self.pow), max(self.pow)*1.25])
         ax2.set_title(r'$\rm Crude \,\, background \,\, fit$')
         ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
@@ -841,7 +920,7 @@ class PowerSpectrum:
         # crude background-corrected power spectrum
         ax3 = plt.subplot(1+self.nrows,3,3)
         ax3.plot(self.freq, self.bgcorr_pow, 'w-')
-        ax3.set_xlim([100., max(self.freq)])
+        ax3.set_xlim([min(self.freq), max(self.freq)])
         ax3.set_ylim([0., max(self.bgcorr_pow)*1.25])
         ax3.set_title(r'$\rm Background \,\, corrected \,\, PS$')
         ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
@@ -971,7 +1050,7 @@ class PowerSpectrum:
         ax6 = fig.add_subplot(3,3,6)
         ax6.plot(self.lag, self.auto, 'w-', zorder = 0, linewidth = 1.)
         ax6.scatter(self.peaks_l, self.peaks_a, s = 30., edgecolor = 'r', marker = '^', facecolor = 'none', linewidths = 1.)
-        ax6.axvline(self.best_lag, color = 'white', linestyle = '--', linewidth = 1.5, zorder = 2)
+        ax6.axvline(self.exp_dnu, color = 'white', linestyle = '--', linewidth = 1.5, zorder = 2)
         ax6.scatter(self.best_lag, self.best_auto, s = 45., edgecolor = 'lime', marker = 's', facecolor = 'none', linewidths = 1.)
         ax6.plot(self.zoom_lag, self.zoom_auto, 'r-', zorder = 5, linewidth = 1.)
         ax6.set_title(r'$\rm ACF \,\, for \,\, determining \,\, \Delta\nu$')
@@ -990,7 +1069,7 @@ class PowerSpectrum:
             plot_upper = max(fit)
         ax7 = fig.add_subplot(3,3,7)
         ax7.plot(self.zoom_lag, self.zoom_auto, 'w-', zorder = 0, linewidth = 1.0)
-        ax7.axvline(self.best_lag, color = 'red', linestyle = '--', linewidth = 1.5, zorder = 2)
+        ax7.axvline(self.exp_dnu, color = 'red', linestyle = '--', linewidth = 1.5, zorder = 2)
         ax7.plot(self.zoom_lag, fit, color = 'lime', linewidth = 1.5)
         ax7.axvline([self.zoom_lag[idx]], color = 'lime', linestyle = '--', linewidth = 1.5)
         ax7.set_title(r'$\rm \Delta\nu \,\, fit$')
@@ -1037,7 +1116,7 @@ class PowerSpectrum:
             ax.set_title(titles[i])
 
         plt.tight_layout()
-        if self.findex['save']:
+        if self.fitbg['save']:
             plt.savefig(self.params[self.target]['path']+'%d_mc.png'%self.target, dpi = 300)
         if self.show_plots:
             plt.show()
@@ -1223,14 +1302,17 @@ class PowerSpectrum:
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description = 'This is a script to run the new version of the SYD PYpeline.')
-    parser.add_argument('-e', '-x', '--e', '--x', '-ex', '--ex', '-excess', '--excess', help = 'Use this to turn the find excess function off', dest = 'findex', action = 'store_false')
-    parser.add_argument('-b', '--b', '-bg', '--bg', '-background', '--background', help = 'Use this to disable the background fitting process (although not highly recommended)', dest = 'fitbg', action = 'store_false')
-    parser.add_argument('-f', '--f', '-fr', '--fr','-smooth', '--smooth', help = 'Frequency for smoothing power spectrum in muHz. Default=1 muHz.', default=1., dest='smoothing_freq')
-    parser.add_argument('-m', '--m', '-ms', '--ms', '-mission', '--mission', help = 'Mission used to collect data. Options: Kepler, TESS, K2. Default is Kepler.', \
-                                                                            choices=['Kepler', 'TESS', 'K2'], default='Kepler', dest = 'mission')
-    parser.add_argument('-v', '--v', '-verbose', '--verbose', help = 'Turn on verbose', dest = 'verbose', action = 'store_false')
-    parser.add_argument('-s', '--s', '-show', '--show', help = 'Show plots', dest = 'show', action = 'store_false')
+    parser.add_argument('-e', '-x', '--e', '--x', '-ex', '--ex', '-excess', '--excess', help = 'Turn off the find excess function', dest = 'findex', action = 'store_false')
+    parser.add_argument('-b', '--b', '-bg', '--bg', '-background', '--background', help = 'Turn off the background fitting function (not recommended)', dest = 'fitbg', action = 'store_false')
+    parser.add_argument('-f', '--f', '-fr', '--fr','-smooth', '--smooth', help = 'Frequency for smoothing power spectrum in muHz (Default=1 muHz)', default=1., dest='smoothing_freq')
+#    parser.add_argument('-m', '--m', '-ms', '--ms', '-mission', '--mission', help = 'Mission used to collect data. Options: Kepler, TESS, K2. Default is Kepler.', \
+#                                                                            choices=['Kepler', 'TESS', 'K2'], default='Kepler', dest = 'mission')
+    parser.add_argument('-kc', '--kc', '-keplercorr', '--keplercorr', help = 'Turn on Kepler short-cadence artefact corrections', dest = 'keplercorr', action = 'store_true')
+
+    parser.add_argument('-v', '--v', '-verbose', '--verbose', help = 'Turn on verbose output', dest = 'verbose', action = 'store_true')
+    parser.add_argument('-s', '--s', '-show', '--show', help = 'Show plots', dest = 'show', action = 'store_true')
     parser.add_argument('-i', '--i', '-ignore', '--ignore', help = 'Ignore multiple target output supression', dest = 'ignore', action = 'store_true')
+    parser.add_argument('-mc', '--mc', '-mciter', '--mciter', help = 'Number of MC iterations (Default = 1)', dest = 'mciter', default=1.)
 
     args = parser.parse_args()
     findex = args.findex
@@ -1238,5 +1320,7 @@ if __name__ == '__main__':
     verbose = args.verbose
     show = args.show
     ignore = args.ignore
+    mciter = args.mciter
+    keplercorr = args.keplercorr
 
-    main(args = args, findex = findex, fitbg = fitbg, verbose = verbose, show_plots = show, ignore = ignore)
+    main(args = args, findex = findex, fitbg = fitbg, verbose = verbose, show_plots = show, ignore = ignore, keplercorr = keplercorr)
