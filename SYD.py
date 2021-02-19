@@ -5,6 +5,7 @@ import subprocess
 import matplotlib
 import numpy as np
 import pandas as pd
+import time as clock
 from functions import *
 import multiprocessing as mp
 from astropy.io import ascii
@@ -20,116 +21,45 @@ from matplotlib.ticker import MaxNLocator, MultipleLocator, FormatStrFormatter, 
 import pdb
 
 
-def main(args, findex=True, fitbg=True, verbose=True, show_plots=True, ignore=True, parallel=False, nthreads=None, keplercorr=False):
+def main(args, parallel=False, nthreads=None):
 
-    PS = PowerSpectrum(findex, fitbg, verbose, show_plots, ignore, keplercorr, args)
-    if parallel:
-        PS.ignore = False
-        if nthreads is None:
-            nthreads = mp.cpu_count()-1
-#        print()
-#        print('Multiprocessing %d targets using %d threads'%(len(PS.params['todo']), nthreads))
-#        print()
-        tasks = []
-        for n in range(nthreads):
-            if list(PS.params['todo'][n::nthreads]) != []:
-                tasks.append(list(PS.params['todo'][n::nthreads]))
-        with mp.Pool(processes=len(tasks)) as pool:
-            pool.map(PS.assign_tasks, tasks)
+    args = get_info(args)
+    set_plot_params()
 
-    else:
-        PS.assign_tasks(PS.params['todo'])
+    for target in args.params['todo']:
+        args.target = target
+        Target(args)
 
-    if PS.verbose:
+    if args.verbose:
         print('Combining results into single csv file.')
         print()
     subprocess.call(['python scrape_output.py'], shell=True)
 
     return
 
-
-##########################################################################################
-#                                                                                        #
-#                                      DICTIONARIES                                      #
-#                                                                                        #
-##########################################################################################
-
-
-class PowerSpectrum:
+class Target:
     
-    def __init__(self, findex, fitbg, verbose, show_plots, ignore, keplercorr, args):
-        self.findex        = {}
-        self.findex['do']  = findex
-        self.fitbg         = {}
-        self.fitbg['do']   = fitbg
-        self.verbose       = verbose
-        self.show_plots    = show_plots
-        self.ignore        = ignore
-        self.mciter        = np.int(args.mciter)
-        self.keplercorr       = keplercorr
-        self.smoothing_freq= args.smoothing_freq
-        self.get_info()
-        self.set_plot_params()
-        
+    def __init__(self, args):
+        self.target = args.target
+        self.params = args.params
+        self.findex = args.findex
+        self.fitbg = args.fitbg
+        self.verbose = args.verbose
+        self.show_plots = args.show
+        self.ignore = args.ignore
+        self.keplercorr = args.keplercorr
+        self.filter = args.filter
+        if len(self.params['todo']) > 1 and not self.ignore:
+            self.verbose = False
+            self.show_plots = False
+        self.run_syd()
 
-    def get_info(self, star_info = 'Files/star_info.csv'):
-
-        self.params = {}
-        with open('Files/todo.txt', "r") as f:
-            todo = np.array([int(float(line.strip().split()[0])) for line in f.readlines()])
-        # commented out: always leave it up to use to show plot and have verbose output
-        #if len(todo) > 1 and not self.ignore:
-        #    self.verbose = False
-        #    self.show_plots = False
-        self.params['path'] = 'Files/data/'
-        self.params.update({'numax_sun':3090., 'dnu_sun':135.1, 'width_sun':1300., 'todo':todo, 'G':6.67428e-8, 
-                            'tau_sun':[5.2e6, 1.8e5, 1.7e4, 2.5e3, 280., 80.], 'teff_sun':5777., 'mass_sun':1.9891e33,
-                            'tau_sun_single':[3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.], 'radius_sun':6.95508e10})
-        for target in todo:
-            self.params[target] = {}
-            self.params[target]['path'] = '/'.join(self.params['path'].split('/')[:-2])+'/results/%d/'%target
-
-        if self.findex['do']:
-            self.get_excess_params()
-        if self.fitbg['do']:
-            self.get_bg_params()
-
-        self.get_star_info(star_info)
-        
-
-    def set_plot_params(self):
-
-        plt.style.use('dark_background')
-        plt.rcParams.update({
-                             'agg.path.chunksize': 10000,
-                             'mathtext.fontset': 'stix',
-                             'figure.autolayout': True,
-                             'lines.linewidth': 1,
-                             'axes.titlesize': 18.,
-                             'axes.labelsize': 16.,
-                             'axes.linewidth': 1.25,
-                             'axes.formatter.useoffset': False,
-                             'xtick.major.size':10.,
-                             'xtick.minor.size':5.,
-                             'xtick.major.width':1.25,
-                             'xtick.minor.width':1.25,
-                             'xtick.direction': 'inout',
-                             'ytick.major.size':10.,
-                             'ytick.minor.size':5.,
-                             'ytick.major.width':1.25,
-                             'ytick.minor.width':1.25,
-                             'ytick.direction': 'inout',
-    })
-
-    def assign_tasks(self, targets):
-
-        for target in targets:
-            self.target = target
-            if self.load_data():
-                if self.findex['do']:
-                    self.find_excess()
-                if self.fitbg['do']:
-                    self.fit_background()
+    def run_syd(self):
+        if self.load_data():
+            if self.findex['do']:
+                self.find_excess()
+            if self.fitbg['do']:
+                self.fit_background()
 
 ##########################################################################################
 #                                                                                        #
@@ -137,131 +67,6 @@ class PowerSpectrum:
 #                                                                                        #
 ##########################################################################################
 
-    def get_excess_params(self, save=True, step=0.25, binning=0.005, n_trials=3,
-                          lower=10., upper=4000.):
-
-        pars = ['save', 'step', 'binning', 'smooth_width', 'n_trials', 'lower', 'upper']
-        vals = [save, step, binning, self.smoothing_freq, n_trials, lower, upper]
-
-        self.findex.update(dict(zip(pars, vals)))
-        if self.findex['save']:
-            for target in self.params['todo']:
-                if not os.path.exists(self.params[target]['path']):
-                    os.makedirs(self.params[target]['path'])
-
-    def get_bg_params(self, save=True, box_filter=1.0, ind_width=50, n_rms=20, n_peaks=10,
-                      force=False, guess=140.24, clip=True, ech_smooth=False, ech_filter=1.,
-                      lower_numax=None, upper_numax=None, clip_value=0., lower=10., upper=None):
-
-        
-        pars = ['save', 'num_mc_iter', 'lower', 'upper', 'box_filter', 'ind_width', 'n_rms', 'n_peaks', 'smooth_ps', 'lower_numax', 'upper_numax', 'force', 'guess', 'clip', 'clip_value', 'ech_smooth', 'ech_filter']
-        vals = [save, self.mciter, lower, upper, box_filter, ind_width, n_rms, n_peaks, self.smoothing_freq, lower_numax, upper_numax, force, guess, clip, clip_value, ech_smooth, ech_filter]
-        
-        self.fitbg.update(dict(zip(pars, vals)))
-        self.fitbg['functions'] = {1:harvey_one, 2:harvey_two, 3:harvey_three}
-        if self.fitbg['save']:
-            for target in self.params['todo']:
-                if not os.path.exists(self.params[target]['path']):
-                    os.makedirs(self.params[target]['path'])
-
-    def get_star_info(self, star_info, cols = ['rad', 'logg', 'teff']):
-        if os.path.exists(star_info):
-            df = pd.read_csv(star_info)
-            targets = df.targets.values.tolist()
-            for todo in self.params['todo']:
-                if todo in targets:
-                    idx = targets.index(todo)
-                    for col in cols:
-                        self.params[todo][col] = df.loc[idx,col]
-                    if 'numax' in df.columns.values.tolist():
-                        self.params[todo]['numax'] = df.loc[idx,'numax']
-                        self.params[todo]['dnu'] =  0.22*(df.loc[idx,'numax']**0.797)
-                    else:
-                        self.params[todo]['mass'] = (((self.params[todo]['rad']*self.params['radius_sun'])**(2.))*10**(self.params[todo]['logg'])/self.params['G'])/self.params['mass_sun']
-                        self.params[todo]['numax'] = self.params['numax_sun']*self.params[todo]['mass']*(self.params[todo]['rad']**(-2.))*((self.params[todo]['teff']/self.params['teff_sun'])**(-0.5))
-                        self.params[todo]['dnu'] = self.params['dnu_sun']*(self.params[todo]['mass']**(0.5))*(self.params[todo]['rad']**(-1.5))  
-
-    def get_file(self, path):
-
-        f = open(path, "r")
-        lines = f.readlines()
-        f.close()
-
-        self.x = np.array([float(line.strip().split()[0]) for line in lines])
-        self.y = np.array([float(line.strip().split()[1]) for line in lines])
-
-    def write_excess(self, results):
-
-        variables = ['target', 'numax', 'dnu', 'snr']
-        ascii.write(np.array(results),self.params[self.target]['path']+'%d_findex.csv'%self.target,names=variables,delimiter=',',overwrite=True)
-
-    def write_bgfit(self, results):
-
-        variables = ['target', 'numax(smooth)', 'numax(smooth)_err', 'maxamp(smooth)', 'maxamp(smooth)_err', 'numax(gauss)', 'numax(gauss)_err', 'maxamp(gauss)', 'maxamp(gauss)_err', 'fwhm', 'fwhm_err', 'dnu', 'dnu_err']
-        ascii.write(np.array(results),self.params[self.target]['path']+'%d_globalpars.csv'%self.target,names=variables,delimiter=',',overwrite=True)
-    
-    def remove_artefact(self,frequency,power):
-        '''
-        Removes SC artefacts in Kepler power spectra by replacing them with noise (using linear interpolation)
-        following an exponential distribution; known artefacts are:
-        1) 1./LC harmonics
-        2) unknown artefacts at high frequencies (>5000 muHz)
-        3) excess power between 250-400 muHz (in Q0 and Q3 data only??)
-        @input: frequency and power
-        @output: frequency and power where artefact frequencies are filled with noise
-        '''
-        f,a=self.frequency,self.power
-        oversample = int(round((1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])))
-        resolution = (self.frequency[1]-self.frequency[0])*oversample
-        res = resolution
-
-        lc = 29.4244*60*1e-6  # LC period in Msec
-        lcp = 1./lc
-        art = (1.+np.arange(14)) * lcp
-
-        un1=[4530.,5011.,5097.,5575.,7020.,7440.,7864.] #lower limit of artefact
-        un2=[4534.,5020.,5099.,5585.,7030.,7450.,7867.] #upper limit of artefact 
-
-        usenoise = np.where( (f >= max(f)-100.) & (f <= max(f)-50.))[0]
-        noisefl  = np.mean(a[usenoise])  #noise floor?
-
-        # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
-        for i in range(0,len(art)):
-            if art[i] < np.max(f):
-                
-                use=np.where( (f > art[i]-5.*res ) & (f < art[i]+5.*res) )[0]
-                if use[0] != -1:
-                    a[use] = noisefl*np.random.chisquare(2,len(use))/2.
-
-        # Routine 2: remove artefacts as identified in un1 & un2
-        for i in range(0,len(un1)):
-            if un1[i] < np.max(f):
-                use=np.where( (f > un1[i]) & (f < un2[i]) )[0]
-                if use[0] != -1:
-                    a[use] = noisefl*np.random.chisquare(2,len(use))/2.
-
-
-        # Routine 3: remove two wider artefacts as identified in un1 & un2
-        un1=[240.,500.]
-        un2=[380.,530.]
-
-        for i in range(0,len(un1)):
-            # un1[i] : freq where artefact starts
-            # un2[i] : freq where artefact ends
-            # un_lower : initial freq to start fitting routine (aka un1[i]-20)
-            # un_upper : final freq to end fitting routine     (aka un2[i]+20)
-
-            flower,fupper=un1[i]-20,un2[i]+20   
-            usenoise = np.where( ((f>=flower) & (f<=un1[i])) |\
-                                 ((f>=un2[i]) & (f<=fupper)) )[0]
-            try:
-            	m,b =np.polyfit(f[usenoise],a[usenoise],1) # coeffs for linear fit
-            	use =np.where( (f >= un1[i]) & (f <= un2[i]) )[0]       #index of artefact frequencies (ie. 240-380 muHz)
-            	a[use]=(f[use]*m+b)*np.random.chisquare(2,len(use))/2.  #fill artefact frequencies with noise
-            except:
-           		continue
-        self.y=a
-    
     def load_data(self):
 
         # now done at beginning to make sure it only does this one per target
@@ -283,7 +88,8 @@ class PowerSpectrum:
                 self.nyquist = 10**6/(2.*self.cadence)
                 if self.verbose:
                     print('# LIGHT CURVE: %d lines of data read'%len(self.time))
-
+                if self.short_cadence:
+                    self.fitbg['smooth_ps'] = 2.5
             # load power spectrum
             if not os.path.exists(self.params['path']+'%d_PS.txt'%self.target):
                 if self.verbose:
@@ -297,8 +103,7 @@ class PowerSpectrum:
                     self.remove_artefact(self.frequency,self.power)
                     self.power = np.copy(self.y)
                     if self.verbose:
-                        print('Removing Kepler artefacts')
-
+                        print('## Removing Kepler artefacts ##')
                 if self.verbose:
                     print('# POWER SPECTRUM: %d lines of data read'%len(self.frequency))
             self.oversample = int(round((1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])))
@@ -328,30 +133,118 @@ class PowerSpectrum:
             if hasattr(self, 'findex'):
                 if self.findex['do']:
                     mask = np.ones_like(self.freq, dtype=bool)
-                    if self.findex['lower'] is not None:
-                        mask *= np.ma.getmask(np.ma.masked_greater_equal(self.freq, self.findex['lower']))
-                    if self.findex['upper'] is not None:
-                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.freq, self.findex['upper']))
+                    if self.params[self.target]['lowerx'] is not None:
+                        mask *= np.ma.getmask(np.ma.masked_greater_equal(self.freq, self.params[self.target]['lowerx']))
                     else:
-                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.freq, self.nyquist))
+                        mask *= np.ma.getmask(np.ma.masked_greater_equal(self.freq, self.findex['lower']))
+                    if self.params[self.target]['upperx'] is not None:
+                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.freq, self.params[self.target]['upperx']))
+                    else:
+                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.freq, self.findex['upper']))
                     self.freq = self.freq[mask]
                     self.pow = self.pow[mask]
-            if hasattr(self, 'fitbg'):
-                if self.fitbg['do']:
-                    mask = np.ones_like(self.frequency, dtype=bool)
-                    if self.fitbg['lower'] is not None:
-                        mask *= np.ma.getmask(np.ma.masked_greater_equal(self.frequency, self.fitbg['lower']))
-                    if self.fitbg['upper'] is not None:
-                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.frequency, self.fitbg['upper']))
-                    else:
-                        mask *= np.ma.getmask(np.ma.masked_less_equal(self.frequency, self.nyquist))
-                    self.frequency = self.frequency[mask]
-                    self.power = self.power[mask]
             return True
         else:
             print('Error: data not found for target %d'%self.target)
             return False
 
+    def get_file(self, path):
+
+        f = open(path, "r")
+        lines = f.readlines()
+        f.close()
+
+        self.x = np.array([float(line.strip().split()[0]) for line in lines])
+        self.y = np.array([float(line.strip().split()[1]) for line in lines])
+
+    def save(self):
+        df = pd.DataFrame(self.final_pars)
+        self.df = df.copy()
+        if self.fitbg['num_mc_iter'] > 1:
+            for column in self.df.columns.values.tolist():
+                self.df['%s_err'%column] = np.array([mad_std(self.df[column].values)]*len(self.df))
+        new_df = pd.DataFrame(columns=['parameter','value','uncertainty'])
+        for c, col in enumerate(df.columns.values.tolist()):
+            new_df.loc[c,'parameter'] = col
+            new_df.loc[c,'value'] = self.final_pars[col][0]
+            if self.fitbg['num_mc_iter'] > 1:
+                new_df.loc[c,'uncertainty'] = mad_std(self.final_pars[col])
+            else:
+                new_df.loc[c,'uncertainty'] = '--'
+        new_df.to_csv(self.params[self.target]['path']+'%d_globalpars.csv'%self.target,index=False)
+        if self.fitbg['samples']:
+            self.df.to_csv(self.params[self.target]['path']+'%d_globalpars_all.csv'%self.target,index=False)
+
+    def check(self):
+        if self.findex['do']:
+            # SYD needs some prior knowledge about numax to work well 
+            # (either from findex module or from star info csv)
+            if 'numax' not in self.params[self.target].keys():
+                print("""WARNING: Suggested use of this pipeline requires either
+                         stellar properties to estimate a numax or running the entire
+                         pipeline from scratch (i.e. find_excess) first to
+                         statistically determine a starting point for nuMax.""")
+                return False
+            else:
+                return True
+        else:
+            return False
+
+    def get_initial_guesses(self):
+        # check whether output from findex module exists; if yes, let that override star info guesses
+        if glob.glob(self.params[self.target]['path']+'%d_findex.csv'%self.target) != []:
+            df = pd.read_csv(self.params[self.target]['path']+'%d_findex.csv'%self.target)
+            for col in ['numax', 'dnu', 'snr']:
+            		  self.params[self.target][col] = df.loc[0,col]
+        else:
+            # if no output from findex module exists, assume SNR is high enough to run fit_background
+            self.params[self.target]['snr']=10.
+        # mask power spectrum for fitbg module based on estimated/fitted numax
+        mask = np.ones_like(self.frequency, dtype=bool)
+        if self.params[self.target]['lowerb'] is not None:
+            mask *= np.ma.getmask(np.ma.masked_greater_equal(self.frequency, self.params[self.target]['lowerb']))
+            if self.params[self.target]['upperb'] is not None:
+                mask *= np.ma.getmask(np.ma.masked_less_equal(self.frequency, self.params[self.target]['upperb']))
+            else:
+                mask *= np.ma.getmask(np.ma.masked_less_equal(self.frequency, self.nyquist))
+        else:
+            if self.params[self.target]['numax'] > 300.:
+                mask = np.ma.getmask(np.ma.masked_inside(self.frequency, 100., self.nyquist))
+            else:
+                mask = np.ma.getmask(np.ma.masked_inside(self.frequency, 1., 500.))
+        self.frequency = self.frequency[mask]
+        self.power = self.power[mask]
+        self.width = self.params['width_sun']*(self.params[self.target]['numax']/self.params['numax_sun'])
+        self.times = self.width/self.params[self.target]['dnu']
+        # arbitrary snr cut for leaving region out of background fit, ***statistically validate later?
+        if self.fitbg['lower_numax'] is not None:
+            self.maxpower = [self.fitbg['lower_numax'], self.fitbg['upper_numax']]
+        else:
+            if self.params[self.target]['snr'] < 2.:
+                self.maxpower = [self.params[self.target]['numax']-self.width/2., self.params[self.target]['numax']+self.width/2.]
+            else:
+                self.maxpower = [self.params[self.target]['numax']-self.times*self.params[self.target]['dnu'],self.params[self.target]['numax']+self.times*self.params[self.target]['dnu']]
+        # adjust the lower frequency limit given numax
+        if self.params[self.target]['numax'] > 300.:
+           	self.frequency=self.frequency[self.frequency>100.]
+           	self.power=self.power[self.frequency>100.]
+           	self.fitbg['lower']=100.
+        # use scaling relation from sun to get starting points
+        scale = self.params['numax_sun']/((self.maxpower[1]+self.maxpower[0])/2.)
+        taus = np.array(self.params['tau_sun'])*scale
+        b = 2.*np.pi*(taus*1e-6)
+        mnu = (1./taus)*1e5
+        self.b = b[mnu>=min(self.frequency)]
+        self.mnu = mnu[mnu>=min(self.frequency)]
+        self.nlaws = len(self.mnu)
+        self.mnu_orig = np.copy(self.mnu)
+        self.b_orig = np.copy(self.b)
+
+    def write_excess(self, results):
+
+        variables = ['target', 'numax', 'dnu', 'snr']
+        ascii.write(np.array(results),self.params[self.target]['path']+'%d_findex.csv'%self.target,names=variables,delimiter=',',overwrite=True)
+    
 ##########################################################################################
 #                                                                                        #
 #                            [CRUDE] FIND POWER EXCESS ROUTINE                           #
@@ -380,9 +273,6 @@ class PowerSpectrum:
             if self.verbose:
                 print('binned to %d datapoints'%len(self.bin_freq))
 
-            resolution=self.freq[1]-self.freq[0]
-            # NB: boxsize needs to be in units of bin_freq, not self.freq
-            #boxsize = int(np.ceil(float(self.findex['smooth_width'])/(resolution)))
             boxsize = int(np.ceil(float(self.findex['smooth_width'])/(bin_freq[1]-bin_freq[0])))
             sp = convolve(bin_pow, Box1DKernel(boxsize))
             smooth_freq = bin_freq[int(boxsize/2):-int(boxsize/2)]
@@ -391,17 +281,9 @@ class PowerSpectrum:
             s = InterpolatedUnivariateSpline(smooth_freq, smooth_pow, k=1)
             self.interp_pow = s(self.freq)
             self.bgcorr_pow = self.pow/self.interp_pow
-            
-            '''
-            plt.loglog(self.freq, self.pow)
-            plt.plot(bin_freq, bin_pow)
-            plt.plot(bin_freq, sp)
-            plt.show()
-            pdb.set_trace()
-			'''
-			
+
             if not self.short_cadence:
-                boxes = np.logspace(np.log10(10.), np.log10(25.), self.findex['n_trials'])*1.
+                boxes = np.logspace(np.log10(0.5), np.log10(25.), self.findex['n_trials'])*1.
             else:
                 boxes = np.logspace(np.log10(50.), np.log10(500.), self.findex['n_trials'])*1.
 
@@ -416,8 +298,8 @@ class PowerSpectrum:
 
             for i, box in enumerate(boxes):
 
-                subset = np.ceil(box/resolution)
-                steps = np.ceil((box*self.findex['step'])/resolution)
+                subset = np.ceil(box/self.resolution)
+                steps = np.ceil((box*self.findex['step'])/self.resolution)
 
                 cumsum = np.zeros_like(self.freq)
                 md = np.zeros_like(self.freq)
@@ -430,7 +312,7 @@ class PowerSpectrum:
                     f = self.freq[int(start):int(start+subset)]
                     p = self.bgcorr_pow[int(start):int(start+subset)]
 
-                    lag = np.arange(0., len(p))*resolution
+                    lag = np.arange(0., len(p))*self.resolution
                     auto = np.real(np.fft.fft(np.fft.ifft(p)*np.conj(np.fft.ifft(p))))
                     corr = np.absolute(auto-np.mean(auto))
 
@@ -439,22 +321,19 @@ class PowerSpectrum:
 
                     start += steps
                     j += 1
-                            
+            
                 self.md.append(md[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))])
                 cumsum = cumsum[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))] - min(cumsum[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))])
                 cumsum = list(cumsum/max(cumsum))
                 idx = cumsum.index(max(cumsum))
                 self.cumsum.append(np.array(cumsum))
                 self.fit_numax.append(self.md[i][idx])
-                
-                #pdb.set_trace()
 
                 try:
                     best_vars, covar = curve_fit(gaussian, self.md[i], self.cumsum[i], p0 = [np.mean(self.cumsum[i]), 1.0-np.mean(self.cumsum[i]), self.md[i][idx], self.params['width_sun']*(self.md[i][idx]/self.params['numax_sun'])])
                 except:
                     results.append([self.target, np.nan, np.nan, -np.inf])
                 else:
-                    #pdb.set_trace()
                     self.fx.append(np.linspace(min(md), max(md), 10000))
                     self.fy.append(gaussian(self.fx[i], best_vars[0], best_vars[1], best_vars[2], best_vars[3]))
                     snr = max(self.fy[i])/best_vars[0]
@@ -472,7 +351,6 @@ class PowerSpectrum:
             if self.verbose:
                 print('picking model %d'%(best+1))
             self.write_excess(results[best])
-
             self.plot_findex()
 
 
@@ -481,411 +359,485 @@ class PowerSpectrum:
 #                                  FIT BACKGROUND ROUTINE                                #
 #                                                                                        #
 ##########################################################################################
-# TODOS
-# 1) Change the way the n_laws is modified within the code (i.e. drop Faculae term, long period trends)
-# 2) Making sure the correct number of harvey components make it to the final fit
-# ADDED
-# 1) Ability to change number of points used to calculate RMS of harvey component (default = 10)
 
-    def check(self):
-
-        if not self.findex['do']:
-            # SYD needs some prior knowledge about numax to work well 
-            # (either from findex module or from star info csv)
-            if 'numax' not in self.params[self.target].keys():
-                print("WARNING: Suggested use of this pipeline requires either \n stellar properties to estimate a nuMax or run the entire \n pipeline from scratch (i.e. find_excess) first to \n statistically determine a starting point for nuMax.")
-                return False
-            else:
-                return True
-        else:
-            return True
-
-    def fit_background(self):
+    def fit_background(self, result=''):
 
         if self.check():
-            results = []
-                        
-            # check whether output from findex module exists; if yes, let that override star info guesses
-            if glob.glob(self.params[self.target]['path']+'%d_findex.csv'%self.target) != []:
-            	df = pd.read_csv(self.params[self.target]['path']+'%d_findex.csv'%self.target)
-            	for col in ['numax', 'dnu', 'snr']:
-            		self.params[self.target][col] = df.loc[0,col]
-            else:
-            	# if no output from findex module exists, assume SNR is high enough to run fit_background
-            	self.params[self.target]['snr']=10.
-				
-            self.width = self.params['width_sun']*(self.params[self.target]['numax']/self.params['numax_sun'])
-            self.times = self.width/self.params[self.target]['dnu']
-            self.exp_dnu = 0.22*(self.params[self.target]['numax']**0.797)
-            
-            # adjust the lower frequency limit given numax
-            if (self.params[self.target]['numax'] > 300.):
-            	keep=np.where(self.frequency > 100.)[0]
-            	self.frequency=self.frequency[keep]
-            	self.power=self.power[keep]
-            	self.fitbg['lower']=100.
-
-            # arbitrary snr cut for leaving region out of background fit, ***statistically validate later?
-            if self.fitbg['lower_numax'] is not None:
-                self.maxpower = [self.fitbg['lower_numax'], self.fitbg['upper_numax']]
-            else:
-                if self.params[self.target]['snr'] < 2.:
-                    self.maxpower = [self.params[self.target]['numax']-self.width/2., self.params[self.target]['numax']+self.width/2.]
-                else:
-                    self.maxpower = [self.params[self.target]['numax']-self.times*self.params[self.target]['dnu'],self.params[self.target]['numax']+self.times*self.params[self.target]['dnu']]
- 
-            i = 0
+            self.get_initial_guesses()
+            self.final_pars = final_pars={'numax_smooth':[],'amp_smooth':[],'numax_gaussian':[],'amp_gaussian':[],'fwhm_gaussian':[],'dnu':[],'wn':[]}
             # sampling process
+            i = 0
             while i < self.fitbg['num_mc_iter']:
                 self.i = i
-                print(i)
                 if self.i == 0:
                     # record original PS information for plotting
-                    random_pow = np.copy(self.power)
-                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.frequency, random_pow, self.fitbg['ind_width'])
+                    self.random_pow = np.copy(self.power)
+                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.frequency, self.random_pow, self.fitbg['ind_width'])
                     if self.verbose:
                         print('-------------------------------------------------')
                         print('binned to %d data points'%len(bin_freq))
-                    
-                    # use scaling relation from sun to get starting points
-                    scale = self.params['numax_sun']/((self.maxpower[1]+self.maxpower[0])/2.)
-                    taus = np.array(self.params['tau_sun'])*scale
-                    b = 2.*np.pi*(taus*1e-6)
-                    mnu = (1./taus)*1e5
-                    taus = taus[mnu>=min(self.frequency)]  #amps  #check where we use taus
-                    b = b[mnu>=min(self.frequency)]   #freqs
-                    mnu = mnu[mnu>=min(self.frequency)]
-                    self.nlaws = len(mnu)
-                    self.nlaws_orig = len(mnu)
-                    self.b = b
-                    self.mnu = mnu
-                    self.mnu_orig=mnu
                 else:
                     # randomize power spectrum to get uncertainty on measured values
-                    random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
-                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.frequency, random_pow, self.fitbg['ind_width'])
-                    if self.nlaws != len(self.mnu_orig):
-                        self.mnu = self.mnu_orig[:(self.nlaws)]
-                        self.b   = self.b[:(self.nlaws)]
-
+                    self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
+                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.frequency, self.random_pow, self.fitbg['ind_width'])
+                self.bin_freq = bin_freq[~((bin_freq>self.maxpower[0])&(bin_freq<self.maxpower[1]))]
+                self.bin_pow = bin_pow[~((bin_freq>self.maxpower[0])&(bin_freq<self.maxpower[1]))]
+                self.bin_err = bin_err[~((bin_freq>self.maxpower[0])&(bin_freq<self.maxpower[1]))]
                 # estimate white noise level
-                self.get_white_noise(random_pow)
-            
+                self.get_white_noise()
+
                 # exclude region with power excess and smooth to estimate red/white noise components
                 boxkernel = Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution)))
                 self.params[self.target]['mask'] = (self.frequency>=self.maxpower[0])&(self.frequency<=self.maxpower[1])
-                outer_x = self.frequency[~self.params[self.target]['mask']]
-                outer_y = random_pow[~self.params[self.target]['mask']]
-                smooth_pow = convolve(outer_y, boxkernel)
+                self.smooth_pow = convolve(self.random_pow[~self.params[self.target]['mask']], boxkernel)
                 
+                # temporary array for inputs into model optimization (changes with each iteration) 
                 pars = np.zeros((self.nlaws*2+1))
-                pars[2*self.nlaws] = self.noise
-                a = np.zeros_like(self.mnu)  #changes with each iteration
-
                 # estimate amplitude for each harvey component
-                for j, nu in enumerate(self.mnu):
-                    idx = 0
-                    while self.frequency[idx] < nu:
-                        idx += 1
+                for n, nu in enumerate(self.mnu):
+                    diff = list(np.absolute(self.frequency-nu))
+                    idx = diff.index(min(diff))
                     if idx < self.fitbg['n_rms']:
-                        a[j] = np.mean(smooth_pow[:self.fitbg['n_rms']])
-                    elif (len(smooth_pow)-idx) < self.fitbg['n_rms']:
-                        a[j] = np.mean(smooth_pow[-self.fitbg['n_rms']:])
+                        pars[2*n] = np.mean(self.smooth_pow[:self.fitbg['n_rms']])
+                    elif (len(self.smooth_pow)-idx) < self.fitbg['n_rms']:
+                        pars[2*n] = np.mean(self.smooth_pow[-self.fitbg['n_rms']:])
                     else:
-                        a[j] = np.mean(smooth_pow[idx-int(self.fitbg['n_rms']/2):idx+int(self.fitbg['n_rms']/2)])
-
-                for n in range(self.nlaws):
-                    # pdb.set_trace()
-                    pars[2*n] = a[n]
+                        pars[2*n] = np.mean(self.smooth_pow[idx-int(self.fitbg['n_rms']/2):idx+int(self.fitbg['n_rms']/2)])
                     pars[2*n+1] = self.b[n]
-                    
-                if self.i == 0:
-                    msk = (bin_freq>self.maxpower[0])&(bin_freq<self.maxpower[1])
-                    self.bin_freq = bin_freq[~msk]
-                    self.bin_pow = bin_pow[~msk]
-                    self.bin_err = bin_err[~msk]
-                    self.frequency = np.copy(self.frequency)
-                    self.power = np.copy(self.power)
-                    # self.mnu = mnu
-                    self.a_orig = a
-                    smooth = convolve(self.power, Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution))))
-                    self.smooth_power = np.copy(smooth)
-                    if self.verbose:
-                        print('Comparing %d different models:'%(self.nlaws*2))
-                    # get best fit model 
-                    bounds = []
-                    for law in range(self.nlaws):
-                        bb = np.zeros((2,2*(law+1)+1)).tolist()
-                        for z in range(2*(law+1)):
-                            bb[0][z] = -np.inf
-                            bb[1][z] = np.inf
-                        bb[0][-1] = pars[-1]-0.1
-                        bb[1][-1] = pars[-1]+0.1
-                        bounds.append(tuple(bb))
-                    reduced_chi2 = []
-                    paras = []
-                    names = ['one', 'one', 'two', 'two', 'three', 'three']
-                    dict1 = dict(zip(np.arange(2*self.nlaws),names[:2*self.nlaws]))
-                    for t in range(2*self.nlaws):
-                        if t%2 == 0:  #if mod is 0, 
-                            if self.verbose:
-                                print('%d: %s harvey model w/ white noise free parameter'%(t+1, dict1[t]))
-                            delta = 2*(self.nlaws-(t//2+1))
-                            pams = list(pars[:(-delta-1)])
-                            pams.append(pars[-1])
-                            try:
-                                pp, cv = curve_fit(self.fitbg['functions'][t//2+1], self.bin_freq, self.bin_pow, p0 = pams, sigma = self.bin_err)
-                            except RuntimeError:
-                                paras.append([])
-                                reduced_chi2.append(np.inf)
-                            else:
-                                paras.append(pp)
-                                chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
-                                reduced_chi2.append(chi/(len(outer_x)-len(pams)))
+                pars[-1] = self.noise
+                self.pars = pars
 
-                        else:
-                            if self.verbose:
-                                print('%d: %s harvey model w/ white noise fixed'%(t+1, dict1[t]))
-                            delta = 2*(self.nlaws-(t//2+1))
-                            pams = list(pars[:(-delta-1)])
-                            pams.append(pars[-1])
-                            try:
-                                pp, cv = curve_fit(self.fitbg['functions'][t//2+1], self.bin_freq, self.bin_pow, p0 = pams, sigma = self.bin_err, bounds = bounds[t//2])
-                            except RuntimeError:
-                                paras.append([])
-                                reduced_chi2.append(np.inf)
-                            else:
-                                paras.append(pp)
-                                chi, p = chisquare(f_obs = outer_y, f_exp = harvey(outer_x, pp, total=True))
-                                reduced_chi2.append(chi/(len(outer_x)-len(pams)+1))
-
-                    if np.isfinite(min(reduced_chi2)):
-                        self.model = reduced_chi2.index(min(reduced_chi2))+1   #out of [1,2,3,4,5,6]
-
-                        self.nlaws = ((self.model-1)//2)+1      #out of [1,2,3]
-                        if self.verbose:
-                            print('Based on reduced chi-squared statistic: model %d'%self.model)
-                        pars = paras[self.model-1]   
-                        self.best_model = self.model-1
-                        self.bounds = bounds[self.nlaws-1]
-                        self.pars = pars
-                        final_pars = np.zeros((self.fitbg['num_mc_iter'],self.nlaws*2+12))
-
-                        self.sm_par = 4.*(self.params[self.target]['numax']/self.params['numax_sun'])**0.2
-                        if self.sm_par < 1.:
-                            self.sm_par = 1.
-                        again = False
-                    else:
-                        again = True
-                    print(t)
-                else:
-                    try:
-                        # bounds = self.bounds breaks code, commented out for now
-                        pars, cv = curve_fit(self.fitbg['functions'][self.nlaws], bin_freq, bin_pow, p0 = self.pars, sigma = bin_err)#, bounds = self.bounds)
-                    except RuntimeError:
-                        again = True
-                    else:
-                        again = False
-
-                if again:
+                # smooth power spectrum - ONLY for plotting purposes, not used in subsequent analyses
+                self.smooth_power = convolve(self.power, Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution))))
+                # if optimization does not converge, the rest of the code will not run
+                if self.get_red_noise():
                     continue
+                # save final values for Harvey laws from model fit
+                for n in range(self.nlaws):
+                    self.final_pars['a_%d'%(n+1)].append(self.pars[2*n])
+                    self.final_pars['b_%d'%(n+1)].append(self.pars[2*n+1])
+                self.final_pars['wn'].append(self.pars[2*self.nlaws])
 
-                final_pars[self.i,0:2*self.nlaws+1] = pars
+                # estimate numax by 1) smoothing power and 2) fitting Gaussian
+                self.get_numax_smooth()
+                if list(self.region_freq) != []:
+                    self.get_numax_gaussian()
+                self.bg_corr = self.random_pow/harvey(self.frequency, self.pars, total=True)
 
-                fwhm = self.sm_par*self.params[self.target]['dnu']/self.resolution
-                sig = fwhm/np.sqrt(8*np.log(2))
-                gauss_kernel = Gaussian1DKernel(int(sig))
-                pssm = convolve_fft(random_pow[:], gauss_kernel)
-
-                model = harvey(self.frequency, pars, total=True)
-                
-                # uncomment this to debug/diagnose background fit
-                '''
-                plt.loglog(bin_freq,bin_pow)
-                plt.plot(self.frequency,model)
-                plt.show()
-                pdb.set_trace()
-                '''
-                
-                # correct for edge effects and residual slope in Gaussian fit
-                '''
-                x0 = list(self.frequency[self.params[self.target]['mask']])
-                t0 = pssm[self.params[self.target]['mask']]
-                t1 = model[self.params[self.target]['mask']]
-                delta_y = t0[-1] - t0[0]
-                delta_x = x0[-1] - x0[0]
-                slope = delta_y/delta_x
-                b = slope*(-1.*x0[0]) + t0[0]
-                corrected = np.array([x0[z]*slope + b for z in range(len(x0))])
-                corr_pssm = [t0[z]-corrected[z] + t1[z] for z in range(len(t0))]
-                x2 = list(self.frequency[~self.params[self.target]['mask']])
-                t2 = list(model[~self.params[self.target]['mask']])
-                final_x = np.array(x0+x2)
-                final_y = np.array(corr_pssm+t2)
-                ss = np.argsort(final_x)
-                final_x = final_x[ss]
-                final_y = final_y[ss]
-
-                pssm = np.copy(final_y)
-                pssm_bgcorr = pssm-harvey(final_x, pars, total=True)
-                '''
-                pssm_bgcorr = pssm-model
-				
-
-                region_freq = np.copy(self.frequency[self.params[self.target]['mask']])
-                region_pow = pssm_bgcorr[self.params[self.target]['mask']]
-                idx = self.return_max(region_pow, index=True)
-                final_pars[self.i,2*self.nlaws+1] = region_freq[idx]
-                final_pars[self.i,2*self.nlaws+2] = region_pow[idx]
-
-                if list(region_freq) != []:
-                    bb = self.gaussian_bounds(region_freq, region_pow)
-                    guesses = [0., max(region_pow), region_freq[idx], (max(region_freq)-min(region_freq))/8./np.sqrt(8.*np.log(2.))]
-                    p_gauss1, p_cov = curve_fit(gaussian, region_freq, region_pow, p0 = guesses, bounds = bb[0])
-                    final_pars[self.i,2*self.nlaws+3] = p_gauss1[2]
-                    final_pars[self.i,2*self.nlaws+4] = p_gauss1[1]
-                    final_pars[self.i,2*self.nlaws+5] = p_gauss1[3]
-
-                self.bg_corr = random_pow/harvey(self.frequency, pars, total=True)
-
-                # optional smoothing of PS to remove fine structure
+                # optional smoothing of PS to remove fine structure before computing ACF
                 if self.fitbg['smooth_ps'] is not None:
                     boxkernel = Box1DKernel(int(np.ceil(self.fitbg['smooth_ps']/self.resolution)))
                     self.bg_corr_smooth = convolve(self.bg_corr, boxkernel)
                 else:
-                    self.bg_corr_smooth = np.array(self.bg_corr[:])
-                    
-                self.numax = p_gauss1[2]
-                
+                    self.bg_corr_smooth = np.copy(self.bg_corr)
 
-                # use input numax to determine the following parameters to make sure 
-                #frequency range does not change between MC iterations
-                #self.width = self.params['width_sun']*(p_gauss1[2]/self.params['numax_sun'])
-                self.width = self.params['width_sun']*(self.params[self.target]['numax']/self.params['numax_sun'])
-                self.sm_par = 4.*(self.params[self.target]['numax']/self.params['numax_sun'])**0.2
-                self.dnu = 0.22*(self.params[self.target]['numax']**0.797)
-                self.times = self.width/self.dnu
-                lim_factor = self.times*self.dnu
-
-                freq = self.frequency[(self.frequency >= self.numax-lim_factor)&(self.frequency <= self.numax+lim_factor)]
-                psd = self.bg_corr_smooth[(self.frequency >= self.numax-lim_factor)&(self.frequency <= self.numax+lim_factor)]
-                lag, auto = self.corr(freq, psd)
-                peaks_l, peaks_a = self.max_elements(lag, auto)
-
-                # pick the peak closest to the modeled numax
-                idx = self.return_max(peaks_l, index=True, dnu=True)
-                best_lag = peaks_l[idx]
-                best_auto = peaks_a[idx]
-                peaks_l[idx] = np.nan
-                peaks_a[idx] = np.nan
-                
-                # TODO: code-up part of the IDL pipeline which numerically calculates 
-                # the FWHM of the peak identified as best_lag and uses that FWHM to select 
-                # the mask containing only that peak
-                # currently, we fit a Gaussian to the full ACF array to do this (not ideal, 
-                # since the ACF can have many peaks!)
-                bb = self.gaussian_bounds(lag, auto, best_x=best_lag, sigma=10**-2)
-                guesses = [np.mean(auto), best_auto, best_lag, best_lag*0.01*2.]
-                p_gauss2, p_cov2 = curve_fit(gaussian, lag, auto, p0 = guesses, bounds = bb[0])
-                mask = (lag >= best_lag-5.*p_gauss2[3])&(lag <= best_lag+5.*p_gauss2[3])
-                
-                # the following lines ensure that we always mask out the same region of the 
-                # ACF for each MC iteration
+                # calculate ACF using ffts (default) and estimate large frequency separation
+                dnu = self.get_frequency_spacing()
+                self.final_pars['dnu'].append(dnu)
                 if self.i == 0:
-                	omask=mask
-                	oguesses=guesses
-                	oguess = gaussian(lag,np.mean(auto), best_auto, best_lag, best_lag*0.01*2.)
-                zoom_lag = lag[omask]
-                zoom_auto = auto[omask]
-                
-                # fit the masked out peak with a Gaussian function
-                p_gauss2, p_cov2 = curve_fit(gaussian, zoom_lag, zoom_auto, p0 = oguesses)
-                fit = gaussian(zoom_lag, p_gauss2[0], p_gauss2[1], p_gauss2[2], p_gauss2[3])
-                
-                # uncomment this to debug/diagnose Dnu fit
-                '''
-                plt.plot(lag, auto)
-                plt.plot(zoom_lag, zoom_auto)
-                plt.plot(zoom_lag,fit)
-                plt.plot(lag,oguess,ls='dashed')
-                plt.plot(peaks_l,peaks_a,'o')
-                plt.show()
-                '''
-                
-                idx = self.return_max(fit, index=True)
-
-                if self.fitbg['force']:
-                    self.dnu = self.fitbg['guess']
-                else:
-                    self.dnu = zoom_lag[idx]
-                
-                self.get_ridges()
-                final_pars[self.i,2*self.nlaws+6] = self.dnu
-
-                if self.i == 0 and not again:
-                    self.pssm = pssm
-                    self.region_freq = region_freq
-                    self.region_pow = region_pow
-                    self.gauss_1 = p_gauss1
-                    self.freq = freq
-                    self.psd = psd
-                    self.lag = lag            
-                    self.auto = auto
-                    self.best_lag = best_lag       
-                    self.best_auto = best_auto
-                    self.peaks_l = peaks_l
-                    self.peaks_a = peaks_a
-                    self.zoom_lag = zoom_lag
-                    self.zoom_auto = zoom_auto
-                    self.gauss_2 = p_gauss2
+                    self.get_ridges()
                     self.plot_fitbg()
+                i+=1
 
-                i += 1
-
+            self.save()
             if self.fitbg['num_mc_iter'] > 1:
+                self.plot_mc() 
                 if self.verbose:
-                    print('numax (smoothed): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+1],mad_std(final_pars[:,2*self.nlaws+1])))
-                    print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+2],mad_std(final_pars[:,2*self.nlaws+2])))
-                    print('numax (gaussian): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+3],mad_std(final_pars[:,2*self.nlaws+3])))
-                    print('maxamp (gaussian): %.2f +/- %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+4],mad_std(final_pars[:,2*self.nlaws+4])))
-                    print('fwhm (gaussian): %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+5],mad_std(final_pars[:,2*self.nlaws+5])))
-                    print('dnu: %.2f +/- %.2f muHz'%(final_pars[0,2*self.nlaws+6],mad_std(final_pars[:,2*self.nlaws+6])))
+                    print('numax (smoothed): %.2f +/- %.2f muHz'%(self.final_pars['numax_smooth'][0],mad_std(self.final_pars['numax_smooth'])))
+                    print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz'%(self.final_pars['amp_smooth'][0],mad_std(self.final_pars['amp_smooth'])))
+                    print('numax (gaussian): %.2f +/- %.2f muHz'%(self.final_pars['numax_gaussian'][0],mad_std(self.final_pars['numax_gaussian'])))
+                    print('maxamp (gaussian): %.2f +/- %.2f ppm^2/muHz'%(self.final_pars['amp_gaussian'][0],mad_std(self.final_pars['amp_gaussian'])))
+                    print('fwhm (gaussian): %.2f +/- %.2f muHz'%(self.final_pars['fwhm_gaussian'][0],mad_std(self.final_pars['fwhm_gaussian'])))
+                    print('dnu: %.2f +/- %.2f muHz'%(self.final_pars['dnu'][0],mad_std(self.final_pars['dnu'])))
                     print('-------------------------------------------------')
                     print()
-                results.append([self.target,final_pars[0,2*self.nlaws+1],mad_std(final_pars[:,2*self.nlaws+1]),final_pars[0,2*self.nlaws+2],mad_std(final_pars[:,2*self.nlaws+2]),final_pars[0,2*self.nlaws+3],mad_std(final_pars[:,2*self.nlaws+3]),final_pars[0,2*self.nlaws+4],mad_std(final_pars[:,2*self.nlaws+4]),final_pars[0,2*self.nlaws+5],mad_std(final_pars[:,2*self.nlaws+5]),final_pars[0,2*self.nlaws+6],mad_std(final_pars[:,2*self.nlaws+6])])
-                self.plot_mc(final_pars)
-
             else:
-                if again:
-                    results.append([self.target,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan,np.nan])
-                else:
-                    if self.verbose:
-                        print('numax (smoothed): %.2f muHz'%(final_pars[0,2*self.nlaws+1]))
-                        print('maxamp (smoothed): %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+2]))
-                        print('numax (gaussian): %.2f muHz'%(final_pars[0,2*self.nlaws+3]))
-                        print('maxamp (gaussian): %.2f ppm^2/muHz'%(final_pars[0,2*self.nlaws+4]))
-                        print('fwhm (gaussian): %.2f muHz'%(final_pars[0,2*self.nlaws+5]))
-                        print('dnu: %.2f muHz'%(final_pars[0,2*self.nlaws+6]))
-                        print('-------------------------------------------------')
-                        print()
-                    results.append([self.target,final_pars[0,2*self.nlaws+1],0.,final_pars[0,2*self.nlaws+2],0.,final_pars[0,2*self.nlaws+3],0.,final_pars[0,2*self.nlaws+4],0.,final_pars[0,2*self.nlaws+5],0.,final_pars[0,2*self.nlaws+6],0.])
+                if self.verbose:
+                    print('numax (smoothed): %.2f muHz'%(self.final_pars['numax_smooth'][0]))
+                    print('maxamp (smoothed): %.2f ppm^2/muHz'%(self.final_pars['amp_smooth'][0]))
+                    print('numax (gaussian): %.2f muHz'%(self.final_pars['numax_gaussian'][0]))
+                    print('maxamp (gaussian): %.2f ppm^2/muHz'%(self.final_pars['amp_gaussian'][0]))
+                    print('fwhm (gaussian): %.2f muHz'%(self.final_pars['fwhm_gaussian'][0]))
+                    print('dnu: %.2f'%(self.final_pars['dnu'][0]))
+                    print('-------------------------------------------------')
+                    print()  
 
-            self.write_bgfit(results[0])
+##########################################################################################
+#                                                                                        #
+#                                SYD-RELATED  FUNCTIONS                                  #
+#                                                                                        #
+##########################################################################################
 
-    def get_white_noise(self, random_pow):
+    def remove_artefact(self, frequency, power, lc=29.4244*60*1e-6):
+        '''
+        Removes SC artefacts in Kepler power spectra by replacing them with noise (using linear interpolation)
+        following an exponential distribution; known artefacts are:
+        1) 1./LC harmonics
+        2) unknown artefacts at high frequencies (>5000 muHz)
+        3) excess power between 250-400 muHz (in Q0 and Q3 data only??)
+        @input: frequency and power
+        @output: frequency and power where artefact frequencies are filled with noise
+        '''
+        f,a=self.frequency,self.power
+        oversample = int(round((1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])))
+        resolution = (self.frequency[1]-self.frequency[0])*oversample
+
+        lcp = 1./lc #LC period in Msec -> 1/LC ~muHz
+        art = (1.+np.arange(14))*lcp
+
+        un1=[4530.,5011.,5097.,5575.,7020.,7440.,7864.] #lower limit of artefact
+        un2=[4534.,5020.,5099.,5585.,7030.,7450.,7867.] #upper limit of artefact 
+        noisefl  = np.mean(a[(f>=max(f)-100.)&(f<=max(f)-50.)])  #estimate white noise 
+
+        # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
+        for i in range(len(art)):
+            if art[i] < np.max(f):
+                use=np.where((f>art[i]-5.*resolution)&(f<art[i]+5.*resolution))[0]
+                if use[0] != -1:
+                    a[use] = noisefl*np.random.chisquare(2,len(use))/2.
+
+        # Routine 2: remove artefacts as identified in un1 & un2
+        for i in range(0,len(un1)):
+            if un1[i] < np.max(f):
+                use=np.where( (f > un1[i]) & (f < un2[i]) )[0]
+                if use[0] != -1:
+                    a[use] = noisefl*np.random.chisquare(2,len(use))/2.
+
+        # Routine 3: remove two wider artefacts as identified in un1 & un2
+        un1=[240.,500.]
+        un2=[380.,530.]
+
+        for i in range(0,len(un1)):
+            # un1[i] : freq where artefact starts
+            # un2[i] : freq where artefact ends
+            # un_lower : initial freq to start fitting routine (aka un1[i]-20)
+            # un_upper : final freq to end fitting routine     (aka un2[i]+20)
+            flower,fupper=un1[i]-20,un2[i]+20   
+            usenoise = np.where(((f>=flower)&(f<=un1[i]))|\
+                                ((f>=un2[i])&(f<=fupper)))[0]
+            m,b =np.polyfit(f[usenoise],a[usenoise],1) # coeffs for linear fit
+            use =np.where((f>=un1[i])&(f<=un2[i]))[0]       #index of artefact frequencies (ie. 240-380 muHz)
+            a[use]=(f[use]*m+b)*np.random.chisquare(2,len(use))/2.  #fill artefact frequencies with noise
+        self.y=a
+
+    def get_white_noise(self):
 
         if self.nyquist < 400.:
             mask = (self.frequency>200.)&(self.frequency<270.)
-            self.noise = np.mean(random_pow[mask])
+            self.noise = np.mean(self.random_pow[mask])
         elif self.nyquist > 400. and self.nyquist < 5000.:
             mask = (self.frequency>4000.)&(self.frequency<4167.)
-            self.noise = np.mean(random_pow[mask])
+            self.noise = np.mean(self.random_pow[mask])
         elif self.nyquist > 5000. and self.nyquist < 9000.:
             mask = (self.frequency>8000.)&(self.frequency<8200.)
-            self.noise = np.mean(random_pow[mask])
+            self.noise = np.mean(self.random_pow[mask])
         else:
             mask = (self.frequency>(max(self.frequency)-0.1*mask(self.frequency)))&(self.frequency<max(self.frequency))
-            self.noise = np.mean(random_pow[mask])
+            self.noise = np.mean(self.random_pow[mask])
+
+    def get_red_noise(self, names=['one', 'one', 'two', 'two', 'three', 'three', 'four', 'four', 'five', 'five', 'six', 'six'],  
+                      bounds=[], reduced_chi2=[], paras=[], a=[]):
+        # get best fit model 
+        if self.i == 0:
+            reduced_chi2=[]
+            bounds=[]
+            a=[]
+            paras=[]
+            for n in range(self.nlaws):
+                a.append(self.pars[2*n])
+            self.a_orig=np.array(a)
+            if self.verbose:
+                print('Comparing %d different models:'%(self.nlaws*2))
+            for law in range(self.nlaws):
+                bb = np.zeros((2,2*(law+1)+1)).tolist()
+                for z in range(2*(law+1)):
+                    bb[0][z] = -np.inf
+                    bb[1][z] = np.inf
+                bb[0][-1] = 0.
+                bb[1][-1] = np.inf
+                bounds.append(tuple(bb))
+            dict1 = dict(zip(np.arange(2*self.nlaws),names[:2*self.nlaws]))
+            for t in range(2*self.nlaws):
+                if t%2 == 0:  
+                    if self.verbose:
+                        print('%d: %s harvey model w/ white noise free parameter'%(t+1, dict1[t]))
+                    delta = 2*(self.nlaws-(t//2+1))
+                    pams = list(self.pars[:(-delta-1)])
+                    pams.append(self.pars[-1])
+                    try:
+                        pp, cv = curve_fit(self.fitbg['functions'][t//2+1], self.bin_freq, self.bin_pow, p0=pams, sigma=self.bin_err)
+                    except RuntimeError:
+                        paras.append([])
+                        reduced_chi2.append(np.inf)
+                    else:
+                        paras.append(pp)
+                        chi, p = chisquare(f_obs=self.random_pow[~self.params[self.target]['mask']], f_exp=harvey(self.frequency[~self.params[self.target]['mask']], pp, total=True))
+                        reduced_chi2.append(chi/(len(self.frequency[~self.params[self.target]['mask']])-len(pams)))
+                else:
+                    if self.verbose:
+                        print('%d: %s harvey model w/ white noise fixed'%(t+1, dict1[t]))
+                    delta = 2*(self.nlaws-(t//2+1))
+                    pams = list(self.pars[:(-delta-1)])
+                    pams.append(self.pars[-1])
+                    try:
+                        pp, cv = curve_fit(self.fitbg['functions'][t//2+1], self.bin_freq, self.bin_pow, p0=pams, sigma=self.bin_err, bounds=bounds[t//2])
+                    except RuntimeError:
+                        paras.append([])
+                        reduced_chi2.append(np.inf)
+                    else:
+                        paras.append(pp)
+                        chi, p = chisquare(f_obs=self.random_pow[~self.params[self.target]['mask']], f_exp=harvey(self.frequency[~self.params[self.target]['mask']], pp, total=True))
+                        reduced_chi2.append(chi/(len(self.frequency[~self.params[self.target]['mask']])-len(pams)+1))
+            if np.isfinite(min(reduced_chi2)):
+                model = reduced_chi2.index(min(reduced_chi2))+1
+                if self.nlaws != (((model-1)//2)+1):
+                    self.nlaws = ((model-1)//2)+1
+                    self.mnu = self.mnu[:(self.nlaws)]
+                    self.b = self.b[:(self.nlaws)]
+                if self.verbose:
+                    print('Based on reduced chi-squared statistic: model %d'%model)
+                self.bounds = bounds[self.nlaws-1]
+                self.pars = paras[model-1] 
+                self.exp_numax = self.params[self.target]['numax']
+                self.exp_dnu = self.params[self.target]['dnu']
+                self.sm_par = 4.*(self.exp_numax/self.params['numax_sun'])**0.2
+                if self.sm_par < 1.:
+                    self.sm_par = 1.
+                for n in range(self.nlaws):
+                    self.final_pars['a_%d'%(n+1)]=[]
+                    self.final_pars['b_%d'%(n+1)]=[]
+                again = False
+            else:
+                again = True
+        else:
+            try:
+                pars, cv = curve_fit(self.fitbg['functions'][self.nlaws], self.bin_freq, self.bin_pow, p0=self.pars, sigma=self.bin_err, bounds=self.bounds)
+            except RuntimeError:
+                again = True
+            else:
+                self.pars = pars
+                self.sm_par = 4.*(self.exp_numax/self.params['numax_sun'])**0.2
+                if self.sm_par < 1.:
+                    self.sm_par = 1.
+                again = False
+        return again
+
+    def get_numax_smooth(self):
+        sig = (self.sm_par*(self.exp_dnu/self.resolution))/np.sqrt(8.*np.log(2.))
+        pssm = convolve_fft(np.copy(self.random_pow), Gaussian1DKernel(int(sig)))
+        model = harvey(self.frequency, self.pars, total=True)
+        inner_freq = list(self.frequency[self.params[self.target]['mask']])
+        inner_obs = list(pssm[self.params[self.target]['mask']])
+        outer_freq = list(self.frequency[~self.params[self.target]['mask']])
+        outer_mod = list(model[~self.params[self.target]['mask']])
+        if self.fitbg['slope']:
+            # correct for edge effects and residual slope in Gaussian fit
+            inner_mod = model[self.params[self.target]['mask']]
+            delta_y = inner_obs[-1]-inner_obs[0]
+            delta_x = inner_freq[-1]-inner_freq[0]
+            slope = delta_y/delta_x
+            b = slope*(-1.*inner_freq[0])+inner_obs[0]
+            corrected = np.array([inner_freq[z]*slope+b for z in range(len(inner_freq))])
+            corr_pssm = [inner_obs[z]-corrected[z]+inner_mod[z] for z in range(len(inner_obs))]
+            final_y = np.array(corr_pssm+outer_mod)
+        else:
+            outer_freq = list(self.frequency[~self.params[self.target]['mask']])
+            outer_mod = list(model[~self.params[self.target]['mask']])
+            final_y = np.array(inner_obs+outer_mod)
+        final_x = np.array(inner_freq+outer_freq)
+        ss = np.argsort(final_x)
+        final_x = final_x[ss]
+        final_y = final_y[ss]
+        self.pssm = np.copy(final_y)
+        self.pssm_bgcorr = self.pssm-harvey(final_x, self.pars, total=True)
+        self.region_freq = self.frequency[self.params[self.target]['mask']]
+        self.region_pow = self.pssm_bgcorr[self.params[self.target]['mask']]
+        idx = return_max(self.region_pow, index=True)
+        self.final_pars['numax_smooth'].append(self.region_freq[idx])
+        self.final_pars['amp_smooth'].append(self.region_pow[idx])
+        self.guesses = [0., max(self.region_pow), self.region_freq[idx], (max(self.region_freq)-min(self.region_freq))/np.sqrt(8.*np.log(2.))]
+
+    def get_numax_gaussian(self):
+        bb = gaussian_bounds(self.region_freq, self.region_pow)
+        p_gauss1, p_cov = curve_fit(gaussian, self.region_freq, self.region_pow, p0=self.guesses, bounds=bb[0])
+        # create array with finer resolution for purposes of quantifying uncertainty
+        new_freq = np.linspace(min(self.region_freq),max(self.region_freq),10000)
+        numax_fit = list(gaussian(new_freq, p_gauss1[0], p_gauss1[1], p_gauss1[2], p_gauss1[3]))
+        d=numax_fit.index(max(numax_fit))
+        self.final_pars['numax_gaussian'].append(new_freq[d])
+        self.final_pars['amp_gaussian'].append(p_gauss1[1])
+        self.final_pars['fwhm_gaussian'].append(p_gauss1[3])
+        if self.i == 0:
+            self.exp_numax = new_freq[d]
+            self.exp_dnu = 0.22*(self.exp_numax**0.797)
+            self.width = self.params['width_sun']*(self.exp_numax/self.params['numax_sun'])/2.
+            self.new_freq = np.copy(new_freq)
+            self.numax_fit = np.array(numax_fit)
+
+    def get_frequency_spacing(self):
+        self.compute_acf()
+        dnu = self.estimate_dnu()
+        return dnu
+
+    def compute_acf(self, fft=True):
+        power = self.bg_corr_smooth[(self.frequency >= self.exp_numax-self.width)&(self.frequency <= self.exp_numax+self.width)]
+        lag = np.arange(0., len(power))*self.resolution
+        if fft:
+            auto = np.real(np.fft.fft(np.fft.ifft(power)*np.conj(np.fft.ifft(power))))
+        else:
+            auto = np.correlate(power-np.mean(power), power-np.mean(power), "full")    
+            auto = auto[int(auto.size/2):]
+        mask = np.ma.getmask(np.ma.masked_inside(lag, self.exp_dnu/4., 2.*self.exp_dnu+self.exp_dnu/4.))
+        lag = lag[mask]
+        auto = auto[mask]
+        auto -= min(auto)
+        auto /= max(auto)
+        self.lag = np.copy(lag)
+        self.auto = np.copy(auto)
+        if self.i == 0:
+            self.freq = self.frequency[self.params[self.target]['mask']]
+            self.psd = self.bg_corr_smooth[self.params[self.target]['mask']]
+
+    def estimate_dnu(self):
+        if self.i == 0:
+            # get peaks from ACF
+            peaks_l, peaks_a = self.max_elements(self.lag, self.auto)
+            # pick the peak closest to the modeled numax
+            idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
+            bb = gaussian_bounds(self.lag, self.auto, best_x=peaks_l[idx], sigma=10**-2)
+            guesses = [np.mean(self.auto), peaks_a[idx], peaks_l[idx], peaks_l[idx]*0.01*2.]
+            p_gauss2, p_cov2 = curve_fit(gaussian, self.lag, self.auto, p0=guesses, bounds=bb[0])
+            self.fitbg['acf_mask']=[peaks_l[idx]-5.*p_gauss2[3],peaks_l[idx]+5.*p_gauss2[3]]
+        # do the same only with the single peak
+        zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+        zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+        # get peaks from ACF
+        peaks_l, peaks_a = self.max_elements(zoom_lag, zoom_auto)
+        # pick the peak closest to the modeled numax
+#        idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
+        best_lag = peaks_l[0]
+        best_auto = peaks_a[0]
+        bb = gaussian_bounds(zoom_lag, zoom_auto, best_x=best_lag, sigma=10**-2)
+        guesses = [np.mean(zoom_auto), best_auto, best_lag, best_lag*0.01*2.]
+        p_gauss3, p_cov3 = curve_fit(gaussian, zoom_lag, zoom_auto, p0=guesses, bounds=bb[0])
+        # create array with finer resolution for purposes of quantifying dnu uncertainty
+        new_lag = np.linspace(min(zoom_lag),max(zoom_lag),2000)
+        dnu_fit = list(gaussian(new_lag, p_gauss3[0], p_gauss3[1], p_gauss3[2], p_gauss3[3]))
+        d=dnu_fit.index(max(dnu_fit))
+        if self.fitbg['force']:
+            dnu = self.fitbg['guess']
+        else:
+            dnu = new_lag[d]
+        if self.i == 0:
+            peaks_l[idx] = np.nan
+            peaks_a[idx] = np.nan
+            self.peaks_l = peaks_l
+            self.peaks_a = peaks_a
+            self.best_lag = best_lag
+            self.best_auto = best_auto
+            self.zoom_lag = zoom_lag
+            self.zoom_auto = zoom_auto
+            self.obs_dnu = dnu
+            self.new_lag = new_lag
+            self.dnu_fit = dnu_fit
+        return dnu
+
+    def get_ridges(self, start=0.):
+
+#        self.get_best_dnu()
+        ech, gridx, gridy, extent = self.echelle()
+        N, M = ech.shape[0], ech.shape[1]
+        ech_copy = np.array(list(ech.reshape(-1)))
+
+        n = int(np.ceil(self.obs_dnu/self.resolution))
+        xax = np.zeros(n)
+        yax = np.zeros(n)
+        modx = self.frequency%self.obs_dnu
+        for k in range(n):
+            use = np.where((modx >= start)&(modx < start+self.resolution))[0]
+            if len(use) == 0:
+                continue
+            xax[k] = np.median(modx[use])
+            yax[k] = np.sum(self.bg_corr[use])
+            start += self.resolution
+        xax = np.array(list(xax)+list(xax+self.obs_dnu))
+        yax = np.array(list(yax)+list(yax))-min(yax)
+        mask = np.ma.getmask(np.ma.masked_where(yax==0.,yax))
+        if self.fitbg['clip']:
+            if self.fitbg['clip_value'] != 0.:
+                cut = self.fitbg['clip_value']
+            else:
+                cut = np.nanmedian(ech_copy)+(3.*np.nanmedian(ech_copy))
+            ech_copy[ech_copy > cut] = cut
+        self.ech_copy = ech_copy
+        self.ech = ech_copy.reshape((N,M))
+        self.extent = extent
+        self.xax = xax[~mask]
+        self.yax = yax[~mask]
+
+    def get_best_dnu(self):
+        dnus = np.arange(self.obs_dnu-0.05*self.obs_dnu, self.obs_dnu+0.05*self.obs_dnu, 0.01)
+        difference = np.zeros_like(dnus)
+        for x, d in enumerate(dnus):
+            start = 0.
+            n = int(np.ceil(d/self.resolution))
+            xax = np.zeros(n)
+            yax = np.zeros(n)
+            modx = self.frequency%d
+            for k in range(n):
+                use = np.where((modx >= start)&(modx < start+self.resolution))[0]
+                if len(use) == 0:
+                    continue
+                xax[k] = np.median(modx[use])
+                yax[k] = np.sum(self.bg_corr[use])
+                start += self.resolution
+            difference[x] = np.max(yax)-np.mean(yax)
+        idx = return_max(difference, index=True)
+        self.obs_dnu = dnus[idx]
+
+    def echelle(self, n_across=50, startx=0.):
+
+        if self.fitbg['ech_smooth']:
+            boxkernel = Box1DKernel(int(np.ceil(self.fitbg['ech_filter']/self.resolution)))
+            smooth_y = convolve(self.bg_corr, boxkernel)
+        nox = n_across
+        noy = int(np.ceil((max(self.frequency)-min(self.frequency))/self.obs_dnu))
+        if nox > 2 and noy > 5:
+            xax = np.arange(0., self.obs_dnu+(self.obs_dnu/n_across)/2., self.obs_dnu/n_across)
+            yax = np.arange(min(self.frequency), max(self.frequency), self.obs_dnu)
+            arr = np.zeros((len(xax),len(yax)))
+            gridx = np.zeros(len(xax))
+            gridy = np.zeros(len(yax))
+
+            modx = self.frequency%self.obs_dnu
+            starty = min(self.frequency)
+            for ii in range(len(gridx)):
+                for jj in range(len(gridy)):
+                    use = np.where((modx >= startx)&(modx < startx+self.obs_dnu/n_across)&(self.frequency >= starty)&(self.frequency < starty+self.obs_dnu))[0]
+                    if len(use) == 0:
+                        arr[ii,jj] = np.nan
+                    else:
+                        arr[ii,jj] = np.sum(self.bg_corr[use])
+                    gridy[jj] = starty + self.obs_dnu/2.
+                    starty += self.obs_dnu
+                gridx[ii] = startx + self.obs_dnu/n_across/2.
+                starty = min(self.frequency)
+                startx += self.obs_dnu/n_across
+            smoothed = arr
+            dim = smoothed.shape
+
+            smoothed_2 = np.zeros((2*dim[0],dim[1]))
+            smoothed_2[0:dim[0],:] = smoothed
+            smoothed_2[dim[0]:(2*dim[0]),:] = smoothed
+            smoothed = np.swapaxes(smoothed_2, 0, 1)
+            extent = [min(gridx)-self.obs_dnu/n_across/2., 2*max(gridx)+self.obs_dnu/n_across/2., min(gridy)-self.obs_dnu/2., max(gridy)+self.obs_dnu/2.]
+            return smoothed, np.array(list(gridx)+list(gridx+self.obs_dnu)), gridy, extent
+
+    def max_elements(self, x, y):
+        s = np.argsort(y)
+        peaks_y = y[s][-int(self.fitbg['n_peaks']):][::-1]
+        peaks_x = x[s][-int(self.fitbg['n_peaks']):][::-1]
+        return peaks_x, peaks_y
 
 ##########################################################################################
 #                                                                                        #
@@ -971,7 +923,7 @@ class PowerSpectrum:
         ax2.plot(self.frequency[self.frequency<self.maxpower[0]], self.smooth_power[self.frequency<self.maxpower[0]], 'r-', linewidth = 0.75, zorder = 1)
         ax2.plot(self.frequency[self.frequency>self.maxpower[1]], self.smooth_power[self.frequency>self.maxpower[1]], 'r-', linewidth = 0.75, zorder = 1)
         for r in range(self.nlaws):
-            ax2.plot(self.frequency, harvey(self.frequency, [self.pars[2*r], self.pars[2*r+1], self.pars[-1]]), color = 'blue', linestyle = ':', linewidth = 1.5, zorder = 3)
+            ax2.plot(self.frequency, harvey(self.frequency, [self.a_orig[r], self.b_orig[r], self.noise]), color = 'blue', linestyle = ':', linewidth = 1.5, zorder = 3)
         ax2.plot(self.frequency, harvey(self.frequency, self.pars, total=True), color = 'blue', linewidth = 2., zorder = 4)
         ax2.errorbar(self.bin_freq, self.bin_pow, yerr = self.bin_err, color = 'lime', markersize = 0., fillstyle = 'none', ls = 'None', marker = 'D', capsize = 3, ecolor = 'lime', elinewidth = 1, capthick = 2, zorder = 2)
         for m, n in zip(self.mnu_orig, self.a_orig):
@@ -999,7 +951,7 @@ class PowerSpectrum:
         ax3.errorbar(self.bin_freq, self.bin_pow, yerr = self.bin_err, color = 'lime', markersize = 0., fillstyle = 'none', ls = 'None', marker = 'D', capsize = 3, ecolor = 'lime', elinewidth = 1, capthick = 2, zorder = 2)
         ax3.axvline(self.maxpower[0], color = 'darkorange', linestyle = 'dashed', linewidth = 2., zorder = 1, dashes = (5,5))
         ax3.axvline(self.maxpower[1], color = 'darkorange', linestyle = 'dashed', linewidth = 2., zorder = 1, dashes = (5,5))
-        ax3.axhline(self.noise, color = 'blue', linestyle = 'dashed', linewidth = 1.5, zorder = 3, dashes = (5,5))
+        ax3.axhline(self.pars[-1], color = 'blue', linestyle = 'dashed', linewidth = 1.5, zorder = 3, dashes = (5,5))
         ax3.plot(self.frequency, self.pssm, color = 'yellow', linewidth = 2., linestyle = 'dashed', zorder = 5)
         ax3.set_xlim([min(self.frequency), max(self.frequency)])
         ax3.set_ylim([min(self.power), max(self.power)*1.25])
@@ -1012,28 +964,15 @@ class PowerSpectrum:
         # smoothed power excess w/ gaussian
         ax4 = fig.add_subplot(3,3,4)
         ax4.plot(self.region_freq, self.region_pow, 'w-', zorder = 0)
-        idx = self.return_max(self.region_pow, index=True)
+        idx = return_max(self.region_pow, index=True)
         ax4.plot([self.region_freq[idx]], [self.region_pow[idx]], color = 'red', marker = 's', markersize = 7.5, zorder = 0)
         ax4.axvline([self.region_freq[idx]], color = 'white', linestyle = '--', linewidth = 1.5, zorder = 0)
-        gaus = gaussian(self.region_freq, self.gauss_1[0], self.gauss_1[1], self.gauss_1[2], self.gauss_1[3])
-        plot_min = 0.
-        if min(self.region_pow) < plot_min:
-            plot_min = min(self.region_pow)
-        if min(gaus) < plot_min:
-            plot_min = min(gaus)
-        plot_max = 0.
-        if max(self.region_pow) > plot_max:
-            plot_max = max(self.region_pow)
-        if max(gaus) > plot_max:
-            plot_max = max(gaus)
-        plot_range = plot_max-plot_min
-        ax4.plot(self.region_freq, gaus, 'b-', zorder = 3)
-        ax4.axvline([self.gauss_1[2]], color = 'blue', linestyle = ':', linewidth = 1.5, zorder = 2)
-        ax4.plot([self.gauss_1[2]], [self.gauss_1[1]], color = 'b', marker = 'D', markersize = 7.5, zorder = 1)
+        ax4.plot(self.new_freq, self.numax_fit, 'b-', zorder = 3)
+        ax4.axvline(self.exp_numax, color = 'blue', linestyle = ':', linewidth = 1.5, zorder = 2)
+        ax4.plot([self.exp_numax], [max(self.numax_fit)], color = 'b', marker = 'D', markersize = 7.5, zorder = 1)
         ax4.set_title(r'$\rm Smoothed \,\, bg$-$\rm corrected \,\, PS$')
         ax4.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax4.set_xlim([min(self.region_freq), max(self.region_freq)])
-        ax4.set_ylim([plot_min-0.1*plot_range, plot_max+0.1*plot_range])
 
         # background-corrected ps with n highest peaks
         peaks_f, peaks_p = self.max_elements(self.freq, self.psd)
@@ -1043,14 +982,15 @@ class PowerSpectrum:
         ax5.set_title(r'$\rm Bg$-$\rm corrected \,\, PS$')
         ax5.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax5.set_ylabel(r'$\rm Power$')
-        ax5.set_xlim([min(self.freq), max(self.freq)])
+        ax5.set_xlim([min(self.region_freq), max(self.region_freq)])
         ax5.set_ylim([min(self.psd)-0.025*(max(self.psd)-min(self.psd)), max(self.psd)+0.1*(max(self.psd)-min(self.psd))])
 
         # ACF for determining dnu
         ax6 = fig.add_subplot(3,3,6)
         ax6.plot(self.lag, self.auto, 'w-', zorder = 0, linewidth = 1.)
         ax6.scatter(self.peaks_l, self.peaks_a, s = 30., edgecolor = 'r', marker = '^', facecolor = 'none', linewidths = 1.)
-        ax6.axvline(self.exp_dnu, color = 'white', linestyle = '--', linewidth = 1.5, zorder = 2)
+        ax6.axvline(self.exp_dnu, color = 'lime', linestyle='--', linewidth=1.5, zorder=5)
+#        ax6.axvline(self.best_lag, color = 'red', linestyle='--', linewidth=1.5, zorder=2)
         ax6.scatter(self.best_lag, self.best_auto, s = 45., edgecolor = 'lime', marker = 's', facecolor = 'none', linewidths = 1.)
         ax6.plot(self.zoom_lag, self.zoom_auto, 'r-', zorder = 5, linewidth = 1.)
         ax6.set_title(r'$\rm ACF \,\, for \,\, determining \,\, \Delta\nu$')
@@ -1059,238 +999,58 @@ class PowerSpectrum:
         ax6.set_ylim([min(self.auto)-0.05*(max(self.auto)-min(self.auto)), max(self.auto)+0.1*(max(self.auto)-min(self.auto))])
 
         # dnu fit
-        fit = gaussian(self.zoom_lag, self.gauss_2[0], self.gauss_2[1], self.gauss_2[2], self.gauss_2[3])
-        idx = self.return_max(fit, index=True)
-        plot_lower = min(self.zoom_auto)
-        if min(fit) < plot_lower:
-            plot_lower = min(fit)
-        plot_upper = max(self.zoom_auto)
-        if max(fit) > plot_upper:
-            plot_upper = max(fit)
         ax7 = fig.add_subplot(3,3,7)
         ax7.plot(self.zoom_lag, self.zoom_auto, 'w-', zorder = 0, linewidth = 1.0)
-        ax7.axvline(self.exp_dnu, color = 'red', linestyle = '--', linewidth = 1.5, zorder = 2)
-        ax7.plot(self.zoom_lag, fit, color = 'lime', linewidth = 1.5)
-        ax7.axvline([self.zoom_lag[idx]], color = 'lime', linestyle = '--', linewidth = 1.5)
+        ax7.axvline(self.obs_dnu, color = 'red', linestyle = '--', linewidth=1.5, zorder=2)
+        ax7.plot(self.new_lag, self.dnu_fit, color = 'red', linewidth = 1.5)
+        ax7.axvline(self.exp_dnu, color='blue', linestyle=':', linewidth=1.5, zorder=5)
         ax7.set_title(r'$\rm \Delta\nu \,\, fit$')
         ax7.set_xlabel(r'$\rm Frequency \,\, separation \,\, [\mu Hz]$')
-        ax7.annotate(r'$\Delta\nu = %.2f$'%self.zoom_lag[idx], xy = (0.025, 0.85), xycoords = "axes fraction", fontsize = 18, color = 'lime')
+        ax7.annotate(r'$\Delta\nu = %.2f$'%self.obs_dnu, xy = (0.025, 0.85), xycoords = "axes fraction", fontsize = 18, color = 'lime')
         ax7.set_xlim([min(self.zoom_lag), max(self.zoom_lag)])
-        ax7.set_ylim([plot_lower-0.05*(plot_upper-plot_lower), plot_upper+0.1*(plot_upper-plot_lower)])
 
+        cmap = plt.get_cmap('binary')
+#        new_cmap = cmap(np.linspace(0.1, 0.9, 100))
+        colors=truncate_colormap(cmap,0.1,0.8,100)
         # echelle diagram
         ax8 = fig.add_subplot(3,3,8)
-        ax8.imshow(self.ech, extent=self.extent, interpolation = 'bilinear', aspect = 'auto', origin = 'lower', cmap = 'jet', norm = LogNorm(vmin = np.nanmedian(self.ech_copy), vmax = np.nanmax(self.ech_copy)))
-        ax8.axvline([self.dnu], color = 'white', linestyle = '--', linewidth = 1., dashes=(5,5))
+        ax8.imshow(self.ech, extent=self.extent, interpolation='none', aspect='auto', origin='lower', cmap=colors)
+        ax8.axvline([self.obs_dnu], color = 'white', linestyle = '--', linewidth = 1., dashes=(5,5))
         ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
-        ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$'%self.dnu)
+        ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$'%self.obs_dnu)
         ax8.set_ylabel(r'$\rm \nu \,\, [\mu Hz]$')
-        ax8.set_xlim([0., 2.*self.dnu])
+        ax8.set_xlim([0., 2.*self.obs_dnu])
         ax8.set_ylim([self.maxpower[0], self.maxpower[1]])
 
         ax9 = fig.add_subplot(3,3,9)
         ax9.plot(self.xax, self.yax, color = 'white', linestyle = '-', linewidth = 0.75)
         ax9.set_title(r'$\rm Collapsed \,\, \grave{e}chelle \,\, diagram$')
-        ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$'%self.dnu)
+        ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$'%self.obs_dnu)
         ax9.set_ylabel(r'$\rm Collapsed \,\, power$')
-        ax9.set_xlim([0., 2.*self.dnu])
+        ax9.set_xlim([0., 2.*self.obs_dnu])
         ax9.set_ylim([min(self.yax)-0.025*(max(self.yax)-min(self.yax)), max(self.yax)+0.05*(max(self.yax)-min(self.yax))])
 
         plt.tight_layout()
         if self.fitbg['save']:
-            plt.savefig(self.params[self.target]['path']+'%d_fitbg.png'%self.target, dpi = 300)
+            plt.savefig(self.params[self.target]['path']+'%d_fitbg.png'%self.target, dpi=300)
         if self.show_plots:
             plt.show() 
         plt.close()
 
-    def plot_mc(self, final_pars):
-
+    def plot_mc(self):
         plt.figure(figsize = (12,8))
-
+        panels = ['numax_smooth','amp_smooth','numax_gaussian','amp_gaussian','fwhm_gaussian','dnu']
         titles = [r'$\rm Smoothed \,\, \nu_{max} \,\, [\mu Hz]$', r'$\rm Smoothed \,\, A_{max} \,\, [ppm^{2} \mu Hz^{-1}]$', r'$\rm Gaussian \,\, \nu_{max} \,\, [\mu Hz]$', r'$\rm Gaussian \,\, A_{max} \,\, [ppm^{2} \mu Hz^{-1}]$', r'$\rm Gaussian \,\, FWHM \,\, [\mu Hz]$', r'$\rm \Delta\nu \,\, [\mu Hz]$']
-
         for i in range(6):
-        
             ax = plt.subplot(2,3,i+1)
-            ax.hist(final_pars[:,2*self.nlaws+(i+1)], color = 'cyan', histtype = 'step', lw = 2.5, facecolor = '0.75')
+            ax.hist(self.df[panels[i]], bins=20, color='cyan', histtype='step', lw=2.5, facecolor='0.75')
             ax.set_title(titles[i])
-
         plt.tight_layout()
-        if self.fitbg['save']:
+        if self.findex['save']:
             plt.savefig(self.params[self.target]['path']+'%d_mc.png'%self.target, dpi = 300)
         if self.show_plots:
             plt.show()
         plt.close()
-
-##########################################################################################
-#                                                                                        #
-#                                       FUNCTIONS                                        #
-#                                                                                        #
-##########################################################################################
-
-    def get_ridges(self, start=0.):
-
-        if self.i == 0:
-            self.get_best_dnu()
-
-        ech, gridx, gridy, extent = self.echelle()
-        # pdb.set_trace()
-        N, M = ech.shape[0], ech.shape[1]
-        ech_copy = np.array(list(ech.reshape(-1)))
-
-        n = int(np.ceil(self.dnu/self.resolution))
-        xax = np.zeros(n)
-        yax = np.zeros(n)
-        modx = self.frequency%self.dnu
-
-        for k in range(n):
-            use = np.where((modx >= start)&(modx < start+self.resolution))[0]
-            if len(use) == 0:
-                continue
-            xax[k] = np.median(modx[use])
-            yax[k] = np.sum(self.bg_corr[use])
-            start += self.resolution
-
-        xax = np.array(list(xax)+list(xax+self.dnu))
-        yax = np.array(list(yax)+list(yax))-min(yax)
-
-        if self.fitbg['clip']:
-            if self.fitbg['clip_value'] != 0.:
-                cut = self.fitbg['clip_value']
-            else:
-                cut = np.nanmax(ech_copy)-(np.nanmax(ech_copy)-np.nanmedian(ech_copy))/2.
-            ech_copy[ech_copy > cut] = cut
-
-        if self.i == 0:
-            self.ech_copy = ech_copy
-            self.ech = ech_copy.reshape((N,M))
-            self.extent = extent
-            self.xax = xax
-            self.yax = yax
-
-    def get_best_dnu(self):
-
-        dnus = np.arange(self.dnu-0.05*self.dnu, self.dnu+0.05*self.dnu, 0.01)
-        difference = np.zeros_like(dnus)
-
-        for x, d in enumerate(dnus):
-            start = 0.
-            n = int(np.ceil(d/self.resolution))
-            xax = np.zeros(n)
-            yax = np.zeros(n)
-            modx = self.frequency%d
-
-            for k in range(n):
-                use = np.where((modx >= start)&(modx < start+self.resolution))[0]
-                if len(use) == 0:
-                    continue
-                xax[k] = np.median(modx[use])
-                yax[k] = np.sum(self.bg_corr[use])
-                start += self.resolution
-
-            difference[x] = np.max(yax)-np.mean(yax)
-
-        idx = self.return_max(difference, index=True)
-        self.dnu = dnus[idx]
-
-    def echelle(self, n_across=20, startx=0.):
-
-        if self.fitbg['ech_smooth']:
-            boxkernel = Box1DKernel(int(np.ceil(self.fitbg['ech_smooth']/self.resolution)))
-            smooth_y = convolve(self.bg_corr, boxkernel)
-
-        nox = n_across
-        noy = int(np.ceil((max(self.frequency)-min(self.frequency))/self.dnu))
-
-        if nox > 2 and noy > 5:
-            xax = np.arange(0., self.dnu+(self.dnu/n_across)/2., self.dnu/n_across)
-            yax = np.arange(min(self.frequency), max(self.frequency), self.dnu)
-            # pdb.set_trace()
-            arr = np.zeros((len(xax),len(yax)))
-            gridx = np.zeros(len(xax))
-            gridy = np.zeros(len(yax))
-
-            modx = self.frequency%self.dnu
-            starty = min(self.frequency)
-
-            for ii in range(len(gridx)):
-                for jj in range(len(gridy)):
-                    use = np.where((modx >= startx)&(modx < startx+self.dnu/n_across)&(self.frequency >= starty)&(self.frequency < starty+self.dnu))[0]
-                    if len(use) == 0:
-                        arr[ii,jj] = np.nan
-                    else:
-                        arr[ii,jj] = np.sum(self.bg_corr[use])
-                    gridy[jj] = starty + self.dnu/2.
-                    starty += self.dnu
-                gridx[ii] = startx + self.dnu/n_across/2.
-                starty = min(self.frequency)
-                startx += self.dnu/n_across
-            smoothed = arr
-            dim = smoothed.shape
-
-            smoothed_2 = np.zeros((2*dim[0],dim[1]))
-            smoothed_2[0:dim[0],:] = smoothed
-            smoothed_2[dim[0]:(2*dim[0]),:] = smoothed
-            smoothed = np.swapaxes(smoothed_2, 0, 1)
-            extent = [min(gridx)-self.dnu/n_across/2., 2*max(gridx)+self.dnu/n_across/2., min(gridy)-self.dnu/2., max(gridy)+self.dnu/2.]
-        
-            return smoothed, np.array(list(gridx)+list(gridx+self.dnu)), gridy, extent
-
-    def gaussian_bounds(self, x, y, best_x=None, sigma=None):
-
-        if sigma is None:
-            sigma = (max(x)-min(x))/8./np.sqrt(8.*np.log(2.))
-        bb = []
-        b = np.zeros((2,4)).tolist()
-        b[1][0] = np.inf
-        b[1][1] = 2.*np.max(y)
-        if not int(np.max(y)):
-            b[1][1] = np.inf
-        if best_x is not None:
-            b[0][2] = best_x - 0.001*best_x
-            b[1][2] = best_x + 0.001*best_x
-        else:
-            b[0][2] = np.min(x)
-            b[1][2] = np.max(x)
-        b[0][3] = sigma
-        b[1][3] = np.max(x)-np.min(x)
-        bb.append(tuple(b))
-        return bb
-
-    def max_elements(self, x, y):
-        s = np.argsort(y)
-        peaks_y = y[s][-int(self.fitbg['n_peaks']):][::-1]
-        peaks_x = x[s][-int(self.fitbg['n_peaks']):][::-1]
-        return peaks_x, peaks_y
-
-    def return_max(self, array, index=False, dnu=False):
-        if dnu:
-            exp_dnu = 0.22*(self.numax**0.797)
-            lst = list(np.absolute(np.copy(array)-exp_dnu))
-            idx = lst.index(min(lst))
-        else:
-            lst = list(array)
-            idx = lst.index(max(lst))
-        if index:
-            return idx
-        else:
-            return lst[idx]
-
-    def corr(self, frequency, power):
-
-        lag = np.arange(0., len(power))*self.resolution
-        auto = np.real(np.fft.fft(np.fft.ifft(power)*np.conj(np.fft.ifft(power))))
-
-        lower_limit = self.dnu/4.
-        upper_limit = 2.*self.dnu + self.dnu/4.
-
-        mask = np.ma.getmask(np.ma.masked_inside(lag, lower_limit, upper_limit))
-        lag = lag[mask]
-        auto = auto[mask]
-        auto -= min(auto)
-        auto /= max(auto)
-    
-        return lag, auto
 
 ##########################################################################################
 #                                                                                        #
@@ -1301,26 +1061,64 @@ class PowerSpectrum:
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description = 'This is a script to run the new version of the SYD PYpeline.')
-    parser.add_argument('-e', '-x', '--e', '--x', '-ex', '--ex', '-excess', '--excess', help = 'Turn off the find excess function', dest = 'findex', action = 'store_false')
-    parser.add_argument('-b', '--b', '-bg', '--bg', '-background', '--background', help = 'Turn off the background fitting function (not recommended)', dest = 'fitbg', action = 'store_false')
-    parser.add_argument('-f', '--f', '-fr', '--fr','-smooth', '--smooth', help = 'Frequency for smoothing power spectrum in muHz (Default=1 muHz)', default=1., dest='smoothing_freq')
-#    parser.add_argument('-m', '--m', '-ms', '--ms', '-mission', '--mission', help = 'Mission used to collect data. Options: Kepler, TESS, K2. Default is Kepler.', \
-#                                                                            choices=['Kepler', 'TESS', 'K2'], default='Kepler', dest = 'mission')
-    parser.add_argument('-kc', '--kc', '-keplercorr', '--keplercorr', help = 'Turn on Kepler short-cadence artefact corrections', dest = 'keplercorr', action = 'store_true')
+    parser = argparse.ArgumentParser(
+                        description = """This is the new python version of asteroseismic IDL 
+                                         pipeline 'SYD' created by Daniel Huber (see Huber+2009) 
+                                         during his Ph.D. in Sydney. This script will initialize 
+                                         the SYD-PY pipeline, which is broken up into two main modules: 
+                                         1) find excess (findex) 
+                                         2) fit background (fitbg). 
+                                         By default, both modules will run unless otherwise specified. 
+                                         See -excess and -fitbg for more details.
+                                         SYD-PY is actively being developed at
+                                         https://github.com/ashleychontos/SYD-PYpline
+                                         by: Ashley Chontos (achontos@hawaii.edu)
+                                             Maryum Sayeed
+                                             Daniel Huber (huberd@hawaii.edu)
+                                         Please contact Ashley for more details or new ideas for
+                                         implementations within the package.
+                                         [The ReadTheDocs page is currently under construction.]""")
+    parser.add_argument('-ex', '--ex', '-findex', '--findex', '-excess', '--excess',  
+                        help = """Turn off the find excess module. This is only recommended when a list
+                                  of numaxes or a list of stellar parameters (to estimate the numaxes) 
+                                  are provided. Otherwise the second module, which fits the background 
+                                  will not be able to run properly.""", 
+                        default=True, dest='excess', action='store_false')
+    parser.add_argument('-bg', '--bg', '-fitbg', '--fitbg', '-background', '--background', 
+                        help = """Turn off the background fitting process (although this is not recommended).
+                                  Asteroseismic estimates are typically unreliable without properly removing
+                                  stellar contributions from granulation processes. Since this is the money
+                                  maker, fitbg is set to 'True' by default.""",
+                        default=True, dest='background', action='store_false')
+    parser.add_argument('-filter', '--filter', '-smooth', '--smooth', 
+                        help = 'Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)',
+                        default=2.5, dest='filter')
+    parser.add_argument('-kc', '--kc', '-keplercorr', '--keplercorr', 
+                        help = """Turn on Kepler short-cadence artefact corrections""", 
+                        default=False, dest='keplercorr', action='store_true')
+    parser.add_argument('-v', '--v', '-verbose', '--verbose', 
+                        help = """Turn on the verbose output. This is generally helpful for a single target,
+                                  but would probably not be useful for a long list of targets. By default,
+                                  if the length of 'todo' targets is more than one, this output will be 
+                                  suppressed. If that is not desired, please add the 'ignore' command line
+                                  argument. See help below for 'ignore'.
+                                  Please note: the defaults is 'False'.""",
+                        default=True, dest='verbose', action='store_true')
+    parser.add_argument('-show', '--show', '-plot', '--plot', '-plots', '--plots', 
+                        help = """Shows the appropriate output figures in real time. If the findex module is 
+                                  run, this will show one figure at the end of findex. If the fitbg module is
+                                  run, a figure will appear at the end of the first iteration. If the monte
+                                  carlo sampling is turned on, this will provide another figure at the end of
+                                  the MC iterations. Regardless of this option, the figures will be saved to
+                                  the output directory. If running more than one target, this is not 
+                                  recommended. As a result, this is 'False' by default.""",
+                        default=True, dest='show', action='store_true')
+    parser.add_argument('-ignore', '--ignore', 
+                        help = """For multiple targets run at once, the typical output is suppressed. This is 
+                                  if you would like to 'ignore' this feature and have it print results in real 
+                                  time. This is strongly discouraged for targets running in parallel.""", 
+                        default=False, dest='ignore', action='store_true')
+    parser.add_argument('-mc', '--mc', '-mciter', '--mciter', dest='mciter', default=1, type=int,
+                        help = 'Number of MC iterations (Default = 1)')
 
-    parser.add_argument('-v', '--v', '-verbose', '--verbose', help = 'Turn on verbose output', dest = 'verbose', action = 'store_true')
-    parser.add_argument('-s', '--s', '-show', '--show', help = 'Show plots', dest = 'show', action = 'store_true')
-    parser.add_argument('-i', '--i', '-ignore', '--ignore', help = 'Ignore multiple target output supression', dest = 'ignore', action = 'store_true')
-    parser.add_argument('-mc', '--mc', '-mciter', '--mciter', help = 'Number of MC iterations (Default = 1)', dest = 'mciter', default=1.)
-
-    args = parser.parse_args()
-    findex = args.findex
-    fitbg = args.fitbg
-    verbose = args.verbose
-    show = args.show
-    ignore = args.ignore
-    mciter = args.mciter
-    keplercorr = args.keplercorr
-
-    main(args = args, findex = findex, fitbg = fitbg, verbose = verbose, show_plots = show, ignore = ignore, keplercorr = keplercorr)
+    main(args = parser.parse_args())
