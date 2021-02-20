@@ -176,19 +176,17 @@ class Target:
             self.df.to_csv(self.params[self.target]['path']+'%d_globalpars_all.csv'%self.target,index=False)
 
     def check(self):
-        if self.findex['do']:
-            # SYD needs some prior knowledge about numax to work well 
-            # (either from findex module or from star info csv)
-            if 'numax' not in self.params[self.target].keys():
-                print("""WARNING: Suggested use of this pipeline requires either
+        # SYD needs some prior knowledge about numax to work well 
+        # (either from findex module or from star info csv)
+        if 'numax' not in self.params[self.target].keys():
+            print("""WARNING: Suggested use of this pipeline requires either
                          stellar properties to estimate a numax or running the entire
                          pipeline from scratch (i.e. find_excess) first to
                          statistically determine a starting point for nuMax.""")
-                return False
-            else:
-                return True
-        else:
             return False
+        else:
+            return True
+ 
 
     def get_initial_guesses(self):
         # check whether output from findex module exists; if yes, let that override star info guesses
@@ -668,9 +666,10 @@ class Target:
         self.final_pars['amp_gaussian'].append(p_gauss1[1])
         self.final_pars['fwhm_gaussian'].append(p_gauss1[3])
         if self.i == 0:
-            self.exp_numax = new_freq[d]
-            self.exp_dnu = 0.22*(self.exp_numax**0.797)
-            self.width = self.params['width_sun']*(self.exp_numax/self.params['numax_sun'])/2.
+        	# dnu_exp should always be fixed to the input numax
+            #self.exp_numax = new_freq[d]
+            #self.exp_dnu = 0.22*(self.exp_numax**0.797)
+            #self.width = self.params['width_sun']*(self.exp_numax/self.params['numax_sun'])/2.
             self.new_freq = np.copy(new_freq)
             self.numax_fit = np.array(numax_fit)
 
