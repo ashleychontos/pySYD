@@ -6,6 +6,7 @@ from scipy.special import erf
 import matplotlib.pyplot as plt
 from scipy.ndimage import filters
 from astropy.convolution import convolve, Box1DKernel, Gaussian1DKernel, convolve_fft
+import pdb
 
 ##########################################################################################
 #                                                                                        #
@@ -28,10 +29,12 @@ def get_info(args, star_info='Files/star_info.csv', params={}):
     if args.excess:
         args = get_excess_params(args)
     else:
+        args = get_excess_params(args)
         args.findex['do'] = False
     if args.background:
         args = get_bg_params(args)
     else:
+        args = get_bg_params(args)
         args.fitbg['do'] = False
     args = get_star_info(args, star_info)
     return args
