@@ -221,14 +221,21 @@ class Target:
         path : str
             the file path of the data file
         """
-
         f = open(path, "r")
         lines = f.readlines()
         f.close()
-
         # Set values
         self.x = np.array([float(line.strip().split()[0]) for line in lines])
         self.y = np.array([float(line.strip().split()[1]) for line in lines])
+
+    def set_seed(self):
+        seed = list(np.random.randint(1,high=10000000,size=1))
+        df = pd.read_csv('Files/star_info.csv')
+        targets = df.targets.values.tolist()
+        idx = targets.index(self.target)
+        df.loc[idx,'seed'] = int(seed[0])
+        self.params[self.target]['seed'] = seed[0]
+        df.to_csv('Files/star_info.csv',index=False)
 
     def save(self):
         """Save results of fit background routine"""
@@ -294,7 +301,11 @@ class Target:
             if self.params[self.target]['numax'] > 300.0:
                 mask = np.ma.getmask(np.ma.masked_inside(self.frequency, 100.0, self.nyquist))
             else:
+
                 mask = np.ma.getmask(np.ma.masked_inside(self.frequency, 1.0, 500.0))
+        # if lower numax and short cadence data, adjust default smoothing filter from 2.5->1.0muHz
+        if self.params[self.target]['numax'] <= 500. and self.short_cadence:
+            self.fitbg['smooth_ps'] = 1.0
         self.frequency = self.frequency[mask]
         self.power = self.power[mask]
 
@@ -608,7 +619,8 @@ class Target:
         lc : float
             TODO: Write description. Default value is `29.4244*60*1e-6`.
         """
-
+        if self.params[self.target]['seed'] is None:
+            self.set_seed()
         f, a = self.frequency, self.power
         oversample = int(round((1.0/((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])))
         resolution = (self.frequency[1]-self.frequency[0])*oversample
@@ -624,6 +636,7 @@ class Target:
         # Estimate white noise
         noisefl = np.mean(a[(f >= max(f)-100.0) & (f <= max(f)-50.0)])
 
+        np.random.seed(int(self.params[self.target]['seed']))
         # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
         for i in range(len(art)):
             if art[i] < np.max(f):
@@ -631,6 +644,7 @@ class Target:
                 if use[0] != -1:
                     a[use] = noisefl*np.random.chisquare(2, len(use))/2.0
 
+        np.random.seed(int(self.params[self.target]['seed']))
         # Routine 2: remove artefacts as identified in un1 & un2
         for i in range(0, len(un1)):
             if un1[i] < np.max(f):
@@ -642,7 +656,8 @@ class Target:
         un1 = [240.0, 500.0]
         un2 = [380.0, 530.0]
 
-        for i in range(0, len(un1)):
+        np.random.seed(int(self.params[self.target]['seed']))
+        for i in range(0,len(un1)):
             # un1[i] : freq where artefact starts
             # un2[i] : freq where artefact ends
             # un_lower : initial freq to start fitting routine (aka un1[i]-20)
@@ -870,7 +885,6 @@ class Target:
 
     def get_numax_gaussian(self):
         """Estimate numax by fitting a Gaussian to the power envelope of the smoothed power spectrum."""
-
         bb = gaussian_bounds(self.region_freq, self.region_pow)
         p_gauss1, _ = curve_fit(gaussian, self.region_freq, self.region_pow, p0=self.guesses, bounds=bb[0])
         # create array with finer resolution for purposes of quantifying uncertainty
@@ -882,10 +896,9 @@ class Target:
         self.final_pars['amp_gaussian'].append(p_gauss1[1])
         self.final_pars['fwhm_gaussian'].append(p_gauss1[3])
         if self.i == 0:
-            # dnu_exp should always be fixed to the input numax
-            # self.exp_numax = new_freq[d]
-            # self.exp_dnu = 0.22*(self.exp_numax**0.797)
-            # self.width = self.params['width_sun']*(self.exp_numax/self.params['numax_sun'])/2.
+            self.exp_numax = new_freq[d]
+            self.exp_dnu = 0.22*(self.exp_numax**0.797)
+            self.width = self.params['width_sun']*(self.exp_numax/self.params['numax_sun'])/2.
             self.new_freq = np.copy(new_freq)
             self.numax_fit = np.array(numax_fit)
 

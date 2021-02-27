@@ -279,7 +279,8 @@ def get_star_info(args, star_info, cols=['rad', 'logg', 'teff']):
                     args.params[todo]['dnu'] = args.params['dnu_sun']*(args.params[todo]['mass']**(0.5))*(args.params[todo]['rad']**(-1.5))
                 # Add in the frequency bounds for the findex routine (lowerx, upperx) and
                 # the frequency bounds for the fitbg routine (lowerb and upperb)
-                for col in ['lowerx', 'upperx', 'lowerb', 'upperb']:
+                # Note: this also loads in the random seed for Kepler targets that needed correction
+                for col in ['lowerx', 'upperx', 'lowerb', 'upperb','seed']:
                     if np.isnan(df.loc[idx, col]):
                         args.params[todo][col] = None
                     else:
