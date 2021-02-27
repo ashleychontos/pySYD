@@ -149,13 +149,20 @@ class Target:
             return False
 
     def get_file(self, path):
-
         f = open(path, "r")
         lines = f.readlines()
         f.close()
-
         self.x = np.array([float(line.strip().split()[0]) for line in lines])
         self.y = np.array([float(line.strip().split()[1]) for line in lines])
+
+    def set_seed(self):
+        seed = list(np.random.randint(1,high=10000000,size=1))
+        df = pd.read_csv('Files/star_info.csv')
+        targets = df.targets.values.tolist()
+        idx = targets.index(self.target)
+        df.loc[idx,'seed'] = int(seed[0])
+        self.params[self.target]['seed'] = seed[0]
+        df.to_csv('Files/star_info.csv',index=False)
 
     def save(self):
         df = pd.DataFrame(self.final_pars)
@@ -176,17 +183,19 @@ class Target:
             self.df.to_csv(self.params[self.target]['path']+'%d_globalpars_all.csv'%self.target,index=False)
 
     def check(self):
-        # SYD needs some prior knowledge about numax to work well 
-        # (either from findex module or from star info csv)
-        if 'numax' not in self.params[self.target].keys():
-            print("""WARNING: Suggested use of this pipeline requires either
+        if self.findex['do']:
+            # SYD needs some prior knowledge about numax to work well 
+            # (either from findex module or from star info csv)
+            if 'numax' not in self.params[self.target].keys():
+                print("""WARNING: Suggested use of this pipeline requires either
                          stellar properties to estimate a numax or running the entire
                          pipeline from scratch (i.e. find_excess) first to
                          statistically determine a starting point for nuMax.""")
-            return False
+                return False
+            else:
+                return True
         else:
-            return True
- 
+            return False
 
     def get_initial_guesses(self):
         # check whether output from findex module exists; if yes, let that override star info guesses
@@ -210,6 +219,9 @@ class Target:
                 mask = np.ma.getmask(np.ma.masked_inside(self.frequency, 100., self.nyquist))
             else:
                 mask = np.ma.getmask(np.ma.masked_inside(self.frequency, 1., 500.))
+        # if lower numax and short cadence data, adjust default smoothing filter from 2.5->1.0muHz
+        if self.params[self.target]['numax'] <= 500. and self.short_cadence:
+            self.fitbg['smooth_ps'] = 1.0
         self.frequency = self.frequency[mask]
         self.power = self.power[mask]
         self.width = self.params['width_sun']*(self.params[self.target]['numax']/self.params['numax_sun'])
@@ -476,6 +488,8 @@ class Target:
         @input: frequency and power
         @output: frequency and power where artefact frequencies are filled with noise
         '''
+        if self.params[self.target]['seed'] is None:
+            self.set_seed()
         f,a=self.frequency,self.power
         oversample = int(round((1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])))
         resolution = (self.frequency[1]-self.frequency[0])*oversample
@@ -487,6 +501,7 @@ class Target:
         un2=[4534.,5020.,5099.,5585.,7030.,7450.,7867.] #upper limit of artefact 
         noisefl  = np.mean(a[(f>=max(f)-100.)&(f<=max(f)-50.)])  #estimate white noise 
 
+        np.random.seed(int(self.params[self.target]['seed']))
         # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
         for i in range(len(art)):
             if art[i] < np.max(f):
@@ -494,6 +509,7 @@ class Target:
                 if use[0] != -1:
                     a[use] = noisefl*np.random.chisquare(2,len(use))/2.
 
+        np.random.seed(int(self.params[self.target]['seed']))
         # Routine 2: remove artefacts as identified in un1 & un2
         for i in range(0,len(un1)):
             if un1[i] < np.max(f):
@@ -505,6 +521,7 @@ class Target:
         un1=[240.,500.]
         un2=[380.,530.]
 
+        np.random.seed(int(self.params[self.target]['seed']))
         for i in range(0,len(un1)):
             # un1[i] : freq where artefact starts
             # un2[i] : freq where artefact ends
@@ -666,10 +683,9 @@ class Target:
         self.final_pars['amp_gaussian'].append(p_gauss1[1])
         self.final_pars['fwhm_gaussian'].append(p_gauss1[3])
         if self.i == 0:
-        	# dnu_exp should always be fixed to the input numax
-            #self.exp_numax = new_freq[d]
-            #self.exp_dnu = 0.22*(self.exp_numax**0.797)
-            #self.width = self.params['width_sun']*(self.exp_numax/self.params['numax_sun'])/2.
+            self.exp_numax = new_freq[d]
+            self.exp_dnu = 0.22*(self.exp_numax**0.797)
+            self.width = self.params['width_sun']*(self.exp_numax/self.params['numax_sun'])/2.
             self.new_freq = np.copy(new_freq)
             self.numax_fit = np.array(numax_fit)
 
