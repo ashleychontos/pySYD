@@ -84,7 +84,7 @@ def get_star_info(args, star_info, cols=['rad','logg','teff']):
                     args.params[todo]['mass'] = (((params[todo]['rad']*params['radius_sun'])**(2.))*10**(params[todo]['logg'])/params['G'])/params['mass_sun']
                     args.params[todo]['numax'] = params['numax_sun']*params[todo]['mass']*(params[todo]['rad']**(-2.))*((params[todo]['teff']/params['teff_sun'])**(-0.5))
                     args.params[todo]['dnu'] = params['dnu_sun']*(params[todo]['mass']**(0.5))*(params[todo]['rad']**(-1.5)) 
-                for col in ['lowerx','upperx','lowerb','upperb']:
+                for col in ['lowerx','upperx','lowerb','upperb','seed']:
                     if np.isnan(df.loc[idx,col]):
                         args.params[todo][col] = None
                     else:
