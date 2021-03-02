@@ -23,6 +23,7 @@ from scipy import interpolate
 from scipy.interpolate import InterpolatedUnivariateSpline
 from scipy.optimize import curve_fit
 from scipy.stats import chisquare
+from scipy.signal import find_peaks
 
 from functions import *
 
@@ -943,36 +944,82 @@ class Target:
             self.freq = self.frequency[self.params[self.target]['mask']]
             self.psd = self.bg_corr_smooth[self.params[self.target]['mask']]
 
+    def get_acf_cutout(self):
+        """Center on the closest peak to expected dnu and cut out a region around the peak for dnu uncertainties."""
+        lag,auto=self.lag,self.auto
+        lag_of_peak,acf_of_peak=self.lag_of_peak,self.acf_of_peak
+        hmax=acf_of_peak/2.  #half of ACF peak
+        lag_idx=np.where(lag==lag_of_peak)[0][0]
+    
+        # Find Full Width at Half Maximum (FWHM):
+        right_indices=np.where(auto[lag_idx:]<hmax)[0]
+        right_idx=right_indices[0]
+        
+        left_indices=np.where(auto[:lag_idx]<hmax)[0]
+        left_idx=left_indices[-1]
+
+        left_fwhm_idx=np.where(lag==(lag[:lag_idx][left_idx]))[0]    #index in lag&auto of left FWHM val
+        right_fwhm_idx=np.where(lag==(lag[lag_idx:][right_idx]))[0]  #index in lag&auto of right FWHM val
+        left_fwhm,right_fwhm=lag[left_fwhm_idx],lag[right_fwhm_idx]  #vals of FWHM on both sides of peak
+
+        # MASK limits using FWHM method:
+        threshold=1.0
+        fw= right_fwhm-left_fwhm   #full width
+        frac_fwhm = threshold*fw   #fraction of FWHM for ACF MASK
+        left_lim_FWHM,right_lim_FWHM=lag_of_peak-frac_fwhm,lag_of_peak+frac_fwhm
+        left_lim,right_lim=left_lim_FWHM,right_lim_FWHM
+
+        idx=np.where((left_lim <= lag) & (lag <= right_lim))[0]  #get indices of ACF mask
+        
+        return lag[idx],auto[idx]
+
+
     def estimate_dnu(self):
         """Estimate a value for dnu."""
 
         if self.i == 0:
             # Get peaks from ACF
-            peaks_l, peaks_a = self.max_elements(self.lag, self.auto)
-            # Pick the peak closest to the modeled numax
-            idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
-            bb = gaussian_bounds(self.lag, self.auto, best_x=peaks_l[idx], sigma=10**-2)
-            guesses = [np.mean(self.auto), peaks_a[idx], peaks_l[idx], peaks_l[idx]*0.01*2.0]
-            p_gauss2, _ = curve_fit(gaussian, self.lag, self.auto, p0=guesses, bounds=bb[0])
-            self.fitbg['acf_mask'] = [peaks_l[idx]-5.0*p_gauss2[3], peaks_l[idx]+5.0*p_gauss2[3]]
+            peak_idx,_ = find_peaks(self.auto) #indices of peaks, threshold=half max(ACF)
+            peaks_l,peaks_a = self.lag[peak_idx],self.auto[peak_idx]
 
-        # Do the same only with the single peak
-        zoom_lag = self.lag[(self.lag >= self.fitbg['acf_mask'][0]) & (self.lag <= self.fitbg['acf_mask'][1])]
-        zoom_auto = self.auto[(self.lag >= self.fitbg['acf_mask'][0]) & (self.lag <= self.fitbg['acf_mask'][1])]
-        # Get peaks from ACF
-        peaks_l, peaks_a = self.max_elements(zoom_lag, zoom_auto)
-        # Pick the peak closest to the modeled numax
-        # idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
-        best_lag = peaks_l[0]
-        best_auto = peaks_a[0]
-        bb = gaussian_bounds(zoom_lag, zoom_auto, best_x=best_lag, sigma=10**-2)
-        guesses = [np.mean(zoom_auto), best_auto, best_lag, best_lag*0.01*2.0]
-        p_gauss3, _ = curve_fit(gaussian, zoom_lag, zoom_auto, p0=guesses, bounds=bb[0])
-        # Create array with finer resolution for purposes of quantifying dnu uncertainty
-        new_lag = np.linspace(min(zoom_lag), max(zoom_lag), 2000)
-        dnu_fit = list(gaussian(new_lag, *p_gauss3))
-        d = dnu_fit.index(max(dnu_fit))
-        # Force `dnu` to be `guess`
+            # pick the peak closest to the exp_dnu
+            idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
+
+            best_lag=(self.lag[peak_idx])[idx]           #best estimate of dnu
+            best_auto=(self.auto[peak_idx])[idx]         #best estimate of dnu
+            self.lag_of_peak=(self.lag[peak_idx])[idx]   #lag val corresponding to peak
+            self.acf_of_peak=(self.auto[peak_idx])[idx]  #acf val corresponding to peak
+
+            og_zoom_lag,og_zoom_auto=self.get_acf_cutout()
+            self.fitbg['acf_mask']=[min(og_zoom_lag),max(og_zoom_lag)]  # lag limits to use for ACF mask
+
+        # Get peaks from ACF using mask:
+        zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+        zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+
+        peak_idx,_ = find_peaks(zoom_auto)                        #indices of peaks
+        
+        new_peaks_l,new_peaks_a = zoom_lag[peak_idx],zoom_auto[peak_idx]  #vals of lag and acf corresponding to identified peaks
+        try:
+            new_idx = return_max(new_peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)  #peak closest to exp_dnu
+            new_best_lag=new_peaks_l[new_idx]   #lag val corresponding to best est_dnu
+            new_best_auto=new_peaks_a[new_idx]  #acf val corresponding to best est_dnu
+        except:
+            new_peaks_l, new_peaks_a = self.max_elements(zoom_lag, zoom_auto)    # for stars with mix modes, when find_peaks doesnt work, or zoom-lag where peak cannot be find, just take the max 10 vals
+            new_best_lag = new_peaks_l[0]
+            new_best_auto = new_peaks_a[0]
+        
+        # Fit a Gaussian to zoom-in ACF. Use position of Gaussian peak to find dnu:
+        bb = gaussian_bounds(zoom_lag, zoom_auto, best_x=new_best_lag, sigma=10**-2)
+        guesses = [np.mean(zoom_auto), new_best_auto, new_best_lag, new_best_lag*0.01*2.]
+        p_gauss3, p_cov3 = curve_fit(gaussian, zoom_lag, zoom_auto, p0=guesses, bounds=bb[0])
+        
+        # Create array with finer resolution for purposes of quantifying dnu uncertainty:
+        new_lag = np.linspace(min(zoom_lag),max(zoom_lag),2000)
+        d       = np.argmax(gaussian(new_lag,*p_gauss3))          #index of Gaussian peak
+        dnu     = new_lag[np.argmax(gaussian(new_lag,*p_gauss3))] #value of Gaussian peak
+        dnu_fit = gaussian(new_lag,*p_gauss3)                     #Gaussian fit to zoom_ACF
+        
         if self.fitbg['force']:
             dnu = self.fitbg['guess']
         # Otherwise use fitted dnu
@@ -985,8 +1032,8 @@ class Target:
             self.peaks_a = peaks_a
             self.best_lag = best_lag
             self.best_auto = best_auto
-            self.zoom_lag = zoom_lag
-            self.zoom_auto = zoom_auto
+            self.zoom_lag = og_zoom_lag
+            self.zoom_auto = og_zoom_auto
             self.obs_dnu = dnu
             self.new_lag = new_lag
             self.dnu_fit = dnu_fit
