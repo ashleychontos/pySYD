@@ -14,8 +14,6 @@ The pipeline works in two major parts (and one minor part):
 
 - todo.txt: File containing IDs of stars to be processed 
 - data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
-- params_findex.txt: input parameters for findex module (detailed documentation coming)
-- params_fitbg.txt: input parameters fot fitbg module (detailed documentation coming)
 - star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
 - results/target/: Directory containing result plots and files for each target
 
