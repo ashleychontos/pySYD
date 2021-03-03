@@ -1,1 +1,11 @@
 .vscode
+
+# ignore Mac system files
+*.DS_store
+
+# ignore local result outputs
+*.png
+
+# ignore local star_info changes
+Files/*.csv
+Files/*.txt
