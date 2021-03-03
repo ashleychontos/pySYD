@@ -3,9 +3,15 @@
 # ignore Mac system files
 *.DS_store
 
-# ignore local result outputs
-*.png
+# cached items
+*.pyc
+.*
+*~
+build
+dist
+*.egg-info
 
-# ignore local star_info changes
+# ignore local input/output files
+*.png
 Files/*.csv
 Files/*.txt
