@@ -31,13 +31,15 @@ Documentation and code under construction.
 
 To run example code clone/download the repository and then do:
 
-- python SYD.py
+- python SYD.py 
 
-This will run the pipeline on the two stars specified in the todo.txt file (KIC1435467 and KIC2309595), one star at a time first using the findex module followed by the fitbg module. If you'd like to skip findex (e.g. useful for a handful of high S/N stars where you can visually estimate nu_max and thus specify it manually in star_info.csv), set findex = False in SYD.py. 
+Note: by default text and plot outputs are suppressed. To override this  and see the output in real time run:
 
-Note: for multiple targets in todo.txt, the text and plot outputs are suppressed. To override this default and see the output in real time, simply run this command instead:
+- python SYD.py -p -v
 
-- python SYD.py -i
+To use 200 Monte-Carlo simulations to estimate uncertainties run:
+
+- python SYD.py -mc 200
 
 ## Multiprocessing
 
