@@ -4,7 +4,7 @@ The SYD PYpline -> asteroseismic SYD pipeline ([Huber et al. 2009](https://ui.ad
 
 The pipeline works in two major parts (and one minor part):
 
-1) findex: automatically finds power excess due to solar-like oscillations using a frequency resolved collapsed autocorrelation function
+1) findex: finds power excess due to solar-like oscillations using a frequency resolved collapsed autocorrelation function
 2) fitbg: perform a fit to the granulation background and measures the frequency of maximum power (nu_max), the large frequency separation (Delta_nu) and oscillation amplitude
 3) scrape_output: concatenates results from the two submodules for each individual target into a single csv in Files/
 
