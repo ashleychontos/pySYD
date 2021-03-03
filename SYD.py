@@ -53,7 +53,7 @@ def main(args, parallel=False, nthreads=None):
         print()
 
     # Concatenates output into a two files
-    subprocess.call(['python scrape_output.py'], shell=True)
+    subprocess.call(['python scrape_output.py'], shell=False)
 
 
 class Target:
