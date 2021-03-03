@@ -53,7 +53,7 @@ def main(args, parallel=False, nthreads=None):
         print()
 
     # Concatenates output into a two files
-    subprocess.call(['python', 'scrape_output.py'], shell=True)
+    subprocess.call(['python scrape_output.py'], shell=True)
 
 
 class Target:
@@ -73,8 +73,6 @@ class Target:
         if true, verbosity will increase
     show_plots : bool
         if true, plots will be shown
-    ignore : bool
-        if true, multiple targets will not automatically turn set `verbose` and `show_plots` to `False`
     keplercorr : bool
         if true will correct Kepler artefacts in the power spectrum
     filter : float
@@ -97,13 +95,8 @@ class Target:
         self.fitbg = args.fitbg
         self.verbose = args.verbose
         self.show_plots = args.show
-        self.ignore = args.ignore
         self.keplercorr = args.keplercorr
         self.filter = args.filter
-        # Turn off verbosity and plot displays if there are multiple targets and ignore is `False`
-        if len(self.params['todo']) > 1 and not self.ignore:
-            self.verbose = False
-            self.show_plots = False
         # Run the pipeline
         self.run_syd()
 
@@ -146,14 +139,10 @@ class Target:
                 self.time = np.copy(self.x)
                 self.flux = np.copy(self.y)
                 self.cadence = int(np.nanmedian(np.diff(self.time)*24.0*60.0*60.0))
-                if self.cadence/60.0 < 10.0:
-                    self.short_cadence = True
-                else:
-                    self.short_cadence = False
                 self.nyquist = 10**6/(2.0*self.cadence)
                 if self.verbose:
                     print('# LIGHT CURVE: %d lines of data read' % len(self.time))
-                if self.short_cadence:
+                if self.params[self.target]['numax'] > 500.:
                     self.fitbg['smooth_ps'] = 2.5
             # Load power spectrum
             if not os.path.exists(self.params['path'] + '%d_PS.txt' % self.target):
@@ -304,9 +293,9 @@ class Target:
             else:
 
                 mask = np.ma.getmask(np.ma.masked_inside(self.frequency, 1.0, 500.0))
-        # if lower numax and short cadence data, adjust default smoothing filter from 2.5->1.0muHz
-        if self.params[self.target]['numax'] <= 500. and self.short_cadence:
-            self.fitbg['smooth_ps'] = 1.0
+        # if lower numax adjust default smoothing filter from 2.5->1.0muHz
+        if self.params[self.target]['numax'] <= 500.:
+            self.fitbg['smooth_ps'] = 0.5
         self.frequency = self.frequency[mask]
         self.power = self.power[mask]
 
@@ -397,7 +386,7 @@ class Target:
             self.interp_pow = s(self.freq)
             self.bgcorr_pow = self.pow/self.interp_pow
 
-            if not self.short_cadence:
+            if self.params[self.target]['numax'] <= 500.:
                 boxes = np.logspace(np.log10(0.5), np.log10(25.), self.findex['n_trials'])*1.
             else:
                 boxes = np.logspace(np.log10(50.), np.log10(500.), self.findex['n_trials'])*1.
@@ -539,7 +528,7 @@ class Target:
                 pars[-1] = self.noise
                 self.pars = pars
 
-                # Smooth power spectrum - ONLY for plotting purposes, not used in subsequent analyses
+                # Smooth power spectrum - ONLY for plotting purposes, not used in subsequent analyses (TODO: this should not be done for all iterations!)
                 self.smooth_power = convolve(self.power, Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution))))
                 # If optimization does not converge, the rest of the code will not run
                 if self.get_red_noise():
@@ -977,6 +966,7 @@ class Target:
     def estimate_dnu(self):
         """Estimate a value for dnu."""
 
+		# for the first iteration (real data) only, estimate the peak on the ACF to fit
         if self.i == 0:
             # Get peaks from ACF
             peak_idx,_ = find_peaks(self.auto) #indices of peaks, threshold=half max(ACF)
@@ -992,40 +982,27 @@ class Target:
 
             og_zoom_lag,og_zoom_auto=self.get_acf_cutout()
             self.fitbg['acf_mask']=[min(og_zoom_lag),max(og_zoom_lag)]  # lag limits to use for ACF mask
-
-        # Get peaks from ACF using mask:
+	
+        # define the peak in the ACF
         zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
         zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
 
-        peak_idx,_ = find_peaks(zoom_auto)                        #indices of peaks
-        
-        new_peaks_l,new_peaks_a = zoom_lag[peak_idx],zoom_auto[peak_idx]  #vals of lag and acf corresponding to identified peaks
-        try:
-            new_idx = return_max(new_peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)  #peak closest to exp_dnu
-            new_best_lag=new_peaks_l[new_idx]   #lag val corresponding to best est_dnu
-            new_best_auto=new_peaks_a[new_idx]  #acf val corresponding to best est_dnu
-        except:
-            new_peaks_l, new_peaks_a = self.max_elements(zoom_lag, zoom_auto)    # for stars with mix modes, when find_peaks doesnt work, or zoom-lag where peak cannot be find, just take the max 10 vals
-            new_best_lag = new_peaks_l[0]
-            new_best_auto = new_peaks_a[0]
-        
-        # Fit a Gaussian to zoom-in ACF. Use position of Gaussian peak to find dnu:
-        bb = gaussian_bounds(zoom_lag, zoom_auto, best_x=new_best_lag, sigma=10**-2)
-        guesses = [np.mean(zoom_auto), new_best_auto, new_best_lag, new_best_lag*0.01*2.]
-        p_gauss3, p_cov3 = curve_fit(gaussian, zoom_lag, zoom_auto, p0=guesses, bounds=bb[0])
-        
-        # Create array with finer resolution for purposes of quantifying dnu uncertainty:
-        new_lag = np.linspace(min(zoom_lag),max(zoom_lag),2000)
-        d       = np.argmax(gaussian(new_lag,*p_gauss3))          #index of Gaussian peak
-        dnu     = new_lag[np.argmax(gaussian(new_lag,*p_gauss3))] #value of Gaussian peak
-        dnu_fit = gaussian(new_lag,*p_gauss3)                     #Gaussian fit to zoom_ACF
-        
-        if self.fitbg['force']:
-            dnu = self.fitbg['guess']
-        # Otherwise use fitted dnu
-        else:
-            dnu = new_lag[d]
+		# boundary conditions and initial guesses stay the same as for the first iteration
         if self.i == 0:
+            self.acf_bb = gaussian_bounds(zoom_lag, zoom_auto, best_x=best_lag, sigma=10**-2)
+            self.acf_guesses = [np.mean(zoom_auto), best_auto, best_lag, best_lag*0.01*2.]
+
+		# fit a Gaussian function to the selected peak in the ACF
+        p_gauss3, p_cov3 = curve_fit(gaussian, zoom_lag, zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
+        # the center of that Gaussian is our estimate for Dnu
+        dnu = p_gauss3[2]
+        
+   
+        if self.i == 0:
+			# variables for plotting. this only needs to be done during the first iteration
+            new_lag = np.linspace(min(zoom_lag),max(zoom_lag),2000)
+            dnu     = new_lag[np.argmax(gaussian(new_lag,*p_gauss3))] #value of Gaussian peak
+            dnu_fit = gaussian(new_lag,*p_gauss3)                     #Gaussian fit to zoom_ACF
             peaks_l[idx] = np.nan
             peaks_a[idx] = np.nan
             self.peaks_l = peaks_l
@@ -1419,9 +1396,8 @@ class Target:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description="""This is the new python version of asteroseismic IDL
-                            pipeline 'SYD' created by Daniel Huber (see Huber+2009)
-                            during his Ph.D. in Sydney. This script will initialize
+        description="""Python version of asteroseismic 'SYD'
+                            pipeline ( Huber+2009). This script will initialize
                             the SYD-PY pipeline, which is broken up into two main modules:
                             1) find excess (findex)
                             2) fit background (fitbg).
@@ -1464,32 +1440,22 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         '-v', '--v', '-verbose', '--verbose',
-        help="""Turn on the verbose output. This is generally helpful for a single target,
-                    but would probably not be useful for a long list of targets. By default,
-                    if the length of 'todo' targets is more than one, this output will be
-                    suppressed. If that is not desired, please add the 'ignore' command line
-                    argument. See help below for 'ignore'.
+        help="""Turn on the verbose output. 
                     Please note: the defaults is 'False'.""",
-        default=True, dest='verbose', action='store_true'
+        default=False, dest='verbose', action='store_true'
     )
     parser.add_argument(
-        '-show', '--show', '-plot', '--plot', '-plots', '--plots',
+        '-show', '--show', '-plot', '--plot', '-plots', '--plots', '-p',
         help="""Shows the appropriate output figures in real time. If the findex module is
                     run, this will show one figure at the end of findex. If the fitbg module is
                     run, a figure will appear at the end of the first iteration. If the monte
                     carlo sampling is turned on, this will provide another figure at the end of
                     the MC iterations. Regardless of this option, the figures will be saved to
                     the output directory. If running more than one target, this is not
-                    recommended. As a result, this is 'False' by default.""",
-        default=True, dest='show', action='store_true'
+                    recommended. """,
+        default=False, dest='show', action='store_true'
     )
-    parser.add_argument(
-        '-ignore', '--ignore',
-        help="""For multiple targets run at once, the typical output is suppressed. This is
-                    if you would like to 'ignore' this feature and have it print results in real
-                    time. This is strongly discouraged for targets running in parallel.""",
-        default=False, dest='ignore', action='store_true'
-    )
+  
     parser.add_argument(
         '-mc', '--mc', '-mciter', '--mciter', dest='mciter', default=1, type=int,
         help='Number of MC iterations (Default = 1)'

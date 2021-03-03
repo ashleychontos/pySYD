@@ -354,12 +354,16 @@ def gaussian_bounds(x, y, best_x=None, sigma=None):
     b[1][1] = 2.0*np.max(y)
     if not int(np.max(y)):
         b[1][1] = np.inf
-    if best_x is not None:
-        b[0][2] = best_x - 0.001*best_x
-        b[1][2] = best_x + 0.001*best_x
-    else:
-        b[0][2] = np.min(x)
-        b[1][2] = np.max(x)
+    # set bounds on center of Gaussian. If center is known, set to center+/-3sigma
+    # commented out for now since sigma seems to small
+    #if best_x is not None:
+    #    b[0][2] = best_x - 3*sigma
+    #    b[1][2] = best_x + 3*sigma
+    #else:
+    # Set the whole range for center of Gaussian. This should be robust for most cases.
+    b[0][2] = np.min(x)
+    b[1][2] = np.max(x)
+    
     b[0][3] = sigma
     b[1][3] = np.max(x)-np.min(x)
     bb.append(tuple(b))
