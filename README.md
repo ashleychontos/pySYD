@@ -1,13 +1,13 @@
 SYD-PYpline is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that SYD-PY is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
 
-### ** The main goal is asteroseismology-friendly software for the non-asteroseismology user. **
+### ** The main goal is asteroseismology-friendly software for the non-asteroseismology user **
 
 ## Overview
 
 A pipeline `Target` class object has two main methods:
 
 1) `find_excess`: finds power excess due to solar-like oscillations using a frequency resolved collapsed autocorrelation function
-2) `fit_background`: perform a fit to the granulation background and measures the frequency of maximum power (nu_max), the large frequency separation (Delta_nu) and oscillation amplitude
+2) `fit_background`: perform a fit to the granulation background and measures the frequency corresponding to maximum power (or <img src="https://latex.codecogs.com/gif.latex?\nu_{\mathrm{max}}" />) and the large frequency separation (<img src="https://latex.codecogs.com/gif.latex? \Delta \nu " />).
 
 ### Scripts
 - `target.py` : Target class which is initialized for each target given in Files/todo.txt
