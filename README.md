@@ -10,10 +10,10 @@ A pipeline `Target` class object has two main methods:
 2) `fit_background`: perform a fit to the granulation background and measures the frequency corresponding to maximum power (numax or nu_max) and the large frequency separation (delta_nu or dnu).
 
 ### Scripts
+- `main.py` : command line interface tools and initiates main pipeline 
 - `target.py` : Target class which is initialized for each target given in Files/todo.txt
 - `models.py` : any frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
 - `functions.py` : models, distributions, ffts, smoothing functions are all in this file
-- `main.py` : command line interface tools and initiates main pipeline 
 - `utils.py` : mostly contains information dictionaries and non-science related functions
 - `scrape_output.py` : takes each individual target's results and concatenates results into a single csv in Files/ for each submodulel (i.e. findex.csv and globalpars.csv). This is automatically called at the end of the main module.
 
@@ -35,25 +35,25 @@ To run example code, clone the repository, cd into the repo and then execute the
 ## CLI Options
 
 `-ex`, `--ex`, `-findex`, `--findex`, `-excess`, `--excess`
-- Turn off the find excess module. This is only recommended when a list of numaxes or a list of stellar parameters (to estimate the numaxes) are provided. Otherwise the second module, which fits the background will not be able to run properly. Default=True
+Turn off the find excess module. This is only recommended when a list of numaxes or a list of stellar parameters (to estimate the numaxes) are provided. Otherwise the second module, which fits the background will not be able to run properly. Default=True
 
 `-bg`, `--bg`, `-fitbg`, `--fitbg`, `-background`, `--background`
-- Turn off the background fitting process (although this is not recommended). Asteroseismic estimates are typically unreliable without properly removing stellar contributions from granulation processes. Since this is the money maker, fitbg is set to 'True' by default.
+Turn off the background fitting process (although this is not recommended). Asteroseismic estimates are typically unreliable without properly removing stellar contributions from granulation processes. Since this is the money maker, fitbg is set to 'True' by default.
 
 `-filter`, `--filter`, `-smooth`, `--smooth`
-- Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)
+Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)
 
 `-kc`, `--kc`, `-keplercorr`, `--keplercorr`
-- Turn on Kepler short-cadence artefact corrections
+Turn on Kepler short-cadence artefact corrections
 
 `-v`, `--v`, `-verbose`, `--verbose`
-- Turn on the verbose output
+Turn on the verbose output
 
 `-show`, `--show`, `-plot`, `--plot`, `-plots`, `--plots`,
-- Shows the appropriate output figures in real time. If the findex module is run, this will show one figure at the end of findex. If the fitbg module is run, a figure will appear at the end of the first iteration. If the monte carlo sampling is turned on, this will provide another figure at the end of the MC iterations. Regardless of this option, the figures will be saved to the output directory. If running more than one target, this is not recommended. 
+Shows the appropriate output figures in real time. If the findex module is run, this will show one figure at the end of findex. If the fitbg module is run, a figure will appear at the end of the first iteration. If the monte carlo sampling is turned on, this will provide another figure at the end of the MC iterations. Regardless of this option, the figures will be saved to the output directory. If running more than one target, this is not recommended. 
 
 `-mc`, `--mc`, `-mciter`, `--mciter`
-- Number of MC iterations to run to quantify measurement uncertainties. It is recommended to check the results first before implementing this option and therefore, this is set to 1 by default.
+Number of MC iterations to run to quantify measurement uncertainties. It is recommended to check the results first before implementing this option and therefore, this is set to 1 by default.
 
 See `python main.py -help` for more details.
 
