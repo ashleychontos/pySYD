@@ -12,6 +12,5 @@ dist
 *.egg-info
 
 # ignore local input/output files
-*.png
-Files/*.csv
-Files/*.txt
+Files/
+__pycache__/
