@@ -1,24 +1,13 @@
 SYD-PYpline is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that SYD-PY is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
 
-### The main goal is asteroseismology-friendly software for the non-asteroseismology user.
+### ** The main goal is asteroseismology-friendly software for the non-asteroseismology user. **
+
+## Overview
 
 A pipeline `Target` class object has two main methods:
 
 1) `find_excess`: finds power excess due to solar-like oscillations using a frequency resolved collapsed autocorrelation function
 2) `fit_background`: perform a fit to the granulation background and measures the frequency of maximum power (nu_max), the large frequency separation (Delta_nu) and oscillation amplitude
-
-## Attribution
-
-Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, and Maryum Sayeed. 
-
-Please cite the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract) and the following DOI if you make use of this software in your research.
-[need to do]
-
-## Documentation
-
-Documentation is available [here]
-
-## Overview
 
 ### Scripts
 - `target.py` : Target class which is initialized for each target given in Files/todo.txt
@@ -74,6 +63,17 @@ Follow examples in
 
 - `path_to_notebook.ipynb`
 - `boop`
+
+## Attribution
+
+Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, and Maryum Sayeed. 
+
+Please cite the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract) and the following DOI if you make use of this software in your research.
+[need to do]
+
+## Documentation
+
+Documentation is available [here]
 
 ## Troubleshooting
 
