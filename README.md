@@ -62,7 +62,7 @@ Shows the appropriate output figures in real time. If the findex module is run, 
 
 Number of MC iterations to run to quantify measurement uncertainties. It is recommended to check the results first before implementing this option and therefore, this is set to 1 by default.
 
-#### See `python main.py -help` for more details.
+#### See `main -help` for more details.
 
 ## Tutorials 
 
