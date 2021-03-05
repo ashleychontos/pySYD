@@ -24,7 +24,7 @@ A pipeline `Target` class object has two main methods:
 - star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
 - results/: Directory containing result plots and files for each target
 
-## Example
+## Examples
 
 There are three example stars provided in Files/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
