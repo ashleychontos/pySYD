@@ -6,8 +6,8 @@ SYD-PYpline is the python translation of IDL asteroseismic pipeline SYD ([Huber 
 
 A pipeline `Target` class object has two main methods:
 
-1) `find_excess`: finds power excess due to solar-like oscillations using a frequency resolved collapsed autocorrelation function
-2) `fit_background`: perform a fit to the granulation background and measures the frequency corresponding to maximum power (numax or nu_max) and the large frequency separation (delta_nu or dnu).
+1) `find_excess`: attempts to find the power excess due to solar-like oscillations using a collapsed ACF (autocorrelation function) using 3 different `box` sizes
+2) `fit_background`: perform a fit to the stellar background contribution (i.e. granulation) and measures the global asteroseismic properties 1) frequency corresponding to maximum power (numax or nu_max) and 2) the large frequency separation (delta_nu or dnu).
 
 ### Scripts
 - `main.py` : command line interface tools and initiates main pipeline 
