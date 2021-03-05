@@ -1,6 +1,7 @@
 import glob
 import numpy as np
 import pandas as pd
+from itertools import chain
 from astropy.io import ascii
 from astropy.stats import mad_std
 
@@ -27,17 +28,18 @@ def get_info(args, star_info='Files/star_info.csv', params={}):
     """
 
     # Open target list
-    with open('Files/todo.txt', "r") as f:
-        todo = np.array([int(float(line.strip().split()[0])) for line in f.readlines()])
+    if args.target is None:
+        with open(args.file, "r") as f:
+            args.target = [int(float(line.strip().split()[0])) for line in f.readlines()]
     params['path'] = 'Files/data/'
     # Adding constants and the target list
     params.update({
-        'numax_sun': 3090.0, 'dnu_sun': 135.1, 'width_sun': 1300.0, 'todo': todo, 'G': 6.67428e-8,
+        'numax_sun': 3090.0, 'dnu_sun': 135.1, 'width_sun': 1300.0, 'todo': args.target, 'G': 6.67428e-8,
         'tau_sun': [5.2e6, 1.8e5, 1.7e4, 2.5e3, 280.0, 80.0], 'teff_sun': 5777.0, 'mass_sun': 1.9891e33,
         'tau_sun_single': [3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.], 'radius_sun': 6.95508e10
     })
     # Set file paths
-    for target in todo:
+    for target in args.target:
         params[target] = {}
         params[target]['path'] = '/'.join(params['path'].split('/')[:-2]) + '/results/%d/' % target
     args.params = params
@@ -498,6 +500,42 @@ def save_fitbg(target):
     new_df.to_csv(target.params[target.target]['path']+'%d_globalpars.csv' % target.target, index=False)
     if target.fitbg['samples']:
         target.df.to_csv(target.params[target.target]['path']+'%d_globalpars_all.csv' % target.target, index=False)
+
+
+def scrape_output(path = 'Files/results/**/'):
+    """
+    Grabs each individual target's results and concatenates results into a single csv in Files/ for each submodulel
+    (i.e. findex.csv and globalpars.csv). This is automatically called at the end of the main SYD module.
+    """
+
+    # Findex outputs
+    output = '%s*findex.csv'%path
+    files = glob.glob(output)
+    df = pd.read_csv(files[0])
+    for i in range(1,len(files)):
+        df_new = pd.read_csv(files[i])
+        df = pd.concat([df, df_new])
+    df.to_csv('Files/findex.csv', index=False)
+
+    # Fitbg outputs
+    output = '%s*globalpars.csv'%path
+    files = glob.glob(output)
+    df = pd.DataFrame(columns=['target'])
+
+    for i, file in enumerate(files):
+	       df_new = pd.read_csv(file)
+	       df_new.set_index('parameter',inplace=True,drop=False)
+	       df.loc[i,'target']=file.strip().split('/')[-2]
+	       new_header_names=[[i,i+'_err'] for i in df_new.index.values.tolist()] #add columns to get error
+	       new_header_names=list(chain.from_iterable(new_header_names))          
+	       for col in new_header_names:
+		          if '_err' in col:
+			             df.loc[i,col]=df_new.loc[col[:-4],'uncertainty']
+		          else:
+			             df.loc[i,col]=df_new.loc[col,'value']
+
+    df.fillna('--', inplace=True)
+    df.to_csv('Files/globalpars.csv', index=False)
 
 
 def set_seed(target):
