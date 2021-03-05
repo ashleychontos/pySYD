@@ -9,6 +9,22 @@ A pipeline `Target` class object has two main methods:
 1) `find_excess`: attempts to find the power excess due to solar-like oscillations using a collapsed ACF (autocorrelation function) using 3 different `box` sizes
 2) `fit_background`: perform a fit to the stellar background contribution (i.e. granulation) and measures the global asteroseismic properties 1) frequency corresponding to maximum power (numax or nu_max) and 2) the large frequency separation (delta_nu or dnu).
 
+## Examples
+
+There are three example stars provided in Files/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
+
+- `python main.py -v -show -target 1435467` (or whichever target you'd like)
+
+By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in Files/todo.txt.
+
+To estimate uncertainties in the derived parameters for a given target, set `-mc` to something sufficient for random sampling (e.g. 200).
+
+- `python main.py -v -show -target 1435467 -mciter 200`
+
+In the previous example, `-mc` was not specified and is 1 by default (for 1 iteration). By changing this value, it will randomize the power spectrum and attempt to recover the parameters for the specified number of iterations. The uncertainties will appear in the verbose output, output csvs, and an additional figure will show the distributions of the parameters.
+
+##
+
 ### `Scripts`
 - `functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
 - `main.py` : main pipeline initialization and command line interface tools 
@@ -24,47 +40,33 @@ A pipeline `Target` class object has two main methods:
 - star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
 - results/: Directory containing result plots and files for each target
 
-## Examples
+## Command Line Interface (CLI) Options
 
-There are three example stars provided in Files/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
-
-- `python main.py -v -show -target 1435467` (or whichever target you'd like)
-
-By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in Files/todo.txt.
-
-To estimate uncertainties in the derived parameters for a given target, set `-mc` to something sufficient for random sampling (e.g. 200).
-
-- `python main.py -v -show -target 1435467 -mciter 200`
-
-In the previous example, `-mc` was not specified and is 1 by default (for 1 iteration). By changing this value, it will randomize the power spectrum and attempt to recover the parameters for the specified number of iterations. The uncertainties will appear in the verbose output, output csvs, and an additional figure will show the distributions of the parameters.
-
-## CLI Options
-
-`-ex`, `--ex`, `-findex`, `--findex`, `-excess`, `--excess`
+- `-ex`, `--ex`, `-findex`, `--findex`, `-excess`, `--excess`
 
 Turn off the find excess module. This is only recommended when a list of numaxes or a list of stellar parameters (to estimate the numaxes) are provided. Otherwise the second module, which fits the background will not be able to run properly. Default=True
 
-`-bg`, `--bg`, `-fitbg`, `--fitbg`, `-background`, `--background`
+- `-bg`, `--bg`, `-fitbg`, `--fitbg`, `-background`, `--background`
 
 Turn off the background fitting process (although this is not recommended). Asteroseismic estimates are typically unreliable without properly removing stellar contributions from granulation processes. Since this is the money maker, fitbg is set to 'True' by default.
 
-`-filter`, `--filter`, `-smooth`, `--smooth`
+- `-filter`, `--filter`, `-smooth`, `--smooth`
 
 Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)
 
-`-kc`, `--kc`, `-keplercorr`, `--keplercorr`
+- `-kc`, `--kc`, `-keplercorr`, `--keplercorr`
 
 Turn on Kepler short-cadence artefact corrections
 
-`-v`, `--v`, `-verbose`, `--verbose`
+- `-v`, `--v`, `-verbose`, `--verbose`
 
 Turn on verbose output
 
-`-show`, `--show`, `-plot`, `--plot`, `-plots`, `--plots`,
+- `-show`, `--show`, `-plot`, `--plot`, `-plots`, `--plots`,
 
 Shows the appropriate output figures in real time. If the findex module is run, this will show one figure at the end of findex. If the fitbg module is run, a figure will appear at the end of the first iteration. If the monte carlo sampling is turned on, this will provide another figure at the end of the MC iterations. Regardless of this option, the figures will be saved to the output directory. If running more than one target, this is not recommended. 
 
-`-mc`, `--mc`, `-mciter`, `--mciter`
+- `-mc`, `--mc`, `-mciter`, `--mciter`
 
 Number of MC iterations to run to quantify measurement uncertainties. It is recommended to check the results first before implementing this option and therefore, this is set to 1 by default.
 
