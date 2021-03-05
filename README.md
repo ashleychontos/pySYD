@@ -1,6 +1,6 @@
 SYD-PYpline is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that SYD-PY is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
 
-### ** The main goal is asteroseismology-friendly software for the non-asteroseismology user **
+### * The main goal is asteroseismology-friendly software for the non-asteroseismology user *
 
 ## Overview
 
