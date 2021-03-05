@@ -15,7 +15,7 @@ A pipeline `Target` class object has two main methods:
 - `models.py` : any frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
 - `functions.py` : models, distributions, ffts, smoothing functions are all in this file
 - `utils.py` : mostly contains information dictionaries and non-science related functions
-- `scrape_output.py` : takes each individual target's results and concatenates results into a single csv in Files/ for each submodulel (i.e. findex.csv and globalpars.csv). This is automatically called at the end of the main module.
+- `plots.py` : all plotting routines
 
 ### `Files/`
 
