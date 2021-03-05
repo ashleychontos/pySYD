@@ -10,12 +10,12 @@ A pipeline `Target` class object has two main methods:
 2) `fit_background`: perform a fit to the stellar background contribution (i.e. granulation) and measures the global asteroseismic properties 1) frequency corresponding to maximum power (numax or nu_max) and 2) the large frequency separation (delta_nu or dnu).
 
 ### Scripts
-- `main.py` : command line interface tools and initiates main pipeline 
-- `target.py` : Target class which is initialized for each target given in Files/todo.txt
-- `models.py` : any frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
-- `functions.py` : models, distributions, ffts, smoothing functions are all in this file
-- `utils.py` : mostly contains information dictionaries and non-science related functions
-- `plots.py` : all plotting routines
+- `functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
+- `main.py` : main pipeline initialization and command line interface tools 
+- `models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
+- `plots.py` : plotting routines
+- `target.py` : main pipeline Target class that is initialized for each target that is processed
+- `utils.py` : contains information dictionaries and non-science related functions
 
 ### `Files/`
 
