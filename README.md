@@ -26,11 +26,11 @@ A pipeline `Target` class object has two main methods:
 
 ## Example
 
-To run example code, clone the repository, cd into the repo and then execute the main script with the following command:
+There are three example stars provided in Files/data/: 1435478 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
-- `python main.py -v -show` 
+- `python main.py -v -show -target 1435478` (or whichever target you'd like)
 
-By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets.
+By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in Files/todo.txt.
 
 ## CLI Options
 
