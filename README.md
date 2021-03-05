@@ -9,7 +9,7 @@ A pipeline `Target` class object has two main methods:
 1) `find_excess`: attempts to find the power excess due to solar-like oscillations using a collapsed ACF (autocorrelation function) using 3 different `box` sizes
 2) `fit_background`: perform a fit to the stellar background contribution (i.e. granulation) and measures the global asteroseismic properties 1) frequency corresponding to maximum power (numax or nu_max) and 2) the large frequency separation (delta_nu or dnu).
 
-### Scripts
+### `Scripts`
 - `functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
 - `main.py` : main pipeline initialization and command line interface tools 
 - `models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
@@ -17,20 +17,20 @@ A pipeline `Target` class object has two main methods:
 - `target.py` : main pipeline Target class that is initialized for each target that is processed
 - `utils.py` : contains information dictionaries and non-science related functions
 
-### `Files/`
+### Files/
 
-- `todo.txt`: File containing IDs of stars to be processed 
-- `data/`: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
-- `star_info.csv`: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
-- `results/`: Directory containing result plots and files for each target
-
-Documentation and code under construction.
+- todo.txt: File containing IDs of stars to be processed 
+- data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
+- star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
+- results/: Directory containing result plots and files for each target
 
 ## Example
 
-To run example code, clone the repository, cd into the repo and then execute the main script:
+To run example code, clone the repository, cd into the repo and then execute the main script with the following command:
 
-- `python main.py` 
+- `python main.py -v -show` 
+
+By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets.
 
 ## CLI Options
 
