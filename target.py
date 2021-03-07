@@ -155,7 +155,10 @@ class Target:
                 self.fit_numax.append(self.md[i][idx])
 
                 try:
-                    best_vars, _ = curve_fit(gaussian, self.md[i], self.cumsum[i], p0=[np.mean(self.cumsum[i]), 1.0-np.mean(self.cumsum[i]), self.md[i][idx], self.params['width_sun']*(self.md[i][idx]/self.params['numax_sun'])])
+                    best_vars, _ = curve_fit(gaussian, self.md[i], self.cumsum[i], p0=[np.mean(self.cumsum[i]), 1.0-np.mean(self.cumsum[i]), self.md[i][idx], self.params['width_sun']*(self.md[i][idx]/self.params['numax_sun'])],
+                        maxfev=5000,
+                        bounds=((-np.inf,-np.inf,1,-np.inf),(np.inf,np.inf,np.inf,np.inf)),
+                        )
                 except Exception as _:
                     results.append([self.target, np.nan, np.nan, -np.inf])
                 else:
@@ -517,8 +520,8 @@ class Target:
 
     def get_numax_gaussian(self):
         """Estimate numax by fitting a Gaussian to the power envelope of the smoothed power spectrum."""
-        bb = gaussian_bounds(self.region_freq, self.region_pow)
-        p_gauss1, _ = curve_fit(gaussian, self.region_freq, self.region_pow, p0=self.guesses, bounds=bb[0])
+        bb = gaussian_bounds(self.region_freq, self.region_pow, self.guesses)
+        p_gauss1, _ = curve_fit(gaussian, self.region_freq, self.region_pow, p0=self.guesses, bounds=bb[0], maxfev=5000)
         # create array with finer resolution for purposes of quantifying uncertainty
         new_freq = np.linspace(min(self.region_freq), max(self.region_freq), 10000)
         # numax_fit = list(gaussian(new_freq, p_gauss1[0], p_gauss1[1], p_gauss1[2], p_gauss1[3]))
@@ -589,9 +592,15 @@ class Target:
         right_indices=np.where(auto[lag_idx:]<hmax)[0]
         right_idx=right_indices[0]
         
-        left_indices=np.where(auto[:lag_idx]<hmax)[0]
-        left_idx=left_indices[-1]
-
+        if True in (auto[:lag_idx]<hmax):
+            left_indices=np.where(auto[:lag_idx]<hmax)[0]
+            left_idx=left_indices[-1]
+        elif True in (auto[:lag_idx]<(acf_of_peak*0.75)):
+            left_indices=np.where(auto[:lag_idx]<hmax)[0]
+            left_idx=left_indices[-1]
+        else:
+            left_idx=0
+            
         left_fwhm_idx=np.where(lag==(lag[:lag_idx][left_idx]))[0]    #index in lag&auto of left FWHM val
         right_fwhm_idx=np.where(lag==(lag[lag_idx:][right_idx]))[0]  #index in lag&auto of right FWHM val
         left_fwhm,right_fwhm=lag[left_fwhm_idx],lag[right_fwhm_idx]  #vals of FWHM on both sides of peak
@@ -634,8 +643,8 @@ class Target:
 
 		      # boundary conditions and initial guesses stay the same as for the first iteration
         if self.i == 0:
-            self.acf_bb = gaussian_bounds(zoom_lag, zoom_auto, best_x=best_lag, sigma=10**-2)
             self.acf_guesses = [np.mean(zoom_auto), best_auto, best_lag, best_lag*0.01*2.]
+            self.acf_bb = gaussian_bounds(zoom_lag, zoom_auto, self.acf_guesses, best_x=best_lag, sigma=10**-2)
 
 		      # fit a Gaussian function to the selected peak in the ACF
         p_gauss3, p_cov3 = curve_fit(gaussian, zoom_lag, zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])

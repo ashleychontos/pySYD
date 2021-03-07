@@ -427,7 +427,7 @@ def get_initial_guesses(target):
         if target.params[target.target]['numax'] > 300.0:
             mask = np.ma.getmask(np.ma.masked_inside(target.frequency, 100.0, target.nyquist))
         else:
-            mask = np.ma.getmask(np.ma.masked_inside(target.frequency, 1.0, 500.0))
+            mask = np.ma.getmask(np.ma.masked_inside(target.frequency, 1.0, target.nyquist))
     # if lower numax adjust default smoothing filter from 2.5->1.0muHz
     if target.params[target.target]['numax'] <= 500.:
         target.fitbg['smooth_ps'] = 0.5
@@ -462,6 +462,9 @@ def get_initial_guesses(target):
     mnu = (1.0/taus)*1e5
     target.b = b[mnu >= min(target.frequency)]
     target.mnu = mnu[mnu >= min(target.frequency)]
+    if len(target.mnu)==0:
+        target.b = b[mnu >= 10] 
+        target.mnu = mnu[mnu >= 10]
     target.nlaws = len(target.mnu)
     target.mnu_orig = np.copy(target.mnu)
     target.b_orig = np.copy(target.b)
