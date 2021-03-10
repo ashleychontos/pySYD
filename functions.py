@@ -81,7 +81,7 @@ def remove_artefact(target, lc=29.4244*60*1e-6):
     return target
 
 
-def gaussian_bounds(x, y, best_x=None, sigma=None):
+def gaussian_bounds(x, y, guesses,best_x=None, sigma=None):
     """Get the bounds for the parameters of a Gaussian fit to the data.
 
     Parameters
@@ -100,15 +100,24 @@ def gaussian_bounds(x, y, best_x=None, sigma=None):
     bb : List[Tuple]
         list of parameter bounds of a Gaussian fit to the data
     """
-
+    offset,amp,center,width=guesses
     if sigma is None:
         sigma = (max(x)-min(x))/8.0/np.sqrt(8.0*np.log(2.0))
     bb = []
     b = np.zeros((2, 4)).tolist()
-    b[1][0] = np.inf
-    b[1][1] = 2.0*np.max(y)
-    if not int(np.max(y)):
-        b[1][1] = np.inf
+    
+    # offset bound:
+    b[1][0] = np.inf #upper bound
+
+    # amplitude bounds:
+    if amp>0:
+        b[1][1] = 2.0*np.max(y) #upper bound
+    else:
+        b[0][1]=-np.inf #lower bound
+        b[1][1]=0       #upper bound
+    # if not int(np.max(y)):
+    #     b[1][1] = np.inf
+    
     # set bounds on center of Gaussian. If center is known, set to center+/-3sigma
     # commented out for now since sigma seems to small
     #if best_x is not None:
@@ -116,14 +125,17 @@ def gaussian_bounds(x, y, best_x=None, sigma=None):
     #    b[1][2] = best_x + 3*sigma
     #else:
     # Set the whole range for center of Gaussian. This should be robust for most cases.
+    # center bounds:
     b[0][2] = np.min(x)
     b[1][2] = np.max(x)
     
+    # width bounds
     b[0][3] = sigma
-    b[1][3] = np.max(x)-np.min(x)
+    b[1][3] = (np.max(x)-np.min(x))*2.
     bb.append(tuple(b))
-
+    
     return bb
+
 
 
 def max_elements(x, y, npeaks):
