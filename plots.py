@@ -98,7 +98,7 @@ def plot_findex(target):
     plt.tight_layout()
     # Save
     if target.params['save']:
-        plt.savefig(target.params[target.target]['path'] + '%d_findex.png' % target.target, dpi=300)
+        plt.savefig('%sexcess.png' % target.params[target.target]['path'], dpi=300)
     # Show plots
     if target.params['show']:
         plt.show()
@@ -240,7 +240,7 @@ def plot_fitbg(target):
     plt.tight_layout()
     # Save
     if target.params['save']:
-        plt.savefig(target.params[target.target]['path'] + '%d_fitbg.png' % target.target, dpi=300)
+        plt.savefig('%sbackground.png' % target.params[target.target]['path'], dpi=300)
     # Show plots
     if target.params['show']:
         plt.show()
@@ -260,7 +260,7 @@ def plot_mc(target):
     plt.tight_layout()
     # Save
     if target.params['save']:
-        plt.savefig(target.params[target.target]['path'] + '%d_mc.png' % target.target, dpi=300)
+        plt.savefig('%ssamples.png' % target.params[target.target]['path'], dpi=300)
     # Show plots
     if target.params['show']:
         plt.show()

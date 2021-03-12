@@ -360,8 +360,8 @@ def get_initial_guesses(target):
     """Get initial guesses for the granulation background."""
 
     # Check whether output from findex module exists; if yes, let that override star info guesses
-    if glob.glob(target.params[target.target]['path'] + '%d_findex.csv' % target.target) != []:
-        df = pd.read_csv(target.params[target.target]['path']+'%d_findex.csv' % target.target)
+    if glob.glob('%sexcess.csv' % target.params[target.target]['path']) != []:
+        df = pd.read_csv('%sexcess.csv' % target.params[target.target]['path'])
         for col in ['numax', 'dnu', 'snr']:
             target.params[target.target][col] = df.loc[0, col]
     # If no output from findex module exists, assume SNR is high enough to run the fit background routine
@@ -437,7 +437,7 @@ def save_findex(target, results):
     """
 
     variables = ['target', 'numax', 'dnu', 'snr']
-    save_path = target.params[target.target]['path'] + '%d_findex.csv' % target.target
+    save_path = '%sexcess.csv' % target.params[target.target]['path']
     ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
 
 
@@ -456,9 +456,9 @@ def save_fitbg(target):
             new_df.loc[c, 'uncertainty'] = mad_std(target.final_pars[col])
         else:
             new_df.loc[c, 'uncertainty'] = '--'
-    new_df.to_csv(target.params[target.target]['path']+'%d_globalpars.csv' % target.target, index=False)
+    new_df.to_csv('%sbackground.csv' % target.params[target.target]['path'], index=False)
     if target.fitbg['samples']:
-        target.df.to_csv(target.params[target.target]['path']+'%d_globalpars_all.csv' % target.target, index=False)
+        target.df.to_csv('%ssamples.csv' % target.params[target.target]['path'], index=False)
 
 
 def scrape_output(path = 'Files/results/**/'):
@@ -468,16 +468,16 @@ def scrape_output(path = 'Files/results/**/'):
     """
 
     # Findex outputs
-    output = '%s*findex.csv'%path
+    output = '%s*excess.csv'%path
     files = glob.glob(output)
     df = pd.read_csv(files[0])
     for i in range(1,len(files)):
         df_new = pd.read_csv(files[i])
         df = pd.concat([df, df_new])
-    df.to_csv('Files/findex.csv', index=False)
+    df.to_csv('Files/excess.csv', index=False)
 
     # Fitbg outputs
-    output = '%s*globalpars.csv'%path
+    output = '%s*background.csv'%path
     files = glob.glob(output)
     df = pd.DataFrame(columns=['target'])
 
@@ -494,7 +494,7 @@ def scrape_output(path = 'Files/results/**/'):
 			             df.loc[i,col]=df_new.loc[col,'value']
 
     df.fillna('--', inplace=True)
-    df.to_csv('Files/globalpars.csv', index=False)
+    df.to_csv('Files/background.csv', index=False)
 
 
 def set_seed(target):

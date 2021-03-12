@@ -241,6 +241,7 @@ class Target:
                     plot_mc(self)
                     if self.verbose:
                         # Print results with uncertainties
+                        print('\nOutput parameters:')
                         print('numax (smoothed): %.2f +/- %.2f muHz' % (self.final_pars['numax_smooth'][0], mad_std(self.final_pars['numax_smooth'])))
                         print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz' % (self.final_pars['amp_smooth'][0], mad_std(self.final_pars['amp_smooth'])))
                         print('numax (gaussian): %.2f +/- %.2f muHz' % (self.final_pars['numax_gaussian'][0], mad_std(self.final_pars['numax_gaussian'])))
@@ -253,6 +254,8 @@ class Target:
                 else:
                     save_fitbg(self)
                     if self.verbose:
+                        print('-------------------------------------------------')
+                        print('Output parameters:')
                         # Print results with no errors
                         print('numax (smoothed): %.2f muHz' % (self.final_pars['numax_smooth'][0]))
                         print('maxamp (smoothed): %.2f ppm^2/muHz' % (self.final_pars['amp_smooth'][0]))
