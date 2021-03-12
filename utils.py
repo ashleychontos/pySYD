@@ -9,8 +9,8 @@ from functions import *
 from models import *
 
 
-def get_info(args, star_info='Files/star_info.csv', params={}):
-    """Loads todo.txt, sets up file paths and initialises other information.
+def get_info(args, params={}):
+    """Loads todo.txt, sets up file paths and initializes other information.
 
     Parameters
     ----------
@@ -34,9 +34,9 @@ def get_info(args, star_info='Files/star_info.csv', params={}):
     params['path'] = 'Files/data/'
     # Adding constants and the target list
     params.update({
-        'numax_sun': 3090.0, 'dnu_sun': 135.1, 'width_sun': 1300.0, 'todo': args.target, 'G': 6.67428e-8,
-        'tau_sun': [5.2e6, 1.8e5, 1.7e4, 2.5e3, 280.0, 80.0], 'teff_sun': 5777.0, 'mass_sun': 1.9891e33,
-        'tau_sun_single': [3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.], 'radius_sun': 6.95508e10
+        'numax_sun': 3090.0, 'dnu_sun': 135.1, 'width_sun': 1300.0, 'todo': args.target, 'G': 6.67428e-8, 'show': args.show,
+        'tau_sun': [5.2e6, 1.8e5, 1.7e4, 2.5e3, 280.0, 80.0], 'teff_sun': 5777.0, 'mass_sun': 1.9891e33, 'save': args.save,
+        'tau_sun_single': [3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.], 'radius_sun': 6.95508e10, 'keplercorr': args.keplercorr,
     })
     # Set file paths
     for target in args.target:
@@ -45,19 +45,11 @@ def get_info(args, star_info='Files/star_info.csv', params={}):
     args.params = params
 
     # Initialise parameters for the find excess routine
-    if args.excess:
-        args = get_excess_params(args)
-    else:
-        args = get_excess_params(args)
-        args.findex['do'] = False
+    args = get_excess_params(args)
     # Initialise parameters for the fit background routine
-    if args.background:
-        args = get_bg_params(args)
-    else:
-        args = get_bg_params(args)
-        args.fitbg['do'] = False
+    args = get_background_params(args)
     # Get star info
-    args = get_star_info(args, star_info)
+    args = get_star_info(args)
 
     return args
 
@@ -65,12 +57,6 @@ def get_info(args, star_info='Files/star_info.csv', params={}):
 def get_excess_params(
         args,
         findex={},
-        save=True,
-        step=0.25,
-        binning=0.005,
-        n_trials=3,
-        lower=10.0,
-        upper=4000.0
 ):
     """Get the parameters for the find excess routine.
 
@@ -80,8 +66,6 @@ def get_excess_params(
         the command line arguments
     findex : dict
         the parameters of the find excess routine
-    save : bool
-        if true will save the results of the find excess routine. Default value is `True`.
     step : float
         TODO: Write description. Default value is `0.25`.
     binning : float
@@ -99,20 +83,19 @@ def get_excess_params(
         the updated command line arguments
     """
 
-    findex['do'] = True
+    findex['do'] = args.excess
     pars = {
-        'save': save,
-        'step': step,
-        'binning': binning,
-        'smooth_width': args.filter,
-        'n_trials': n_trials,
-        'lower': lower,
-        'upper': upper,
+        'step': args.step,
+        'binning': args.binning,
+        'smooth_width': args.smooth_width,
+        'n_trials': args.ntrials,
+        'lower': args.lowerx,
+        'upper': args.upperx,
     }
     findex.update(pars)
 
     # Initialise save folders
-    if findex['save']:
+    if args.save:
         for target in args.params['todo']:
             if not os.path.exists(args.params[target]['path']):
                 os.makedirs(args.params[target]['path'])
@@ -121,27 +104,9 @@ def get_excess_params(
     return args
 
 
-def get_bg_params(
+def get_background_params(
         args,
         fitbg={},
-        save=True,
-        box_filter=2.5,
-        ind_width=50,
-        n_rms=20,
-        n_peaks=10,
-        force=False,
-        guess=140.24,
-        clip=True,
-        clip_value=0.0,
-        ech_smooth=True,
-        ech_filter=1.0,
-        smooth_ps=1.0,
-        lower_numax=None,
-        upper_numax=None,
-        lower=None,
-        upper=None,
-        slope=False,
-        samples=True
 ):
     """Get the parameters for the fit background routine.
 
@@ -151,8 +116,6 @@ def get_bg_params(
         the command line arguments
     fitbg : dict
         the parameters of the fit background routine
-    save : bool
-        if true will save the results of the background routine. Default value is `True`.
     box_filter : float
         the size of the box filter. Default value is `2.5`.
     ind_width : int
@@ -169,16 +132,10 @@ def get_bg_params(
         if true will set the minimum frequency value of the echelle plot to `clip_value`. Default value is `True`.
     clip_value : float
         the minimum frequency of the echelle plot. Default value is `0.0`.
-    ech_smooth : bool
-        TODO: Write description. Default value is `True`.
-    ech_filter : float
-        TODO: Write description. Default value is `1.0`.
+    smooth_ech : float
+        option to smooth the output of the echelle plot
     smooth_ps : float
         TODO: Write description. Default value is `1.0`.
-    lower_numax : Optional[float]
-        the lower bound on numax. Default value is `None`.
-    upper_numax : Optional[float]
-        the upper bound on numax. Default value is `None`.
     lower : Optional[float]
         the lower frequency bound. Default value is `None`.
     upper : Optional[float]
@@ -194,27 +151,23 @@ def get_bg_params(
         the updated command line arguments
     """
 
-    fitbg['do'] = True
+    fitbg['do'] = args.background
     pars = {
-        'save': save,
         'num_mc_iter': args.mciter,
-        'lower': lower,
-        'upper': upper,
-        'box_filter': box_filter,
-        'ind_width': ind_width,
-        'n_rms': n_rms,
-        'n_peaks': n_peaks,
-        'smooth_ps': smooth_ps,
-        'lower_numax': lower_numax,
-        'upper_numax': upper_numax,
-        'force': force,
-        'guess': guess,
-        'clip': clip,
-        'clip_value': clip_value,
-        'ech_smooth': ech_smooth,
-        'ech_filter': ech_filter,
-        'slope': slope,
-        'samples': samples,
+        'lower': args.lowerb,
+        'upper': args.upperb,
+        'box_filter': args.box_filter,
+        'ind_width': args.ind_width,
+        'n_rms': args.nrms,
+        'n_peaks': args.npeaks,
+        'smooth_ps': args.smooth_ps,
+        'force': args.force,
+        'guess': args.guess,
+        'clip': args.clip,
+        'clip_value': args.value,
+        'smooth_ech': args.smooth_ech,
+        'slope': args.slope,
+        'samples': args.samples,
     }
     fitbg.update(pars)
 
@@ -222,7 +175,7 @@ def get_bg_params(
     fitbg['functions'] = {1: harvey_one, 2: harvey_two, 3: harvey_three, 4: harvey_four, 5: harvey_five, 6: harvey_six}
 
     # Initialise save folders
-    if fitbg['save']:
+    if args.save:
         for target in args.params['todo']:
             if not os.path.exists(args.params[target]['path']):
                 os.makedirs(args.params[target]['path'])
@@ -231,7 +184,7 @@ def get_bg_params(
     return args
 
 
-def get_star_info(args, star_info, cols=['rad', 'logg', 'teff']):
+def get_star_info(args, cols=['rad', 'logg', 'teff']):
     """Get target information stored in `star_info.csv`.
 
     Parameters
@@ -250,8 +203,8 @@ def get_star_info(args, star_info, cols=['rad', 'logg', 'teff']):
     """
 
     # Open file if it exists
-    if os.path.isfile(star_info):
-        df = pd.read_csv(star_info)
+    if os.path.exists(args.info):
+        df = pd.read_csv(args.info)
         targets = df.targets.values.tolist()
         for todo in args.params['todo']:
             if todo in targets:
@@ -292,7 +245,7 @@ def load_data(target, data=None):
     # Now done at beginning to make sure it only does this one per target
     if glob.glob(target.params['path']+'%d_*' % target.target) != []:
         if target.verbose:
-            print('\n\n')
+            print('')
             print('-------------------------------------------------')
             print('Target: %d' % target.target)
             print('-------------------------------------------------')
@@ -316,7 +269,7 @@ def load_data(target, data=None):
             return False
         else:
             target.frequency, target.power = get_file(target.params['path'] + '%d_PS.txt' % target.target)
-            if target.keplercorr:
+            if target.params['keplercorr']:
                 target = remove_artefact(target)
                 if target.verbose:
                     print('## Removing Kepler artefacts ##')
@@ -428,27 +381,30 @@ def get_initial_guesses(target):
             mask = np.ma.getmask(np.ma.masked_inside(target.frequency, 100.0, target.nyquist))
         else:
             mask = np.ma.getmask(np.ma.masked_inside(target.frequency, 1.0, target.nyquist))
-    # if lower numax adjust default smoothing filter from 2.5->1.0muHz
+    # if lower numax adjust default smoothing filter from 2.5->0.5muHz
     if target.params[target.target]['numax'] <= 500.:
         target.fitbg['smooth_ps'] = 0.5
     target.frequency = target.frequency[mask]
     target.power = target.power[mask]
     target.width = target.params['width_sun']*(target.params[target.target]['numax']/target.params['numax_sun'])
     target.times = target.width/target.params[target.target]['dnu']
-    # Arbitrary snr cut for leaving region out of background fit, ***statistically validate later?
-    if target.fitbg['lower_numax'] is not None:
-        target.maxpower = [target.fitbg['lower_numax'], target.fitbg['upper_numax']]
+    # Arbitrary snr cut for leaving region out of background fit
+    if target.params[target.target]['snr'] < 2.0:
+        target.maxpower = [
+            target.params[target.target]['numax'] - target.width/2.0,
+            target.params[target.target]['numax'] + target.width/2.0
+        ]
     else:
-        if target.params[target.target]['snr'] < 2.0:
-            target.maxpower = [
-                target.params[target.target]['numax'] - target.width/2.0,
-                target.params[target.target]['numax']+target.width/2.0
-            ]
-        else:
-            target.maxpower = [
-                target.params[target.target]['numax'] - target.times*target.params[target.target]['dnu'],
-                target.params[target.target]['numax']+target.times*target.params[target.target]['dnu']
-            ]
+        target.maxpower = [
+            target.params[target.target]['numax'] - target.times*target.params[target.target]['dnu'],
+            target.params[target.target]['numax'] + target.times*target.params[target.target]['dnu']
+        ]
+    # Bin power spectrum to estimate red noise components
+    bin_freq, bin_pow, bin_err = mean_smooth_ind(target.frequency, target.power, target.fitbg['ind_width'])
+    # Mask out region with power excess
+    target.bin_freq = bin_freq[~((bin_freq > target.maxpower[0]) & (bin_freq < target.maxpower[1]))]
+    target.bin_pow = bin_pow[~((bin_freq > target.maxpower[0]) & (bin_freq < target.maxpower[1]))]
+    target.bin_err = bin_err[~((bin_freq > target.maxpower[0]) & (bin_freq < target.maxpower[1]))]
 
     # Adjust the lower frequency limit given numax
     if target.params[target.target]['numax'] > 300.0:

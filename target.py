@@ -5,6 +5,7 @@ import subprocess
 
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 import multiprocessing as mp
 from scipy.interpolate import InterpolatedUnivariateSpline
 from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
@@ -58,9 +59,6 @@ class Target:
         self.findex = args.findex
         self.fitbg = args.fitbg
         self.verbose = args.verbose
-        self.show_plots = args.show
-        self.keplercorr = args.keplercorr
-        self.filter = args.filter
         # Run the pipeline
         self.run_syd()
 
@@ -95,7 +93,7 @@ class Target:
             self.bin_freq = bin_freq
             self.bin_pow = bin_pow
             if self.verbose:
-                print('Running FINDEX:')
+                print('Running find_excess module:')
                 print('binned to %d datapoints' % len(self.bin_freq))
 
             boxsize = int(np.ceil(float(self.findex['smooth_width'])/(bin_freq[1]-bin_freq[0])))
@@ -183,7 +181,7 @@ class Target:
             plot_findex(self)
 
 
-    def fit_background(self, result=''):
+    def fit_background(self):
         """Perform a fit to the granulation background and measures the frequency of maximum power (numax),
         the large frequency separation (dnu) and oscillation amplitude.
 
@@ -195,6 +193,7 @@ class Target:
 
         # Will only run routine if there is a prior numax estimate
         if check_fitbg(self):
+            # Check for guesses or find_excess results
             self = get_initial_guesses(self)
             self.final_pars = {
                 'numax_smooth': [],
@@ -205,107 +204,106 @@ class Target:
                 'dnu': [],
                 'wn': []
             }
-            # Sampling process
-            i = 0
-            while i < self.fitbg['num_mc_iter']:
-                self.i = i
-                if self.i == 0:
-                    # Record original PS information for plotting
-                    self.random_pow = np.copy(self.power)
-                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.frequency, self.random_pow, self.fitbg['ind_width'])
+            if self.verbose:
+                print('-------------------------------------------------')
+                print('Running fit_background module:')
+                print('binned to %d data points' % len(self.bin_freq))
+
+            # Run first iteration (which has different steps than any other n>1 runs)
+            good = self.run_single()
+            if not good:
+                pass
+            else:
+                # If sampling is enabled (i.e., args.mciter > 1), a progress bar is created
+                if self.fitbg['num_mc_iter'] > 1:
                     if self.verbose:
                         print('-------------------------------------------------')
-                        print('Running FITBG:')
-                        print('binned to %d data points' % len(bin_freq))
+                        print('Running sampling routine:')
+                        self.pbar = tqdm(total=self.fitbg['num_mc_iter'])
+                        self.pbar.update(1)
+                    self.i = 1
+                    # Continue to sample while the number of successful steps is less than args.mciter
+                    while self.i < self.fitbg['num_mc_iter']:
+                        self.sampling_step()
+                    save_fitbg(self)
+                    plot_mc(self)
+                    if self.verbose:
+                        # Print results with uncertainties
+                        print('numax (smoothed): %.2f +/- %.2f muHz' % (self.final_pars['numax_smooth'][0], mad_std(self.final_pars['numax_smooth'])))
+                        print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz' % (self.final_pars['amp_smooth'][0], mad_std(self.final_pars['amp_smooth'])))
+                        print('numax (gaussian): %.2f +/- %.2f muHz' % (self.final_pars['numax_gaussian'][0], mad_std(self.final_pars['numax_gaussian'])))
+                        print('maxamp (gaussian): %.2f +/- %.2f ppm^2/muHz' % (self.final_pars['amp_gaussian'][0], mad_std(self.final_pars['amp_gaussian'])))
+                        print('fwhm (gaussian): %.2f +/- %.2f muHz' % (self.final_pars['fwhm_gaussian'][0], mad_std(self.final_pars['fwhm_gaussian'])))
+                        print('dnu: %.2f +/- %.2f muHz' % (self.final_pars['dnu'][0], mad_std(self.final_pars['dnu'])))
+                        print('-------------------------------------------------')
+                        print()
+                # Single iteration
                 else:
-                    # Randomize power spectrum to get uncertainty on measured values
-                    self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
-                    bin_freq, bin_pow, bin_err = mean_smooth_ind(self.frequency, self.random_pow, self.fitbg['ind_width'])
-                self.bin_freq = bin_freq[~((bin_freq > self.maxpower[0]) & (bin_freq < self.maxpower[1]))]
-                self.bin_pow = bin_pow[~((bin_freq > self.maxpower[0]) & (bin_freq < self.maxpower[1]))]
-                self.bin_err = bin_err[~((bin_freq > self.maxpower[0]) & (bin_freq < self.maxpower[1]))]
-                # Estimate white noise level
-                self.get_white_noise()
+                    save_fitbg(self)
+                    if self.verbose:
+                        # Print results with no errors
+                        print('numax (smoothed): %.2f muHz' % (self.final_pars['numax_smooth'][0]))
+                        print('maxamp (smoothed): %.2f ppm^2/muHz' % (self.final_pars['amp_smooth'][0]))
+                        print('numax (gaussian): %.2f muHz' % (self.final_pars['numax_gaussian'][0]))
+                        print('maxamp (gaussian): %.2f ppm^2/muHz' % (self.final_pars['amp_gaussian'][0]))
+                        print('fwhm (gaussian): %.2f muHz' % (self.final_pars['fwhm_gaussian'][0]))
+                        print('dnu: %.2f' % (self.final_pars['dnu'][0]))
+                        print('-------------------------------------------------')
+                        print()
 
-                # Exclude region with power excess and smooth to estimate red/white noise components
-                boxkernel = Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution)))
-                self.params[self.target]['mask'] = (self.frequency >= self.maxpower[0]) & (self.frequency <= self.maxpower[1])
-                self.smooth_pow = convolve(self.random_pow[~self.params[self.target]['mask']], boxkernel)
 
-                # Temporary array for inputs into model optimization (changes with each iteration)
-                pars = np.zeros((self.nlaws*2 + 1))
-                # Estimate amplitude for each harvey component
-                for n, nu in enumerate(self.mnu):
-                    diff = list(np.absolute(self.frequency - nu))
-                    idx = diff.index(min(diff))
-                    if idx < self.fitbg['n_rms']:
-                        pars[2*n] = np.mean(self.smooth_pow[:self.fitbg['n_rms']])
-                    elif (len(self.smooth_pow)-idx) < self.fitbg['n_rms']:
-                        pars[2*n] = np.mean(self.smooth_pow[-self.fitbg['n_rms']:])
-                    else:
-                        pars[2*n] = np.mean(self.smooth_pow[idx-int(self.fitbg['n_rms']/2):idx+int(self.fitbg['n_rms']/2)])
-                    pars[2*n+1] = self.b[n]
-                pars[-1] = self.noise
-                self.pars = pars
+    def run_single(self):
+        # Save a copy of original power spectrum
+        self.random_pow = np.copy(self.power)
+        # Estimate white noise level
+        self.get_white_noise()
+        # Get initial guesses for the optimization of the background model
+        self.estimate_initial_red()
+        # If optimization does not converge, the rest of the code will not run
+        if self.get_best_model():
+            print('WARNING: Bad initial fit for target %d. Check this and try again.'%self.target)
+            return False
+        # Estimate numax using two different methods
+        self.get_numax_smooth()
+        if list(self.region_freq) != []:
+            self.exp_numax, self.exp_dnu, self.width, self.new_freq, self.numax_fit = self.get_numax_gaussian(output=True)
+        # Estimate the large frequency spacing
+        self.get_frequency_spacing()
+        # Use the fitted dnu to create an echelle diagram and plot
+        self.get_ridges()
+        plot_fitbg(self)
+        return True
 
-                # Smooth power spectrum - ONLY for plotting purposes, not used in subsequent analyses (TODO: this should not be done for all iterations!)
-                self.smooth_power = convolve(self.power, Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution))))
-                # If optimization does not converge, the rest of the code will not run
-                if self.get_red_noise():
-                    continue
-                # save final values for Harvey laws from model fit
-                for n in range(self.nlaws):
-                    self.final_pars['a_%d' % (n+1)].append(self.pars[2*n])
-                    self.final_pars['b_%d' % (n+1)].append(self.pars[2*n+1])
-                self.final_pars['wn'].append(self.pars[2*self.nlaws])
 
-                # Estimate numax by 1) smoothing power and 2) fitting Gaussian
-                self.get_numax_smooth()
-                if list(self.region_freq) != []:
-                    self.get_numax_gaussian()
-                self.bg_corr = self.random_pow/harvey(self.frequency, self.pars, total=True)
+    def sampling_step(self):
+        # Randomize power spectrum to get uncertainty on measured values
+        self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
 
-                # Optional smoothing of PS to remove fine structure before computing ACF
-                if self.fitbg['smooth_ps'] is not None:
-                    boxkernel = Box1DKernel(int(np.ceil(self.fitbg['smooth_ps']/self.resolution)))
-                    self.bg_corr_smooth = convolve(self.bg_corr, boxkernel)
-                else:
-                    self.bg_corr_smooth = np.copy(self.bg_corr)
+        # Bin randomized power spectra
+        bin_freq, bin_pow, bin_err = mean_smooth_ind(self.frequency, self.random_pow, self.fitbg['ind_width'])
+        self.bin_freq = bin_freq[~((bin_freq > self.maxpower[0]) & (bin_freq < self.maxpower[1]))]
+        self.bin_pow = bin_pow[~((bin_freq > self.maxpower[0]) & (bin_freq < self.maxpower[1]))]
+        self.bin_err = bin_err[~((bin_freq > self.maxpower[0]) & (bin_freq < self.maxpower[1]))]
 
-                # Calculate ACF using ffts (default) and estimate large frequency separation
-                dnu = self.get_frequency_spacing()
-                self.final_pars['dnu'].append(dnu)
-                if self.i == 0:
-                    self.get_ridges()
-                    plot_fitbg(self)
-                i += 1
+        # Estimate simulated red noise amplitudes
+        self.estimate_initial_red()
+        # Estimate stellar background contribution
+        if self.get_red_noise():
+            return
+        # If the model converges, continue estimating global parameters 
+        self.get_numax_smooth()
+        if list(self.region_freq) != []:
+            self.get_numax_gaussian()
+        # Compute ACF
+        self.compute_acf()
+        # Estimate dnu
+        self.estimate_dnu()
+        self.i += 1
+        if self.verbose:
+            self.pbar.update(1)
+            if self.i == self.fitbg['num_mc_iter']:
+                self.pbar.close()
 
-            # Save results
-            save_fitbg(self)
-            # Multiple iterations
-            if self.fitbg['num_mc_iter'] > 1:
-                # Plot results of Monte-Carlo sampling
-                plot_mc(self)
-                if self.verbose:
-                    print('numax (smoothed): %.2f +/- %.2f muHz' % (self.final_pars['numax_smooth'][0], mad_std(self.final_pars['numax_smooth'])))
-                    print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz' % (self.final_pars['amp_smooth'][0], mad_std(self.final_pars['amp_smooth'])))
-                    print('numax (gaussian): %.2f +/- %.2f muHz' % (self.final_pars['numax_gaussian'][0], mad_std(self.final_pars['numax_gaussian'])))
-                    print('maxamp (gaussian): %.2f +/- %.2f ppm^2/muHz' % (self.final_pars['amp_gaussian'][0], mad_std(self.final_pars['amp_gaussian'])))
-                    print('fwhm (gaussian): %.2f +/- %.2f muHz' % (self.final_pars['fwhm_gaussian'][0], mad_std(self.final_pars['fwhm_gaussian'])))
-                    print('dnu: %.2f +/- %.2f muHz' % (self.final_pars['dnu'][0], mad_std(self.final_pars['dnu'])))
-                    print('-------------------------------------------------')
-                    print()
-            # Single iteration
-            else:
-                if self.verbose:
-                    print('numax (smoothed): %.2f muHz' % (self.final_pars['numax_smooth'][0]))
-                    print('maxamp (smoothed): %.2f ppm^2/muHz' % (self.final_pars['amp_smooth'][0]))
-                    print('numax (gaussian): %.2f muHz' % (self.final_pars['numax_gaussian'][0]))
-                    print('maxamp (gaussian): %.2f ppm^2/muHz' % (self.final_pars['amp_gaussian'][0]))
-                    print('fwhm (gaussian): %.2f muHz' % (self.final_pars['fwhm_gaussian'][0]))
-                    print('dnu: %.2f' % (self.final_pars['dnu'][0]))
-                    print('-------------------------------------------------')
-                    print()
 
     def get_white_noise(self):
         """Estimate white level by taking a mean over a section of the power spectrum."""
@@ -323,7 +321,30 @@ class Target:
             mask = (self.frequency > (max(self.frequency) - 0.1*max(self.frequency))) & (self.frequency < max(self.frequency))
             self.noise = np.mean(self.random_pow[mask])
 
-    def get_red_noise(
+
+    def estimate_initial_red(self):
+        # Exclude region with power excess and smooth to estimate red noise components
+        boxkernel = Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution)))
+        self.params[self.target]['mask'] = (self.frequency >= self.maxpower[0]) & (self.frequency <= self.maxpower[1])
+        self.smooth_pow = convolve(self.random_pow[~self.params[self.target]['mask']], boxkernel)
+        # Temporary array for inputs into model optimization
+        pars = np.zeros((self.nlaws*2 + 1))
+        # Estimate amplitude for each harvey component
+        for n, nu in enumerate(self.mnu):
+            diff = list(np.absolute(self.frequency - nu))
+            idx = diff.index(min(diff))
+            if idx < self.fitbg['n_rms']:
+                pars[2*n] = np.mean(self.smooth_pow[:self.fitbg['n_rms']])
+            elif (len(self.smooth_pow)-idx) < self.fitbg['n_rms']:
+                pars[2*n] = np.mean(self.smooth_pow[-self.fitbg['n_rms']:])
+            else:
+                pars[2*n] = np.mean(self.smooth_pow[idx-int(self.fitbg['n_rms']/2):idx+int(self.fitbg['n_rms']/2)])
+            pars[2*n+1] = self.b[n]
+        pars[-1] = self.noise
+        self.pars = pars
+
+
+    def get_best_model(
             self,
             names=['one', 'one', 'two', 'two', 'three', 'three', 'four', 'four', 'five', 'five', 'six', 'six'],
             bounds=[],
@@ -353,125 +374,111 @@ class Target:
         """
 
         # Get best fit model
-        if self.i == 0:
-            reduced_chi2 = []
-            bounds = []
-            a = []
-            paras = []
-            for n in range(self.nlaws):
-                a.append(self.pars[2*n])
-            self.a_orig = np.array(a)
-            if self.verbose:
-                print('Comparing %d different models:' % (self.nlaws*2))
-            for law in range(self.nlaws):
-                bb = np.zeros((2, 2*(law+1)+1)).tolist()
-                for z in range(2*(law+1)):
-                    bb[0][z] = -np.inf
-                    bb[1][z] = np.inf
-                bb[0][-1] = 0.
-                bb[1][-1] = np.inf
-                bounds.append(tuple(bb))
-            dict1 = dict(zip(np.arange(2*self.nlaws), names[:2*self.nlaws]))
-            for t in range(2*self.nlaws):
-                if t % 2 == 0:
-                    if self.verbose:
-                        print('%d: %s harvey model w/ white noise free parameter' % (t+1, dict1[t]))
-                    delta = 2*(self.nlaws-(t//2+1))
-                    pams = list(self.pars[:(-delta-1)])
-                    pams.append(self.pars[-1])
-                    try:
-                        pp, _ = curve_fit(
-                            self.fitbg['functions'][t//2+1],
-                            self.bin_freq,
-                            self.bin_pow,
-                            p0=pams,
-                            sigma=self.bin_err
-                        )
-                    except RuntimeError as _:
-                        paras.append([])
-                        reduced_chi2.append(np.inf)
-                    else:
-                        paras.append(pp)
-                        chi, _ = chisquare(
-                            f_obs=self.random_pow[~self.params[self.target]['mask']],
-                            f_exp=harvey(
-                                self.frequency[~self.params[self.target]['mask']],
-                                pp,
-                                total=True
-                            )
-                        )
-                        reduced_chi2.append(chi/(len(self.frequency[~self.params[self.target]['mask']])-len(pams)))
-                else:
-                    if self.verbose:
-                        print('%d: %s harvey model w/ white noise fixed' % (t+1, dict1[t]))
-                    delta = 2*(self.nlaws-(t//2+1))
-                    pams = list(self.pars[:(-delta-1)])
-                    pams.append(self.pars[-1])
-                    try:
-                        pp, _ = curve_fit(
-                            self.fitbg['functions'][t//2+1],
-                            self.bin_freq,
-                            self.bin_pow,
-                            p0=pams,
-                            sigma=self.bin_err,
-                            bounds=bounds[t//2]
-                        )
-                    except RuntimeError as _:
-                        paras.append([])
-                        reduced_chi2.append(np.inf)
-                    else:
-                        paras.append(pp)
-                        chi, p = chisquare(
-                            f_obs=self.random_pow[~self.params[self.target]['mask']],
-                            f_exp=harvey(
-                                self.frequency[~self.params[self.target]['mask']],
-                                pp,
-                                total=True
-                                )
-                            )
-                        reduced_chi2.append(chi/(len(self.frequency[~self.params[self.target]['mask']])-len(pams)+1))
-
-            # Fitting succeeded
-            if np.isfinite(min(reduced_chi2)):
-                model = reduced_chi2.index(min(reduced_chi2)) + 1
-                if self.nlaws != (((model-1)//2)+1):
-                    self.nlaws = ((model-1)//2)+1
-                    self.mnu = self.mnu[:(self.nlaws)]
-                    self.b = self.b[:(self.nlaws)]
+        reduced_chi2 = []
+        bounds = []
+        a = []
+        paras = []
+        for n in range(self.nlaws):
+            a.append(self.pars[2*n])
+        self.a_orig = np.array(a)
+        if self.verbose:
+            print('Comparing %d different models:' % (self.nlaws*2))
+        for law in range(self.nlaws):
+            bb = np.zeros((2, 2*(law+1)+1)).tolist()
+            for z in range(2*(law+1)):
+                bb[0][z] = -np.inf
+                bb[1][z] = np.inf
+            bb[0][-1] = 0.
+            bb[1][-1] = np.inf
+            bounds.append(tuple(bb))
+        dict1 = dict(zip(np.arange(2*self.nlaws), names[:2*self.nlaws]))
+        for t in range(2*self.nlaws):
+            if t % 2 == 0:
                 if self.verbose:
-                    print('Based on reduced chi-squared statistic: model %d' % model)
-                self.bounds = bounds[self.nlaws-1]
-                self.pars = paras[model-1]
-                self.exp_numax = self.params[self.target]['numax']
-                self.exp_dnu = self.params[self.target]['dnu']
-                self.sm_par = 4.*(self.exp_numax/self.params['numax_sun'])**0.2
-                if self.sm_par < 1.:
-                    self.sm_par = 1.
-                for n in range(self.nlaws):
-                    self.final_pars['a_%d' % (n+1)] = []
-                    self.final_pars['b_%d' % (n+1)] = []
-                again = False
+                    print('%d: %s harvey model w/ white noise free parameter' % (t+1, dict1[t]))
+                delta = 2*(self.nlaws-(t//2+1))
+                pams = list(self.pars[:(-delta-1)])
+                pams.append(self.pars[-1])
+                try:
+                    pp, _ = curve_fit(
+                        self.fitbg['functions'][t//2+1],
+                        self.bin_freq,
+                        self.bin_pow,
+                        p0=pams,
+                        sigma=self.bin_err
+                    )
+                except RuntimeError as _:
+                    paras.append([])
+                    reduced_chi2.append(np.inf)
+                else:
+                    paras.append(pp)
+                    chi, _ = chisquare(
+                        f_obs=self.random_pow[~self.params[self.target]['mask']],
+                        f_exp=harvey(
+                            self.frequency[~self.params[self.target]['mask']],
+                            pp,
+                            total=True
+                        )
+                    )
+                    reduced_chi2.append(chi/(len(self.frequency[~self.params[self.target]['mask']])-len(pams)))
             else:
-                again = True
+                if self.verbose:
+                    print('%d: %s harvey model w/ white noise fixed' % (t+1, dict1[t]))
+                delta = 2*(self.nlaws-(t//2+1))
+                pams = list(self.pars[:(-delta-1)])
+                pams.append(self.pars[-1])
+                try:
+                    pp, _ = curve_fit(
+                        self.fitbg['functions'][t//2+1],
+                        self.bin_freq,
+                        self.bin_pow,
+                        p0=pams,
+                        sigma=self.bin_err,
+                        bounds=bounds[t//2]
+                    )
+                except RuntimeError as _:
+                    paras.append([])
+                    reduced_chi2.append(np.inf)
+                else:
+                    paras.append(pp)
+                    chi, p = chisquare(
+                        f_obs=self.random_pow[~self.params[self.target]['mask']],
+                        f_exp=harvey(
+                            self.frequency[~self.params[self.target]['mask']],
+                            pp,
+                            total=True
+                            )
+                        )
+                    reduced_chi2.append(chi/(len(self.frequency[~self.params[self.target]['mask']])-len(pams)+1))
+
+        # If the fitting converged
+        if np.isfinite(min(reduced_chi2)):
+            model = reduced_chi2.index(min(reduced_chi2)) + 1
+            if self.nlaws != (((model-1)//2)+1):
+                self.nlaws = ((model-1)//2)+1
+                self.mnu = self.mnu[:(self.nlaws)]
+                self.b = self.b[:(self.nlaws)]
+            if self.verbose:
+                print('Based on reduced chi-squared statistic: model %d' % model)
+            self.bounds = bounds[self.nlaws-1]
+            self.pars = paras[model-1]
+            self.bg_corr = self.random_pow/harvey(self.frequency, self.pars, total=True)
+            self.exp_numax = self.params[self.target]['numax']
+            self.exp_dnu = self.params[self.target]['dnu']
+            self.sm_par = 4.*(self.exp_numax/self.params['numax_sun'])**0.2
+            if self.sm_par < 1.:
+                self.sm_par = 1.
+            for n in range(self.nlaws):
+                self.final_pars['a_%d' % (n+1)] = []
+                self.final_pars['b_%d' % (n+1)] = []
+            # save final values for Harvey laws from model fit
+            for n in range(self.nlaws):
+                self.final_pars['a_%d' % (n+1)].append(self.pars[2*n])
+                self.final_pars['b_%d' % (n+1)].append(self.pars[2*n+1])
+            self.final_pars['wn'].append(self.pars[2*self.nlaws])
+            return False
         else:
-            try:
-                pars, _ = curve_fit(
-                    self.fitbg['functions'][self.nlaws],
-                    self.bin_freq,
-                    self.bin_pow,
-                    p0=self.pars,
-                    sigma=self.bin_err,
-                    bounds=self.bounds
-                )
-            except RuntimeError as _:
-                again = True
-            else:
-                self.pars = pars
-                self.sm_par = 4.0*(self.exp_numax/self.params['numax_sun'])**0.2
-                if self.sm_par < 1.0:
-                    self.sm_par = 1.0
-                again = False
-        return again
+            return True
 
 
     def get_numax_smooth(self):
@@ -518,28 +525,24 @@ class Target:
         ]
 
 
-    def get_numax_gaussian(self):
+    def get_numax_gaussian(self, output=False):
         """Estimate numax by fitting a Gaussian to the power envelope of the smoothed power spectrum."""
         bb = gaussian_bounds(self.region_freq, self.region_pow, self.guesses)
         p_gauss1, _ = curve_fit(gaussian, self.region_freq, self.region_pow, p0=self.guesses, bounds=bb[0], maxfev=5000)
         # create array with finer resolution for purposes of quantifying uncertainty
         new_freq = np.linspace(min(self.region_freq), max(self.region_freq), 10000)
-        # numax_fit = list(gaussian(new_freq, p_gauss1[0], p_gauss1[1], p_gauss1[2], p_gauss1[3]))
         numax_fit = list(gaussian(new_freq, *p_gauss1))
         d = numax_fit.index(max(numax_fit))
         self.final_pars['numax_gaussian'].append(new_freq[d])
         self.final_pars['amp_gaussian'].append(p_gauss1[1])
         self.final_pars['fwhm_gaussian'].append(p_gauss1[3])
-        if self.i == 0:
-            self.exp_numax = new_freq[d]
-            self.exp_dnu = 0.22*(self.exp_numax**0.797)
-            self.width = self.params['width_sun']*(self.exp_numax/self.params['numax_sun'])/2.
-            self.new_freq = np.copy(new_freq)
-            self.numax_fit = np.array(numax_fit)
+        if output:
+            return new_freq[d], 0.22*(self.exp_numax**0.797), self.params['width_sun']*(new_freq[d]/self.params['numax_sun'])/2., np.copy(new_freq), np.array(numax_fit)
 
 
     def get_frequency_spacing(self):
         """Estimate the large frequency spacing or dnu.
+        NOTE: this is used during the first iteration only!
 
         Parameters
         ----------
@@ -547,10 +550,48 @@ class Target:
             the estimated value of dnu
         """
 
-        # Compute the ACF
         self.compute_acf()
-        dnu = self.estimate_dnu()
-        return dnu
+		      # Get peaks from ACF
+        peak_idx,_ = find_peaks(self.auto) #indices of peaks, threshold=half max(ACF)
+        peaks_l,peaks_a = self.lag[peak_idx],self.auto[peak_idx]
+
+        # pick the peak closest to the exp_dnu
+        idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
+        best_lag=(self.lag[peak_idx])[idx]           #best estimate of dnu
+        best_auto=(self.auto[peak_idx])[idx]         #best estimate of dnu
+        self.lag_of_peak=(self.lag[peak_idx])[idx]   #lag val corresponding to peak
+        self.acf_of_peak=(self.auto[peak_idx])[idx]  #acf val corresponding to peak
+
+        og_zoom_lag,og_zoom_auto=self.get_acf_cutout()
+        self.fitbg['acf_mask']=[min(og_zoom_lag),max(og_zoom_lag)]  # lag limits to use for ACF mask
+
+        # define the peak in the ACF
+        zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+        zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+
+		      # boundary conditions and initial guesses stay the same for all iterations
+        self.acf_guesses = [np.mean(zoom_auto), best_auto, best_lag, best_lag*0.01*2.]
+        self.acf_bb = gaussian_bounds(zoom_lag, zoom_auto, self.acf_guesses, best_x=best_lag, sigma=10**-2)
+
+		      # fit a Gaussian function to the selected peak in the ACF to get dnu
+        p_gauss3, _ = curve_fit(gaussian, zoom_lag, zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
+        self.final_pars['dnu'].append(p_gauss3[2])
+
+			     # variables for plotting. this only needs to be done during the first iteration
+        new_lag = np.linspace(min(zoom_lag),max(zoom_lag),2000)
+        dnu = new_lag[np.argmax(gaussian(new_lag,*p_gauss3))]     #value of Gaussian peak
+        dnu_fit = gaussian(new_lag,*p_gauss3)                     #Gaussian fit to zoom_ACF
+        peaks_l[idx] = np.nan
+        peaks_a[idx] = np.nan
+        self.peaks_l = peaks_l
+        self.peaks_a = peaks_a
+        self.best_lag = best_lag
+        self.best_auto = best_auto
+        self.zoom_lag = og_zoom_lag
+        self.zoom_auto = og_zoom_auto
+        self.obs_dnu = p_gauss3[2]
+        self.new_lag = new_lag
+        self.dnu_fit = dnu_fit
 
 
     def compute_acf(self, fft=True):
@@ -561,7 +602,14 @@ class Target:
         fft : bool
             if true will use FFT to compute the ACF
         """
+        # Optional smoothing of PS to remove fine structure before computing ACF
+        if self.fitbg['smooth_ps'] is not None:
+            boxkernel = Box1DKernel(int(np.ceil(self.fitbg['smooth_ps']/self.resolution)))
+            self.bg_corr_smooth = convolve(self.bg_corr, boxkernel)
+        else:
+            self.bg_corr_smooth = np.copy(self.bg_corr)
 
+        # Use only power near the expected numax to reduce additional noise in ACF
         power = self.bg_corr_smooth[(self.frequency >= self.exp_numax-self.width) & (self.frequency <= self.exp_numax+self.width)]
         lag = np.arange(0.0, len(power))*self.resolution
         if fft:
@@ -576,10 +624,11 @@ class Target:
         auto /= max(auto)
         self.lag = np.copy(lag)
         self.auto = np.copy(auto)
-        if self.i == 0:
-            self.freq = self.frequency[self.params[self.target]['mask']]
-            self.psd = self.bg_corr_smooth[self.params[self.target]['mask']]
-            self.peaks_f, self.peaks_p = max_elements(self.freq, self.psd, self.fitbg['n_peaks'])
+#        if self.i == 0:
+#            self.freq = self.frequency[self.params[self.target]['mask']]
+#            self.psd = self.bg_corr_smooth[self.params[self.target]['mask']]
+#            self.peaks_f, self.peaks_p = max_elements(self.freq, self.psd, self.fitbg['n_peaks'])
+
 
     def get_acf_cutout(self):
         """Center on the closest peak to expected dnu and cut out a region around the peak for dnu uncertainties."""
@@ -614,62 +663,8 @@ class Target:
 
         idx=np.where((left_lim <= lag) & (lag <= right_lim))[0]  #get indices of ACF mask
         
-        return lag[idx],auto[idx]
+        return lag[idx], auto[idx]
 
-
-    def estimate_dnu(self):
-        """Estimate a value for dnu."""
-
-		      # for the first iteration (real data) only, estimate the peak on the ACF to fit
-        if self.i == 0:
-            # Get peaks from ACF
-            peak_idx,_ = find_peaks(self.auto) #indices of peaks, threshold=half max(ACF)
-            peaks_l,peaks_a = self.lag[peak_idx],self.auto[peak_idx]
-
-            # pick the peak closest to the exp_dnu
-            idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
-
-            best_lag=(self.lag[peak_idx])[idx]           #best estimate of dnu
-            best_auto=(self.auto[peak_idx])[idx]         #best estimate of dnu
-            self.lag_of_peak=(self.lag[peak_idx])[idx]   #lag val corresponding to peak
-            self.acf_of_peak=(self.auto[peak_idx])[idx]  #acf val corresponding to peak
-
-            og_zoom_lag,og_zoom_auto=self.get_acf_cutout()
-            self.fitbg['acf_mask']=[min(og_zoom_lag),max(og_zoom_lag)]  # lag limits to use for ACF mask
-	
-        # define the peak in the ACF
-        zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
-        zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
-
-		      # boundary conditions and initial guesses stay the same as for the first iteration
-        if self.i == 0:
-            self.acf_guesses = [np.mean(zoom_auto), best_auto, best_lag, best_lag*0.01*2.]
-            self.acf_bb = gaussian_bounds(zoom_lag, zoom_auto, self.acf_guesses, best_x=best_lag, sigma=10**-2)
-
-		      # fit a Gaussian function to the selected peak in the ACF
-        p_gauss3, p_cov3 = curve_fit(gaussian, zoom_lag, zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
-        # the center of that Gaussian is our estimate for Dnu
-        dnu = p_gauss3[2]
-        
-   
-        if self.i == 0:
-			         # variables for plotting. this only needs to be done during the first iteration
-            new_lag = np.linspace(min(zoom_lag),max(zoom_lag),2000)
-            dnu     = new_lag[np.argmax(gaussian(new_lag,*p_gauss3))] #value of Gaussian peak
-            dnu_fit = gaussian(new_lag,*p_gauss3)                     #Gaussian fit to zoom_ACF
-            peaks_l[idx] = np.nan
-            peaks_a[idx] = np.nan
-            self.peaks_l = peaks_l
-            self.peaks_a = peaks_a
-            self.best_lag = best_lag
-            self.best_auto = best_auto
-            self.zoom_lag = og_zoom_lag
-            self.zoom_auto = og_zoom_auto
-            self.obs_dnu = dnu
-            self.new_lag = new_lag
-            self.dnu_fit = dnu_fit
-
-        return dnu
 
     def get_ridges(self, start=0.0):
         """Create echelle diagram.
@@ -700,7 +695,7 @@ class Target:
         mask = np.ma.getmask(np.ma.masked_where(yax == 0.0, yax))
         # Clip the lower bound (`clip_value`)
         if self.fitbg['clip']:
-            if self.fitbg['clip_value'] != 0.:
+            if self.fitbg['clip_value'] is not None:
                 cut = self.fitbg['clip_value']
             else:
                 cut = np.nanmedian(ech_copy)+(3.0*np.nanmedian(ech_copy))
@@ -727,8 +722,8 @@ class Target:
         TODO: Write return arguments.
         """
 
-        if self.fitbg['ech_smooth']:
-            boxkernel = Box1DKernel(int(np.ceil(self.fitbg['ech_filter']/self.resolution)))
+        if self.fitbg['smooth_ech'] is not None:
+            boxkernel = Box1DKernel(int(np.ceil(self.fitbg['smooth_ech']/self.resolution)))
             smooth_y = convolve(self.bg_corr, boxkernel)
         nox = n_across
         noy = int(np.ceil((max(self.frequency)-min(self.frequency))/self.obs_dnu))
@@ -769,71 +764,42 @@ class Target:
             return smoothed, np.array(list(gridx) + list(gridx + self.obs_dnu)), gridy, extent
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description="""Python version of asteroseismic 'SYD'
-                            pipeline ( Huber+2009). This script will initialize
-                            the SYD-PY pipeline, which is broken up into two main modules:
-                            1) find excess (findex)
-                            2) fit background (fitbg).
-                            By default, both modules will run unless otherwise specified.
-                            See -excess and -fitbg for more details.
-                            SYD-PY is actively being developed at
-                            https://github.com/ashleychontos/SYD-PYpline
-                            by: Ashley Chontos (achontos@hawaii.edu)
-                                Maryum Sayeed
-                                Daniel Huber (huberd@hawaii.edu)
-                            Please contact Ashley for more details or new ideas for
-                            implementations within the package.
-                            [The ReadTheDocs page is currently under construction.]"""
-    )
-    parser.add_argument(
-        '-ex', '--ex', '-findex', '--findex', '-excess', '--excess',
-        help="""Turn off the find excess module. This is only recommended when a list
-                    of numaxes or a list of stellar parameters (to estimate the numaxes)
-                    are provided. Otherwise the second module, which fits the background
-                    will not be able to run properly.""",
-        default=True, dest='excess', action='store_false'
-    )
-    parser.add_argument(
-        '-bg', '--bg', '-fitbg', '--fitbg', '-background', '--background',
-        help="""Turn off the background fitting process (although this is not recommended).
-                    Asteroseismic estimates are typically unreliable without properly removing
-                    stellar contributions from granulation processes. Since this is the money
-                    maker, fitbg is set to 'True' by default.""",
-        default=True, dest='background', action='store_false'
-    )
-    parser.add_argument(
-        '-filter', '--filter', '-smooth', '--smooth',
-        help='Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)',
-        default=2.5, dest='filter'
-    )
-    parser.add_argument(
-        '-kc', '--kc', '-keplercorr', '--keplercorr',
-        help="""Turn on Kepler short-cadence artefact corrections""",
-        default=False, dest='keplercorr', action='store_true'
-    )
-    parser.add_argument(
-        '-v', '--v', '-verbose', '--verbose',
-        help="""Turn on the verbose output. 
-                    Please note: the defaults is 'False'.""",
-        default=False, dest='verbose', action='store_true'
-    )
-    parser.add_argument(
-        '-show', '--show', '-plot', '--plot', '-plots', '--plots', '-p',
-        help="""Shows the appropriate output figures in real time. If the findex module is
-                    run, this will show one figure at the end of findex. If the fitbg module is
-                    run, a figure will appear at the end of the first iteration. If the monte
-                    carlo sampling is turned on, this will provide another figure at the end of
-                    the MC iterations. Regardless of this option, the figures will be saved to
-                    the output directory. If running more than one target, this is not
-                    recommended. """,
-        default=False, dest='show', action='store_true'
-    )
-  
-    parser.add_argument(
-        '-mc', '--mc', '-mciter', '--mciter', dest='mciter', default=1, type=int,
-        help='Number of MC iterations (Default = 1)'
-    )
+    def get_red_noise(self):
+        # Use as initial guesses for the optimized model
+        try:
+            pars, _ = curve_fit(
+                self.fitbg['functions'][self.nlaws],
+                self.bin_freq,
+                self.bin_pow,
+                p0=self.pars,
+                sigma=self.bin_err,
+                bounds=self.bounds
+            )
+        except RuntimeError as _:
+            return True
+        else:
+            self.pars = pars
+            self.bg_corr = self.random_pow/harvey(self.frequency, self.pars, total=True)
+            self.sm_par = 4.0*(self.exp_numax/self.params['numax_sun'])**0.2
+            if self.sm_par < 1.0:
+                self.sm_par = 1.0
+            # save final values for Harvey components
+            for n in range(self.nlaws):
+                self.final_pars['a_%d' % (n+1)].append(self.pars[2*n])
+                self.final_pars['b_%d' % (n+1)].append(self.pars[2*n+1])
+            self.final_pars['wn'].append(self.pars[2*self.nlaws])
+        return False
 
-    main(parser.parse_args())
+
+    def estimate_dnu(self):
+        """Estimate a value for dnu."""
+	
+        # define the peak in the ACF
+        zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+        zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+
+		      # fit a Gaussian function to the selected peak in the ACF
+        p_gauss3, _ = curve_fit(gaussian, zoom_lag, zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
+        # the center of that Gaussian is our estimate for Dnu
+        dnu = p_gauss3[2]
+        self.final_pars['dnu'].append(dnu)

@@ -97,10 +97,10 @@ def plot_findex(target):
 
     plt.tight_layout()
     # Save
-    if target.findex['save']:
+    if target.params['save']:
         plt.savefig(target.params[target.target]['path'] + '%d_findex.png' % target.target, dpi=300)
     # Show plots
-    if target.show_plots:
+    if target.params['show']:
         plt.show()
     plt.close()
 
@@ -118,6 +118,7 @@ def plot_fitbg(target):
     ax1.set_ylabel(r'$\rm Flux$')
 
     # Initial background guesses
+    target.smooth_power = convolve(target.power, Box1DKernel(int(np.ceil(target.fitbg['box_filter']/target.resolution))))
     ax2 = fig.add_subplot(3, 3, 2)
     ax2.plot(target.frequency[target.frequency < target.maxpower[0]], target.power[target.frequency < target.maxpower[0]], 'w-', zorder=0)
     ax2.plot(target.frequency[target.frequency > target.maxpower[1]], target.power[target.frequency > target.maxpower[1]], 'w-', zorder=0)
@@ -176,9 +177,12 @@ def plot_fitbg(target):
     ax4.set_xlim([min(target.region_freq), max(target.region_freq)])
 
     # Background-corrected power spectrum with n highest peaks
+    target.freq = target.frequency[target.params[target.target]['mask']]
+    target.psd = target.bg_corr_smooth[target.params[target.target]['mask']]
+    peaks_f, peaks_p = max_elements(target.freq, target.psd, target.fitbg['n_peaks'])
     ax5 = fig.add_subplot(3, 3, 5)
     ax5.plot(target.freq, target.psd, 'w-', zorder=0, linewidth=1.0)
-    ax5.scatter(target.peaks_f, target.peaks_p, s=25.0, edgecolor='r', marker='s', facecolor='none', linewidths=1.0)
+    ax5.scatter(peaks_f, peaks_p, s=25.0, edgecolor='r', marker='s', facecolor='none', linewidths=1.0)
     ax5.set_title(r'$\rm Bg$-$\rm corrected \,\, PS$')
     ax5.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax5.set_ylabel(r'$\rm Power$')
@@ -235,10 +239,10 @@ def plot_fitbg(target):
 
     plt.tight_layout()
     # Save
-    if target.fitbg['save']:
+    if target.params['save']:
         plt.savefig(target.params[target.target]['path'] + '%d_fitbg.png' % target.target, dpi=300)
     # Show plots
-    if target.show_plots:
+    if target.params['show']:
         plt.show()
     plt.close()
 
@@ -255,9 +259,9 @@ def plot_mc(target):
 
     plt.tight_layout()
     # Save
-    if target.findex['save']:
+    if target.params['save']:
         plt.savefig(target.params[target.target]['path'] + '%d_mc.png' % target.target, dpi=300)
     # Show plots
-    if target.show_plots:
+    if target.params['show']:
         plt.show()
     plt.close()
