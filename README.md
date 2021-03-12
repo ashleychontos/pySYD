@@ -78,7 +78,7 @@ Option to directly specify targets from the command line. This accepts * argumen
 
 Turn on verbose output
 
-#### See `main -help` for more details.
+#### See `sydpy --help` for more options.
 
 ## Tutorials 
 
