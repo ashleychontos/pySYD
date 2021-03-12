@@ -189,6 +189,18 @@ class Target:
         ----------
         result : str
             TODO: Currently unused
+
+        Methods
+        -------
+        single_step: The main iteration of the background fitting, which operates in the following steps:
+                     1) determines the best-fit model (i.e. number of Harvey components) using a reduced chi-sq analysis
+                     2) corrects for stellar background contributions by dividing the power spectrum by the best-fit model
+                     3) estimates two values for numax by fitting a Gaussian and by using a heavy smoothing filter
+                     4) takes the autocorrelation (using ffts) of the masked power spectrum that contains the power excess
+                     5) selects the peak (via -npeaks, default=10) closest to the expected spacing based on the calculated numax
+                     6) fits Gaussian to the "cutout" peak of the ACF, where center is dnu
+
+        sampling_step: Quantifies the uncertainties of parameters derived in the single_step method
         """
 
         # Will only run routine if there is a prior numax estimate
@@ -253,6 +265,7 @@ class Target:
 
 
     def single_step(self):
+        """The main step in the background fitting, which determines numax and dnu."""
         # Save a copy of original power spectrum
         self.random_pow = np.copy(self.power)
         # Estimate white noise level
@@ -276,6 +289,7 @@ class Target:
 
 
     def sampling_step(self):
+        """Used in background fitting to quantify parameter uncertainties."""
         # Randomize power spectrum to get uncertainty on measured values
         self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
 
@@ -307,7 +321,6 @@ class Target:
 
     def get_white_noise(self):
         """Estimate white level by taking a mean over a section of the power spectrum."""
-
         if self.nyquist < 400.0:
             mask = (self.frequency > 200.0) & (self.frequency < 270.0)
             self.noise = np.mean(self.random_pow[mask])
@@ -323,6 +336,9 @@ class Target:
 
 
     def estimate_initial_red(self):
+        """Estimates amplitude of red noise components by using a smoothed version of the power
+           spectrum with the power excess region masked out. This will take the mean of a specified 
+           number of points (via -nrms, default=20) for each Harvey component."""
         # Exclude region with power excess and smooth to estimate red noise components
         boxkernel = Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution)))
         self.params[self.target]['mask'] = (self.frequency >= self.maxpower[0]) & (self.frequency <= self.maxpower[1])
@@ -624,10 +640,6 @@ class Target:
         auto /= max(auto)
         self.lag = np.copy(lag)
         self.auto = np.copy(auto)
-#        if self.i == 0:
-#            self.freq = self.frequency[self.params[self.target]['mask']]
-#            self.psd = self.bg_corr_smooth[self.params[self.target]['mask']]
-#            self.peaks_f, self.peaks_p = max_elements(self.freq, self.psd, self.fitbg['n_peaks'])
 
 
     def get_acf_cutout(self):
