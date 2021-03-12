@@ -1,4 +1,4 @@
-SYD-PYpline is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that SYD-PY is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
+SYD-PY is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that SYD-PY is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
 
 ### * The main goal is asteroseismology-friendly software for the non-asteroseismology user *
 
@@ -13,21 +13,21 @@ A pipeline `Target` class object has two main methods:
 
 There are three example stars provided in Files/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
-- `python main.py -v -show -target 1435467` (or whichever target you'd like)
+- `python sydpy.py -v -show -target 1435467` (or whichever target you'd like)
 
 By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in Files/todo.txt.
 
 To estimate uncertainties in the derived parameters for a given target, set `-mc` to something sufficient for random sampling (e.g. 200).
 
-- `python main.py -v -show -target 1435467 -mciter 200`
+- `python sydpy.py -v -show -target 1435467 -mciter 200`
 
-In the previous example, `-mc` was not specified and is 1 by default (for 1 iteration). By changing this value, it will randomize the power spectrum and attempt to recover the parameters for the specified number of iterations. The uncertainties will appear in the verbose output, output csvs, and an additional figure will show the distributions of the parameters.
+In the previous example, `-mciter` was not specified and is 1 by default (for 1 iteration). By changing this value, it will randomize the power spectrum and attempt to recover the parameters for the specified number of iterations. The uncertainties will appear in the verbose output, output csvs, and an additional figure will show the distributions of the parameters.
 
 ##
 
 ### `Scripts`
 - `functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
-- `main.py` : main pipeline initialization and command line interface tools 
+- `sydpy.py` : main pipeline initialization and command line interface tools 
 - `models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
 - `plots.py` : plotting routines
 - `target.py` : main pipeline Target class that is initialized for each target that is processed
