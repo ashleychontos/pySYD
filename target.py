@@ -210,7 +210,7 @@ class Target:
                 print('binned to %d data points' % len(self.bin_freq))
 
             # Run first iteration (which has different steps than any other n>1 runs)
-            good = self.run_single()
+            good = self.single_step()
             if not good:
                 pass
             else:
@@ -252,7 +252,7 @@ class Target:
                         print()
 
 
-    def run_single(self):
+    def single_step(self):
         # Save a copy of original power spectrum
         self.random_pow = np.copy(self.power)
         # Estimate white noise level
