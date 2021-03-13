@@ -82,103 +82,35 @@ class Target:
         frequency resolved collapsed autocorrelation function.
         """
 
-        N = int(self.findex['n_trials'] + 3)
-        if N % 3 == 0:
-            self.nrows = (N-1)//3
-        else:
-            self.nrows = N//3
-
+        # Make sure the binning is specified, otherwise it cannot run
         if self.findex['binning'] is not None:
-            bin_freq, bin_pow = bin_data(self.freq, self.pow, self.findex)
-            self.bin_freq = bin_freq
-            self.bin_pow = bin_pow
+            self.bin_freq, self.bin_pow = bin_data(self.freq, self.pow, self.findex)
             if self.verbose:
                 print('Running find_excess module:')
-                print('binned to %d datapoints' % len(self.bin_freq))
-
-            boxsize = int(np.ceil(float(self.findex['smooth_width'])/(bin_freq[1]-bin_freq[0])))
-            sp = convolve(bin_pow, Box1DKernel(boxsize))
-            smooth_freq = bin_freq[int(boxsize/2):-int(boxsize/2)]
+                print('PS binned to %d datapoints' % len(self.bin_freq))
+            # Smooth the binned power spectrum for a rough estimate of background
+            boxsize = int(np.ceil(float(self.findex['smooth_width'])/(self.bin_freq[1]-self.bin_freq[0])))
+            sp = convolve(self.bin_pow, Box1DKernel(boxsize))
+            smooth_freq = self.bin_freq[int(boxsize/2):-int(boxsize/2)]
             smooth_pow = sp[int(boxsize/2):-int(boxsize/2)]
 
+            # Interpolate and divide to get a crude background-corrected power spectrum
             s = InterpolatedUnivariateSpline(smooth_freq, smooth_pow, k=1)
             self.interp_pow = s(self.freq)
             self.bgcorr_pow = self.pow/self.interp_pow
 
-            if self.params[self.target]['numax'] <= 500.:
-                boxes = np.logspace(np.log10(0.5), np.log10(25.), self.findex['n_trials'])*1.
-            else:
-                boxes = np.logspace(np.log10(50.), np.log10(500.), self.findex['n_trials'])*1.
+            # Calculate collapsed ACF using different box (or bin) sizes
+            self.findex['results'] = {}
+            self.compare = []
+            for b in range(self.findex['n_trials']):
+                self.collapsed_acf(b)
 
-            results = []
-            self.md = []
-            self.cumsum = []
-            self.fit_numax = []
-            self.fit_gauss = []
-            self.fit_snr = []
-            self.fx = []
-            self.fy = []
-
-            for i, box in enumerate(boxes):
-
-                subset = np.ceil(box/self.resolution)
-                steps = np.ceil((box*self.findex['step'])/self.resolution)
-
-                cumsum = np.zeros_like(self.freq)
-                md = np.zeros_like(self.freq)
-                j = 0
-                start = 0
-
-                while True:
-                    if (start+subset) > len(self.freq):
-                        break
-                    f = self.freq[int(start):int(start+subset)]
-                    p = self.bgcorr_pow[int(start):int(start+subset)]
-
-                    lag = np.arange(0.0, len(p))*self.resolution
-                    auto = np.real(np.fft.fft(np.fft.ifft(p)*np.conj(np.fft.ifft(p))))
-                    corr = np.absolute(auto-np.mean(auto))
-
-                    cumsum[j] = np.sum(corr)
-                    md[j] = np.mean(f)
-
-                    start += steps
-                    j += 1
-
-                self.md.append(md[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))])
-                cumsum = cumsum[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))] - min(cumsum[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))])
-                cumsum = list(cumsum/max(cumsum))
-                idx = cumsum.index(max(cumsum))
-                self.cumsum.append(np.array(cumsum))
-                self.fit_numax.append(self.md[i][idx])
-
-                try:
-                    best_vars, _ = curve_fit(gaussian, self.md[i], self.cumsum[i], p0=[np.mean(self.cumsum[i]), 1.0-np.mean(self.cumsum[i]), self.md[i][idx], self.params['width_sun']*(self.md[i][idx]/self.params['numax_sun'])],
-                        maxfev=5000,
-                        bounds=((-np.inf,-np.inf,1,-np.inf),(np.inf,np.inf,np.inf,np.inf)),
-                        )
-                except Exception as _:
-                    results.append([self.target, np.nan, np.nan, -np.inf])
-                else:
-                    self.fx.append(np.linspace(min(md), max(md), 10000))
-                    # self.fy.append(gaussian(self.fx[i], best_vars[0], best_vars[1], best_vars[2], best_vars[3]))
-                    self.fy.append(gaussian(self.fx[i], *best_vars))
-                    snr = max(self.fy[i])/best_vars[0]
-                    if snr > 100.:
-                        snr = 100.
-                    self.fit_snr.append(snr)
-                    self.fit_gauss.append(best_vars[2])
-                    results.append([self.target, best_vars[2], delta_nu(best_vars[2]), snr])
-                    if self.verbose:
-                        print('power excess trial %d: numax = %.2f +/- %.2f' % (i+1, best_vars[2], np.absolute(best_vars[3])/2.0))
-                        print('S/N: %.2f' % snr)
-
-            compare = [each[-1] for each in results]
-            best = compare.index(max(compare))
+            # Select trial that resulted with the highest SNR detection
+            best = self.compare.index(max(self.compare))+1
             if self.verbose:
-                print('picking model %d' % (best+1))
-            save_findex(self, results[best])
-            plot_findex(self)
+                print('selecting model %d' % best)
+            save_findex(self, best)
+            plot_excess(self)
 
 
     def fit_background(self):
@@ -200,7 +132,10 @@ class Target:
                      5) selects the peak (via -npeaks, default=10) closest to the expected spacing based on the calculated numax
                      6) fits Gaussian to the "cutout" peak of the ACF, where center is dnu
 
-        sampling_step: Quantifies the uncertainties of parameters derived in the single_step method
+        sampling_step: Used to quantify uncertainties of the parameters derived in the single_step method. 
+                       For each sampling step (via -mc, default=1 **since you should check your results first),
+                       a "randomized" power spectrum is generated from a chi-squared distribution. Similar
+                       analyses are then used to recover the derived parameters from the first step. 
         """
 
         # Will only run routine if there is a prior numax estimate
@@ -219,14 +154,14 @@ class Target:
             if self.verbose:
                 print('-------------------------------------------------')
                 print('Running fit_background module:')
-                print('binned to %d data points' % len(self.bin_freq))
+                print('PS binned to %d data points' % len(self.bin_freq))
 
             # Run first iteration (which has different steps than any other n>1 runs)
             good = self.single_step()
             if not good:
                 pass
             else:
-                # If sampling is enabled (i.e., args.mciter > 1), a progress bar is created
+                # If sampling is enabled (i.e., args.mciter > 1), a progress bar is created w/ verbose output
                 if self.fitbg['num_mc_iter'] > 1:
                     if self.verbose:
                         print('-------------------------------------------------')
@@ -238,33 +173,74 @@ class Target:
                     while self.i < self.fitbg['num_mc_iter']:
                         self.sampling_step()
                     save_fitbg(self)
-                    plot_mc(self)
+                    plot_samples(self)
                     if self.verbose:
                         # Print results with uncertainties
-                        print('\nOutput parameters:')
-                        print('numax (smoothed): %.2f +/- %.2f muHz' % (self.final_pars['numax_smooth'][0], mad_std(self.final_pars['numax_smooth'])))
-                        print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz' % (self.final_pars['amp_smooth'][0], mad_std(self.final_pars['amp_smooth'])))
-                        print('numax (gaussian): %.2f +/- %.2f muHz' % (self.final_pars['numax_gaussian'][0], mad_std(self.final_pars['numax_gaussian'])))
-                        print('maxamp (gaussian): %.2f +/- %.2f ppm^2/muHz' % (self.final_pars['amp_gaussian'][0], mad_std(self.final_pars['amp_gaussian'])))
-                        print('fwhm (gaussian): %.2f +/- %.2f muHz' % (self.final_pars['fwhm_gaussian'][0], mad_std(self.final_pars['fwhm_gaussian'])))
-                        print('dnu: %.2f +/- %.2f muHz' % (self.final_pars['dnu'][0], mad_std(self.final_pars['dnu'])))
-                        print('-------------------------------------------------')
-                        print()
+                        verbose_output(self, sampling=True)
                 # Single iteration
                 else:
                     save_fitbg(self)
                     if self.verbose:
-                        print('-------------------------------------------------')
-                        print('Output parameters:')
-                        # Print results with no errors
-                        print('numax (smoothed): %.2f muHz' % (self.final_pars['numax_smooth'][0]))
-                        print('maxamp (smoothed): %.2f ppm^2/muHz' % (self.final_pars['amp_smooth'][0]))
-                        print('numax (gaussian): %.2f muHz' % (self.final_pars['numax_gaussian'][0]))
-                        print('maxamp (gaussian): %.2f ppm^2/muHz' % (self.final_pars['amp_gaussian'][0]))
-                        print('fwhm (gaussian): %.2f muHz' % (self.final_pars['fwhm_gaussian'][0]))
-                        print('dnu: %.2f' % (self.final_pars['dnu'][0]))
-                        print('-------------------------------------------------')
-                        print()
+                        # Print results without uncertainties
+                        verbose_output(self)
+
+
+    def collapsed_acf(self, b, j=0, start=0, max_iterations=5000, max_snr=100.):
+        # Computes a collapsed ACF using different "box" (or bin) sizes
+        self.findex['results'][b+1] = {}
+        subset = np.ceil(self.boxes[b]/self.resolution)
+        steps = np.ceil((self.boxes[b]*self.findex['step'])/self.resolution)
+
+        cumsum = np.zeros_like(self.freq)
+        md = np.zeros_like(self.freq)
+        # Iterates through entire power spectrum using box width
+        while True:
+            if (start+subset) > len(self.freq):
+                break
+            f = self.freq[int(start):int(start+subset)]
+            p = self.bgcorr_pow[int(start):int(start+subset)]
+
+            lag = np.arange(0.0, len(p))*self.resolution
+            auto = np.real(np.fft.fft(np.fft.ifft(p)*np.conj(np.fft.ifft(p))))
+            corr = np.absolute(auto-np.mean(auto))
+
+            cumsum[j] = np.sum(corr)
+            md[j] = np.mean(f)
+
+            start += steps
+            j += 1
+
+        # Only keep non-zero elements in CDF and then normalize
+        md = md[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))]
+        cumsum = cumsum[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))] - min(cumsum[~np.ma.getmask(np.ma.masked_values(cumsum, 0.0))])
+        cumsum = list(cumsum/max(cumsum))
+        # Pick the maximum value from the CDF as an initial guess for numax
+        idx = cumsum.index(max(cumsum))
+        self.findex['results'][b+1].update({'x':md,'y':np.array(cumsum),'maxx':md[idx],'maxy':cumsum[idx]})
+
+        # Fit Gaussian to get estimate value for numax
+        try:
+            best_vars, _ = curve_fit(gaussian, md, cumsum, 
+                 p0=[np.mean(cumsum), 1.0-np.mean(cumsum), md[idx], self.params['width_sun']*(md[idx]/self.params['numax_sun'])],
+                 maxfev=max_iterations,
+                 bounds=((-np.inf,-np.inf,1,-np.inf),(np.inf,np.inf,np.inf,np.inf)),
+                 )
+        except Exception as _:
+            self.findex['results'][b+1].update({'good_fit':False})
+            snr = 0.
+        else:
+            self.findex['results'][b+1].update({'good_fit':True})
+            fitx = np.linspace(min(md), max(md), 10000)
+            fity = gaussian(fitx, *best_vars)
+            self.findex['results'][b+1].update({'fitx':fitx,'fity':fity})
+            snr = max(fity)/best_vars[0]
+            if snr > max_snr:
+                snr = max_snr
+            self.findex['results'][b+1].update({'numax':best_vars[2],'dnu':delta_nu(best_vars[2]),'snr':snr})
+            if self.verbose:
+                  print('power excess trial %d: numax = %.2f +/- %.2f' % (b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
+                  print('S/N: %.2f' % snr)
+        self.compare.append(snr)
 
 
     def single_step(self):
@@ -287,7 +263,7 @@ class Target:
         self.get_frequency_spacing()
         # Use the fitted dnu to create an echelle diagram and plot
         self.get_ridges()
-        plot_fitbg(self)
+        plot_background(self)
         return True
 
 

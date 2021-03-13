@@ -42,13 +42,13 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
 
     return new_cmap
 
-def plot_findex(target):
+def plot_excess(target):
     """Creates a plot summarising the results of the find excess routine."""
 
     plt.figure(figsize=(12,8))
 
     # Time series data
-    ax1 = plt.subplot(1+target.nrows, 3, 1)
+    ax1 = plt.subplot(2, 3, 1)
     ax1.plot(target.time, target.flux, 'w-')
     ax1.set_xlim([min(target.time), max(target.time)])
     ax1.set_title(r'$\rm Time \,\, series$')
@@ -56,7 +56,7 @@ def plot_findex(target):
     ax1.set_ylabel(r'$\rm Flux$')
 
     # log-log power spectrum with crude background fit
-    ax2 = plt.subplot(1+target.nrows, 3, 2)
+    ax2 = plt.subplot(2, 3, 2)
     ax2.loglog(target.freq, target.pow, 'w-')
     ax2.set_xlim([min(target.freq), max(target.freq)])
     ax2.set_ylim([min(target.pow), max(target.pow)*1.25])
@@ -68,7 +68,7 @@ def plot_findex(target):
     ax2.loglog(target.freq, target.interp_pow, color='lime', linestyle='-', lw=2.0)
 
     # Crude background-corrected power spectrum
-    ax3 = plt.subplot(1+target.nrows, 3, 3)
+    ax3 = plt.subplot(2, 3, 3)
     ax3.plot(target.freq, target.bgcorr_pow, 'w-')
     ax3.set_xlim([min(target.freq), max(target.freq)])
     ax3.set_ylim([0.0, max(target.bgcorr_pow)*1.25])
@@ -78,22 +78,23 @@ def plot_findex(target):
 
     # ACF trials to determine numax
     for i in range(target.findex['n_trials']):
-        xran = max(target.fx[i])-min(target.fx[i])
-        ymax = max(target.cumsum[i])
-        if max(target.fy[i]) > ymax:
-            ymax = max(target.fy[i])
-        yran = np.absolute(ymax)
-        ax = plt.subplot(1+target.nrows, 3, 4+i)
-        ax.plot(target.md[i], target.cumsum[i], 'w-')
-        ax.axvline(target.fit_numax[i], linestyle='dotted', color='r', linewidth=0.75)
+        ax = plt.subplot(2, 3, 4+i)
+        ax.plot(target.findex['results'][i+1]['x'], target.findex['results'][i+1]['y'], 'w-')
+        xran = max(target.findex['results'][i+1]['fitx'])-min(target.findex['results'][i+1]['fitx'])
+        ymax = target.findex['results'][i+1]['maxy']
+        ax.axvline(target.findex['results'][i+1]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
         ax.set_title(r'$\rm Collapsed \,\, ACF \,\, [trial \,\, %d]$' % (i+1))
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
-        ax.plot(target.fx[i], target.fy[i], color='lime', linestyle='-', linewidth=1.5)
-        ax.axvline(target.fit_gauss[i], color='lime', linestyle='--', linewidth=0.75)
-        ax.set_xlim([min(target.fx[i]), max(target.fx[i])])
+        if target.findex['results'][i+1]['good_fit']:
+            ax.plot(target.findex['results'][i+1]['fitx'], target.findex['results'][i+1]['fity'], color='lime', linestyle='-', linewidth=1.5)
+            if max(target.findex['results'][i+1]['fity']) > target.findex['results'][i+1]['maxy']:
+                ymax = max(target.findex['results'][i+1]['fity'])
+            ax.axvline(target.findex['results'][i+1]['numax'], color='lime', linestyle='--', linewidth=0.75)
+        yran = np.absolute(ymax)
+        ax.set_xlim([min(target.findex['results'][i+1]['x']), max(target.findex['results'][i+1]['x'])])
         ax.set_ylim([-0.05, ymax+0.15*yran])
-        ax.annotate(r'$\rm SNR = %3.2f$' % target.fit_snr[i], xy=(min(target.fx[i])+0.05*xran, ymax+0.025*yran), fontsize=18)
+        ax.annotate(r'$\rm SNR = %3.2f$' % target.findex['results'][i+1]['snr'], xy=(min(target.findex['results'][i+1]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
 
     plt.tight_layout()
     # Save
@@ -104,7 +105,7 @@ def plot_findex(target):
         plt.show()
     plt.close()
 
-def plot_fitbg(target):
+def plot_background(target):
     """Creates a plot summarising the results of the fit background routine."""
 
     fig = plt.figure(figsize=(12, 12))
@@ -246,7 +247,7 @@ def plot_fitbg(target):
         plt.show()
     plt.close()
 
-def plot_mc(target):
+def plot_samples(target):
     """Plot results of the Monte-Carlo sampling."""
 
     plt.figure(figsize=(12, 8))

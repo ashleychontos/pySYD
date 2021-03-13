@@ -311,6 +311,10 @@ def load_data(target, data=None):
                     mask *= np.ma.getmask(np.ma.masked_less_equal(target.freq, target.findex['upper']))
                 target.freq = target.freq[mask]
                 target.pow = target.pow[mask]
+                if 'numax' in target.params[target.target].keys() and target.params[target.target]['numax'] <= 500.:
+                    target.boxes = np.logspace(np.log10(0.5), np.log10(25.), target.findex['n_trials'])*1.
+                else:
+                    target.boxes = np.logspace(np.log10(50.), np.log10(500.), target.findex['n_trials'])*1.
         data=True
     else:
         print('Error: data not found for target %d' % target.target)
@@ -427,7 +431,7 @@ def get_initial_guesses(target):
     return target
 
 
-def save_findex(target, results):
+def save_findex(target, best):
     """Save the results of the find excess routine into the save folder of the current target.
 
     Parameters
@@ -437,6 +441,7 @@ def save_findex(target, results):
     """
 
     variables = ['target', 'numax', 'dnu', 'snr']
+    results = [target.target, target.findex['results'][best]['numax'], target.findex['results'][best]['dnu'], target.findex['results'][best]['snr']]
     save_path = '%sexcess.csv' % target.params[target.target]['path']
     ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
 
@@ -459,6 +464,31 @@ def save_fitbg(target):
     new_df.to_csv('%sbackground.csv' % target.params[target.target]['path'], index=False)
     if target.fitbg['samples']:
         target.df.to_csv('%ssamples.csv' % target.params[target.target]['path'], index=False)
+
+
+def verbose_output(target, sampling=False):
+
+    if sampling:
+        # Print results with uncertainties
+        print('\nOutput parameters:')
+        print('numax (smoothed): %.2f +/- %.2f muHz' % (target.final_pars['numax_smooth'][0], mad_std(target.final_pars['numax_smooth'])))
+        print('maxamp (smoothed): %.2f +/- %.2f ppm^2/muHz' % (target.final_pars['amp_smooth'][0], mad_std(target.final_pars['amp_smooth'])))
+        print('numax (gaussian): %.2f +/- %.2f muHz' % (target.final_pars['numax_gaussian'][0], mad_std(target.final_pars['numax_gaussian'])))
+        print('maxamp (gaussian): %.2f +/- %.2f ppm^2/muHz' % (target.final_pars['amp_gaussian'][0], mad_std(target.final_pars['amp_gaussian'])))
+        print('fwhm (gaussian): %.2f +/- %.2f muHz' % (target.final_pars['fwhm_gaussian'][0], mad_std(target.final_pars['fwhm_gaussian'])))
+        print('dnu: %.2f +/- %.2f muHz' % (target.final_pars['dnu'][0], mad_std(target.final_pars['dnu'])))
+    else:
+        print('-------------------------------------------------')
+        print('Output parameters:')
+        # Print results with no errors
+        print('numax (smoothed): %.2f muHz' % (target.final_pars['numax_smooth'][0]))
+        print('maxamp (smoothed): %.2f ppm^2/muHz' % (target.final_pars['amp_smooth'][0]))
+        print('numax (gaussian): %.2f muHz' % (target.final_pars['numax_gaussian'][0]))
+        print('maxamp (gaussian): %.2f ppm^2/muHz' % (target.final_pars['amp_gaussian'][0]))
+        print('fwhm (gaussian): %.2f muHz' % (target.final_pars['fwhm_gaussian'][0]))
+        print('dnu: %.2f' % (target.final_pars['dnu'][0]))
+    print('-------------------------------------------------')
+    print()
 
 
 def scrape_output(path = 'Files/results/**/'):
