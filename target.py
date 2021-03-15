@@ -550,12 +550,17 @@ class Target:
         peak_idx,_ = find_peaks(self.auto) #indices of peaks, threshold=half max(ACF)
         peaks_l,peaks_a = self.lag[peak_idx],self.auto[peak_idx]
 
+        # pick 7 highest peaks:
+        coords=np.array([[peaks_l[i],peaks_a[i]] for i in range(0,len(peaks_l))]) #create coordinate pairs
+        coords=coords[coords[:,1].argsort()[::-1]][0:7]                           #sort pair in descending order based on 7 highest ACF values
+        peaks_l,peaks_a=coords[:,0],coords[:,1]                                   #store x,y coords of 7 highest peaks as new peaks_l,peaks_a
+        
         # pick the peak closest to the exp_dnu
         idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
-        best_lag=(self.lag[peak_idx])[idx]           #best estimate of dnu
-        best_auto=(self.auto[peak_idx])[idx]         #best estimate of dnu
-        self.lag_of_peak=(self.lag[peak_idx])[idx]   #lag val corresponding to peak
-        self.acf_of_peak=(self.auto[peak_idx])[idx]  #acf val corresponding to peak
+        best_lag=peaks_l[idx]           #best estimate of dnu
+        best_auto=peaks_a[idx]          #best estimate of dnu
+        self.lag_of_peak=best_lag       #lag val corresponding to peak
+        self.acf_of_peak=best_auto      #acf val corresponding to peak
 
         og_zoom_lag,og_zoom_auto=self.get_acf_cutout()
         self.fitbg['acf_mask']=[min(og_zoom_lag),max(og_zoom_lag)]  # lag limits to use for ACF mask
@@ -564,15 +569,15 @@ class Target:
         zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
         zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
 
-		      # boundary conditions and initial guesses stay the same for all iterations
+        # boundary conditions and initial guesses stay the same for all iterations
         self.acf_guesses = [np.mean(zoom_auto), best_auto, best_lag, best_lag*0.01*2.]
         self.acf_bb = gaussian_bounds(zoom_lag, zoom_auto, self.acf_guesses, best_x=best_lag, sigma=10**-2)
 
-		      # fit a Gaussian function to the selected peak in the ACF to get dnu
+        # fit a Gaussian function to the selected peak in the ACF to get dnu
         p_gauss3, _ = curve_fit(gaussian, zoom_lag, zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
         self.final_pars['dnu'].append(p_gauss3[2])
 
-			     # variables for plotting. this only needs to be done during the first iteration
+        # variables for plotting. this only needs to be done during the first iteration
         new_lag = np.linspace(min(zoom_lag),max(zoom_lag),2000)
         dnu = new_lag[np.argmax(gaussian(new_lag,*p_gauss3))]     #value of Gaussian peak
         dnu_fit = gaussian(new_lag,*p_gauss3)                     #Gaussian fit to zoom_ACF

@@ -214,12 +214,12 @@ def plot_background(target):
     ax7.annotate(r'$\Delta\nu = %.2f$' % target.obs_dnu, xy=(0.025, 0.85), xycoords="axes fraction", fontsize=18, color='lime')
     ax7.set_xlim([min(target.zoom_lag), max(target.zoom_lag)])
 
-    cmap = plt.get_cmap('binary')
+    #cmap = plt.get_cmap('jet')
     # new_cmap = cmap(np.linspace(0.1, 0.9, 100))
-    colors = truncate_colormap(cmap, 0.1, 0.8, 100)
+    #colors = truncate_colormap(cmap, 0.1, 0.8, 100)
     # echelle diagram
     ax8 = fig.add_subplot(3, 3, 8)
-    ax8.imshow(target.ech, extent=target.extent, interpolation='none', aspect='auto', origin='lower', cmap=colors)
+    ax8.imshow(target.ech, extent=target.extent, interpolation='none', aspect='auto', origin='lower', cmap=plt.get_cmap('jet'))
     ax8.axvline([target.obs_dnu], color='white', linestyle='--', linewidth=1.0, dashes=(5, 5))
     ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
     ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % target.obs_dnu)
