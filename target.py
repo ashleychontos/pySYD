@@ -259,8 +259,8 @@ class Target:
         self.get_numax_smooth()
         if list(self.region_freq) != []:
             self.exp_numax, self.exp_dnu, self.width, self.new_freq, self.numax_fit = self.get_numax_gaussian(output=True)
-        # Estimate the large frequency spacing
-        self.get_frequency_spacing()
+        # Estimate the large frequency spacing w/ special function
+        self.get_acf_cutout()
         # Use the fitted dnu to create an echelle diagram and plot
         self.get_ridges()
         plot_background(self)
@@ -284,13 +284,12 @@ class Target:
         if self.get_red_noise():
             return
         # If the model converges, continue estimating global parameters 
+        # Get numaxes
         self.get_numax_smooth()
         if list(self.region_freq) != []:
             self.get_numax_gaussian()
-        # Compute ACF
-        self.compute_acf()
         # Estimate dnu
-        self.estimate_dnu()
+        self.get_frequency_spacing()
         self.i += 1
         if self.verbose:
             self.pbar.update(1)
@@ -535,65 +534,6 @@ class Target:
             return new_freq[d], 0.22*(self.exp_numax**0.797), self.params['width_sun']*(new_freq[d]/self.params['numax_sun'])/2., np.copy(new_freq), np.array(numax_fit)
 
 
-    def get_frequency_spacing(self):
-        """Estimate the large frequency spacing or dnu.
-        NOTE: this is used during the first iteration only!
-
-        Parameters
-        ----------
-        dnu : float
-            the estimated value of dnu
-        """
-
-        self.compute_acf()
-		      # Get peaks from ACF
-        peak_idx,_ = find_peaks(self.auto) #indices of peaks, threshold=half max(ACF)
-        peaks_l,peaks_a = self.lag[peak_idx],self.auto[peak_idx]
-
-        # pick 7 highest peaks:
-        coords=np.array([[peaks_l[i],peaks_a[i]] for i in range(0,len(peaks_l))]) #create coordinate pairs
-        coords=coords[coords[:,1].argsort()[::-1]][0:7]                           #sort pair in descending order based on 7 highest ACF values
-        peaks_l,peaks_a=coords[:,0],coords[:,1]                                   #store x,y coords of 7 highest peaks as new peaks_l,peaks_a
-        
-        # pick the peak closest to the exp_dnu
-        idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
-        best_lag=peaks_l[idx]           #best estimate of dnu
-        best_auto=peaks_a[idx]          #best estimate of dnu
-        self.lag_of_peak=best_lag       #lag val corresponding to peak
-        self.acf_of_peak=best_auto      #acf val corresponding to peak
-
-        og_zoom_lag,og_zoom_auto=self.get_acf_cutout()
-        self.fitbg['acf_mask']=[min(og_zoom_lag),max(og_zoom_lag)]  # lag limits to use for ACF mask
-
-        # define the peak in the ACF
-        zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
-        zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
-
-        # boundary conditions and initial guesses stay the same for all iterations
-        self.acf_guesses = [np.mean(zoom_auto), best_auto, best_lag, best_lag*0.01*2.]
-        self.acf_bb = gaussian_bounds(zoom_lag, zoom_auto, self.acf_guesses, best_x=best_lag, sigma=10**-2)
-
-        # fit a Gaussian function to the selected peak in the ACF to get dnu
-        p_gauss3, _ = curve_fit(gaussian, zoom_lag, zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
-        self.final_pars['dnu'].append(p_gauss3[2])
-
-        # variables for plotting. this only needs to be done during the first iteration
-        new_lag = np.linspace(min(zoom_lag),max(zoom_lag),2000)
-        dnu = new_lag[np.argmax(gaussian(new_lag,*p_gauss3))]     #value of Gaussian peak
-        dnu_fit = gaussian(new_lag,*p_gauss3)                     #Gaussian fit to zoom_ACF
-        peaks_l[idx] = np.nan
-        peaks_a[idx] = np.nan
-        self.peaks_l = peaks_l
-        self.peaks_a = peaks_a
-        self.best_lag = best_lag
-        self.best_auto = best_auto
-        self.zoom_lag = og_zoom_lag
-        self.zoom_auto = og_zoom_auto
-        self.obs_dnu = p_gauss3[2]
-        self.new_lag = new_lag
-        self.dnu_fit = dnu_fit
-
-
     def compute_acf(self, fft=True):
         """Compute the ACF of the smooth background corrected power spectrum.
 
@@ -626,40 +566,77 @@ class Target:
         self.auto = np.copy(auto)
 
 
-    def get_acf_cutout(self):
-        """Center on the closest peak to expected dnu and cut out a region around the peak for dnu uncertainties."""
-        lag,auto=self.lag,self.auto
-        lag_of_peak,acf_of_peak=self.lag_of_peak,self.acf_of_peak
-        hmax=acf_of_peak/2.  #half of ACF peak
-        lag_idx=np.where(lag==lag_of_peak)[0][0]
-    
-        # Find Full Width at Half Maximum (FWHM):
-        right_indices=np.where(auto[lag_idx:]<hmax)[0]
-        right_idx=right_indices[0]
+    def get_acf_cutout(self, threshold=1.0):
+        """Estimate the large frequency spacing or dnu.
+        NOTE: this is used during the first iteration only!
+
+        Parameters
+        ----------
+        dnu : float
+            the estimated value of dnu
+        """
+        self.compute_acf()
+		      # Get peaks from ACF
+        peak_idx,_ = find_peaks(self.auto) #indices of peaks, threshold=half max(ACF)
+        peaks_l,peaks_a = self.lag[peak_idx],self.auto[peak_idx]
+        # Pick n highest peaks
+        peaks_l = peaks_l[peaks_a.argsort()[::-1]][:self.fitbg['n_peaks']]
+        peaks_a = peaks_a[peaks_a.argsort()[::-1]][:self.fitbg['n_peaks']]
         
-        if True in (auto[:lag_idx]<hmax):
-            left_indices=np.where(auto[:lag_idx]<hmax)[0]
-            left_idx=left_indices[-1]
-        elif True in (auto[:lag_idx]<(acf_of_peak*0.75)):
-            left_indices=np.where(auto[:lag_idx]<hmax)[0]
-            left_idx=left_indices[-1]
+        # From n highest peaks, pick the peak closest to the exp_dnu
+        idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
+        self.best_lag=peaks_l[idx]           #best estimate of dnu
+        self.best_auto=peaks_a[idx]          #acf value corresponding to best estimate of dnu (max height)
+        # Change fitted value with nan to highlight differently in plot
+        peaks_l[idx] = np.nan
+        peaks_a[idx] = np.nan
+        self.peaks_l = peaks_l
+        self.peaks_a = peaks_a
+
+        # Calculate FWHM
+        if list(self.lag[(self.lag<self.best_lag)&(self.auto<=self.best_auto/2.)]) != []:
+            left_lag = self.lag[(self.lag<self.best_lag)&(self.auto<=self.best_auto/2.)][-1]
+            left_auto = self.auto[(self.lag<self.best_lag)&(self.auto<=self.best_auto/2.)][-1]
         else:
-            left_idx=0
-            
-        left_fwhm_idx=np.where(lag==(lag[:lag_idx][left_idx]))[0]    #index in lag&auto of left FWHM val
-        right_fwhm_idx=np.where(lag==(lag[lag_idx:][right_idx]))[0]  #index in lag&auto of right FWHM val
-        left_fwhm,right_fwhm=lag[left_fwhm_idx],lag[right_fwhm_idx]  #vals of FWHM on both sides of peak
+            left_lag = self.lag[0]
+            left_auto = self.auto[0]
+        if list(self.lag[(self.lag>self.best_lag)&(self.auto<=self.best_auto/2.)]) != []:
+            right_lag = self.lag[(self.lag>self.best_lag)&(self.auto<=self.best_auto/2.)][0]
+            right_auto = self.auto[(self.lag>self.best_lag)&(self.auto<=self.best_auto/2.)][0]
+        else:
+            right_lag = self.lag[-1]
+            right_auto = self.auto[-1]
 
-        # MASK limits using FWHM method:
-        threshold=1.0
-        fw= right_fwhm-left_fwhm   #full width
-        frac_fwhm = threshold*fw   #fraction of FWHM for ACF MASK
-        left_lim_FWHM,right_lim_FWHM=lag_of_peak-frac_fwhm,lag_of_peak+frac_fwhm
-        left_lim,right_lim=left_lim_FWHM,right_lim_FWHM
+        # Lag limits to use for ACF mask or "cutout"
+        self.fitbg['acf_mask']=[self.best_lag-(threshold*((right_lag-left_lag)/2.)),self.best_lag+(threshold*((right_lag-left_lag)/2.))]
+        self.zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+        self.zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
 
-        idx=np.where((left_lim <= lag) & (lag <= right_lim))[0]  #get indices of ACF mask
-        
-        return lag[idx], auto[idx]
+        # Boundary conditions and initial guesses stay the same for all iterations
+        self.acf_guesses = [np.mean(self.zoom_auto), self.best_auto, self.best_lag, self.best_lag*0.01*2.]
+        self.acf_bb = gaussian_bounds(self.zoom_lag, self.zoom_auto, self.acf_guesses, best_x=self.best_lag, sigma=10**-2)
+        # Fit a Gaussian function to the selected peak in the ACF to get dnu
+        p_gauss3, _ = curve_fit(gaussian, self.zoom_lag, self.zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
+        self.final_pars['dnu'].append(p_gauss3[2])
+        self.obs_dnu = p_gauss3[2]
+        # Save for plotting
+        self.new_lag = np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000)
+        self.dnu_fit = gaussian(self.new_lag,*p_gauss3)
+        self.obs_acf = max(self.dnu_fit)
+
+
+    def get_frequency_spacing(self):
+        """Estimate a value for dnu."""
+        self.compute_acf()
+        # define the peak in the ACF
+        zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+        zoom_auto = self.auto[(self.lag>=self.fitbg['acf_mask'][0])&(self.lag<=self.fitbg['acf_mask'][1])]
+
+        # fit a Gaussian function to the selected peak in the ACF
+        p_gauss3, _ = curve_fit(gaussian, zoom_lag, zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
+        # the center of that Gaussian is our estimate for Dnu
+        dnu = p_gauss3[2]
+        self.final_pars['dnu'].append(dnu) 
 
 
     def get_ridges(self, start=0.0):

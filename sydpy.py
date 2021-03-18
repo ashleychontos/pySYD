@@ -195,8 +195,8 @@ if __name__ == '__main__':
     )
     background.add_argument('-peak', '--peak', '-peaks', '--peaks', '-npeaks', '--npeaks', 
                             dest='npeaks', 
-                            help='Number of peaks to fit in ACF (default=10)',
-                            default=10, 
+                            help='Number of peaks to fit in ACF (default=5)',
+                            default=5, 
                             type=int,
     )
     background.add_argument('-rms', '--rms', '-nrms', '--nrms', 
