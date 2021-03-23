@@ -576,17 +576,22 @@ class Target:
             the estimated value of dnu
         """
         self.compute_acf()
-		      # Get peaks from ACF
+        # Get peaks from ACF
         peak_idx,_ = find_peaks(self.auto) #indices of peaks, threshold=half max(ACF)
         peaks_l,peaks_a = self.lag[peak_idx],self.auto[peak_idx]
+        
         # Pick n highest peaks
         peaks_l = peaks_l[peaks_a.argsort()[::-1]][:self.fitbg['n_peaks']]
         peaks_a = peaks_a[peaks_a.argsort()[::-1]][:self.fitbg['n_peaks']]
         
-        # From n highest peaks, pick the peak closest to the exp_dnu
-        idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
-        self.best_lag=peaks_l[idx]           #best estimate of dnu
-        self.best_auto=peaks_a[idx]          #acf value corresponding to best estimate of dnu (max height)
+        # Pick best peak in ACF using weight according to ACF amplitude:
+        gausswidth  = 0.35*self.exp_dnu #use 0.25-0.5*dnu_exp
+        sig         = gausswidth/2.35482
+        gaussweight = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(peaks_l-self.exp_dnu)**2./(2.*sig**2))
+        idx            = np.where(peaks_a*gaussweight == max(peaks_a*gaussweight))[0]
+        self.best_lag  = peaks_l[idx]    
+        self.best_auto = peaks_a[idx]
+        
         # Change fitted value with nan to highlight differently in plot
         peaks_l[idx] = np.nan
         peaks_a[idx] = np.nan
