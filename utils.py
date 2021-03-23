@@ -124,10 +124,8 @@ def get_background_params(
         TODO: Write description. Default value is `20`.
     n_peaks : int
         the number of peaks to select. Default value is `10`.
-    force : bool
-        if true will force dnu to be the equal to `guess`. Default value is `False`.
-    guess : float
-        the estimate of dnu. Default value is `140.24`.
+    force : float
+        if not false (i.e. non-zero) will force dnu to be the equal to this value. 
     clip : bool
         if true will set the minimum frequency value of the echelle plot to `clip_value`. Default value is `True`.
     clip_value : float
@@ -150,6 +148,13 @@ def get_background_params(
     args : argparse.Namespace
         the updated command line arguments
     """
+
+    if int(arg.force):
+        arg.force = True
+        arg.guess = arg.force
+    else:
+        arg.force = False
+        arg.guess = np.nan
 
     fitbg['do'] = args.background
     pars = {
