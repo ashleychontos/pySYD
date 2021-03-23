@@ -1,20 +1,21 @@
+# Global imports
 import os
 import pdb
 import glob
 import subprocess
-
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import multiprocessing as mp
-from scipy.interpolate import InterpolatedUnivariateSpline
-from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
 from astropy.io import ascii
 from scipy import interpolate
-from scipy.optimize import curve_fit
 from scipy.stats import chisquare
 from scipy.signal import find_peaks
+from scipy.optimize import curve_fit
+from scipy.interpolate import InterpolatedUnivariateSpline
+from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
 
+# Local imports
 from functions import *
 from models import *
 from utils import *
@@ -583,14 +584,19 @@ class Target:
         # Pick n highest peaks
         peaks_l = peaks_l[peaks_a.argsort()[::-1]][:self.fitbg['n_peaks']]
         peaks_a = peaks_a[peaks_a.argsort()[::-1]][:self.fitbg['n_peaks']]
+	
+	# From n highest peaks, pick the peak closest to the exp_dnu
+        idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
+        self.best_lag=peaks_l[idx]           #best estimate of dnu
+        self.best_auto=peaks_a[idx]          #acf value corresponding to best estimate of dnu (max height)
         
         # Pick best peak in ACF using weight according to ACF amplitude:
-        gausswidth  = 0.35*self.exp_dnu #use 0.25-0.5*dnu_exp
-        sig         = gausswidth/2.35482
-        gaussweight = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(peaks_l-self.exp_dnu)**2./(2.*sig**2))
-        idx            = np.where(peaks_a*gaussweight == max(peaks_a*gaussweight))[0]
-        self.best_lag  = peaks_l[idx]    
-        self.best_auto = peaks_a[idx]
+        #gausswidth = 0.35*self.exp_dnu #use 0.25-0.5*dnu_exp
+        #sig = gausswidth/2.35482
+        #gaussweight = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(peaks_l-self.exp_dnu)**2./(2.*sig**2))
+        #idx = np.where(peaks_a*gaussweight == max(peaks_a*gaussweight))[0]
+        #self.best_lag  = peaks_l[idx]    
+        #self.best_auto = peaks_a[idx]
         
         # Change fitted value with nan to highlight differently in plot
         peaks_l[idx] = np.nan
