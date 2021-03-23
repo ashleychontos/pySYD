@@ -628,6 +628,9 @@ class Target:
         self.acf_bb = gaussian_bounds(self.zoom_lag, self.zoom_auto, self.acf_guesses, best_x=self.best_lag, sigma=10**-2)
         # Fit a Gaussian function to the selected peak in the ACF to get dnu
         p_gauss3, _ = curve_fit(gaussian, self.zoom_lag, self.zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
+	# If dnu is provided, use that instead
+	if self.fitbg['force']:
+            p_gauss3[2] = self.fitbg['guess']
         self.final_pars['dnu'].append(p_gauss3[2])
         self.obs_dnu = p_gauss3[2]
         # Save for plotting
