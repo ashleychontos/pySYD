@@ -1,11 +1,13 @@
+# Global imports
 import os
 import pdb
-from collections import deque
 import numpy as np
-from astropy.convolution import (
-    Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
-)
+from collections import deque
 from scipy.ndimage import filters
+from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
+
+# Local imports
+from utils import set_seed
 
 
 def remove_artefact(target, lc=29.4244*60*1e-6):
