@@ -172,13 +172,7 @@ if __name__ == '__main__':
     background.add_argument('-force', '--force',
                             dest='force',
                             help='Brute force method to provide value for dnu.',
-                            default=False, 
-                            action='store_true',
-    )
-    background.add_argument('-guess', '--guess',
-                            dest='guess',
-                            help='Estimate for dnu using brute force method [muHz]',
-                            default=None,
+                            default=0, 
                             type=float,
     )
     background.add_argument('-lb', '--lb', '-lowerb', '--lowerb', 
