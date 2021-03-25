@@ -31,6 +31,7 @@ def get_info(args, params={}):
     if args.target is None:
         with open(args.file, "r") as f:
             args.target = [int(float(line.strip().split()[0])) for line in f.readlines()]
+    check_inputs(args)
     params['path'] = 'Files/data/'
     # Adding constants and the target list
     params.update({
@@ -52,6 +53,16 @@ def get_info(args, params={}):
     args = get_star_info(args)
 
     return args
+
+
+def check_inputs(args):
+    """ Make sure the command line inputs are proper lengths based on the specified targets."""
+
+    checks={'lowerb':args.lowerb,'upperb':args.upperb,'lowerx':args.lowerx,
+            'upperx':args.upperx,'dnu':args.dnu,'numax':args.numax}
+    for check in checks:
+        if checks[check] is not None:
+            assert len(args.target) == len(checks[check]), "The number of values provided for %s does not equal the number of targets"%check
 
 
 def get_excess_params(
@@ -83,14 +94,13 @@ def get_excess_params(
         the updated command line arguments
     """
 
-    findex['do'] = args.excess
     pars = {
         'step': args.step,
         'binning': args.binning,
         'smooth_width': args.smooth_width,
         'n_trials': args.ntrials,
-        'lower': args.lowerx,
-        'upper': args.upperx,
+        'lower': 10.,
+        'upper': 4000.,
     }
     findex.update(pars)
 
@@ -149,25 +159,13 @@ def get_background_params(
         the updated command line arguments
     """
 
-    if int(arg.force):
-        arg.force = True
-        arg.guess = arg.force
-    else:
-        arg.force = False
-        arg.guess = np.nan
-
-    fitbg['do'] = args.background
     pars = {
         'num_mc_iter': args.mciter,
-        'lower': args.lowerb,
-        'upper': args.upperb,
         'box_filter': args.box_filter,
         'ind_width': args.ind_width,
         'n_rms': args.nrms,
         'n_peaks': args.npeaks,
         'smooth_ps': args.smooth_ps,
-        'force': args.force,
-        'guess': args.guess,
         'clip': args.clip,
         'clip_value': args.value,
         'smooth_ech': args.smooth_ech,
@@ -189,7 +187,7 @@ def get_background_params(
     return args
 
 
-def get_star_info(args, cols=['rad', 'logg', 'teff']):
+def get_star_info(args, cols=['rad','logg','teff','numax','lowerx','upperx','lowerb','upperb','seed']):
     """Get target information stored in `star_info.csv`.
 
     Parameters
@@ -211,30 +209,43 @@ def get_star_info(args, cols=['rad', 'logg', 'teff']):
     if os.path.exists(args.info):
         df = pd.read_csv(args.info)
         targets = df.targets.values.tolist()
-        for todo in args.params['todo']:
+        for i, todo in enumerate(args.params['todo']):
+            args.params[todo]['excess'] = args.excess
+            args.params[todo]['background'] = args.background
+            args.params[todo]['force'] = False
             if todo in targets:
                 idx = targets.index(todo)
                 # Update information from columns
                 for col in cols:
-                    args.params[todo][col] = df.loc[idx, col]
+                    if not np.isnan(float(df.loc[idx,col])):
+                        args.params[todo][col] = float(df.loc[idx, col])
+                    else:
+                        args.params[todo][col] = None
                 # Add estimate of numax if the column exists
-                if 'numax' in df.columns.values.tolist():
-                    args.params[todo]['numax'] = df.loc[idx, 'numax']
-                    args.params[todo]['dnu'] = 0.22*(df.loc[idx, 'numax']**0.797)
+                if args.params[todo]['numax'] is not None:
+                    args.params[todo]['dnu'] = 0.22*(args.params[todo]['numax']**0.797)
                 # Otherwise estimate using other stellar parameters
                 else:
-                    args.params[todo]['mass'] = ((((args.params[todo]['rad']*args.params['radius_sun'])**(2.0))*10**(args.params[todo]['logg'])/args.params['G'])/args.params['mass_sun'])
-                    args.params[todo]['numax'] = args.params['numax_sun']*args.params[todo]['mass']*(args.params[todo]['rad']**(-2.0))*((args.params[todo]['teff']/args.params['teff_sun'])**(-0.5))
-                    args.params[todo]['dnu'] = args.params['dnu_sun']*(args.params[todo]['mass']**(0.5))*(args.params[todo]['rad']**(-1.5))
-                # Add in the frequency bounds for the findex routine (lowerx, upperx) and
-                # the frequency bounds for the fitbg routine (lowerb and upperb)
-                # Note: this also loads in the random seed for Kepler targets that needed correction
-                for col in ['lowerx', 'upperx', 'lowerb', 'upperb','seed']:
-                    if np.isnan(df.loc[idx, col]):
-                        args.params[todo][col] = None
+                    if args.params[todo]['rad'] is not None and args.params[todo]['logg'] is not None:
+                        args.params[todo]['mass'] = ((((args.params[todo]['rad']*args.params['radius_sun'])**(2.0))*10**(args.params[todo]['logg'])/args.params['G'])/args.params['mass_sun'])
+                        args.params[todo]['numax'] = args.params['numax_sun']*args.params[todo]['mass']*(args.params[todo]['rad']**(-2.0))*((args.params[todo]['teff']/args.params['teff_sun'])**(-0.5))
+                        args.params[todo]['dnu'] = args.params['dnu_sun']*(args.params[todo]['mass']**(0.5))*(args.params[todo]['rad']**(-1.5))
+            override={'lowerb':args.lowerb,'upperb':args.upperb,'lowerx':args.lowerx,
+                      'upperx':args.upperx,'dnu':args.dnu,'numax':args.numax}
+            for each in override:
+                if override[each] is not None:
+                    # if numax is provided via CLI, findex is skipped
+                    if each == 'numax':
+                        args.params[todo]['excess'] = False
+                        args.params[todo]['numax'] = override[each][i]
+                        args.params[todo]['dnu'] = 0.22*(args.params[todo]['numax']**0.797)
+                    # if dnu is provided via CLI, this value is used instead of the derived dnu
+                    elif each == 'dnu':
+                        args.params[todo]['force'] = True
+                        args.params[todo]['guess'] = override[each][i]
                     else:
-                        args.params[todo][col] = df.loc[idx, col]
-
+                        args.params[todo][each] = override[each][i]
+                
     return args
 
 
@@ -290,7 +301,6 @@ def load_data(target, data=None):
                 print('oversampled by a factor of %d' % target.oversample)
             print('time series cadence: %d seconds' % target.cadence)
             print('power spectrum resolution: %.6f muHz' % target.resolution)
-            print('-------------------------------------------------')
         # Create critically sampled PS
         if target.oversample != 1:
             target.freq = np.copy(target.frequency)
@@ -302,24 +312,24 @@ def load_data(target, data=None):
             target.pow = np.copy(target.power)
             target.frequency = np.copy(target.frequency)
             target.power = np.copy(target.power)
-        if hasattr(target, 'findex'):
-            if target.findex['do']:
-                # Make a mask using the given frequency bounds for the find excess routine
-                mask = np.ones_like(target.freq, dtype=bool)
-                if target.params[target.target]['lowerx'] is not None:
-                    mask *= np.ma.getmask(np.ma.masked_greater_equal(target.freq, target.params[target.target]['lowerx']))
-                else:
-                    mask *= np.ma.getmask(np.ma.masked_greater_equal(target.freq, target.findex['lower']))
-                if target.params[target.target]['upperx'] is not None:
-                    mask *= np.ma.getmask(np.ma.masked_less_equal(target.freq, target.params[target.target]['upperx']))
-                else:
-                    mask *= np.ma.getmask(np.ma.masked_less_equal(target.freq, target.findex['upper']))
+        if target.params[target.target]['excess']:
+            # Make a mask using the given frequency bounds for the find excess routine
+            mask = np.ones_like(target.freq, dtype=bool)
+            if target.params[target.target]['lowerx'] is not None:
+                mask *= np.ma.getmask(np.ma.masked_greater_equal(target.freq, target.params[target.target]['lowerx']))
+            else:
+                mask *= np.ma.getmask(np.ma.masked_greater_equal(target.freq, target.findex['lower']))
+            if target.params[target.target]['upperx'] is not None:
+                mask *= np.ma.getmask(np.ma.masked_less_equal(target.freq, target.params[target.target]['upperx']))
+            else:
+                mask *= np.ma.getmask(np.ma.masked_less_equal(target.freq, target.findex['upper']))
                 target.freq = target.freq[mask]
                 target.pow = target.pow[mask]
-                if 'numax' in target.params[target.target].keys() and target.params[target.target]['numax'] <= 500.:
-                    target.boxes = np.logspace(np.log10(0.5), np.log10(25.), target.findex['n_trials'])*1.
-                else:
-                    target.boxes = np.logspace(np.log10(50.), np.log10(500.), target.findex['n_trials'])*1.
+                if target.params[target.target]['numax'] is not None:
+                    if target.params[target.target]['numax'] <= 500.:
+                        target.boxes = np.logspace(np.log10(0.5), np.log10(25.), target.findex['n_trials'])*1.
+                    else:
+                        target.boxes = np.logspace(np.log10(50.), np.log10(500.), target.findex['n_trials'])*1.
         data=True
     else:
         print('Error: data not found for target %d' % target.target)
@@ -353,12 +363,16 @@ def check_fitbg(target):
         will return `True` if there is prior value for numax otherwise `False`.
     """
 
-    if 'numax' not in target.params[target.target].keys():
+    # Check whether output from findex module exists; 
+    # if yes, let that override star info guesses
+    if glob.glob('%sexcess.csv' % target.params[target.target]['path']) != []:
+        df = pd.read_csv('%sexcess.csv' % target.params[target.target]['path'])
+        for col in ['numax', 'dnu', 'snr']:
+            target.params[target.target][col] = df.loc[0, col]
+    # Break if no numax is provided in any scenario
+    if target.params[target.target]['numax'] is None:
         print(
-            """WARNING: Suggested use of this pipeline requires either
-            stellar properties to estimate a numax or running the entire
-            pipeline from scratch (i.e. find_excess) first to
-            statistically determine a starting point for nuMax."""
+            'Error: SYDpy cannot run without any value for numax.'
         )
         return False
     else:
@@ -367,15 +381,7 @@ def check_fitbg(target):
 
 def get_initial_guesses(target):
     """Get initial guesses for the granulation background."""
-
-    # Check whether output from findex module exists; if yes, let that override star info guesses
-    if glob.glob('%sexcess.csv' % target.params[target.target]['path']) != []:
-        df = pd.read_csv('%sexcess.csv' % target.params[target.target]['path'])
-        for col in ['numax', 'dnu', 'snr']:
-            target.params[target.target][col] = df.loc[0, col]
-    # If no output from findex module exists, assume SNR is high enough to run the fit background routine
-    else:
-        target.params[target.target]['snr'] = 10.0
+    from functions import mean_smooth_ind
 
     # Mask power spectrum for fitbg module based on estimated/fitted numax
     mask = np.ones_like(target.frequency, dtype=bool)
@@ -416,10 +422,10 @@ def get_initial_guesses(target):
     target.bin_err = bin_err[~((bin_freq > target.maxpower[0]) & (bin_freq < target.maxpower[1]))]
 
     # Adjust the lower frequency limit given numax
-    if target.params[target.target]['numax'] > 300.0:
-        target.frequency = target.frequency[target.frequency > 100.0]
-        target.power = target.power[target.frequency > 100.0]
-        target.fitbg['lower'] = 100.0
+#    if target.params[target.target]['numax'] > 300.0:
+#        target.frequency = target.frequency[target.frequency > 100.0]
+#        target.power = target.power[target.frequency > 100.0]
+#        target.fitbg['lower'] = 100.0
     # Use scaling relation from sun to get starting points
     scale = target.params['numax_sun']/((target.maxpower[1] + target.maxpower[0])/2.0)
     taus = np.array(target.params['tau_sun'])*scale

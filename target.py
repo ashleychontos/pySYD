@@ -70,10 +70,10 @@ class Target:
         data, self = load_data(self)
         if data is not None:
             # Run the find excess routine
-            if self.findex['do']:
+            if self.params[self.target]['excess']:
                 self.find_excess()
             # Run the fit background routine
-            if self.fitbg['do']:
+            if self.params[self.target]['background']:
                 self.fit_background()
 
 
@@ -87,6 +87,7 @@ class Target:
         if self.findex['binning'] is not None:
             self.bin_freq, self.bin_pow = bin_data(self.freq, self.pow, self.findex)
             if self.verbose:
+                print('-------------------------------------------------')
                 print('Running find_excess module:')
                 print('PS binned to %d datapoints' % len(self.bin_freq))
             # Smooth the binned power spectrum for a rough estimate of background
@@ -508,7 +509,7 @@ class Target:
         self.pssm_bgcorr = self.pssm-harvey(final_x, self.pars, total=True)
         self.region_freq = self.frequency[self.params[self.target]['mask']]
         self.region_pow = self.pssm_bgcorr[self.params[self.target]['mask']]
-        idx = return_max(self.region_pow, index=True)
+        idx = return_max(self.region_freq, self.region_pow, index=True)
         self.final_pars['numax_smooth'].append(self.region_freq[idx])
         self.final_pars['amp_smooth'].append(self.region_pow[idx])
         # Initial guesses for the parameters of the Gaussian fit to the power envelope
@@ -584,19 +585,11 @@ class Target:
         # Pick n highest peaks
         peaks_l = peaks_l[peaks_a.argsort()[::-1]][:self.fitbg['n_peaks']]
         peaks_a = peaks_a[peaks_a.argsort()[::-1]][:self.fitbg['n_peaks']]
-	
-	# From n highest peaks, pick the peak closest to the exp_dnu
-        idx = return_max(peaks_l, index=True, dnu=True, exp_dnu=self.exp_dnu)
-        self.best_lag=peaks_l[idx]           #best estimate of dnu
-        self.best_auto=peaks_a[idx]          #acf value corresponding to best estimate of dnu (max height)
         
-        # Pick best peak in ACF using weight according to ACF amplitude:
-        #gausswidth = 0.35*self.exp_dnu #use 0.25-0.5*dnu_exp
-        #sig = gausswidth/2.35482
-        #gaussweight = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(peaks_l-self.exp_dnu)**2./(2.*sig**2))
-        #idx = np.where(peaks_a*gaussweight == max(peaks_a*gaussweight))[0]
-        #self.best_lag  = peaks_l[idx]    
-        #self.best_auto = peaks_a[idx]
+        # Pick best peak in ACF by using Gaussian weight according to expected dnu
+        idx = return_max(peaks_l, peaks_a, index=True, exp_dnu=self.exp_dnu)
+        self.best_lag = peaks_l[idx]
+        self.best_auto = peaks_a[idx]
         
         # Change fitted value with nan to highlight differently in plot
         peaks_l[idx] = np.nan
@@ -628,9 +621,9 @@ class Target:
         self.acf_bb = gaussian_bounds(self.zoom_lag, self.zoom_auto, self.acf_guesses, best_x=self.best_lag, sigma=10**-2)
         # Fit a Gaussian function to the selected peak in the ACF to get dnu
         p_gauss3, _ = curve_fit(gaussian, self.zoom_lag, self.zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
-	# If dnu is provided, use that instead
-	if self.fitbg['force']:
-            p_gauss3[2] = self.fitbg['guess']
+       	# If dnu is provided, use that instead
+        if self.params[self.target]['force']:
+            p_gauss3[2] = self.params[self.target]['guess']
         self.final_pars['dnu'].append(p_gauss3[2])
         self.obs_dnu = p_gauss3[2]
         # Save for plotting

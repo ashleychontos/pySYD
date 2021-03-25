@@ -167,19 +167,23 @@ def max_elements(x, y, npeaks):
     return peaks_x, peaks_y
 
 
-def return_max(array, index=False, dnu=False, exp_dnu=None):
+def return_max(x_array, y_array, exp_dnu=None, index=False):
     """Return the either the value of peak or the index of the peak corresponding to the most likely dnu given a prior estimate,
     otherwise just the maximum value.
 
     Parameters
     ----------
-    array : np.ndarray
-        the data series
+    x_array : np.ndarray
+        the independent axis (i.e. time, frequency)
+    y_array : np.ndarray
+        the dependent axis
+    method : str
+        which method to use for determing the max elements in an array
     index : bool
         if true will return the index of the peak instead otherwise it will return the value. Default value is `False`.
     dnu : bool
         if true will choose the peak closest to the expected dnu `exp_dnu`. Default value is `False`.
-    exp_dnu : Optional[float]
+    exp_dnu : Required[float]
         the expected dnu. Default value is `None`.
 
     Returns
@@ -188,16 +192,18 @@ def return_max(array, index=False, dnu=False, exp_dnu=None):
         if `index` is `True`, result will be the index of the peak otherwise if `index` is `False` it will instead return the
         value of the peak.
     """
-    if dnu and exp_dnu is not None:
-        lst = list(np.absolute(np.copy(array)-exp_dnu))
-        idx = lst.index(min(lst))
+    if exp_dnu is None:
+        lst = list(y_array)
+        idx = lst.index(max(lst))
     else:
-        lst = list(array)
+        sig = 0.35*exp_dnu/2.35482 
+        weights = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(x_array-exp_dnu)**2./(2.*sig**2))
+        lst = list(weights*y_array)
         idx = lst.index(max(lst))
     if index:
         return idx
     else:
-        return lst[idx]
+        return x_array[idx], y_array[idx]
 
 
 def mean_smooth_ind(x, y, width):

@@ -114,13 +114,15 @@ if __name__ == '__main__':
     excess.add_argument('-lx', '--lx', '-lowerx', '--lowerx', 
                         dest='lowerx',
                         help='Lower limit of power spectrum to use in findex module (default=10.0muHz)',
-                        default=10.0,
+                        nargs='*',
+                        default=None,
                         type=float,
     )
     excess.add_argument('-ux', '--ux', '-upperx', '--upperx', 
                         dest='upperx',
                         help='Upper limit of power spectrum to use in findex module (default=4000.0muHz)',
-                        default=4000.0,
+                        nargs='*',
+                        default=None,
                         type=float,
     )
     excess.add_argument('-step', '--step', '-steps', '--steps', 
@@ -141,7 +143,7 @@ if __name__ == '__main__':
 
     background.add_argument('-iw', '--iw', '-width', '--width', '-indwidth', '--indwidth',
                             dest='ind_width', 
-                            help='Number of indepdent points to use for binning of power spectrum (default=50)',
+                            help='Number of independent points to use for binning of power spectrum (default=50)',
                             default=50, 
                             type=int,
     )
@@ -157,27 +159,24 @@ if __name__ == '__main__':
                             default=True, 
                             action='store_false',
     )
-    background.add_argument('-se', '--se', '-smoothech', '--smoothech',
-                            dest='smooth_ech',
-                            help='Option to smooth the echelle diagram output [muHz]',
-                            default=None,
-                            type=float,
-    )
-    background.add_argument('-sp', '--sp', '-smoothps', '--smoothps',
-                            dest='smooth_ps',
-                            help='Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)',
-                            default=2.5,
-                            type=float,
-    )
-    background.add_argument('-force', '--force',
-                            dest='force',
+    background.add_argument('-dnu', '--dnu',
+                            dest='dnu',
                             help='Brute force method to provide value for dnu.',
-                            default=0, 
+                            nargs='*',
                             type=float,
+                            default=None, 
+    )
+    background.add_argument('-numax', '--numax',
+                            dest='numax',
+                            help='Brute force method to bypass findex and provide value for numax. Please note: len(args.numax) == len(args.targets) for this to work! This is mostly intended for single star runs.',
+                            nargs='*',
+                            type=float,
+                            default=None,
     )
     background.add_argument('-lb', '--lb', '-lowerb', '--lowerb', 
                             dest='lowerb',
                             help='Lower limit of power spectrum to use in fitbg module (default=None) Please note: unless numax is known, it is not suggested to fix this beforehand.',
+                            nargs='*',
                             default=None,
                             type=float,
     )
@@ -205,15 +204,28 @@ if __name__ == '__main__':
                             default=False, 
                             action='store_true',
     )
+    background.add_argument('-se', '--se', '-smoothech', '--smoothech',
+                            dest='smooth_ech',
+                            help='Option to smooth the echelle diagram output [muHz]',
+                            default=None,
+                            type=float,
+    )
     background.add_argument('-slope', '--slope',
                             dest='slope',
                             help='When true, this will correct for residual slope in a smoothed power spectrum before estimating numax',
                             default=False, 
                             action='store_true',
     )
+    background.add_argument('-sp', '--sp', '-smoothps', '--smoothps',
+                            dest='smooth_ps',
+                            help='Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)',
+                            default=2.5,
+                            type=float,
+    )
     background.add_argument('-ub', '--ub', '-upperb', '--upperb', 
                             dest='upperb',
                             help='Upper limit of power spectrum to use in fitbg module (default=None) Please note: unless numax is known, it is not suggested to fix this beforehand.',
+                            nargs='*',
                             default=None,
                             type=float,
     )
@@ -224,4 +236,5 @@ if __name__ == '__main__':
                             type=float,
     )
 
+    print(parser.parse_args())
     main(parser.parse_args())

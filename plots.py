@@ -167,7 +167,7 @@ def plot_background(target):
     # Smoothed power excess w/ gaussian
     ax4 = fig.add_subplot(3, 3, 4)
     ax4.plot(target.region_freq, target.region_pow, 'w-', zorder=0)
-    idx = return_max(target.region_pow, index=True)
+    idx = return_max(target.region_freq, target.region_pow, index=True)
     ax4.plot([target.region_freq[idx]], [target.region_pow[idx]], color='red', marker='s', markersize=7.5, zorder=0)
     ax4.axvline([target.region_freq[idx]], color='white', linestyle='--', linewidth=1.5, zorder=0)
     ax4.plot(target.new_freq, target.numax_fit, 'b-', zorder=3)
@@ -219,7 +219,7 @@ def plot_background(target):
     #colors = truncate_colormap(cmap, 0.1, 0.8, 100)
     # echelle diagram
     ax8 = fig.add_subplot(3, 3, 8)
-    ax8.imshow(target.ech, extent=target.extent, interpolation='none', aspect='auto', origin='lower', cmap=plt.get_cmap('jet'))
+    ax8.imshow(target.ech, extent=target.extent, interpolation='none', aspect='auto', origin='lower', cmap=plt.get_cmap('viridis'))
     ax8.axvline([target.obs_dnu], color='white', linestyle='--', linewidth=1.0, dashes=(5, 5))
     ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
     ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % target.obs_dnu)
