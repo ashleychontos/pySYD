@@ -6,7 +6,7 @@
 build
 dist
 *.egg-info
-*files/results/
+sydpy/files/results/
 *background.csv
 *excess.csv
 *__pycache__/
