@@ -236,5 +236,4 @@ if __name__ == '__main__':
                             type=float,
     )
 
-    print(parser.parse_args())
     main(parser.parse_args())
