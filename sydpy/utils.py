@@ -1,3 +1,4 @@
+import os
 import glob
 import numpy as np
 import pandas as pd
@@ -32,7 +33,7 @@ def get_info(args, params={}):
         with open(args.file, "r") as f:
             args.target = [int(float(line.strip().split()[0])) for line in f.readlines()]
     check_inputs(args)
-    params['path'] = 'Files/data/'
+    params['path'] = '%s/files/data/'%os.path.abspath('.')
     # Adding constants and the target list
     params.update({
         'numax_sun': 3090.0, 'dnu_sun': 135.1, 'width_sun': 1300.0, 'todo': args.target, 'G': 6.67428e-8, 'show': args.show,
@@ -188,7 +189,7 @@ def get_background_params(
 
 
 def get_star_info(args, cols=['rad','logg','teff','numax','lowerx','upperx','lowerb','upperb','seed']):
-    """Get target information stored in `star_info.csv`.
+    """Get target information stored in `files/star_info.csv`.
 
     Parameters
     ----------
