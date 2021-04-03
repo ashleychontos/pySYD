@@ -1,4 +1,5 @@
 .vscode
+docs/_*
 *.DS_store
 *.pyc
 .*
