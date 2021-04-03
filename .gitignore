@@ -1,18 +1,12 @@
 .vscode
-
-# ignore Mac system files
 *.DS_store
-
-# cached items
 *.pyc
 .*
 *~
 build
 dist
 *.egg-info
-
-# ignore local input/output files
-files/results/
+*files/results/
 *background.csv
 *excess.csv
 *__pycache__/
