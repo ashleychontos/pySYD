@@ -11,11 +11,11 @@ A pipeline `Target` class object has two main methods:
 
 ## Examples
 
-There are three example stars provided in sydpy/files/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
+There are three example stars provided in sydpy/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
 - `python sydpy/sydpy.py -v -show -target 1435467` (or whichever target you'd like)
 
-By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in Files/todo.txt.
+By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in sydpy/info/todo.txt.
 
 To estimate uncertainties in the derived parameters for a given target, set `-mc` to something sufficient for random sampling (e.g. 200).
 
@@ -33,12 +33,12 @@ In the previous example, `-mciter` was not specified and is 1 by default (for 1 
 - `sydpy/target.py` : main pipeline Target class that is initialized for each target that is processed
 - `sydpy/utils.py` : contains information dictionaries and non-science related functions
 
-### `sydpy/files/`
+### `Package Data`
 
-- todo.txt: File containing IDs of stars to be processed 
-- data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
-- star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
-- results/: Directory containing result plots and files for each target
+- sydpy/info/todo.txt: File containing IDs of stars to be processed 
+- sydpy/data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
+- sydpy/info/star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
+- sydpy/results/: Directory containing result plots and files for each target
 
 ## Command Line Interface (CLI) Options
 
