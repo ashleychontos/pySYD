@@ -9,7 +9,7 @@ for line in open('requirements.txt', 'r').readlines():
 
 setuptools.setup(
     name="astero",
-    version="0.0.3",
+    version="0.0.2",
     license="MIT",
     author="Ashley Chontos",
     author_email="achontos@hawaii.edu",
@@ -19,6 +19,7 @@ setuptools.setup(
     url="https://github.com/ashleychontos/sydpy",
     project_urls={
         "Documentation": "https://readthedocs.org/projects/syd-pypline",
+        "Source": "https://github.com/ashleychontos/sydpy",
         "Bug Tracker": "https://github.com/ashleychontos/sydpy/issues",
     },
     classifiers=[
