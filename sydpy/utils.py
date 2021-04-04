@@ -33,7 +33,7 @@ def get_info(args, params={}):
         with open(args.file, "r") as f:
             args.target = [int(float(line.strip().split()[0])) for line in f.readlines()]
     check_inputs(args)
-    params['path'] = '%s/files/data/'%os.path.abspath('/'.join(__file__.split('/')[:-1]))
+    params['path'] = '%s/data/'%os.path.abspath('/'.join(__file__.split('/')[:-1]))
     # Adding constants and the target list
     params.update({
         'numax_sun': 3090.0, 'dnu_sun': 135.1, 'width_sun': 1300.0, 'todo': args.target, 'G': 6.67428e-8, 'show': args.show,
@@ -503,7 +503,7 @@ def verbose_output(target, sampling=False):
     print()
 
 
-def scrape_output(path = '%s/files/results/**/'%os.path.abspath('/'.join(__file__.split('/')[:-1]))):
+def scrape_output(path = '%s/results/**/'%os.path.abspath('/'.join(__file__.split('/')[:-1]))):
     """
     Grabs each individual target's results and concatenates results into a single csv in Files/ for each submodulel
     (i.e. findex.csv and globalpars.csv). This is automatically called at the end of the main SYD module.
@@ -516,7 +516,7 @@ def scrape_output(path = '%s/files/results/**/'%os.path.abspath('/'.join(__file_
     for i in range(1,len(files)):
         df_new = pd.read_csv(files[i])
         df = pd.concat([df, df_new])
-    df.to_csv('%s/files/excess.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])), index=False)
+    df.to_csv('%s/results/excess.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])), index=False)
 
     # Fitbg outputs
     output = '%s*background.csv'%path
@@ -536,17 +536,17 @@ def scrape_output(path = '%s/files/results/**/'%os.path.abspath('/'.join(__file_
 			             df.loc[i,col]=df_new.loc[col,'value']
 
     df.fillna('--', inplace=True)
-    df.to_csv('%s/files/background.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])), index=False)
+    df.to_csv('%s/results/background.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])), index=False)
 
 
 def set_seed(target):
     """For Kepler targets that require a correction via CLI (--kc), a random seed is generated
     from U~[1,10^6] and stored in stars_info.csv for reproducible results in later runs."""
     seed = list(np.random.randint(1,high=10000000,size=1))
-    df = pd.read_csv('%s/files/star_info.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])))
+    df = pd.read_csv('%s/info/star_info.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])))
     targets = df.targets.values.tolist()
     idx = targets.index(target.target)
     df.loc[idx,'seed'] = int(seed[0])
     target.params[target.target]['seed'] = seed[0]
-    df.to_csv('%s/files/star_info.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])),index=False)
+    df.to_csv('%s/info/star_info.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])),index=False)
     return target

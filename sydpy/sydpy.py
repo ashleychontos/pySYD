@@ -56,13 +56,13 @@ if __name__ == '__main__':
                         dest='file',
                         help="""Path to txt file that contains the list of targets to process (default='Files/todo.txt')""",
                         type=str,
-                        default='%s/files/todo.txt'%os.path.abspath('/'.join(__file__.split('/')[:-1])),
+                        default='%s/info/todo.txt'%os.path.abspath('/'.join(__file__.split('/')[:-1])),
                         )
     parser.add_argument('-info', '--info', '-information', '--information',
                         dest='info',
                         help='Path to csv containing star information',
                         type=str,
-                        default='%s/files/star_info.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])),
+                        default='%s/info/star_info.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])),
     )
     parser.add_argument('-kc', '--kc', '-keplercorr', '--keplercorr',
                         dest='keplercorr',
