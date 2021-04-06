@@ -1,4 +1,4 @@
-SYDpy is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that SYDpy is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
+`syd` is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that `syd` is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
 
 ### * The main goal is asteroseismology-friendly software for the non-asteroseismology user *
 
@@ -11,34 +11,34 @@ A pipeline `Target` class object has two main methods:
 
 ## Examples
 
-There are three example stars provided in sydpy/files/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
+There are three example stars provided in syd/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
-- `python sydpy/sydpy.py -v -show -target 1435467` (or whichever target you'd like)
+- `python syd/syd.py -v -show -target 1435467` (or whichever target you'd like)
 
-By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in Files/todo.txt.
+By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in syd/info/todo.txt.
 
 To estimate uncertainties in the derived parameters for a given target, set `-mc` to something sufficient for random sampling (e.g. 200).
 
-- `python sydpy/sydpy.py -v -show -target 1435467 -mciter 200`
+- `python syd/syd.py -v -show -target 1435467 -mciter 200`
 
 In the previous example, `-mciter` was not specified and is 1 by default (for 1 iteration). By changing this value, it will randomize the power spectrum and attempt to recover the parameters for the specified number of iterations. The uncertainties will appear in the verbose output, output csvs, and an additional figure will show the distributions of the parameters.
 
 ##
 
 ### `Scripts`
-- `sydpy/functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
-- `sydpy/sydpy.py` : main pipeline initialization and command line interface tools 
-- `sydpy/models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
-- `sydpy/plots.py` : plotting routines
-- `sydpy/target.py` : main pipeline Target class that is initialized for each target that is processed
-- `sydpy/utils.py` : contains information dictionaries and non-science related functions
+- `syd/functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
+- `syd/sydpy.py` : main pipeline initialization and command line interface tools 
+- `syd/models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
+- `syd/plots.py` : plotting routines
+- `syd/target.py` : main pipeline Target class that is initialized for each target that is processed
+- `syd/utils.py` : contains information dictionaries and non-science related functions
 
-### `sydpy/files/`
+### `Package Data`
 
-- todo.txt: File containing IDs of stars to be processed 
-- data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
-- star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
-- results/: Directory containing result plots and files for each target
+- syd/info/todo.txt: File containing IDs of stars to be processed 
+- syd/data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
+- syd/info/star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
+- syd/results/: Directory containing result plots and files for each target
 
 ## Command Line Interface (CLI) Options
 
@@ -78,7 +78,7 @@ Option to directly specify targets from the command line. This accepts * argumen
 
 Turn on verbose output
 
-#### See `sydpy --help` for more options.
+#### See `syd --help` for more options.
 
 ## Tutorials 
 
@@ -89,7 +89,7 @@ Follow examples in
 
 ## Attribution
 
-Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, and Maryum Sayeed. 
+Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, Maryum Sayeed, and other contributors. 
 
 Please cite the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract) and the following DOI if you make use of this software in your research.
 [need to do]
