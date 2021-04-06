@@ -1,8 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from syd.functions import *
-from syd.models import *
+# for packaging purposes
+#from syd.functions import *
+#from syd.models import *
+from functions import *
+from models import *
 
 
 def set_plot_params():

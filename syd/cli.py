@@ -2,9 +2,13 @@ import os
 import sys
 import argparse
 
-from syd.target import Target
-from syd.plots import set_plot_params
-from syd.utils import get_info, scrape_output
+# for packaging purposes
+#from syd.target import Target
+#from syd.plots import set_plot_params
+#from syd.utils import get_info, scrape_output
+from target import Target
+from plots import set_plot_params
+from utils import get_info, scrape_output
 
 
 def main(args, parallel=False, nthreads=None):

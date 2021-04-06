@@ -6,10 +6,15 @@ from scipy.optimize import curve_fit
 from scipy.interpolate import InterpolatedUnivariateSpline
 from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
 
-from syd.functions import *
-from syd.models import *
-from syd.utils import *
-from syd.plots import *
+# for packaging purposes
+#from syd.functions import *
+#from syd.models import *
+#from syd.utils import *
+#from syd.plots import *
+from functions import *
+from models import *
+from utils import *
+from plots import *
 
 
 class Target:

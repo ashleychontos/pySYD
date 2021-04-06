@@ -6,7 +6,11 @@ from itertools import chain
 from astropy.io import ascii
 from astropy.stats import mad_std
 
-from syd.plots import set_plot_params
+# for packaging purposes
+#from syd.plots import set_plot_params
+#from syd.functions import *
+#from syd.models import *
+from plots import set_plot_params
 from functions import *
 from models import *
 
