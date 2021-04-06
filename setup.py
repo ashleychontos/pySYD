@@ -8,19 +8,19 @@ for line in open('requirements.txt', 'r').readlines():
     reqs.append(line)
 
 setuptools.setup(
-    name="astero",
-    version="0.0.2",
+    name="syd",
+    version="0.0.1",
     license="MIT",
     author="Ashley Chontos",
     author_email="achontos@hawaii.edu",
     description="Automated extraction of global asteroseismic parameters",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ashleychontos/sydpy",
+    url="https://github.com/ashleychontos/syd",
     project_urls={
         "Documentation": "https://readthedocs.org/projects/syd-pypline",
-        "Source": "https://github.com/ashleychontos/sydpy",
-        "Bug Tracker": "https://github.com/ashleychontos/sydpy/issues",
+        "Source": "https://github.com/ashleychontos/syd",
+        "Bug Tracker": "https://github.com/ashleychontos/syd/issues",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -28,8 +28,21 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=reqs,
-    entry_points={'console_scripts':['sydpy=sydpy.sydpy.py:main']},
-    package_dir={"": "sydpy"},
-    packages=setuptools.find_packages(where="sydpy"),
+    packages=setuptools.find_packages(),
+    data_files=[
+        (
+            'example_data', 
+            [
+                'example_data/1435467_LC.txt', 
+                'example_data/1435467_PS.txt', 
+                'example_data/2309595_LC.txt', 
+                'example_data/2309595_PS.txt', 
+                'example_data/11618103_LC.txt', 
+                'example_data/11618103_PS.txt', 
+            ]
+        )
+    ],
+    include_package_data=True,
+    entry_points={'console_scripts':['syd=syd.cli.py:main']},
     python_requires=">=3.6",
 )
