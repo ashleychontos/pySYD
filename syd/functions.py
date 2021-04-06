@@ -2,7 +2,19 @@ import numpy as np
 from collections import deque
 from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
 
-from syd.utils import set_seed
+
+
+def set_seed(target):
+    """For Kepler targets that require a correction via CLI (--kc), a random seed is generated
+    from U~[1,10^6] and stored in stars_info.csv for reproducible results in later runs."""
+    seed = list(np.random.randint(1,high=10000000,size=1))
+    df = pd.read_csv('%s/info/star_info.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])))
+    targets = df.targets.values.tolist()
+    idx = targets.index(target.target)
+    df.loc[idx,'seed'] = int(seed[0])
+    target.params[target.target]['seed'] = seed[0]
+    df.to_csv('%s/info/star_info.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])),index=False)
+    return target
 
 
 def remove_artefact(target, lc=29.4244*60*1e-6):
@@ -132,7 +144,6 @@ def gaussian_bounds(x, y, guesses,best_x=None, sigma=None):
     bb.append(tuple(b))
     
     return bb
-
 
 
 def max_elements(x, y, npeaks):

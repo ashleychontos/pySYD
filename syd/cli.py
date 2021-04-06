@@ -2,35 +2,9 @@ import os
 import sys
 import argparse
 
-from target import Target
-from plots import set_plot_params
-from utils import get_info, scrape_output
-
-
-__version__ = '0.0.1'
-print(__name__)
-#print(__path__)
-print(os.path.abspath(__file__))
-#__spec__ = __name__
-#__package__ = __path__[0]
-
-print(sys.prefix)
-
-MODULEDIR, filename = os.path.split(__file__)
-print(MODULEDIR)
-print(filename)
-DATADIR = os.path.join(sys.prefix, 'example_data')
-print(DATADIR)
-if not os.path.isdir(DATADIR):
-    warnings.warn("Could not find example_data directory in {}".format(sys.prefix),
-                  ImportWarning)
-    trydir = os.path.join(os.environ['HOME'], '.local', 'example_data')
-    if os.path.isdir(trydir):
-        warnings.warn("Found example_data in ~/.local", ImportWarning)
-        DATADIR = trydir
-    else:
-        warnings.warn("Failed to locate example_data directory. Example setup files will not work.",
-                      ImportWarning)
+from syd.target import Target
+from syd.plots import set_plot_params
+from syd.utils import get_info, scrape_output
 
 
 def main(args, parallel=False, nthreads=None):
@@ -47,7 +21,6 @@ def main(args, parallel=False, nthreads=None):
     """
 
     args = get_info(args)
-    set_plot_params()
 
     for target in args.params['todo']:
         args.target = target

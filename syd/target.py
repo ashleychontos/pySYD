@@ -50,6 +50,7 @@ class Target:
         self.findex = args.findex
         self.fitbg = args.fitbg
         self.verbose = args.verbose
+
         # Run the pipeline
         self.run_syd()
 
