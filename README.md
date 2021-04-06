@@ -4,7 +4,7 @@
 
 ## Overview
 
-A pipeline `Target` class object has two main methods:
+A `syd` pipeline `Target` class object has two main methods:
 
 1) `find_excess`: attempts to find the power excess due to solar-like oscillations using a collapsed ACF (autocorrelation function) using 3 different `box` sizes
 2) `fit_background`: perform a fit to the stellar background contribution (i.e. granulation) and measures the global asteroseismic properties 1) frequency corresponding to maximum power (numax or nu_max) and 2) the large frequency separation (delta_nu or dnu).
@@ -13,13 +13,13 @@ A pipeline `Target` class object has two main methods:
 
 There are three example stars provided in syd/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
-- `python syd/syd.py -v -show -target 1435467` (or whichever target you'd like)
+- `python syd/cli.py -v -show -target 1435467` (or whichever target you'd like)
 
 By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in syd/info/todo.txt.
 
 To estimate uncertainties in the derived parameters for a given target, set `-mc` to something sufficient for random sampling (e.g. 200).
 
-- `python syd/syd.py -v -show -target 1435467 -mciter 200`
+- `python syd/cli.py -v -show -target 1435467 -mciter 200`
 
 In the previous example, `-mciter` was not specified and is 1 by default (for 1 iteration). By changing this value, it will randomize the power spectrum and attempt to recover the parameters for the specified number of iterations. The uncertainties will appear in the verbose output, output csvs, and an additional figure will show the distributions of the parameters.
 
@@ -27,7 +27,7 @@ In the previous example, `-mciter` was not specified and is 1 by default (for 1 
 
 ### `Scripts`
 - `syd/functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
-- `syd/sydpy.py` : main pipeline initialization and command line interface tools 
+- `syd/cli.py` : main pipeline initialization and command line interface tools 
 - `syd/models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
 - `syd/plots.py` : plotting routines
 - `syd/target.py` : main pipeline Target class that is initialized for each target that is processed
