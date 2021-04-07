@@ -260,7 +260,7 @@ def get_star_info(args, cols=['rad','logg','teff','numax','lowerx','upperx','low
     return args
 
 
-def load_data(target, data=None):
+def load_data(target, lc_data=False, ps_data=False):
     """Loads light curve and power spectrum data for the current target.
 
     Returns
@@ -278,10 +278,11 @@ def load_data(target, data=None):
             print('-------------------------------------------------')
         # Load light curve
         if not os.path.exists(target.params['inpdir']+'%d_LC.txt' % target.target):
+            lc_data=False
             if target.verbose:
                 print('Error: %s%d_LC.txt not found' % (target.params['inpdir'], target.target))
-            return False
         else:
+            lc_data=True
             target.time, target.flux = get_file(target.params['inpdir'] + '%d_LC.txt' % target.target)
             target.cadence = int(np.nanmedian(np.diff(target.time)*24.0*60.0*60.0))
             target.nyquist = 10**6/(2.0*target.cadence)
@@ -291,10 +292,11 @@ def load_data(target, data=None):
                 target.fitbg['smooth_ps'] = 2.5
         # Load power spectrum
         if not os.path.exists(target.params['inpdir'] + '%d_PS.txt' % target.target):
+            ps_data=False
             if target.verbose:
                 print('Error: %s%d_PS.txt not found' % (target.params['inpdir'], target.target))
-            return False
         else:
+            ps_data=True
             target.frequency, target.power = get_file(target.params['inpdir'] + '%d_PS.txt' % target.target)
             if target.params['keplercorr']:
                 target = remove_artefact(target)
@@ -302,38 +304,39 @@ def load_data(target, data=None):
                     print('## Removing Kepler artefacts ##')
             if target.verbose:
                 print('# POWER SPECTRUM: %d lines of data read' % len(target.frequency))
-        target.oversample = int(round((1./((max(target.time)-min(target.time))*0.0864))/(target.frequency[1]-target.frequency[0])))
-        target.resolution = (target.frequency[1]-target.frequency[0])*target.oversample
-
-        if target.verbose:
-            if target.oversample == 1:
-                print('critically sampled')
+        # Only compute if both are available
+        if lc_data and ps_data:
+            target.oversample = int(round((1./((max(target.time)-min(target.time))*0.0864))/(target.frequency[1]-target.frequency[0])))
+            target.resolution = (target.frequency[1]-target.frequency[0])*target.oversample
+            if target.verbose:
+                if target.oversample == 1:
+                    print('critically sampled')
+                else:
+                    print('oversampled by a factor of %d' % target.oversample)
+                print('time series cadence: %d seconds' % target.cadence)
+                print('power spectrum resolution: %.6f muHz' % target.resolution)
+            # Create critically sampled PS
+            if target.oversample != 1:
+                target.freq = np.copy(target.frequency)
+                target.pow = np.copy(target.power)
+                target.frequency = np.array(target.frequency[target.oversample-1::target.oversample])
+                target.power = np.array(target.power[target.oversample-1::target.oversample])
             else:
-                print('oversampled by a factor of %d' % target.oversample)
-            print('time series cadence: %d seconds' % target.cadence)
-            print('power spectrum resolution: %.6f muHz' % target.resolution)
-        # Create critically sampled PS
-        if target.oversample != 1:
-            target.freq = np.copy(target.frequency)
-            target.pow = np.copy(target.power)
-            target.frequency = np.array(target.frequency[target.oversample-1::target.oversample])
-            target.power = np.array(target.power[target.oversample-1::target.oversample])
-        else:
-            target.freq = np.copy(target.frequency)
-            target.pow = np.copy(target.power)
-            target.frequency = np.copy(target.frequency)
-            target.power = np.copy(target.power)
-        if target.params[target.target]['excess']:
-            # Make a mask using the given frequency bounds for the find excess routine
-            mask = np.ones_like(target.freq, dtype=bool)
-            if target.params[target.target]['lowerx'] is not None:
-                mask *= np.ma.getmask(np.ma.masked_greater_equal(target.freq, target.params[target.target]['lowerx']))
-            else:
-                mask *= np.ma.getmask(np.ma.masked_greater_equal(target.freq, target.findex['lower']))
-            if target.params[target.target]['upperx'] is not None:
-                mask *= np.ma.getmask(np.ma.masked_less_equal(target.freq, target.params[target.target]['upperx']))
-            else:
-                mask *= np.ma.getmask(np.ma.masked_less_equal(target.freq, target.findex['upper']))
+                target.freq = np.copy(target.frequency)
+                target.pow = np.copy(target.power)
+                target.frequency = np.copy(target.frequency)
+                target.power = np.copy(target.power)
+            if target.params[target.target]['excess']:
+                # Make a mask using the given frequency bounds for the find excess routine
+                mask = np.ones_like(target.freq, dtype=bool)
+                if target.params[target.target]['lowerx'] is not None:
+                    mask *= np.ma.getmask(np.ma.masked_greater_equal(target.freq, target.params[target.target]['lowerx']))
+                else:
+                    mask *= np.ma.getmask(np.ma.masked_greater_equal(target.freq, target.findex['lower']))
+                if target.params[target.target]['upperx'] is not None:
+                    mask *= np.ma.getmask(np.ma.masked_less_equal(target.freq, target.params[target.target]['upperx']))
+                else:
+                    mask *= np.ma.getmask(np.ma.masked_less_equal(target.freq, target.findex['upper']))
                 target.freq = target.freq[mask]
                 target.pow = target.pow[mask]
                 if target.params[target.target]['numax'] is not None:
@@ -341,10 +344,7 @@ def load_data(target, data=None):
                         target.boxes = np.logspace(np.log10(0.5), np.log10(25.), target.findex['n_trials'])*1.
                     else:
                         target.boxes = np.logspace(np.log10(50.), np.log10(500.), target.findex['n_trials'])*1.
-        data=True
-    else:
-        print('Error: data not found for target %d' % target.target)
-    return data, target
+    return lc_data, ps_data, target
 
 
 def get_file(path):

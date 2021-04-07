@@ -1,43 +1,4 @@
 import numpy as np
-from scipy.special import erf
-
-
-def generate_model(frequency, pars, pars_errs, nyquist):
-    """TODO: Write description.
-
-    Parameters
-    ----------
-    frequency : np.ndarray
-        the frequency of the power spectrum
-    pars : np.ndarray
-        model parameters
-    pars_errs : np.ndarray
-        TODO: Write description
-    nyquist : float
-        the Nyquist frequency
-
-    Returns
-    -------
-    TODO: Write return argument
-    """
-
-    ps = np.zeros_like(frequency)
-
-    for i, f in enumerate(frequency):
-
-        r = (np.sin((np.pi*f)/(2.0*nyquist))/((np.pi*f)/(2.0*nyquist)))**2
-        paras = [p+np.random.randn()*p_e for p, p_e in zip(pars, pars_errs)]
-        nlaws = int((len(paras)-1.0)/2.0)
-        m = 0
-        for j in range(nlaws):
-            m += paras[j*2]/(1.0+(paras[(j*2)+1]*f)**2.0+(paras[(j*2)+1]*f)**4.0)
-        m *= r
-        m += pars[-1] + np.random.random_integers(-1, 1)*(pars[-1]/2.0)**(np.random.randn()-1.0)
-        if m < 0.:
-            m = (10**(np.random.randn()))*r
-        ps[i] = m
-
-    return list(ps)
 
 
 def power_law(frequency, a, b):
@@ -97,7 +58,7 @@ def lorentzian(frequency, pars, compare=False, power=None, error=None):
     return model
 
 
-def harvey(frequency, pars, mode='regular', gaussian=False, total=False):
+def harvey(frequency, pars, nlaws=None, mode='regular', total=False):
     """Harvey model of the stellar granulation background of a target. TODO: Write description.
 
     Parameters
@@ -112,8 +73,6 @@ def harvey(frequency, pars, mode='regular', gaussian=False, total=False):
         The second mode means only the second order terms are added.
         The fourth mode means only the fourth order terms are added.
         Default value is `'regular'`.
-    gaussian : bool
-        if true will add a Gaussian skew. Default value is `False`.
     total : bool
         TODO: Write description. Default value is `False`.
 
@@ -123,9 +82,7 @@ def harvey(frequency, pars, mode='regular', gaussian=False, total=False):
         the Harvey model
     """
 
-    if gaussian:
-        nlaws = int((len(pars)-6)/2.0)
-    else:
+    if nlaws is None:
         nlaws = int((len(pars)-1)/2.0)
     model = np.zeros_like(frequency)
 

@@ -55,7 +55,6 @@ class Target:
         self.findex = args.findex
         self.fitbg = args.fitbg
         self.verbose = args.verbose
-
         # Run the pipeline
         self.run_syd()
 
@@ -63,14 +62,16 @@ class Target:
     def run_syd(self):
         """Load target data and run the pipeline routines."""
         # Make sure data load was successsful
-        data, self = load_data(self)
-        if data is not None:
+        lc_data, ps_data, self = load_data(self)
+        if lc_data and ps_data:
             # Run the find excess routine
             if self.params[self.target]['excess']:
                 self.find_excess()
             # Run the fit background routine
             if self.params[self.target]['background']:
                 self.fit_background()
+        else:
+            print('ERROR: data not found for target %d' % target.target)
 
 
     def find_excess(self):
