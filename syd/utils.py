@@ -7,6 +7,7 @@ from astropy.io import ascii
 from astropy.stats import mad_std
 
 # for packaging purposes
+#from syd import INPDIR
 #from syd.plots import set_plot_params
 #from syd.functions import *
 #from syd.models import *
@@ -32,13 +33,14 @@ def get_info(args, params={}):
     args : argparse.Namespace
         the updated command line arguments
     """
-
+    INPDIR = 'data/'
     # Open target list
     if args.target is None:
         with open(args.file, "r") as f:
             args.target = [int(float(line.strip().split()[0])) for line in f.readlines()]
     check_inputs(args)
-    params['path'] = '%s/data/'%os.path.abspath('/'.join(__file__.split('/')[:-1]))
+    params['inpdir'] = INPDIR
+    params['outdir'] = args.outdir
     # Adding constants and the target list
     params.update({
         'numax_sun': 3090.0, 'dnu_sun': 135.1, 'width_sun': 1300.0, 'todo': args.target, 'G': 6.67428e-8, 'show': args.show,
@@ -48,7 +50,7 @@ def get_info(args, params={}):
     # Set file paths
     for target in args.target:
         params[target] = {}
-        params[target]['path'] = '/'.join(params['path'].split('/')[:-2]) + '/results/%d/' % target
+        params[target]['path'] = '%s/results/%d/' % (args.outdir,target)
     args.params = params
 
     # Initialise parameters for the find excess routine
@@ -59,6 +61,7 @@ def get_info(args, params={}):
     args = get_star_info(args)
     # Set plot formatting
     set_plot_params()
+    print(args.params)
 
     return args
 
@@ -267,19 +270,19 @@ def load_data(target, data=None):
     """
 
     # Now done at beginning to make sure it only does this one per target
-    if glob.glob(target.params['path']+'%d_*' % target.target) != []:
+    if glob.glob(target.params['inpdir']+'%d_*' % target.target) != []:
         if target.verbose:
             print('')
             print('-------------------------------------------------')
             print('Target: %d' % target.target)
             print('-------------------------------------------------')
         # Load light curve
-        if not os.path.exists(target.params['path']+'%d_LC.txt' % target.target):
+        if not os.path.exists(target.params['inpdir']+'%d_LC.txt' % target.target):
             if target.verbose:
-                print('Error: %s%d_LC.txt not found' % (target.params['path'], target.target))
+                print('Error: %s%d_LC.txt not found' % (target.params['inpdir'], target.target))
             return False
         else:
-            target.time, target.flux = get_file(target.params['path'] + '%d_LC.txt' % target.target)
+            target.time, target.flux = get_file(target.params['inpdir'] + '%d_LC.txt' % target.target)
             target.cadence = int(np.nanmedian(np.diff(target.time)*24.0*60.0*60.0))
             target.nyquist = 10**6/(2.0*target.cadence)
             if target.verbose:
@@ -287,12 +290,12 @@ def load_data(target, data=None):
             if target.params[target.target]['numax'] > 500.:
                 target.fitbg['smooth_ps'] = 2.5
         # Load power spectrum
-        if not os.path.exists(target.params['path'] + '%d_PS.txt' % target.target):
+        if not os.path.exists(target.params['inpdir'] + '%d_PS.txt' % target.target):
             if target.verbose:
-                print('Error: %s%d_PS.txt not found' % (target.params['path'], target.target))
+                print('Error: %s%d_PS.txt not found' % (target.params['inpdir'], target.target))
             return False
         else:
-            target.frequency, target.power = get_file(target.params['path'] + '%d_PS.txt' % target.target)
+            target.frequency, target.power = get_file(target.params['inpdir'] + '%d_PS.txt' % target.target)
             if target.params['keplercorr']:
                 target = remove_artefact(target)
                 if target.verbose:
@@ -512,12 +515,13 @@ def verbose_output(target, sampling=False):
     print()
 
 
-def scrape_output(path = '%s/results/**/'%os.path.abspath('/'.join(__file__.split('/')[:-1]))):
+def scrape_output(args):
     """
     Grabs each individual target's results and concatenates results into a single csv in Files/ for each submodulel
     (i.e. findex.csv and globalpars.csv). This is automatically called at the end of the main SYD module.
     """
 
+    path = '%s/results/**/'%args.params['outdir']
     # Findex outputs
     output = '%s*excess.csv'%path
     files = glob.glob(output)
@@ -525,7 +529,7 @@ def scrape_output(path = '%s/results/**/'%os.path.abspath('/'.join(__file__.spli
     for i in range(1,len(files)):
         df_new = pd.read_csv(files[i])
         df = pd.concat([df, df_new])
-    df.to_csv('%s/results/excess.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])), index=False)
+    df.to_csv('%s/results/excess.csv'%args.params['outdir'], index=False)
 
     # Fitbg outputs
     output = '%s*background.csv'%path
@@ -545,4 +549,4 @@ def scrape_output(path = '%s/results/**/'%os.path.abspath('/'.join(__file__.spli
 			             df.loc[i,col]=df_new.loc[col,'value']
 
     df.fillna('--', inplace=True)
-    df.to_csv('%s/results/background.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])), index=False)
+    df.to_csv('%s/results/background.csv'%args.params['outdir'], index=False)

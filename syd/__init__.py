@@ -10,8 +10,4 @@ def get_path(path):
 
 TODODIR = get_path('todo.txt')
 INFODIR = get_path('star_info.csv')
-DATADIR = os.path.join(_ROOT, 'data')
-
-print(TODODIR)
-print(INFODIR)
-print(DATADIR)
+INPDIR = os.path.join(_ROOT, 'data')

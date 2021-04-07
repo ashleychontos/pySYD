@@ -6,9 +6,11 @@ import argparse
 #from syd.target import Target
 #from syd.plots import set_plot_params
 #from syd.utils import get_info, scrape_output
+#from syd import TODODIR, INFODIR
 from target import Target
 from plots import set_plot_params
 from utils import get_info, scrape_output
+
 
 
 def main(args, parallel=False, nthreads=None):
@@ -35,10 +37,14 @@ def main(args, parallel=False, nthreads=None):
         print()
 
     # Concatenates output into a two files
-    scrape_output()
+    scrape_output(args)
 
 
 if __name__ == '__main__':
+
+    _ROOT = os.path.abspath(os.path.dirname(__file__))
+    TODODIR = os.path.join(_ROOT,'info/todo.txt')
+    INFODIR = os.path.join(_ROOT,'info/star_info.csv')
 
     # Properties inherent to both modules
     parser = argparse.ArgumentParser( 
@@ -58,21 +64,26 @@ if __name__ == '__main__':
     )
     parser.add_argument('-file', '--file', '-list', '--list',
                         dest='file',
-                        help="""Path to txt file that contains the list of targets to process (default='Files/todo.txt')""",
+                        help="""Path to txt file that contains the list of targets to process (default='info/todo.txt')""",
                         type=str,
-                        default='%s/info/todo.txt'%os.path.abspath('/'.join(__file__.split('/')[:-1])),
+                        default=TODODIR,
                         )
     parser.add_argument('-info', '--info', '-information', '--information',
                         dest='info',
                         help='Path to csv containing star information',
                         type=str,
-                        default='%s/info/star_info.csv'%os.path.abspath('/'.join(__file__.split('/')[:-1])),
+                        default=INFODIR,
     )
     parser.add_argument('-kc', '--kc', '-keplercorr', '--keplercorr',
                         dest='keplercorr',
                         help='Turn on Kepler short-cadence artefact corrections',
                         default=False, 
                         action='store_true',
+    )
+    parser.add_argument('-out', '--out', '-output', '--output',
+                        dest='outdir',
+                        help='Path to save results to',
+                        default=os.path.abspath('/'.join(__file__.split('/')[:-1])),
     )
     parser.add_argument('-save', '--save', 
                         dest='save',
