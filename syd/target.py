@@ -584,16 +584,17 @@ class Target:
         peaks_a = peaks_a[peaks_a.argsort()[::-1]][:self.fitbg['n_peaks']]
         
         # Pick best peak in ACF by using Gaussian weight according to expected dnu
-        idx = return_max(peaks_l, peaks_a, index=True, exp_dnu=self.exp_dnu)
+        idx,weights = return_max(peaks_l, peaks_a, index=True, exp_dnu=self.exp_dnu)
         self.best_lag = peaks_l[idx]
         self.best_auto = peaks_a[idx]
-        
+
         # Change fitted value with nan to highlight differently in plot
+        self.weight_x, self.weight_y = zip(*sorted(zip(peaks_l, peaks_a*weights/(max(peaks_a*weights))))) #save for plotting purposes
         peaks_l[idx] = np.nan
         peaks_a[idx] = np.nan
         self.peaks_l = peaks_l
         self.peaks_a = peaks_a
-
+        
         # Calculate FWHM
         if list(self.lag[(self.lag<self.best_lag)&(self.auto<=self.best_auto/2.)]) != []:
             left_lag = self.lag[(self.lag<self.best_lag)&(self.auto<=self.best_auto/2.)][-1]
