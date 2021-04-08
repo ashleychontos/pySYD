@@ -98,8 +98,6 @@ def harvey(frequency, pars, nlaws=None, mode='regular', total=False):
     else:
         print('Wrong mode input for the harvey model function.')
 
-    if gaussian:
-        model += gaussian_skew(frequency, pars[2*nlaws+1:])
     if total:
         model += pars[2*nlaws]
     return model
