@@ -1,4 +1,6 @@
+import os
 import numpy as np
+import pandas as pd
 from collections import deque
 from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
 
@@ -201,13 +203,14 @@ def return_max(x_array, y_array, exp_dnu=None, index=False):
     if exp_dnu is None:
         lst = list(y_array)
         idx = lst.index(max(lst))
+        weights = None
     else:
         sig = 0.35*exp_dnu/2.35482 
         weights = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(x_array-exp_dnu)**2./(2.*sig**2))
         lst = list(weights*y_array)
         idx = lst.index(max(lst))
     if index:
-        return idx
+        return idx, weights
     else:
         return x_array[idx], y_array[idx]
 
@@ -233,8 +236,9 @@ def mean_smooth_ind(x, y, width):
     se : np.ndarray
         standard error
     """
-
     step = width-1
+    j=0
+    
     sx = np.zeros_like(x)
     sy = np.zeros_like(x)
     se = np.zeros_like(x)
@@ -252,7 +256,6 @@ def mean_smooth_ind(x, y, width):
     se = se[(sy != 0.0)]
     sy = sy[(sy != 0.0)]
     se[(se == 0.0)] = np.median(se)
-
     return sx, sy, se
 
 

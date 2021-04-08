@@ -33,7 +33,7 @@ def get_info(args, params={}):
     args : argparse.Namespace
         the updated command line arguments
     """
-    INPDIR = 'data/'
+    INPDIR = 'syd/data/'
     # Open target list
     if args.target is None:
         with open(args.file, "r") as f:
@@ -61,7 +61,6 @@ def get_info(args, params={}):
     args = get_star_info(args)
     # Set plot formatting
     set_plot_params()
-    print(args.params)
 
     return args
 
@@ -420,17 +419,11 @@ def get_initial_guesses(target):
     target.power = target.power[mask]
     target.width = target.params['width_sun']*(target.params[target.target]['numax']/target.params['numax_sun'])
     target.times = target.width/target.params[target.target]['dnu']
-    # Arbitrary snr cut for leaving region out of background fit
-    if target.params[target.target]['snr'] < 2.0:
-        target.maxpower = [
-            target.params[target.target]['numax'] - target.width/2.0,
-            target.params[target.target]['numax'] + target.width/2.0
-        ]
-    else:
-        target.maxpower = [
-            target.params[target.target]['numax'] - target.times*target.params[target.target]['dnu'],
-            target.params[target.target]['numax'] + target.times*target.params[target.target]['dnu']
-        ]
+    # Cut for leaving region out of background fit
+    target.maxpower = [
+        target.params[target.target]['numax'] - target.times*target.params[target.target]['dnu'],
+        target.params[target.target]['numax'] + target.times*target.params[target.target]['dnu']
+    ]
     # Bin power spectrum to estimate red noise components
     bin_freq, bin_pow, bin_err = mean_smooth_ind(target.frequency, target.power, target.fitbg['ind_width'])
     # Mask out region with power excess

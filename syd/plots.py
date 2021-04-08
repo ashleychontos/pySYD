@@ -145,6 +145,7 @@ def plot_background(target):
 
     # Fitted background
     ax3 = fig.add_subplot(3, 3, 3)
+    ax3.plot(target.frequency, target.smooth_power, c='lightgrey', zorder=0, alpha=0.5)
     ax3.plot(target.frequency[target.frequency < target.maxpower[0]], target.power[target.frequency < target.maxpower[0]], 'w-', linewidth=0.75, zorder=0)
     ax3.plot(target.frequency[target.frequency > target.maxpower[1]], target.power[target.frequency > target.maxpower[1]], 'w-', linewidth=0.75, zorder=0)
     ax3.plot(target.frequency[target.frequency < target.maxpower[0]], target.smooth_power[target.frequency < target.maxpower[0]], 'r-', linewidth=0.75, zorder=1)
@@ -199,6 +200,7 @@ def plot_background(target):
     ax6.axvline(target.obs_dnu, color='lime', linestyle='--', linewidth=1.5, zorder=2)
     ax6.scatter(target.best_lag, target.best_auto, s=45.0, edgecolor='lime', marker='s', facecolor='none', linewidths=1.0)
     ax6.plot(target.zoom_lag, target.zoom_auto, 'r-', zorder=5, linewidth=1.0)
+    ax6.plot(target.weight_x, target.weight_y, c='yellow',linestyle=':', zorder=0, linewidth=1.0)
     ax6.set_title(r'$\rm ACF \,\, for \,\, determining \,\, \Delta\nu$')
     ax6.set_xlabel(r'$\rm Frequency \,\, separation \,\, [\mu Hz]$')
     ax6.set_xlim([min(target.lag), max(target.lag)])
