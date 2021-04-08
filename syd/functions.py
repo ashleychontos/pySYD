@@ -1,6 +1,4 @@
-import os
 import numpy as np
-import pandas as pd
 from collections import deque
 from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
 
