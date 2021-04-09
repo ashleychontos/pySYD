@@ -1,44 +1,42 @@
-`syd` is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that `syd` is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
-
-### * The main goal is asteroseismology-friendly software for the non-asteroseismology user *
+`pySYD` is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that `pySYD` is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
 
 ## Overview
 
-A `syd` pipeline `Target` class object has two main methods:
+A `pySYD` pipeline `Target` class object has two main methods:
 
 1) `find_excess`: attempts to find the power excess due to solar-like oscillations using a collapsed ACF (autocorrelation function) using 3 different `box` sizes
 2) `fit_background`: perform a fit to the stellar background contribution (i.e. granulation) and measures the global asteroseismic properties 1) frequency corresponding to maximum power (numax or nu_max) and 2) the large frequency separation (delta_nu or dnu).
 
 ## Examples
 
-There are three example stars provided in syd/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
+There are three example stars provided in pysyd/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
-- `python syd/cli.py -v -show -target 1435467` (or whichever target you'd like)
+- `python pysyd/cli.py -v -show -target 1435467` (or whichever target you'd like)
 
-By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in syd/info/todo.txt.
+By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in pysyd/info/todo.txt.
 
 To estimate uncertainties in the derived parameters for a given target, set `-mc` to something sufficient for random sampling (e.g. 200).
 
-- `python syd/cli.py -v -show -target 1435467 -mciter 200`
+- `python pysyd/cli.py -v -show -target 1435467 -mciter 200`
 
 In the previous example, `-mciter` was not specified and is 1 by default (for 1 iteration). By changing this value, it will randomize the power spectrum and attempt to recover the parameters for the specified number of iterations. The uncertainties will appear in the verbose output, output csvs, and an additional figure will show the distributions of the parameters.
 
 ##
 
 ### `Scripts`
-- `syd/functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
-- `syd/cli.py` : main pipeline initialization and command line interface tools 
-- `syd/models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
-- `syd/plots.py` : plotting routines
-- `syd/target.py` : main pipeline Target class that is initialized for each target that is processed
-- `syd/utils.py` : contains information dictionaries and non-science related functions
+- `pysyd/functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
+- `pysyd/cli.py` : main pipeline initialization and command line interface tools 
+- `pysyd/models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
+- `pysyd/plots.py` : plotting routines
+- `pysyd/target.py` : main pipeline Target class that is initialized for each target that is processed
+- `pysyd/utils.py` : contains information dictionaries and non-science related functions
 
 ### `Package Data`
 
-- syd/info/todo.txt: File containing IDs of stars to be processed 
-- syd/data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
-- syd/info/star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
-- syd/results/: Directory containing result plots and files for each target
+- pysyd/info/todo.txt: File containing IDs of stars to be processed 
+- pysyd/data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
+- pysyd/info/star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
+- pysyd/results/: Directory containing result plots and files for each target
 
 ## Command Line Interface (CLI) Options
 
