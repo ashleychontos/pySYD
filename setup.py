@@ -8,7 +8,7 @@ for line in open('requirements.txt', 'r').readlines():
     reqs.append(line)
 
 setuptools.setup(
-    name="syd",
+    name="pysyd",
     version="0.0.1",
     license="MIT",
     author="Ashley Chontos",
@@ -19,8 +19,8 @@ setuptools.setup(
     url="https://github.com/ashleychontos/syd",
     project_urls={
         "Documentation": "https://readthedocs.org/projects/syd-pypline",
-        "Source": "https://github.com/ashleychontos/syd",
-        "Bug Tracker": "https://github.com/ashleychontos/syd/issues",
+        "Source": "https://github.com/ashleychontos/pysyd",
+        "Bug Tracker": "https://github.com/ashleychontos/pysyd/issues",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -43,6 +43,6 @@ setuptools.setup(
         )
     ],
     include_package_data=True,
-    entry_points={'console_scripts':['syd=syd.cli.py:main']},
+    entry_points={'console_scripts':['syd=pysyd.cli.py:main']},
     python_requires=">=3.6",
 )
