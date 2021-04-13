@@ -36,8 +36,8 @@ In the previous example, `-mciter` was not specified and is 1 by default (for 1 
 
 - info/todo.txt: Basic text file containing IDs of stars to be processed (one star ID per line)
 - data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
-- info/star_info.csv: a means of providing individualistic information on the stars to be processed. If there is no estimate of numax is but stellar parameters are provided, they will be used to estimate an expected numax. In order to read information in properly, star_info.csv requires the following columm heads:
-  - "stars" : star IDs that should exactly match the targets provided via command line or in todo.txt. This does not need to be in any specific order, nor does it need to exactly include all targets in todo.txt. This can be a file that contains thousands of stars, where only a subset is run. Think of this as a master dictionary for stellar information.
+- info/star_info.csv: individual star information, but is not a requirement for the pipeline to run. However if stellar properties are provided, `pySYD` will estimate a value for numax and use that as an initial starting point. Again, this is not a requirement and any targets that are not successfully crossmatched will still run if they are in the todo.txt (or provided via command line). Therefore, targets in this csv do not need to be in any specific order nor do they need to exactly include all targets in todo.txt. This can be a file that contains thousands of stars, where only a subset is run (i.e. think of this as a master dictionary for stellar information). In order to read information in properly, star_info.csv requires the following columm heads:
+  - "stars" : star IDs that should exactly match the targets provided via command line or in todo.txt
   - "rad" : stellar radius (in solar radii)
   - "teff" : effective temperature (K)
   - "logg" : surface gravity (dex)
@@ -47,7 +47,7 @@ In the previous example, `-mciter` was not specified and is 1 by default (for 1 
   - "lowerb" : lower frequency limit to use in the background-fitting module (in muHz)
   - "upperb" : upper frequency limit to use in the background-fitting module (in muHz)
   - "seed" : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes.
-- results/: Directory containing result plots and files for each target. 
+- results/: Directory containing result plots and files for each target. Currently, it will create this directory (if it does not already exist) in the current working directory of the user.
 
 ## Command Line Interface (CLI) Options
 
