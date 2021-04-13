@@ -9,14 +9,14 @@ for line in open('requirements.txt', 'r').readlines():
 
 setuptools.setup(
     name="pysyd",
-    version="0.0.1",
+    version="0.4.1",
     license="MIT",
     author="Ashley Chontos",
     author_email="achontos@hawaii.edu",
     description="Automated extraction of global asteroseismic parameters",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ashleychontos/syd",
+    url="https://github.com/ashleychontos/pysyd",
     project_urls={
         "Documentation": "https://readthedocs.org/projects/syd-pypline",
         "Source": "https://github.com/ashleychontos/pysyd",
@@ -29,20 +29,6 @@ setuptools.setup(
     ],
     install_requires=reqs,
     packages=setuptools.find_packages(),
-    data_files=[
-        (
-            'example_data', 
-            [
-                'example_data/1435467_LC.txt', 
-                'example_data/1435467_PS.txt', 
-                'example_data/2309595_LC.txt', 
-                'example_data/2309595_PS.txt', 
-                'example_data/11618103_LC.txt', 
-                'example_data/11618103_PS.txt', 
-            ]
-        )
-    ],
-    include_package_data=True,
-    entry_points={'console_scripts':['syd=pysyd.cli.py:main']},
+    entry_points={'console_scripts':['pysyd=pysyd.cli:main']},
     python_requires=">=3.6",
 )
