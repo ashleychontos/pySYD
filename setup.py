@@ -9,7 +9,7 @@ for line in open('requirements.txt', 'r').readlines():
 
 setuptools.setup(
     name="pysyd",
-    version="0.4.1",
+    version="0.4.2",
     license="MIT",
     author="Ashley Chontos",
     author_email="achontos@hawaii.edu",
