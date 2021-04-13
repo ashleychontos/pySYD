@@ -1,5 +1,4 @@
-targets,rad,teff,logg,numax,lowerx,upperx,lowerb,upperb,seed
+stars,rad,teff,logg,numax,lowerx,upperx,lowerb,upperb,seed
 1435467,1,5777,4.4,1500.0,100.0,,100.0,,
 2309595,1,5777,4.4,670.0,,,,,
-11618103,1,5777,4.4,10.0,,,,,
-7669332,1,5777,4.4,,100.0,,100.0,,9213360.0
+11618103,1,5777,4.4,100.0,,,,,
