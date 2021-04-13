@@ -12,7 +12,7 @@ A majority of the methodology and framework of ``pySYD`` is adapted from IDL ast
 
 Code contributions are welcome and should be submitted as a pull request at --.
 
-Bug reports and feature requests should be posted to the `_GitHub issue tracker <https://github.com/ashleychontos/pySYD/issues>`_.
+Bug reports and feature requests should be posted to the `GitHub issue tracker <https://github.com/ashleychontos/pySYD/issues>`_.
 
 
 Contents:
