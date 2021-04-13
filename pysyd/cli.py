@@ -1,118 +1,115 @@
 import os
-import sys
 import argparse
 
-# for packaging purposes
-#from syd.target import Target
-#from syd.plots import set_plot_params
-#from syd.utils import get_info, scrape_output
-#from syd import TODODIR, INFODIR
-from target import Target
-from plots import set_plot_params
-from utils import get_info, scrape_output
+import pysyd
+from pysyd import pipeline
+from pysyd import TODODIR, INFODIR, INPDIR, OUTDIR
 
-
-
-def main(args, parallel=False, nthreads=None):
-    """Runs the SYD-PYpline.
-
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the command line arguments
-    parallel : bool
-        if true will run the pipeline on multiple threads. Default value is `False`. TODO: Currently not supported!
-    nthreads : Optional[int]
-        the number of threads to run the pipeline on if parallel processing is enabled. Default value is `None`.
-    """
-
-    args = get_info(args)
-
-    for target in args.params['todo']:
-        args.target = target
-        Target(args)
-
-    if args.verbose and len(args.params['todo']) > 1:
-        print('Combining results into single csv file.')
-        print()
-
-    # Concatenates output into a two files
-    scrape_output(args)
-
-
-if __name__ == '__main__':
-
-    _ROOT = os.path.abspath(os.path.dirname(__file__))
-    TODODIR = os.path.join(_ROOT,'info/todo.txt')
-    INFODIR = os.path.join(_ROOT,'info/star_info.csv')
-
+def main():
     # Properties inherent to both modules
-    parser = argparse.ArgumentParser( 
-                                     description='SYD-PYpline',
+    parser = argparse.ArgumentParser(
+                                     description="pySYD: Automated Extraction of Global Asteroseismic Parameters", 
+                                     prog='pySYD',
     )
-    parser.add_argument('-bg', '--bg', '-fitbg', '--fitbg', '-background', '--background',
-                        dest='background',
-                        help='Turn off the background fitting process (although this is not recommended)',
-                        default=True, 
-                        action='store_false',
+    parser.add_argument('-version', '--version',
+                        action='version',
+                        version="%(prog)s {}".format(pysyd.__version__),
+                        help="Print version number and exit."
     )
-    parser.add_argument('-ex', '--ex', '-findex', '--findex', '-excess', '--excess',
-                        dest='excess',
-                        help='Turn off the find excess module. This is only recommended when a list of numaxes or a list of stellar parameters (to estimate the numaxes) are provided.',
-                        default=True, 
-                        action='store_false',
+
+    sub_parser = parser.add_subparsers(title='subcommands', dest='subcommand')
+
+    # In the parent parser, we define arguments and options common to all subcommands
+    parent_parser = argparse.ArgumentParser(add_help=False)
+    parent_parser.add_argument('-file', '--file', '-list', '--list', '-todo', '--todo',
+                               dest='file',
+                               help="""Path to txt file that contains the list of targets to process (default='info/todo.txt')""",
+                               type=str,
+                               default=TODODIR,
     )
-    parser.add_argument('-file', '--file', '-list', '--list',
-                        dest='file',
-                        help="""Path to txt file that contains the list of targets to process (default='info/todo.txt')""",
-                        type=str,
-                        default=TODODIR,
-                        )
-    parser.add_argument('-info', '--info', '-information', '--information',
-                        dest='info',
-                        help='Path to csv containing star information',
-                        type=str,
-                        default=INFODIR,
+    parent_parser.add_argument('-in', '--in', '-input', '--input', '-inpdir', '--inpdir', 
+                               dest='inpdir',
+                               help='Path to input data',
+                               default=INPDIR,
     )
-    parser.add_argument('-kc', '--kc', '-keplercorr', '--keplercorr',
-                        dest='keplercorr',
-                        help='Turn on Kepler short-cadence artefact corrections',
-                        default=False, 
-                        action='store_true',
+    parent_parser.add_argument('-info', '--info', '-information', '--information',
+                               dest='info',
+                               help='Path to csv containing star information',
+                               type=str,
+                               default=INFODIR,
     )
-    parser.add_argument('-out', '--out', '-output', '--output',
-                        dest='outdir',
-                        help='Path to save results to',
-                        default=os.path.abspath('/'.join(__file__.split('/')[:-1])),
+    parent_parser.add_argument('-verbose', '--verbose',
+                               dest='verbose',
+                               help='Turn on verbose output (default=False)',
+                               default=False, 
+                               action='store_true',
     )
-    parser.add_argument('-save', '--save', 
-                        dest='save',
-                        help='Save output files and figures (default=True)',
-                        default=True, 
-                        action='store_false',
+    parent_parser.add_argument('-out', '--out', '-outdir', '--outdir', '-output', '--output',
+                               dest='outdir',
+                               help='Path to save results to',
+                               default=OUTDIR,
     )
-    parser.add_argument('-show', '--show',
-                        dest='show',
-                        help="""Shows output figures (default=False) Please note: If running multiple targets, this is not recommended! """,
-                        default=False, 
-                        action='store_true',
+
+    # Setting up
+    parser_setup = sub_parser.add_parser('setup', parents=[parent_parser],
+                                         description='Easy setup for directories and files')
+    parser_setup.set_defaults(func=pipeline.setup)
+
+    # Run pySYD
+    parser_run = sub_parser.add_parser('run', parents=[parent_parser],
+                                       description='Run pySYD')
+    parser_run.add_argument('-bg', '--bg', '-fitbg', '--fitbg', '-background', '--background',
+                            dest='background',
+                            help='Turn off the background fitting process (although this is not recommended)',
+                            default=True, 
+                            action='store_false',
     )
-    parser.add_argument('-target', '--target', '-targets', '--targets',
-                        dest='target',
-                        help="""List of targets to process (default=None). If this is not provided, it will default to read targets in from the default 'file' argument ('Files/todo.txt')""",
-                        nargs='*',
-                        type=int,
-                        default=None,
-                        )
-    parser.add_argument('-v', '--v', '-verbose', '--verbose',
-                        dest='verbose',
-                        help='Turn on verbose output (default=False)',
-                        default=False, 
-                        action='store_true',
+    parser_run.add_argument('-ex', '--ex', '-findex', '--findex', '-excess', '--excess',
+                            dest='excess',
+                            help='Turn off the find excess module. This is only recommended when a list of numaxes or a list of stellar parameters (to estimate the numaxes) are provided.',
+                            default=True, 
+                            action='store_false',
+    )
+    parser_run.add_argument('-kc', '--kc', '-keplercorr', '--keplercorr',
+                            dest='keplercorr',
+                            help='Turn on Kepler short-cadence artefact corrections',
+                            default=False, 
+                            action='store_true',
+    )
+    parser_run.add_argument('-nt', '--nt', '-nthread', '--nthread', '-nthreads', '--nthreads',
+                            dest='nthreads',
+                            help='Number of processes to run in parallel',
+                            type=int,
+                            default=0,
+    )
+    parser_run.add_argument('-par', '--par', '-parallel', '--parallel',
+                            dest='parallel',
+                            help='Run batch of stars in parallel',
+                            default=False,
+                            action='store_true',
+    )
+    parser_run.add_argument('-save', '--save', 
+                            dest='save',
+                            help='Save output files and figures (default=True)',
+                            default=True, 
+                            action='store_false',
+    )
+    parser_run.add_argument('-show', '--show',
+                            dest='show',
+                            help="""Shows output figures (default=False) Please note: If running multiple targets, this is not recommended! """,
+                            default=False, 
+                            action='store_true',
+    )
+    parser_run.add_argument('-star', '--star', '-stars', '--stars',
+                            dest='star',
+                            help="""List of targets to process (default=None). If this is not provided, it will default to read targets in from the default 'file' argument ('Files/todo.txt')""",
+                            nargs='*',
+                            type=int,
+                            default=None,
     )
 
     # CLI relevant for finding power excess
-    excess = parser.add_argument_group('excess')
+    excess = parser_run.add_argument_group('excess')
 
     excess.add_argument('-bin', '--bin', '-binning', '--binning', 
                         dest='binning', 
@@ -154,7 +151,7 @@ if __name__ == '__main__':
     )
 
     # CLI relevant for background fitting
-    background = parser.add_argument_group('background')
+    background = parser_run.add_argument_group('background')
 
     background.add_argument('-iw', '--iw', '-width', '--width', '-indwidth', '--indwidth',
                             dest='ind_width', 
@@ -251,4 +248,13 @@ if __name__ == '__main__':
                             type=float,
     )
 
-    main(parser.parse_args())
+    parser_run.set_defaults(func=pipeline.main)
+
+    args = parser.parse_args()
+    args.func(args)
+
+
+
+if __name__ == '__main__':
+
+    main()

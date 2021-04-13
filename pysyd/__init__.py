@@ -1,13 +1,18 @@
 import os
 
-__all__ = ['cli', 'functions', 'models', 'plots', 'target', 'utils']
+from .functions import *
+from .pipeline import *
+from .models import *
+from .target import *
+from .plots import *
+from .utils import *
 
-__version__ = '0.0.1'
+__all__ = ['cli', 'functions', 'pipeline', 'models', 'target', 'plots', 'utils']
 
-_ROOT = os.path.abspath(os.path.dirname(__file__))
-def get_path(path):
-    return os.path.join(_ROOT, 'info', path)
+__version__ = '0.4.1'
 
-TODODIR = get_path('todo.txt')
-INFODIR = get_path('star_info.csv')
+_ROOT = os.path.abspath(os.getcwd())
+TODODIR = os.path.join(_ROOT, 'info', 'todo.txt')
+INFODIR = os.path.join(_ROOT, 'info', 'star_info.csv')
 INPDIR = os.path.join(_ROOT, 'data')
+OUTDIR = os.path.join(_ROOT, 'results')

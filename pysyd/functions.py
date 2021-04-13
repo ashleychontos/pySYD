@@ -5,20 +5,20 @@ from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolv
 
 
 
-def set_seed(target):
+def set_seed(star):
     """For Kepler targets that require a correction via CLI (--kc), a random seed is generated
     from U~[1,10^6] and stored in stars_info.csv for reproducible results in later runs."""
     seed = list(np.random.randint(1,high=10000000,size=1))
-    df = pd.read_csv(target.info)
-    targets = df.targets.values.tolist()
-    idx = targets.index(target.target)
+    df = pd.read_csv(star.info)
+    stars = df.targets.values.tolist()
+    idx = stars.index(star.star)
     df.loc[idx,'seed'] = int(seed[0])
-    target.params[target.target]['seed'] = seed[0]
-    df.to_csv(target.info,index=False)
-    return target
+    star.params[star.star]['seed'] = seed[0]
+    df.to_csv(star.info,index=False)
+    return star
 
 
-def remove_artefact(target, lc=29.4244*60*1e-6):
+def remove_artefact(star, lc=29.4244*60*1e-6):
     """Removes SC artefacts in Kepler power spectra by replacing them with noise (using linear interpolation)
     following an exponential distribution; known artefacts are:
     1) 1./LC harmonics
@@ -34,11 +34,11 @@ def remove_artefact(target, lc=29.4244*60*1e-6):
     lc : float
         TODO: Write description. Default value is `29.4244*60*1e-6`.
     """
-    if target.params[target.target]['seed'] is None:
-        target = set_seed(target)
-    f, a = target.frequency, target.power
-    oversample = int(round((1.0/((max(target.time)-min(target.time))*0.0864))/(target.frequency[1]-target.frequency[0])))
-    resolution = (target.frequency[1]-target.frequency[0])*oversample
+    if star.params[star.star]['seed'] is None:
+        star = set_seed(star)
+    f, a = star.frequency, star.power
+    oversample = int(round((1.0/((max(star.time)-min(star.time))*0.0864))/(star.frequency[1]-star.frequency[0])))
+    resolution = (star.frequency[1]-star.frequency[0])*oversample
 
     # LC period in Msec -> 1/LC ~muHz
     lcp = 1.0/lc
@@ -51,7 +51,7 @@ def remove_artefact(target, lc=29.4244*60*1e-6):
     # Estimate white noise
     noisefl = np.mean(a[(f >= max(f)-100.0) & (f <= max(f)-50.0)])
 
-    np.random.seed(int(target.params[target.target]['seed']))
+    np.random.seed(int(star.params[star.star]['seed']))
     # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
     for i in range(len(art)):
         if art[i] < np.max(f):
@@ -59,7 +59,7 @@ def remove_artefact(target, lc=29.4244*60*1e-6):
             if use[0] != -1:
                 a[use] = noisefl*np.random.chisquare(2, len(use))/2.0
 
-    np.random.seed(int(target.params[target.target]['seed']))
+    np.random.seed(int(star.params[star.star]['seed']))
     # Routine 2: remove artefacts as identified in un1 & un2
     for i in range(0, len(un1)):
         if un1[i] < np.max(f):
@@ -67,7 +67,7 @@ def remove_artefact(target, lc=29.4244*60*1e-6):
             if use[0] != -1:
                 a[use] = noisefl*np.random.chisquare(2, len(use))/2.0
 
-    np.random.seed(int(target.params[target.target]['seed']))
+    np.random.seed(int(star.params[star.star]['seed']))
     # Routine 3: remove two wider artefacts as identified in un1 & un2
     un1 = [240.0, 500.0]
     un2 = [380.0, 530.0]
@@ -87,11 +87,11 @@ def remove_artefact(target, lc=29.4244*60*1e-6):
         # Fill artefact frequencies with noise
         a[use] = (f[use]*m+b)*np.random.chisquare(2, len(use))/2.0
     # Power spectrum with artefact frequencies filled in with noise
-    target.power = a
-    return target
+    star.power = a
+    return star
 
 
-def gaussian_bounds(x, y, guesses,best_x=None, sigma=None):
+def gaussian_bounds(x, y, guesses, best_x=None, sigma=None):
     """Get the bounds for the parameters of a Gaussian fit to the data.
 
     Parameters
@@ -110,35 +110,23 @@ def gaussian_bounds(x, y, guesses,best_x=None, sigma=None):
     bb : List[Tuple]
         list of parameter bounds of a Gaussian fit to the data
     """
-    offset,amp,center,width=guesses
+    offset, amp, center, width = guesses
     if sigma is None:
         sigma = (max(x)-min(x))/8.0/np.sqrt(8.0*np.log(2.0))
     bb = []
     b = np.zeros((2, 4)).tolist()
     
     # offset bound:
-    b[1][0] = np.inf #upper bound
-
+    b[1][0] = np.inf            #upper bound
     # amplitude bounds:
-    if amp>0:
+    if amp > 0:
         b[1][1] = 2.0*np.max(y) #upper bound
     else:
-        b[0][1]=-np.inf #lower bound
-        b[1][1]=0       #upper bound
-    # if not int(np.max(y)):
-    #     b[1][1] = np.inf
-    
-    # set bounds on center of Gaussian. If center is known, set to center+/-3sigma
-    # commented out for now since sigma seems to small
-    #if best_x is not None:
-    #    b[0][2] = best_x - 3*sigma
-    #    b[1][2] = best_x + 3*sigma
-    #else:
-    # Set the whole range for center of Gaussian. This should be robust for most cases.
+        b[0][1]=-np.inf         #lower bound
+        b[1][1]=0               #upper bound
     # center bounds:
     b[0][2] = np.min(x)
     b[1][2] = np.max(x)
-    
     # width bounds
     b[0][3] = sigma
     b[1][3] = (np.max(x)-np.min(x))*2.
