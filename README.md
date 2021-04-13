@@ -35,13 +35,13 @@ In the previous example, `-mciter` was not specified and is 1 by default (for 1 
 ### `Package Data`
 
 - info/todo.txt: Basic text file containing IDs of stars to be processed (one star ID per line)
-- data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
+- data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). NOTE: this is not created and must be handled manually. There is example data included in the `pip install pysyd` package (in pysyd/data), which we suggest to copy over to a more local, accessible directory. This will successfully read in data if there is a 'data/' directory wherever `pysyd` is initialized from.
 - info/star_info.csv: individual star information, but is not a requirement for the pipeline to run. If stellar properties are provided, `pySYD` will estimate a value for numax and use that as an initial starting point. Targets in this csv do not need to be in any specific order nor do they need to exactly include all targets in todo.txt. This can be a file that contains thousands of stars, where only a subset is run (i.e. think of this as a master dictionary for stellar information). In order to read information in properly, be sure that `star_info.csv` has exactly the following column heads:
   - "stars" : star IDs that should exactly match the targets provided via command line or in todo.txt
   - "rad" : stellar radius (in solar radii)
   - "teff" : effective temperature (K)
   - "logg" : surface gravity (dex)
-  - "numax" : the frequency corresponding to maximum power (in muHz). This does not need to be specified, nor do the stellar parameters need to be specified. In the case where no information is provided, we suggest that the user first run findex (which will run by default on a given target), which will find a starting point for numax. However, if the pipeline does not find the proper numax, providing a value in this csv will override the first module's value and use the provided value instead.
+  - "numax" : the frequency corresponding to maximum power (in muHz). If no information is provided, we suggest that the user first run findex (that runs by default anyway on a given target), which will find a starting point for numax. However, if the pipeline does not find the proper numax, providing a value in this csv will override the first module's value and use the provided value instead.
   - "lowerx" : lower frequency limit to use in the findex module (in muHz)
   - "upperx" : upper frequency limit to use in the findex module (in muHz)
   - "lowerb" : lower frequency limit to use in the background-fitting module (in muHz)
