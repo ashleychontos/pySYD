@@ -1,4 +1,4 @@
-.. |br| raw::html
+.. |br| raw:: html
 
    <br />
 
