@@ -18,11 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'sydpy'
-copyright = '2021, Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors.'
-author = 'Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors.'
+copyright = '2021, Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors'
+author = 'Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.4.2'
 
 
 # -- General configuration ---------------------------------------------------
