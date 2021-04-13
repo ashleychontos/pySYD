@@ -1,16 +1,28 @@
-.. pysyd documentation master file, created by
-   sphinx-quickstart on Sat Apr  3 13:23:56 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. |br| raw::html
 
-Welcome to pySYD's documentation!
-=================================
+   <br />
+
+pySYD: |br| Open-source Asteroseismology
+========================================
+
+Welcome to the documentation for ``pySYD``, a Python package for automated
+extraction of global asteroseismic parameters. 
+
+A majority of the methodology and framework of ``pySYD`` is adapted from IDL asteroseismology pipeline SYD. Please cite 
+
+Code contributions are welcome and should be submitted as a pull request at --.
+
+Bug reports and feature requests should be posted to the `GitHub issue tracker <https://github.com/ashleychontos/pySYD/issues>`.
+
+
+Contents:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-
-
+   
+   quickstart
+   examples
+   
 
 Indices and tables
 ==================
