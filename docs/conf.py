@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'sydpy'
+project = 'pySYD'
 copyright = '2021, Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors'
 author = 'Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors'
 
