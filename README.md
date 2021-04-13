@@ -24,19 +24,30 @@ In the previous example, `-mciter` was not specified and is 1 by default (for 1 
 ##
 
 ### `Scripts`
-- `pysyd/functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
-- `pysyd/cli.py` : main pipeline initialization and command line interface tools 
-- `pysyd/models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
-- `pysyd/plots.py` : plotting routines
-- `pysyd/target.py` : main pipeline Target class that is initialized for each target that is processed
-- `pysyd/utils.py` : contains information dictionaries and non-science related functions
+- `functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
+- `cli.py` : sets command line interface tools used with the main pipeline initialization
+- `models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
+- `pipeline.py` : main pipeline initialization, including parallelization capabilities
+- `plots.py` : plotting routines
+- `target.py` : main pipeline Target class that is initialized for each processed star
+- `utils.py` : contains information dictionaries and non-science related functions (i.e. load/check input data)
 
 ### `Package Data`
 
-- pysyd/info/todo.txt: File containing IDs of stars to be processed 
-- pysyd/data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
-- pysyd/info/star_info.csv: basic information on stars to be processed. If no estimate of numax is provided, the stellar parameters are used to calculate as estimate
-- pysyd/results/: Directory containing result plots and files for each target
+- info/todo.txt: Basic text file containing IDs of stars to be processed (one star ID per line)
+- data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). 
+- info/star_info.csv: a means of providing individualistic information on the stars to be processed. If there is no estimate of numax is but stellar parameters are provided, they will be used to estimate an expected numax. In order to read information in properly, star_info.csv requires the following columm heads:
+  - "stars" : star IDs that should exactly match the targets provided via command line or in todo.txt. This does not need to be in any specific order, nor does it need to exactly include all targets in todo.txt. This can be a file that contains thousands of stars, where only a subset is run. Think of this as a master dictionary for stellar information.
+  - "rad" : stellar radius (in solar radii)
+  - "teff" : effective temperature (K)
+  - "logg" : surface gravity (dex)
+  - "numax" : the frequency corresponding to maximum power (in muHz). This does not need to be specified, nor do the stellar parameters need to be specified. In the case where no information is provided, we suggest that the user first run findex (which will run by default on a given target), which will find a starting point for numax. However, if the pipeline does not find the proper numax, providing a value in this csv will override the first module's value and use the provided value instead.
+  - "lowerx" : lower frequency limit to use in the findex module (in muHz)
+  - "upperx" : upper frequency limit to use in the findex module (in muHz)
+  - "lowerb" : lower frequency limit to use in the background-fitting module (in muHz)
+  - "upperb" : upper frequency limit to use in the background-fitting module (in muHz)
+  - "seed" : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes.
+- results/: Directory containing result plots and files for each target. 
 
 ## Command Line Interface (CLI) Options
 
