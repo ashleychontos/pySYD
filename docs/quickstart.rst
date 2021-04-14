@@ -75,33 +75,5 @@ which will provide the absolute paths of all directories that are created during
 Optional Features
 +++++++++++++++++
 
-Combine the measured properties of the RV time-series with
-the properties of the host star defined in the setup file to
-derive physical parameters for the planetary system. Have a look at the
-`epic203771098.py` example setup file to see how to include stellar parameters.
 
-.. code-block:: bash
-
-    $ radvel derive -s /path/to/radvel/example_planets/HD164922.py
-
-Generate a corner plot for the derived parameters. This plot will also be
-included in the summary report if available.
-
-.. code-block:: bash
-
-    $ radvel plot -t derived -s /path/to/radvel/example_planets/HD164922.py
-
-Perform a model comparison testing models eliminating different sets of
-planets, their eccentricities, and RV trends. If this is run a new table 
-will be included in the summary report.
-
-.. code-block:: bash
-
-    $ radvel ic -t nplanets e trend -s /path/to/radvel/example_planets/HD164922.py
-
-Generate and save only the TeX code for any/all of the tables.
-
-.. code-block:: bash
-
-    $ radvel table -t params priors ic_compare derived -s /path/to/radvel/example_planets/HD164922.py
 
