@@ -23,6 +23,7 @@ Contents:
 
    quickstart
    overview
+   cli
    examples
    performance
    api

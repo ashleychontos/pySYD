@@ -1,7 +1,7 @@
 .. _plots:
 
-Plotting Routines
-=================
+Plots
+=====
 .. module:: pysyd
 
 .. automodule:: pysyd.plots

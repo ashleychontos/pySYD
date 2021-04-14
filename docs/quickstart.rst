@@ -1,14 +1,14 @@
 .. _quickstart:
 
 Getting Started
-===============
+###############
 
 .. _installation:
 
 
 
 Installation
-++++++++++++
+************
 
 Install ``pysyd`` using pip:
 
@@ -46,23 +46,22 @@ executed once after installation. The rest of the time and functionality will re
 
 
 Setting Up
-++++++++++
+**********
 
 The easiest way to start using the ``pySYD`` software is by running our setup feature
-from a convenient directory
+from a convenient directory:
 
 .. code-block:: bash
 
     $ pysyd setup
 
-Please note that this command will create `data`, `info`, and `results` directories in 
-the current working directory, unless otherwise specified (see :ref: `CLI` for more details). 
-Setup will also download two information files: `info/todo.txt` and `info/star_info.csv`. See 
-:ref:`overview` for more information on what purposes these files serve. Additionally, three
-example stars from the `source code <https://github.com/ashleychontos/pySYD>`_ are included 
-(see :ref:`examples`).
+This command will create `data`, `info`, and `results` directories in the current working 
+directory, unless otherwise specified (see :ref: `CLI` for more details). Setup will also 
+download two information files: `info/todo.txt` and `info/star_info.csv`. See :ref:`overview` 
+for more information on what purposes these files serve. Additionally, three example stars 
+from the `source code <https://github.com/ashleychontos/pySYD>`_ are included (see :ref:`examples`).
 
-The optional verbose command can also be called with the setup feature 
+The optional verbose command can be called with the setup feature 
 
 .. code-block:: bash
 
@@ -72,8 +71,8 @@ which will provide the absolute paths of all directories that are created during
 
 
 
-Optional Features
-+++++++++++++++++
+Example Fit
+***********
 
 
 
