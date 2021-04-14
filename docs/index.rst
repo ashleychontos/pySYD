@@ -22,6 +22,7 @@ Contents:
    
    quickstart
    examples
+   api
    
 Indices and tables
 ==================
