@@ -16,14 +16,16 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 
-import mock
-#import os
+#import mock
+import os
 import sys
-#sys.path.insert(0, os.path.abspath('.'))
+print(sys.path)
+sys.path.insert(0, os.path.abspath('.'))
+print(sys.path)
 
-autodoc_mock_imports = ['scipy', 'pandas', 'numpy', 'nbsphinx']
-for mod_name in autodoc_mock_imports:
-    sys.modules[mod_name] = mock.Mock()
+#autodoc_mock_imports = ['scipy', 'pandas', 'numpy', 'nbsphinx']
+#for mod_name in autodoc_mock_imports:
+#    sys.modules[mod_name] = mock.Mock()
 
 import pysyd
 
@@ -79,7 +81,7 @@ exclude_patterns = ['_build']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'asteroid_sphinx_theme'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
