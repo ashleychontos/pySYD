@@ -24,13 +24,13 @@ A `pySYD` pipeline `Target` class object has two main methods:
 
 There are three example stars provided in pysyd/data/: 1435467 (the least evolved), 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
-- `python pysyd/cli.py -v -show -target 1435467` (or whichever target you'd like)
+- `pysyd -star 1435467 -show -verbose` (or whichever target you'd like)
 
 By default, both `verbose` and `show` (plots) are set to `False` but are helpful to see how the pipeline processes targets. If no `-target` is provided, it will use the list of stars provided in pysyd/info/todo.txt.
 
 To estimate uncertainties in the derived parameters for a given target, set `-mc` to something sufficient for random sampling (e.g. 200).
 
-- `python pysyd/cli.py -v -show -target 1435467 -mciter 200`
+- `pysyd -star 1435467 -show -verbose -mc 200`
 
 In the previous example, `-mciter` was not specified and is 1 by default (for 1 iteration). By changing this value, it will randomize the power spectrum and attempt to recover the parameters for the specified number of iterations. The uncertainties will appear in the verbose output, output csvs, and an additional figure will show the distributions of the parameters.
 
@@ -115,7 +115,7 @@ Follow examples in
 
 ## Attribution
 
-Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, Maryum Sayeed, and other contributors. 
+Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, and Maryum Sayeed. 
 
 Please cite the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract) and the following DOI if you make use of this software in your research.
 [need to do]

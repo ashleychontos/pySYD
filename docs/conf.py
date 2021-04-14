@@ -26,6 +26,7 @@ sys.path.insert(0, os.path.abspath('.'))
 #    sys.modules[mod_name] = mock.Mock()
 
 import pysyd
+import sphinx_rtd_theme
 
 nbsphinx_allow_errors = True
 
@@ -50,6 +51,7 @@ release = pysyd.__version__
 
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx_rtd_theme',
     'sphinx.ext.doctest',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',

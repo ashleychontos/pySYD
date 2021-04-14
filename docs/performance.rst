@@ -1,7 +1,7 @@
 .. _performance:
 
-But... How Does It Do?
-======================
+Comparison to IDL SYD
+=====================
 
 .. _comparison:
 
