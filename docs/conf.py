@@ -96,4 +96,4 @@ html_logo = "figures/pysyd_logo_inv.png"
 html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pysyddoc'
+#htmlhelp_basename = 'pysyddoc'
