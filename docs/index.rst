@@ -17,6 +17,7 @@ Code contributions are welcome and should be submitted as a pull request.
 Bug reports and feature requests should be posted to the `GitHub issue tracker <https://github.com/ashleychontos/pySYD/issues>`_.
 
 Contents:
+
 .. toctree::
    :maxdepth: 2
 
