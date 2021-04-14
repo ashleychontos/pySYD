@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as file:
     long_description = file.read()
 
 reqs = []
-for line in open('requirements.txt', 'r').readlines():
+for line in open('docs/requirements.txt', 'r').readlines():
     reqs.append(line)
 
 setuptools.setup(
