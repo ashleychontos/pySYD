@@ -11,7 +11,7 @@ from pysyd.target import Target
 
 
 def main(args):
-    """Runs the SYD-PYpline.
+    """Runs the pySYD pipeline.
 
     Parameters
     ----------
@@ -42,6 +42,17 @@ def main(args):
 
 
 def run(stargroup, args, count=0):
+    """A Target class is initialized and processed for each star in the stargroup.
+
+    Parameters
+    ----------
+    stargroup : 
+        list of stars to be processed as a group
+    args : argparse.Namespace
+        the command line arguments
+    count : int
+        the number of successful stars processed by pySYD for a given group of stars
+    """
 
     for star in stargroup:
         single = Target(star, args)
@@ -52,6 +63,18 @@ def run(stargroup, args, count=0):
 
 
 def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/'):
+    """Running this after installation will create the appropriate directories in the current working
+       directory as well as download example data and files to test your installation.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        the command line arguments
+    note : str
+        optional verbose output
+    path_info : str
+        path where star list and information are saved. Default is 'info/'
+    """
 
     print('\n\nDownloading relevant data from https://github.com/ashleychontos/pySYD:\n')
     # create info directory

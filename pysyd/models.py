@@ -74,7 +74,8 @@ def harvey(frequency, pars, nlaws=None, mode='regular', total=False):
         The fourth mode means only the fourth order terms are added.
         Default value is `'regular'`.
     total : bool
-        TODO: Write description. Default value is `False`.
+        if the model contains more than one harvey model, it will add up all background contributions.
+        Default valus is `False`.
 
     Returns
     -------
@@ -141,9 +142,9 @@ def harvey_one(frequency, a1, b1, white_noise):
     frequency : np.ndarray
         the frequency of the power spectrum
     a1 : float
-        TODO: Write description
+        the amplitude of the first harvey model
     b1 : float
-        TODO: Write description
+        the characteristic frequency of the first harvey model
     white_noise : float
         the white noise component
 
@@ -169,13 +170,13 @@ def harvey_two(frequency, a1, b1, a2, b2, white_noise):
     frequency : np.ndarray
         the frequency of the power spectrum
     a1 : float
-        TODO: Write description
+        the amplitude of the first harvey model
     b1 : float
-        TODO: Write description
+        the characteristic frequency of the first harvey model
     a2 : float
-        TODO: Write description
+        the amplitude of the second harvey model
     b2 : float
-        TODO: Write description
+        the characteristic frequency of the second harvey model
     white_noise : float
         the white noise component
 
@@ -202,17 +203,17 @@ def harvey_three(frequency, a1, b1, a2, b2, a3, b3, white_noise):
     frequency : np.ndarray
         the frequency of the power spectrum
     a1 : float
-        TODO: Write description
+        the amplitude of the first harvey model
     b1 : float
-        TODO: Write description
+        the characteristic frequency of the first harvey model
     a2 : float
-        TODO: Write description
+        the amplitude of the second harvey model
     b2 : float
-        TODO: Write description
+        the characteristic frequency of the second harvey model
     a3 : float
-        TODO: Write description
+        the amplitude of the third harvey model
     b3 : float
-        TODO: Write description
+        the characteristic frequency of the third harvey model
     white_noise : float
         the white noise component
 
@@ -240,21 +241,21 @@ def harvey_four(frequency, a1, b1, a2, b2, a3, b3, a4, b4, white_noise):
     frequency : np.ndarray
         the frequency of the power spectrum
     a1 : float
-        TODO: Write description
+        the amplitude of the first harvey model
     b1 : float
-        TODO: Write description
+        the characteristic frequency of the first harvey model
     a2 : float
-        TODO: Write description
+        the amplitude of the second harvey model
     b2 : float
-        TODO: Write description
+        the characteristic frequency of the second harvey model
     a3 : float
-        TODO: Write description
+        the amplitude of the third harvey model
     b3 : float
-        TODO: Write description
+        the characteristic frequency of the third harvey model
     a4 : float
-        TODO: Write description
+        the amplitude of the fourth harvey model
     b4 : float
-        TODO: Write description
+        the characteristic frequency of the fourth harvey model
     white_noise : float
         the white noise component
 
@@ -283,25 +284,25 @@ def harvey_five(frequency, a1, b1, a2, b2, a3, b3, a4, b4, a5, b5, white_noise):
     frequency : np.ndarray
         the frequency of the power spectrum
     a1 : float
-        TODO: Write description
+        the amplitude of the first harvey model
     b1 : float
-        TODO: Write description
+        the characteristic frequency of the first harvey model
     a2 : float
-        TODO: Write description
+        the amplitude of the second harvey model
     b2 : float
-        TODO: Write description
+        the characteristic frequency of the second harvey model
     a3 : float
-        TODO: Write description
+        the amplitude of the third harvey model
     b3 : float
-        TODO: Write description
+        the characteristic frequency of the third harvey model
     a4 : float
-        TODO: Write description
+        the amplitude of the fourth harvey model
     b4 : float
-        TODO: Write description
+        the characteristic frequency of the fourth harvey model
     a5 : float
-        TODO: Write description
+        the amplitude of the fifth harvey model
     b5 : float
-        TODO: Write description
+        the characteristic frequency of the fifth harvey model
     white_noise : float
         the white noise component
 
@@ -331,29 +332,29 @@ def harvey_six(frequency, a1, b1, a2, b2, a3, b3, a4, b4, a5, b5, a6, b6, white_
     frequency : np.ndarray
         the frequency of the power spectrum
     a1 : float
-        TODO: Write description
+        the amplitude of the first harvey model
     b1 : float
-        TODO: Write description
+        the characteristic frequency of the first harvey model
     a2 : float
-        TODO: Write description
+        the amplitude of the second harvey model
     b2 : float
-        TODO: Write description
+        the characteristic frequency of the second harvey model
     a3 : float
-        TODO: Write description
+        the amplitude of the third harvey model
     b3 : float
-        TODO: Write description
+        the characteristic frequency of the third harvey model
     a4 : float
-        TODO: Write description
+        the amplitude of the fourth harvey model
     b4 : float
-        TODO: Write description
+        the characteristic frequency of the fourth harvey model
     a5 : float
-        TODO: Write description
+        the amplitude of the fifth harvey model
     b5 : float
-        TODO: Write description
+        the characteristic frequency of the fifth harvey model
     a6 : float
-        TODO: Write description
+        the amplitude of the sixth harvey model
     b6 : float
-        TODO: Write description
+        the characteristic frequency of the sixth harvey model
     white_noise : float
         the white noise component
 

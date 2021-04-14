@@ -1,7 +1,7 @@
 .. _models:
 
-Provided Distributions
-======================
+Model Distributions
+===================
 .. module:: pysyd
 
 .. automodule:: pysyd.models
