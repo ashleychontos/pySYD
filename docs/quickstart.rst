@@ -17,16 +17,14 @@ Install ``pysyd`` using pip:
     $ pip install pysyd
 
 The ``pysyd`` binary should have been automatically placed in your system's path by the
-``pip`` command (see :ref:`installation`). If your system can not find
-the ``pysyd`` executable then try running
+``pip`` command. If your system can not find the ``pysyd`` executable, ``cd`` into the 
+top-level ``pysyd`` directory and try running the following command:
 
 .. code-block:: bash
 
     $ python setup.py install
 
-from within the top-level ``pysyd`` directory.
-
-You may test your installation by using ``pysyd --help`` to see available options:
+You may test your installation by using ``pysyd --help`` to see available command-line options:
 
 .. code-block:: bash
 		
@@ -42,8 +40,8 @@ You may test your installation by using ``pysyd --help`` to see available option
     subcommands:
       {setup,run}
 
-The two main subcommands ``setup`` and ``run``, the former of which should only be
-used once after installation. The rest of the time, you will use ``pysyd run``.
+There are two main subcommands ``setup`` and ``run``, the former of which should only be
+executed once after installation. The rest of the time and functionality will require ``pysyd run``.
 
 
 
