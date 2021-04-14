@@ -1,3 +1,4 @@
+import re
 import setuptools
 
 def get_property(prop, project):
