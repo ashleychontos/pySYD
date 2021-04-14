@@ -5,6 +5,7 @@
 
 [![PyPI Status](https://badge.fury.io/py/pysyd.svg)](https://badge.fury.io/py/pysyd)
 [![Documentation Status](https://readthedocs.org/projects/pysyd/badge/?version=latest)](https://pysyd.readthedocs.io/en/latest/?badge=latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
 
 </div>
 
