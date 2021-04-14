@@ -1,4 +1,12 @@
-[![Documentation Status](https://readthedocs.org/projects/pysyd/badge/?version=latest)](https://pysyd.readthedocs.io/en/latest/?badge=latest)
+<div align="center">
+<img src="docs/figures/pysyd_logo_inv.png" width="75%">
+
+**Open-source Asteroseismology.**
+
+</div>
+
+--------------------------------------------------------------------------------
+
 
 `pySYD` is the python translation of IDL asteroseismic pipeline SYD ([Huber et al. 2009](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract)) for automated extraction of global asteroseismic parameters. Please note that `pySYD` is actively being developed, so most of the available code and documentation is currently under construction. Feel free to email me at achontos@hawaii.edu for more details or new ideas for implementations within the package.
 
@@ -50,6 +58,10 @@ In the previous example, `-mciter` was not specified and is 1 by default (for 1 
   - "upperb" : upper frequency limit to use in the background-fitting module (in muHz)
   - "seed" : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes.
 - results/: Directory containing result plots and files for each target. Currently, it will create this directory (if it does not already exist) in the current working directory of the user.
+
+## Citing pySYD
+
+DOI + ASCL
 
 ## Command Line Interface (CLI) Options
 
