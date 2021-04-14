@@ -1,8 +1,8 @@
-.. _pipeline:
+.. _functions:
 
-Main Pipeline Commands
-======================
+Science-related Functions
+=========================
 .. module:: pysyd
 
-.. automodule:: pysyd.pipeline
+.. automodule:: pysyd.functions
    :members:

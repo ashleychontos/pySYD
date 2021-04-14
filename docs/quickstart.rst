@@ -27,7 +27,7 @@ the ``pysyd`` executable then try running
 from within the top-level ``pysyd`` directory.
 
 If you are running OSX, and want to run an ensemble of stars in parallel, you 
-may need to perform some additional installation steps. See :ref:`OSX-multiprocessing`.
+may need to perform some additional installation steps. See ###.
 
 
 

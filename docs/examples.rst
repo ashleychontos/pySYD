@@ -1,31 +1,16 @@
-.. |br| raw:: html
+.. _examples:
 
-   <br />
+Example Stars
+=============
 
-pySYD: |br| Open-source Asteroseismology
-========================================
+.. _1435467:
 
-Welcome to the documentation for ``pySYD``, a Python package for automated
-extraction of global asteroseismic parameters. 
+KIC 1435467
++++++++++++
 
-A majority of the methodology and framework of ``pySYD`` is adapted from IDL asteroseismology pipeline SYD. Please cite 
+KIC 2309595
++++++++++++
 
-Code contributions are welcome and should be submitted as a pull request at --.
+KIC 11618103
+++++++++++++
 
-Bug reports and feature requests should be posted to the `GitHub issue tracker <https://github.com/ashleychontos/pySYD/issues>`_.
-
-
-Contents:
-
-.. toctree::
-   :maxdepth: 2
-   
-   quickstart
-   examples
-   
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

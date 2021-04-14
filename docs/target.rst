@@ -1,8 +1,8 @@
-.. _pipeline:
+.. _target:
 
-Main Pipeline Commands
-======================
+Main Pipeline Target Object
+===========================
 .. module:: pysyd
 
-.. automodule:: pysyd.pipeline
+.. automodule:: pysyd.target
    :members:

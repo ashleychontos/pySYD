@@ -18,7 +18,7 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-import pysyd
+#import pysyd
 
 nbsphinx_allow_errors = True
 
@@ -30,9 +30,12 @@ copyright = u'2021, Ashley Chontos, Daniel Huber, and Maryum Sayeed'
 author = u'Ashley Chontos, Daniel Huber, and Maryum Sayeed'
 
 # The short X.Y version.
-version = '.'.join(pysyd.__version__.split('.')[1:])
+#version = '.'.join(pysyd.__version__.split('.')[1:])
 # The full version, including alpha/beta/rc tags
-release = pysyd.__version__
+#release = pysyd.__version__
+
+version='4.2'
+release='0.4.2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -42,6 +45,12 @@ release = pysyd.__version__
 # ones.
 
 extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'nbsphinx'
 ]
 
 # The suffix(es) of source filesnames.
@@ -58,7 +67,7 @@ master_doc = 'index'
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build']
 
 
 # -- Options for HTML output -------------------------------------------------

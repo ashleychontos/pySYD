@@ -1,8 +1,8 @@
-.. _pipeline:
+.. _utils:
 
-Main Pipeline Commands
-======================
+Other Utilities
+===============
 .. module:: pysyd
 
-.. automodule:: pysyd.pipeline
+.. automodule:: pysyd.utils
    :members:

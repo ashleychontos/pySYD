@@ -1,8 +1,8 @@
-.. _pipeline:
+.. _plots:
 
-Main Pipeline Commands
-======================
+Plotting Routines
+=================
 .. module:: pysyd
 
-.. automodule:: pysyd.pipeline
+.. automodule:: pysyd.plots
    :members:

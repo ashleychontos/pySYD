@@ -1,8 +1,8 @@
-.. _pipeline:
+.. _models:
 
-Main Pipeline Commands
+Provided Distributions
 ======================
 .. module:: pysyd
 
-.. automodule:: pysyd.pipeline
+.. automodule:: pysyd.models
    :members:
