@@ -14,7 +14,8 @@ from pysyd import plots
 
 
 class Target:
-    """A pipeline target. Initialisation will cause the pipeline to process the target.
+    """
+    A pipeline target. Initialization will cause the pipeline to process the target.
 
     Attributes
     ----------
@@ -56,7 +57,10 @@ class Target:
 
 
     def check_data(self):
-        """Load star data."""
+        """
+        Load star data.
+
+        """
         # Make sure data load was successsful
         lc_data, ps_data, self = utils.load_data(self)
         if lc_data and ps_data:
@@ -68,7 +72,10 @@ class Target:
 
 
     def run_syd(self):
-        """Run the pipeline routines."""
+        """
+        Run the pipeline routines.
+
+        """
         # Run the find excess routine
         if self.params[self.name]['excess']:
             self.find_excess()
@@ -81,6 +88,7 @@ class Target:
         """
         Automatically finds power excess due to solar-like oscillations using a
         frequency resolved collapsed autocorrelation function.
+
         """
 
         # Make sure the binning is specified, otherwise it cannot run
@@ -116,7 +124,8 @@ class Target:
 
 
     def fit_background(self):
-        """Perform a fit to the granulation background and measures the frequency of maximum power (numax),
+        """
+        Perform a fit to the granulation background and measures the frequency of maximum power (numax),
         the large frequency separation (dnu) and oscillation amplitude.
 
         Methods
@@ -241,7 +250,12 @@ class Target:
 
 
     def single_step(self):
-        """The main step in the background fitting, which determines numax and dnu."""
+        """
+        The first step in the background fitting, which determines the best-fit stellar 
+        contribution model (i.e. number of Harvey-like components) and corrects for this
+        before estimating numax and dnu.
+
+        """
         # Save a copy of original power spectrum
         self.random_pow = np.copy(self.power)
         # Estimate white noise level

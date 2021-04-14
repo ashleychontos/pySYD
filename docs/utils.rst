@@ -1,7 +1,7 @@
 .. _utils:
 
-Other Utilities
-===============
+Utilities
+=========
 .. module:: pysyd
 
 .. automodule:: pysyd.utils

@@ -1,7 +1,7 @@
 .. _pipeline:
 
-Main Pipeline Commands
-======================
+Pipeline
+========
 .. module:: pysyd
 
 .. automodule:: pysyd.pipeline

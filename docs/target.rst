@@ -1,7 +1,7 @@
 .. _target:
 
-Main Pipeline Target Object
-===========================
+Target
+======
 .. module:: pysyd
 
 .. automodule:: pysyd.target

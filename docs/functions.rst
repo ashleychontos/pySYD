@@ -1,7 +1,7 @@
 .. _functions:
 
-Science-related Functions
-=========================
+Functions
+=========
 .. module:: pysyd
 
 .. automodule:: pysyd.functions
