@@ -17,12 +17,12 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'sydpy'
-copyright = '2021, Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors.'
-author = 'Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors.'
+project = 'pySYD'
+copyright = '2021, Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors'
+author = 'Ashley Chontos, Daniel Huber, Maryum Sayeed, and contributors'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.4.2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -47,7 +47,16 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'asteroid-sphinx-theme'
+
+# The name of an image file (relative to this directory) to place at the top
+# of the sidebar.
+html_logo = "plots/pysyd.png"
+
+# The name of an image file (within the static path) to use as favicon of the
+# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
+# pixels large.
+#html_favicon = "plots/radvel_logo_favicon.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
