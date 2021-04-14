@@ -15,10 +15,17 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
-#import pysyd
+
+import mock
+#import os
+import sys
+#sys.path.insert(0, os.path.abspath('.'))
+
+autodoc_mock_imports = ['scipy', 'pandas', 'numpy', 'nbsphinx']
+for mod_name in autodoc_mock_imports:
+    sys.modules[mod_name] = mock.Mock()
+
+import pysyd
 
 nbsphinx_allow_errors = True
 
@@ -30,12 +37,9 @@ copyright = u'2021, Ashley Chontos, Daniel Huber, and Maryum Sayeed'
 author = u'Ashley Chontos, Daniel Huber, and Maryum Sayeed'
 
 # The short X.Y version.
-#version = '.'.join(pysyd.__version__.split('.')[1:])
+version = '.'.join(pysyd.__version__.split('.')[1:])
 # The full version, including alpha/beta/rc tags
-#release = pysyd.__version__
-
-version='4.2'
-release='0.4.2'
+release = pysyd.__version__
 
 
 # -- General configuration ---------------------------------------------------
