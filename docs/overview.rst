@@ -1,7 +1,7 @@
-.. _quickstartcli:
+.. _overview:
 
-Getting Started
-===============
+General Overview
+================
 
 .. _installation:
 

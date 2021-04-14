@@ -1,47 +1,70 @@
-.. _quickstartcli:
+.. _quickstart:
 
 Getting Started
 ===============
 
 .. _installation:
 
+
+
 Installation
 ++++++++++++
 
-Install ``pySYD`` using pip:
+Install ``pysyd`` using pip:
 
 .. code-block:: bash
 
     $ pip install pysyd
 
-Make sure that ``pdflatex`` is installed and in your system's path. 
-You can get ``pdflatex`` by installing the `TexLive package
-<https://www.tug.org/texlive/>`_ or other LaTeX distributions.
-By default it is expected to be in your system's path, but you may
-specify a path to pdflatex using the ``--latex-compiler``
-option at the ``radvel report`` step.
+The ``pysyd`` binary should have been automatically placed in your system's path by the
+``pip`` command (see :ref:`installation`). If your system can not find
+the ``pysyd`` executable then try running
 
-If you are running OSX, and want to perform Gaussian Process likelihood
-computations in parallel, you may need to perform some additional
-installation steps. See :ref:`OSX-multiprocessing`.
+.. code-block:: bash
 
-If you wish to use the celerite GP kernels you will also need to install celerite.
-See the `celerite install instructions <http://celerite.readthedocs.io/en/stable/python/install/#using-pip>`_.
+    $ python setup.py install
+
+from within the top-level ``pysyd`` directory.
+
+If you are running OSX, and want to run an ensemble of stars in parallel, you 
+may need to perform some additional installation steps. See :ref:`OSX-multiprocessing`.
 
 
-Example Fit
-+++++++++++
 
-Test your installation by running through one of the included
-examples. We will use the ``radvel`` command line interface to execute
+Setting Up
+++++++++++
+
+The easiest way to start using the ``pySYD`` software is by running our setup feature:
+
+.. code-block:: bash
+
+    $ pysyd setup
+
+This command will create `data`, `info`, and `results` directories in the current 
+working directory, unless otherwise specified (see :ref: `CLI` for more details). 
+Setup will also download two information files (`info/todo.txt` and `info/star_info.csv`) 
+as well as three example stars from the `source code <https://github.com/ashleychontos/pySYD>`_.
+
+The verbose option can also be used with the setup feature 
+
+.. code-block:: bash
+
+    $ pysyd setup -verbose
+
+and will provide the absolute paths of the directories that are created.
+
+
+
+Example Stars
++++++++++++++
+
+Test your installation by running through one (or all) of the included
+examples. We will use the ``pysyd`` command line interface to execute
 a multi-planet, multi-instrument fit.
 
-The ``radvel`` binary should have been automatically placed in your system's path by the
-``pip`` command (see :ref:`installation`). If your system can not find
-the ``radvel`` executable then try running ``python setup.py install``
-from within the top-level ``radvel`` directory.
 
-First lets look at ``radvel --help`` for the available options:
+
+First lets look at ``pysyd --help`` for the available options:
 
 .. code-block:: bash
 		
@@ -101,29 +124,6 @@ Once the MCMC chains finish running there will be another new file
 called `HD164922_mcmc_chains.csv.tar.bz2`. This is a compressed csv
 file containing the parameter values and likelihood at each step in
 the MCMC chains.
-
-Now we can update the RV time series plot with the MCMC
-results and generate the full suite of plots.
-
-.. code-block:: bash
-
-    $ radvel plot -t rv corner trend -s /path/to/radvel/example_planets/HD164922.py
-
-We can summarize our analysis with the `radvel report` command.
-
-.. code-block:: bash
-
-    $ radvel report -s /path/to/radvel/example_planets/HD164922.py
-
-which creates a LaTeX document and corresponding PDF to summarize the
-results. Note that this command assembles values and plots that have been computed 
-through other commands, if you want to update, rerun the previous commands before 
-reruning `radvel report`
-
-The report PDF will be saved as `HD164922_results.pdf`. It should
-contain a table reporting the parameter values and uncertainties, a
-table summarizing the priors, the RV time-series plot, and a corner
-plot showing the posterior distributions for all free parameters.
 
 
 Optional Features
