@@ -128,20 +128,6 @@ class Target:
         Perform a fit to the granulation background and measures the frequency of maximum power (numax),
         the large frequency separation (dnu) and oscillation amplitude.
 
-        Methods
-        -------
-        single_step: The main iteration of the background fitting, which operates in the following steps:
-                     1) determines the best-fit model (i.e. number of Harvey components) using a reduced chi-sq analysis
-                     2) corrects for stellar background contributions by dividing the power spectrum by the best-fit model
-                     3) estimates two values for numax by fitting a Gaussian and by using a heavy smoothing filter
-                     4) takes the autocorrelation (using ffts) of the masked power spectrum that contains the power excess
-                     5) selects the peak (via -npeaks, default=10) closest to the expected spacing based on the calculated numax
-                     6) fits Gaussian to the "cutout" peak of the ACF, where center is dnu
-
-        sampling_step: Used to quantify uncertainties of the parameters derived in the single_step method. 
-                       For each sampling step (via -mc, default=1 **since you should check your results first),
-                       a "randomized" power spectrum is generated from a chi-squared distribution. Similar
-                       analyses are then used to recover the derived parameters from the first step. 
         """
 
         # Will only run routine if there is a prior numax estimate
@@ -192,6 +178,10 @@ class Target:
 
 
     def collapsed_acf(self, b, j=0, start=0, max_iterations=5000, max_snr=100.):
+        """
+        TODO
+
+        """
         # Computes a collapsed ACF using different "box" (or bin) sizes
         self.findex['results'][self.name][b+1] = {}
         subset = np.ceil(self.boxes[b]/self.resolution)
@@ -253,7 +243,17 @@ class Target:
         """
         The first step in the background fitting, which determines the best-fit stellar 
         contribution model (i.e. number of Harvey-like components) and corrects for this
+
+        TODO: implement more robust criterion (i.e. BIC or AIC) and also include the simplest model.
         before estimating numax and dnu.
+
+        single_step: The main iteration of the background fitting, which operates in the following steps:
+                     1) determines the best-fit model (i.e. number of Harvey components) using a reduced chi-sq analysis
+                     2) corrects for stellar background contributions by dividing the power spectrum by the best-fit model
+                     3) estimates two values for numax by fitting a Gaussian and by using a heavy smoothing filter
+                     4) takes the autocorrelation (using ffts) of the masked power spectrum that contains the power excess
+                     5) selects the peak (via -npeaks, default=10) closest to the expected spacing based on the calculated numax
+                     6) fits Gaussian to the "cutout" peak of the ACF, where center is dnu
 
         """
         # Save a copy of original power spectrum
@@ -279,7 +279,15 @@ class Target:
 
 
     def sampling_step(self):
-        """Used in background fitting to quantify parameter uncertainties."""
+        """
+        Used in the background fitting routine to quantify the estimated parameter 
+        uncertainties. This is executed through a procedure analogous to the bootstrapping
+        method, which will randomize the power spectrum based on a chi-squared distribution
+        and attempt to recover the derived properties from the first step. This is invoked 
+        when the args.mciter > 1, where args.mciter = 200 is typically sufficient for 
+        estimating an uncertainty.
+
+        """
         # Randomize power spectrum to get uncertainty on measured values
         self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
         # Bin randomized power spectra
@@ -308,7 +316,11 @@ class Target:
 
 
     def get_white_noise(self):
-        """Estimate white level by taking a mean over a section of the power spectrum."""
+        """
+        Estimate the white noise level (in muHz) by taking a mean over a region 
+        in the power spectrum near the nyquist frequency.
+
+        """
         if self.nyquist < 400.0:
             mask = (self.frequency > 200.0) & (self.frequency < 270.0)
             self.noise = np.mean(self.random_pow[mask])
@@ -324,9 +336,12 @@ class Target:
 
 
     def estimate_initial_red(self):
-        """Estimates amplitude of red noise components by using a smoothed version of the power
-           spectrum with the power excess region masked out. This will take the mean of a specified 
-           number of points (via -nrms, default=20) for each Harvey component."""
+        """
+        Estimates amplitude of red noise components by using a smoothed version of the power
+        spectrum with the power excess region masked out. This will take the mean of a specified 
+        number of points (via -nrms, default=20) for each Harvey-like component.
+
+        """
         # Exclude region with power excess and smooth to estimate red noise components
         boxkernel = Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution)))
         self.params[self.name]['mask'] = (self.frequency >= self.maxpower[0]) & (self.frequency <= self.maxpower[1])
@@ -348,22 +363,18 @@ class Target:
         self.pars = pars
 
 
-    def get_best_model(
-            self,
-            names=['one', 'one', 'two', 'two', 'three', 'three', 'four', 'four', 'five', 'five', 'six', 'six'],
-            bounds=[],
-            reduced_chi2=[],
-            paras=[],
-            a=[]
-    ):
-        """Fits a Harvey model for the stellar granulation background for the power spectrum.
+    def get_best_model(self):
+        """
+        Determines the best-fit model for the stellar granulation background in the power spectrum
+        by iterating through several models, where the initial guess for the number of Harvey-like 
+        component(s) to model is estimated from a solar scaling relation.
 
         Parameters
         ----------
         names : list
-            the Harvey components to use in the background model
+            the number of Harvey components to use in the background model
         bounds : list
-            the bounds on the Harvey parameters
+            the bounds on the Harvey parameters for a given model
         reduced_chi2 : list
             the reduced chi-squared statistic
         paras : list
@@ -378,6 +389,7 @@ class Target:
         """
 
         # Get best fit model
+        names=['one', 'one', 'two', 'two', 'three', 'three', 'four', 'four', 'five', 'five', 'six', 'six']
         reduced_chi2 = []
         bounds = []
         a = []
@@ -486,7 +498,10 @@ class Target:
 
 
     def get_numax_smooth(self):
-        """Estimate numax by smoothing the power spectrum and taking the peak."""
+        """
+        Estimate numax by smoothing the power spectrum and taking the peak.
+
+        """
 
         sig = (self.sm_par*(self.exp_dnu/self.resolution))/np.sqrt(8.0*np.log(2.0))
         pssm = convolve_fft(np.copy(self.random_pow), Gaussian1DKernel(int(sig)))
@@ -530,7 +545,11 @@ class Target:
 
 
     def get_numax_gaussian(self, output=False):
-        """Estimate numax by fitting a Gaussian to the power envelope of the smoothed power spectrum."""
+        """
+        Estimate numax by fitting a Gaussian to the power envelope of the smoothed power spectrum.
+
+        """
+
         bb = functions.gaussian_bounds(self.region_freq, self.region_pow, self.guesses)
         p_gauss1, _ = curve_fit(models.gaussian, self.region_freq, self.region_pow, p0=self.guesses, bounds=bb[0], maxfev=5000)
         # create array with finer resolution for purposes of quantifying uncertainty
@@ -577,13 +596,17 @@ class Target:
 
 
     def get_acf_cutout(self, threshold=1.0):
-        """Estimate the large frequency spacing or dnu.
-        NOTE: this is used during the first iteration only!
+        """
+        Estimate the large frequency spacing or dnu.
+        NOTE: this is only used during the first iteration!
 
         Parameters
         ----------
         dnu : float
             the estimated value of dnu
+        threshold : float
+            the threshold is multiplied by the full-width half-maximum value, centered on the peak 
+            in the ACF to determine the width of the cutout region
         """
         self.compute_acf()
         # Get peaks from ACF
@@ -641,7 +664,10 @@ class Target:
 
 
     def get_frequency_spacing(self):
-        """Estimate a value for dnu."""
+        """
+        Estimate a value for dnu.
+
+        """
         self.compute_acf()
         # define the peak in the ACF
         zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][self.name][0])&(self.lag<=self.fitbg['acf_mask'][self.name][1])]
@@ -655,12 +681,14 @@ class Target:
 
 
     def get_ridges(self, start=0.0):
-        """Create echelle diagram.
+        """
+        Create echelle diagram.
 
         Parameters
         ----------
         start : float
             TODO: Write description. Default value is `0.0`.
+
         """
 
         ech, gridx, gridy, extent = self.echelle()
@@ -696,7 +724,8 @@ class Target:
 
 
     def echelle(self, n_across=50, startx=0.0):
-        """Creates an echelle diagram.
+        """
+        Creates an echelle diagram.
 
         Parameters
         ----------
@@ -708,6 +737,7 @@ class Target:
         Returns
         -------
         TODO: Write return arguments.
+
         """
 
         if self.fitbg['smooth_ech'] is not None:
@@ -753,6 +783,10 @@ class Target:
 
 
     def get_red_noise(self):
+        """
+        TODO
+
+        """
         # Use as initial guesses for the optimized model
         try:
             pars, _ = curve_fit(
@@ -780,7 +814,10 @@ class Target:
 
 
     def estimate_dnu(self):
-        """Estimate a value for dnu."""
+        """
+        Estimate a value for dnu.
+
+        """
 	
         # define the peak in the ACF
         zoom_lag = self.lag[(self.lag>=self.fitbg['acf_mask'][self.name][0])&(self.lag<=self.fitbg['acf_mask'][self.name][1])]

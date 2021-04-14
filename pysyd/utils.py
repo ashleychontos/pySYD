@@ -139,20 +139,23 @@ def get_excess_params(
     return args
 
 
-def get_background_params(
-        args,
-        fitbg={},
-):
-    """Get the parameters for the fit background routine.
+def get_background_params(args, fitbg={}, box_filter=2.5, num_mc_iter=1, ind_width=50,
+                          n_rms=20, n_peaks=5, smooth_ps=1, lower=None, upper=None, slope=False,
+                          samples=False,):
+    """
+    Get the parameters for the background-fitting routine.
 
     Parameters
     ----------
     args : argparse.Namespace
         the command line arguments
+
+    Uses
+    ----
     fitbg : dict
         the parameters relevant for the fit background routine, which is saved to args.fitbg
-    box_filter : float
-        the size of the box filter. Default value is `2.5`.
+    box_filter : args.box_filter
+        the size of the 1D box smoothing filter (in $\mu$Hz). Default value is `2.5`.
     ind_width : int
         the independent average smoothing width. Default value is `50`.
     n_rms : int
@@ -223,7 +226,7 @@ def get_star_info(args, cols=['rad','logg','teff','numax','lowerx','upperx','low
     args : argparse.Namespace
         the command line arguments
     cols : list
-        the list of columns to extract information from. Default value is `['rad', 'logg', 'teff']`.
+        the list of columns to provide stellar information for
 
     Returns
     -------
@@ -276,7 +279,10 @@ def get_star_info(args, cols=['rad','logg','teff','numax','lowerx','upperx','low
 
 
 def load_data(star, lc_data=False, ps_data=False):
-    """Loads light curve and power spectrum data for the current star.
+    """
+    Loads both the light curve and power spectrum data in for a given star,
+    which will return `False` if unsuccessful and therefore, not run the rest
+    of the pipeline.
 
     Parameters
     ----------
@@ -288,9 +294,9 @@ def load_data(star, lc_data=False, ps_data=False):
     star : target.Target
         the pySYD pipeline object
     lc_data : bool
-        will return `True` if both the light curve data file exists otherwise `False`
+        will return `True` if the light curve data was loaded in properly otherwise `False`
     ps_data : bool
-        will return `True` if both the power spectrum data file exists otherwise `False`
+        will return `True` if the power spectrum file was successfully loaded otherwise `False`
     """
 
     # Now done at beginning to make sure it only does this one per star
