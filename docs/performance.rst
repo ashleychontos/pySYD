@@ -8,3 +8,4 @@ Comparison to IDL SYD
 Comparing w/ SYD Results
 ++++++++++++++++++++++++
 
+.. image:: figures/comparison.png
