@@ -26,104 +26,52 @@ the ``pysyd`` executable then try running
 
 from within the top-level ``pysyd`` directory.
 
-If you are running OSX, and want to run an ensemble of stars in parallel, you 
-may need to perform some additional installation steps. See ###.
+You may test your installation by using ``pysyd --help`` to see available options:
+
+.. code-block:: bash
+		
+    $ pysyd --help
+    usage: pySYD [-h] [-version] {setup,run} ...
+
+    pySYD: Automated Extraction of Global Asteroseismic Parameters
+
+    optional arguments:
+      -h, --help           show this help message and exit
+      -version, --version  Print version number and exit.
+
+    subcommands:
+      {setup,run}
+
+The two main subcommands ``setup`` and ``run``, the former of which should only be
+used once after installation. The rest of the time, you will use ``pysyd run``.
 
 
 
 Setting Up
 ++++++++++
 
-The easiest way to start using the ``pySYD`` software is by running our setup feature:
+The easiest way to start using the ``pySYD`` software is by running our setup feature
+from a convenient directory
 
 .. code-block:: bash
 
     $ pysyd setup
 
-This command will create `data`, `info`, and `results` directories in the current 
-working directory, unless otherwise specified (see :ref: `CLI` for more details). 
-Setup will also download two information files (`info/todo.txt` and `info/star_info.csv`) 
-as well as three example stars from the `source code <https://github.com/ashleychontos/pySYD>`_.
+Please note that this command will create `data`, `info`, and `results` directories in 
+the current working directory, unless otherwise specified (see :ref: `CLI` for more details). 
+Setup will also download two information files: `info/todo.txt` and `info/star_info.csv`. See 
+:ref:`overview` for more information on what purposes these files serve. Additionally, three
+example stars from the `source code <https://github.com/ashleychontos/pySYD>`_ are included 
+(see :ref:`examples`).
 
-The verbose option can also be used with the setup feature 
+The optional verbose command can also be called with the setup feature 
 
 .. code-block:: bash
 
     $ pysyd setup -verbose
 
-and will provide the absolute paths of the directories that are created.
+which will provide the absolute paths of all directories that are created during this step.
 
-
-
-Example Stars
-+++++++++++++
-
-Test your installation by running through one (or all) of the included
-examples. We will use the ``pysyd`` command line interface to execute
-a multi-planet, multi-instrument fit.
-
-
-
-First lets look at ``pysyd --help`` for the available options:
-
-.. code-block:: bash
-		
-    $ radvel --help
-    usage: RadVel [-h] [--version] {fit,plot,mcmc,derive,bic,table,report} ...
-
-    RadVel: The Radial Velocity Toolkit
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      --version             Print version number and exit.
-
-    subcommands:
-      {fit,plot,mcmc,derive,bic,table,report}
-
-
-Here is an example workflow to
-run a simple fit using the included `HD164922.py` example
-configuration file. This example configuration file can be found in the ``example_planets``
-subdirectory on the `GitHub repository page
-<https://github.com/California-Planet-Search/radvel/tree/master/example_planets>`_.
-
-Perform a maximum-likelihood fit. You almost always will need to do this first:
-
-.. code-block:: bash
-
-    $ radvel fit -s /path/to/radvel/example_planets/HD164922.py
-
-   
-By default the results will be placed in a directory with the same name as
-your planet configuration file (without `.py`, e.g. `HD164922`). You
-may also specify an output directory using the ``-o`` flag.
-
-After the maximum-likelihood fit is complete the directory should have been created
-and should contain one new file:
-`HD164922/HD164922_post_obj.pkl`. This is a ``pickle`` binary file
-that is not meant to be human-readable but lets make a plot of the
-best-fit solution contained in that file:
-
-.. code-block:: bash
-
-    $ radvel plot -t rv -s /path/to/radvel/example_planets/HD164922.py
-
-This should produce a plot named
-`HD164922_rv_multipanel.pdf` that looks something like this.
-
-.. image:: plots/HD164922_rv_multipanel.png
-
-Next lets perform the Markov-Chain Monte Carlo (MCMC) exploration to
-assess parameter uncertainties.
-
-.. code-block:: bash
-
-    $ radvel mcmc -s /path/to/radvel/example_planets/HD164922.py
-
-Once the MCMC chains finish running there will be another new file
-called `HD164922_mcmc_chains.csv.tar.bz2`. This is a compressed csv
-file containing the parameter values and likelihood at each step in
-the MCMC chains.
 
 
 Optional Features

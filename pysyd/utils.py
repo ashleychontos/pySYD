@@ -14,16 +14,17 @@ from pysyd.models import *
 
 
 def get_info(args, params={}, stars=np.array([])):
-    """Loads todo.txt, sets up file paths and initializes other information.
+    """Loads todo.txt, sets up file paths, loads in any available star information,
+       and sets up matplotlib params.
 
     Parameters
     ----------
     args : argparse.Namespace
         command line arguments
     star_info : str
-        the file path to the star_info.csv file containing star information. Default value is `'Files/star_info.csv'`
+        the file path to the star_info.csv file containing star information. Default value is `'info/star_info.csv'`
     params : dict
-        the pipeline parameters
+        the pipeline parameters, which is saved to args.params
 
     Returns
     -------
@@ -73,7 +74,13 @@ def get_info(args, params={}, stars=np.array([])):
 
 
 def check_inputs(args):
-    """ Make sure the command line inputs are proper lengths based on the specified stars."""
+    """ Make sure the command line inputs are proper lengths based on the specified stars.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        the command line arguments
+"""
 
     checks={'lowerb':args.lowerb,'upperb':args.upperb,'lowerx':args.lowerx,
             'upperx':args.upperx,'dnu':args.dnu,'numax':args.numax}
@@ -143,13 +150,13 @@ def get_background_params(
     args : argparse.Namespace
         the command line arguments
     fitbg : dict
-        the parameters of the fit background routine
+        the parameters relevant for the fit background routine, which is saved to args.fitbg
     box_filter : float
         the size of the box filter. Default value is `2.5`.
     ind_width : int
         the independent average smoothing width. Default value is `50`.
     n_rms : int
-        TODO: Write description. Default value is `20`.
+        number of data points to estimate red noise contributions. Default value is `20`.
     n_peaks : int
         the number of peaks to select. Default value is `10`.
     force : float
@@ -169,7 +176,7 @@ def get_background_params(
     slope : bool
         if true will correct for edge effects and residual slope in Gaussian fit. Default value is `False`.
     samples : bool
-        TODO: Write description. Default value is `True`.
+        if true, will save the monte carlo samples to a csv. Default value is `True`.
 
     Returns
     -------
@@ -208,14 +215,13 @@ def get_background_params(
 
 
 def get_star_info(args, cols=['rad','logg','teff','numax','lowerx','upperx','lowerb','upperb','seed']):
-    """Get star information stored in `files/star_info.csv`.
+    """Get star information stored in args.info. Please note: this is not required for pySYD to run
+       successfully. Default value is `files/star_info.csv`.
 
     Parameters
     ----------
     args : argparse.Namespace
         the command line arguments
-    star_info : str
-        the file path to the file `star_info.csv`
     cols : list
         the list of columns to extract information from. Default value is `['rad', 'logg', 'teff']`.
 
@@ -272,10 +278,19 @@ def get_star_info(args, cols=['rad','logg','teff','numax','lowerx','upperx','low
 def load_data(star, lc_data=False, ps_data=False):
     """Loads light curve and power spectrum data for the current star.
 
+    Parameters
+    ----------
+    star : target.Target
+        the pySYD pipeline object
+
     Returns
     -------
-    success : bool
-        will return `True` if both the light curve and power spectrum data files exist otherwise `False`
+    star : target.Target
+        the pySYD pipeline object
+    lc_data : bool
+        will return `True` if both the light curve data file exists otherwise `False`
+    ps_data : bool
+        will return `True` if both the power spectrum data file exists otherwise `False`
     """
 
     # Now done at beginning to make sure it only does this one per star

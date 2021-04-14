@@ -78,11 +78,11 @@ Turn off the find excess module. This is only recommended when a list of numaxes
 
 - `-f`, `--f`, `-file`, `--file` [string]
 
-Path to txt file that contains the list of targets to process. Default=`'Files/todo.txt'`
+Path to txt file that contains the list of targets to process. Default=`'info/todo.txt'`
 
 - `-filter`, `--filter`, `-smooth`, `--smooth` [float]
 
-Box filter width in muHz for the power spectrum. The default is `2.5` muHz but will change to `0.5` muHz if the numax derived from `find_excess` or the numax provided in `Files/stars_info.csv` is <= 500 muHz so that it doesn't oversmooth the power spectrum.
+Box filter width in muHz for the power spectrum. The default is `2.5` muHz but will change to `0.5` muHz if the numax derived from `find_excess` or the numax provided in `info/stars_info.csv` is <= 500 muHz so that it doesn't oversmooth the power spectrum.
 
 - `-kc`, `--kc`, `-keplercorr`, `--keplercorr` [boolean]
 
@@ -104,7 +104,7 @@ Option to directly specify targets from the command line. This accepts * argumen
 
 Turn on verbose output
 
-#### See `syd --help` for more options.
+#### See `pysyd --help` for more options.
 
 ## Tutorials 
 
@@ -122,7 +122,7 @@ Please cite the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoA
 
 ## Documentation
 
-Documentation is available [here]
+Documentation is available [here](https://pysyd.readthedocs.io)
 
 ## Troubleshooting
 
