@@ -1,7 +1,7 @@
 <div align="center">
 <img src="docs/figures/pysyd_logo_inv.png" width="75%">
 
-**Open-source Asteroseismology.**
+**Automated extraction of global asteroseismic parameters**
 
 </div>
 
