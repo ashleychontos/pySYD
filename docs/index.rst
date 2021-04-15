@@ -2,15 +2,11 @@
 
    <br />
 
-pySYD: |br| Open-source Asteroseismology
+pySYD: Automated Extraction of Global Asteroseismic Parameters
 ========================================
 
-Welcome to the documentation for ``pySYD``, a Python package for automated
-extraction of global asteroseismic parameters. 
-
-A majority of the methodology and framework of ``pySYD`` is adapted from the IDL asteroseismology pipeline SYD. Please cite 
-the `original paper <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_ and the following DOI if you make use 
-of ``pySYD``` in your work.
+``pySYD`` is a Python package for the extraction of global asteroseismic parameters. The methodology and framework of ``pySYD`` follows the IDL-based ``SYD`` pipeline `(Huber et al. 2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_. Please cite the paper and the following DOI if you make use 
+of ``pySYD`` in your work. 
 
 Code contributions are welcome and should be submitted as a pull request.
 
