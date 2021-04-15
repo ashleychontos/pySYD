@@ -22,12 +22,15 @@ Single Star
 KIC 1435467
 
 pySYD ``find_excess`` results:
+
 .. image:: figures/ex1_x.png
 
 pySYD ``fit_background`` results:
+
 .. image:: figures/ex1_b.png
 
 pySYD ``sampling`` results:
+
 .. image:: figures/ex1_s.png
 
 ====================
@@ -35,12 +38,15 @@ pySYD ``sampling`` results:
 KIC 2309595
 
 pySYD ``find_excess`` results:
+
 .. image:: figures/ex2_x.png
 
 pySYD ``fit_background`` results:
+
 .. image:: figures/ex2_b.png
 
 pySYD ``sampling`` results:
+
 .. image:: figures/ex2_s.png
 
 ====================
@@ -48,12 +54,15 @@ pySYD ``sampling`` results:
 KIC 11618103
 
 pySYD ``find_excess`` results:
+
 .. image:: figures/ex3_x.png
 
 pySYD ``fit_background`` results:
+
 .. image:: figures/ex3_b.png
 
 pySYD ``sampling`` results:
+
 .. image:: figures/ex3_s.png
 
 
