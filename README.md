@@ -15,9 +15,9 @@
 
 Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, and Maryum Sayeed. 
 
-Please cite the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract) and the following DOI if you make use of this software in your research.
+Please cite the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract) and the following DOI if you make use of this software in your work.
 [need to do]
 
 ## Documentation
 
-Documentation is available [here](https://pysyd.readthedocs.io)
+Read the documentation at [pysyd.readthedocs.io](https://pysyd.readthedocs.io)
