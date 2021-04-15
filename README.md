@@ -1,7 +1,7 @@
 <div align="center">
 <img src="docs/figures/pysyd_logo_inv.png" width="75%">
 
-**Open-source asteroseismology: automated extraction of global asteroseismic properties**
+**Automated Extraction of Global Asteroseismic Parameters**
 
 [![PyPI Status](https://badge.fury.io/py/pysyd.svg)](https://badge.fury.io/py/pysyd)
 [![Documentation Status](https://readthedocs.org/projects/pysyd/badge/?version=latest)](https://pysyd.readthedocs.io/en/latest/?badge=latest)
