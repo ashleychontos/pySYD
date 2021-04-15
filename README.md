@@ -1,5 +1,5 @@
 <div align="center">
-<img src="docs/figures/pysyd_logo_inv.png" width="75%">
+<img src="docs/figures/pysyd_logo_inv.png" width="50%">
 
 **Automated Extraction of Global Asteroseismic Parameters**
 
