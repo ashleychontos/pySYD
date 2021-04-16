@@ -97,5 +97,7 @@ html_logo = "figures/pysyd_logo_rtd.png"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+latex_logo = '_static/latex.png'
+
 # Output file base name for HTML help builder.
 #htmlhelp_basename = 'pysyddoc'
