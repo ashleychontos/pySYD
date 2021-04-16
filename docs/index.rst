@@ -2,8 +2,8 @@
 
    <br />
 
-pySYD: |br| Automated Extraction of Global Asteroseismic Parameters
-===================================================================
+pySYD: |br| Automated Extraction of |br| Global Asteroseismic Parameters
+========================================================================
 
 ``pySYD`` is an open-source python package to detect solar-like oscillations and measure global asteroseismic parameters. ``pySYD`` provides best-fit values and uncertainties for the following parameters:
 
