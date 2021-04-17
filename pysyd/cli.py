@@ -102,10 +102,16 @@ def main():
     )
     parser_run.add_argument('-star', '--star', '-stars', '--stars',
                             dest='star',
-                            help="""List of targets to process (default=None). If this is not provided, it will default to read targets in from the default 'file' argument ('Files/todo.txt')""",
+                            help="""List of targets to process (default=None). If this is not provided, it will default to read targets in from the default 'file' argument ('Files/todo.txt').""",
                             nargs='*',
                             type=int,
                             default=None,
+    )
+    parser_run.add_argument('-ec', '--ec', '-echelle', '--echelle',
+                            dest='echelle',
+                            help="""Turn on bilinear interpolation for echelle diagram. If not provided, default is 'none'. """,
+                            default=False, 
+                            action='store_true',
     )
 
     # CLI relevant for finding power excess
@@ -161,7 +167,7 @@ def main():
     )
     background.add_argument('-bf', '--bf', '-box', '--box', '-boxfilter', '--boxfilter',
                             dest='box_filter',
-                            help='Box filter width [in muHz] for plotting the power spectrum (default=2.5muHz) Please note: this is **NOT** used in any subsequent analyses',
+                            help='Box filter width [in muHz] for plotting the power spectrum (default=2.5muHz). Please note: this is **NOT** used in any subsequent analyses.',
                             default=2.5,
                             type=float,
     )
@@ -173,7 +179,7 @@ def main():
     )
     background.add_argument('-dnu', '--dnu',
                             dest='dnu',
-                            help='Brute force method to provide value for dnu.',
+                            help='Brute force method to provide value for dnu',
                             nargs='*',
                             type=float,
                             default=None, 
@@ -187,7 +193,7 @@ def main():
     )
     background.add_argument('-lb', '--lb', '-lowerb', '--lowerb', 
                             dest='lowerb',
-                            help='Lower limit of power spectrum to use in fitbg module (default=None) Please note: unless numax is known, it is not suggested to fix this beforehand.',
+                            help='Lower limit of power spectrum to use in fitbg module (default=None). Please note: unless numax is known, it is not suggested to fix this beforehand.',
                             nargs='*',
                             default=None,
                             type=float,
@@ -236,7 +242,7 @@ def main():
     )
     background.add_argument('-ub', '--ub', '-upperb', '--upperb', 
                             dest='upperb',
-                            help='Upper limit of power spectrum to use in fitbg module (default=None) Please note: unless numax is known, it is not suggested to fix this beforehand.',
+                            help='Upper limit of power spectrum to use in fitbg module (default=None). Please note: unless numax is known, it is not suggested to fix this beforehand.',
                             nargs='*',
                             default=None,
                             type=float,

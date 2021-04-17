@@ -318,8 +318,6 @@ def load_data(star, lc_data=False, ps_data=False):
             star.nyquist = 10**6/(2.0*star.cadence)
             if star.verbose:
                 print('# LIGHT CURVE: %d lines of data read' % len(star.time))
-            if star.params[star.name]['numax'] > 500.:
-                star.fitbg['smooth_ps'] = 2.5
         # Load power spectrum
         if not os.path.exists('%s/%d_PS.txt' % (star.params['inpdir'], star.name)):
             ps_data=False
@@ -445,7 +443,7 @@ def get_initial_guesses(star):
         else:
             mask = np.ma.getmask(np.ma.masked_inside(star.frequency, 1.0, star.nyquist))
     # if lower numax adjust default smoothing filter from 2.5->0.5muHz
-    if star.params[star.name]['numax'] <= 500.:
+    if star.params[star.name]['numax'] <= 500. and star.fitbg['smooth_ps'] is None:
         star.fitbg['smooth_ps'] = 0.5
     star.frequency = star.frequency[mask]
     star.power = star.power[mask]

@@ -218,9 +218,14 @@ def plot_background(star):
 
     # echelle diagram
     ax8 = fig.add_subplot(3, 3, 8)
-    ax8.imshow(star.ech, extent=star.extent, interpolation='none', aspect='auto', origin='lower', cmap=plt.get_cmap('viridis'))
+    if star.echelle: 
+        interpolation='bilinear'
+    else:
+        interpolation='none'
+    ax8.imshow(star.ech, extent=star.extent, interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap('viridis'))
     ax8.axvline([star.obs_dnu], color='white', linestyle='--', linewidth=1.0, dashes=(5, 5))
     ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
+    ax8.set_title('BLAH')
     ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % star.obs_dnu)
     ax8.set_ylabel(r'$\rm \nu \,\, [\mu Hz]$')
     ax8.set_xlim([0.0, 2.0*star.obs_dnu])
