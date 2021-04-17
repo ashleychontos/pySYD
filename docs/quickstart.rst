@@ -38,10 +38,6 @@ You may test your installation by using ``pysyd --help`` to see available comman
     subcommands:
       {setup,run}
 
-There are two main subcommands ``setup`` and ``run``, the former of which should only be
-executed once after installation. The rest of the time and functionality will require ``pysyd run``.
-
-
 
 Setting Up
 **********
@@ -54,18 +50,18 @@ from a convenient directory:
     $ pysyd setup
 
 This command will create `data`, `info`, and `results` directories in the current working 
-directory, unless otherwise specified (see :ref: `CLI` for more details). Setup will also 
-download two information files: `info/todo.txt` and `info/star_info.csv`. See :ref:`overview` 
-for more information on what purposes these files serve. Additionally, three example stars 
+directory, if they don't already exist. Setup will also download two information files: 
+**info/todo.txt** and **info/star_info.csv**. See :ref:`overview` for more information on 
+what purposes these files serve. Additionally, three example stars 
 from the `source code <https://github.com/ashleychontos/pySYD>`_ are included (see :ref:`examples`).
 
-The optional verbose command can be called with the setup feature 
+The optional verbose command can be called with the setup feature:
 
 .. code-block:: bash
 
     $ pysyd setup -verbose
 
-which will print the absolute paths of all directories that are created during this step.
+This will print the absolute paths of all directories that are created during setup.
 
 
 
