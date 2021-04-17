@@ -36,16 +36,16 @@ There are two main files provided:
 
 #. **info/star_info.csv** : a means for providing individual star information. Star IDs are crossmatched with this list and therefore, do not need to be in any particular order. In order to read information in properly, it **must** contain the following column heads:
 
-    * "stars" [int] : star IDs that should exactly match the star provided via command line or in todo.txt
-    * "rad" [float] : stellar radius (units: solar radii)
-    * "teff" [float] : effective temperature (units: K)
-    * "logg" [float] : surface gravity (units: dex)
-    * "numax" [float] : the frequency corresponding to maximum power (units: muHz)
-    * "lowerx" [float] : lower frequency limit to use in the findex module (units: muHz)
-    * "upperx" [float] : upper frequency limit to use in the findex module (units: muHz)
-    * "lowerb" [float] : lower frequency limit to use in the background-fitting module (units: muHz)
-    * "upperb" [float] : upper frequency limit to use in the background-fitting module (units: muHz)
-    * "seed" [int] : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes
+   * "stars" [int] : star IDs that should exactly match the star provided via command line or in todo.txt
+   * "rad" [float] : stellar radius (units: solar radii)
+   * "teff" [float] : effective temperature (units: K)
+   * "logg" [float] : surface gravity (units: dex)
+   * "numax" [float] : the frequency corresponding to maximum power (units: muHz)
+   * "lowerx" [float] : lower frequency limit to use in the findex module (units: muHz)
+   * "upperx" [float] : upper frequency limit to use in the findex module (units: muHz)
+   * "lowerb" [float] : lower frequency limit to use in the background-fitting module (units: muHz)
+   * "upperb" [float] : upper frequency limit to use in the background-fitting module (units: muHz)
+   * "seed" [int] : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes
 
 
 Data
@@ -53,8 +53,8 @@ Data
 
 File format for a given star ID: 
 
-    *  **ID_LC.txt** : lightcurve in units of days versus fractional flux) 
-    *  **ID_PS.txt** : power spectrum in units of muHz versus ppm^2 muHz^-1 (normalized power density)
+*  **ID_LC.txt** : lightcurve in units of days versus fractional flux) 
+*  **ID_PS.txt** : power spectrum in units of muHz versus ppm^2 muHz^-1 (normalized power density)
 
 
 .. warning::
