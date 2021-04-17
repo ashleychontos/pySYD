@@ -73,7 +73,7 @@ If you ran the setup feature, there are three example stars provided: 1435467 (t
 
 .. code-block:: bash
 
-    $ pysyd -star 1435467 -show -verbose
+    $ pysyd run -star 1435467 -show -verbose
 
 ``pySYD`` is optimized for running multiple stars and therefore by default, both the ``-verbose`` and ``-show`` 
 (i.e. the output plots) options are set to ``False``. We recommend using them for the example, since they are helpful to see how 
@@ -83,7 +83,7 @@ To estimate uncertainties in the derived parameters, set ``-mc`` to a number suf
 
 .. code-block:: bash
 
-    $ pysyd -star 1435467 -show -verbose -mc 200
+    $ pysyd run -star 1435467 -show -verbose -mc 200
 
 In the previous example, ``-mc`` was not specified and is 1 by default (for 1 iteration). By changing this 
 value, it will randomize the power spectrum for the specified number of steps and attempt to recover the parameters. 
