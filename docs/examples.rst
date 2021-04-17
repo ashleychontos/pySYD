@@ -4,8 +4,7 @@ Examples
 ========
 
 If ``pysyd setup`` was successfully executed, there should now be light curves and power spectra 
-for three KIC stars in the `data/` directory. If so, then you are ready to test out the software!
-
+for three KIC stars in the **data/** directory. If so, then you are ready to test out the software!
 
 
 ====================
