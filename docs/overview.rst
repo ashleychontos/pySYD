@@ -19,12 +19,12 @@ Structure
 
 We recommend using the following structure under three main directories:
 
-#. ``**info/**`` : *[input]* directory to provide prior information about the stars to be processed (although not a requirement)
-#. ``**data/**`` : [input] directory containing the data to be processed
-#. ``**results/**`` : [output] directory for resulting figures and files for processed targets
-        * Subdirectories are automatically created for each processed star ID
-        * Regardless of the number of stars processed, results will be concatenated into a 
-          single csv file in the upper-level directory 
+#. `` **info/** `` : [input] directory to provide prior information about the stars to be processed (although not a requirement)
+#. `` **data/** `` : [input] directory containing the data to be processed
+#. `` **results/** `` : [output] directory for resulting figures and files for processed targets
+                          * Subdirectories are automatically created for each processed star ID
+                          * Regardless of the number of stars processed, results will be concatenated into a 
+                            single csv file in the upper-level directory 
 
 
 Input
