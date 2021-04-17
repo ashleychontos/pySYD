@@ -5,7 +5,7 @@ Getting Started
 
 .. _installation:
 
-
+=============
 
 Installation
 ************
@@ -67,12 +67,32 @@ The optional verbose command can be called with the setup feature
 
     $ pysyd setup -verbose
 
-which will provide the absolute paths of all directories that are created during this step.
+which will print the absolute paths of all directories that are created during this step.
 
 
 
 Example Fit
 ***********
 
+If you ran the setup feature, there are three example stars provided: 1435467 (the least evolved), 
+2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
+.. code-block:: bash
+
+    $ pysyd -star 1435467 -show -verbose
+
+``pySYD`` is optimized for running multiple stars and therefore by default, both the ``-verbose`` and ``-show`` 
+(plots) options are set to ``False``. We recommend using them for the example, since they are helpful to see how 
+the pipeline processes targets.
+
+To estimate uncertainties in the derived parameters, set `-mc` to something sufficient for bootstrap sampling.
+
+.. code-block:: bash
+
+    $ pysyd -star 1435467 -show -verbose -mc 200`
+
+In the previous example, ``-mciter`` was not specified and is 1 by default (for 1 iteration). By changing this 
+value, it will randomize the power spectrum for the specified number of steps and attempt to recover the parameters. 
+The uncertainties will appear in the verbose output, output csvs, and an additional figure will show 
+the distributions of the parameters.
 

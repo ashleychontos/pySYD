@@ -77,6 +77,8 @@ def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/as
         optional verbose output
     path_info : str
         path where star list and information are saved. Default is 'info/'
+    raw : str
+        path to download package data and examples from (source directory)
     """
 
     print('\n\nDownloading relevant data from https://github.com/ashleychontos/pySYD:\n')

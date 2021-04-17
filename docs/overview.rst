@@ -8,57 +8,82 @@ A ``pySYD`` pipeline ``Target`` class object has two main methods:
 #. ``find_excess`` : attempts to find the power excess due to solar-like oscillations using a collapsed ACF with 3 different ``box`` sizes
 #. ``fit_background`` : perform a fit to the stellar background contribution (i.e. granulation) and measures the global asteroseismic properties 1) frequency corresponding to maximum power (numax or nu_max) and 2) the large frequency separation (delta_nu or dnu).
 
-##
-
-### `Scripts`
-- `functions.py` : data manipulation tools (i.e. smoothing functions, binning data)
-- `cli.py` : sets command line interface tools used with the main pipeline initialization
-- `models.py` : frequency domain distributions (i.e. Gaussian, Lorentzian, Harvey, etc.)
-- `pipeline.py` : main pipeline initialization, including parallelization capabilities
-- `plots.py` : plotting routines
-- `target.py` : main pipeline Target class that is initialized for each processed star
-- `utils.py` : contains information dictionaries and non-science related functions (i.e. load/check input data)
-
-### `Package Data`
-
-- info/todo.txt: Basic text file containing IDs of stars to be processed (one star ID per line)
-- data/: Directory containing data to be processed. File format: ID_LC.txt (lightcurve: days versus fractional flux) and ID_PS.txt (power spectrum: muHz versus ppm^2 muHz^-1). NOTE: this is not created and must be handled manually. There is example data included in the `pip install pysyd` package (in pysyd/data), which we suggest to copy over to a more local, accessible directory. This will successfully read in data if there is a 'data/' directory wherever `pysyd` is initialized from.
-- info/star_info.csv: individual star information, but is not a requirement for the pipeline to run. If stellar properties are provided, `pySYD` will estimate a value for numax and use that as an initial starting point. Targets in this csv do not need to be in any specific order nor do they need to exactly include all targets in todo.txt. This can be a file that contains thousands of stars, where only a subset is run (i.e. think of this as a master dictionary for stellar information). In order to read information in properly, be sure that `star_info.csv` has exactly the following column heads:
-  - "stars" : star IDs that should exactly match the targets provided via command line or in todo.txt
-  - "rad" : stellar radius (in solar radii)
-  - "teff" : effective temperature (K)
-  - "logg" : surface gravity (dex)
-  - "numax" : the frequency corresponding to maximum power (in muHz). If no information is provided, we suggest that the user first run findex (that runs by default anyway on a given target), which will find a starting point for numax. However, if the pipeline does not find the proper numax, providing a value in this csv will override the first module's value and use the provided value instead.
-  - "lowerx" : lower frequency limit to use in the findex module (in muHz)
-  - "upperx" : upper frequency limit to use in the findex module (in muHz)
-  - "lowerb" : lower frequency limit to use in the background-fitting module (in muHz)
-  - "upperb" : upper frequency limit to use in the background-fitting module (in muHz)
-  - "seed" : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes.
-- results/: Directory containing result plots and files for each target. Currently, it will create this directory (if it does not already exist) in the current working directory of the user.
+If stellar properties are provided, `pySYD` will estimate a value for numax and use that as an initial starting point. 
+If no information is provided, we suggest that the user first run findex (that runs by default anyway on a given target), 
+which will find a starting point for numax. However, if the pipeline does not find the proper numax, providing a value 
+in this csv will override the first module's value and use the provided value instead.
 
 
-Files
-#####
+Structure
+*********
 
-Files
-=====
+We recommend using the following structure under three main directories:
+
+*. `info/` : [input] directory to provide prior information about the stars to be processed (although not a requirement)
+*. `data/` : [input] directory containing the data to be processed
+*. `results/` : [output] directory for resulting figures and files for processed targets
+    * Subdirectories are automatically created for each processed star ID
+    * Regardless of the number of stars processed, results will be concatenated into a 
+      single csv file in the upper-level directory 
+
 
 Input
-+++++ 
+*****
 
-In addition, there should be a `todo.txt`
-saved to `info/` as well as a `star_info.csv`. The `todo.txt` is a basic text file with
-one star ID per line, which must match the data ID to be read in properly. If no stars are
-specified via command line, the star(s) listed in the text file will be processed by
-default. This is convenient when running an ensemble of stars. 
+Info
+++++
 
-Light curves and power spectra can be added, following a similar format: ID_LC.txt 
-for the light curve and ID_PS.txt for the power spectrum. Please note: the units of the 
-power spectrum MUST be in ppm^2 muHz^-1 for the software to work properly.
+There are two main files provided:
+
+    #. `info/todo.txt` : this is a basic text file with one star ID per line, which 
+        must match the data ID to be loaded in properly. If no stars are specified 
+        via command line, the star(s) listed in the text file will be processed by
+        default. This is recommended when running a large number of stars.
+    #. `info/star_info.csv` : a means for providing individual star information.  
+        Star IDs are crossmatched with this list and therefore, do not need to be 
+        in any particular order. In order to read information in properly, it **must** 
+        contain the following column heads:
+        * "stars" : star IDs that should exactly match the star provided via command line or in todo.txt
+        * "rad" : stellar radius (in solar radii)
+        * "teff" : effective temperature (K)
+        * "logg" : surface gravity (dex)
+        * "numax" : the frequency corresponding to maximum power (in muHz)
+        * "lowerx" : lower frequency limit to use in the findex module (in muHz)
+        * "upperx" : upper frequency limit to use in the findex module (in muHz)
+        * "lowerb" : lower frequency limit to use in the background-fitting module (in muHz)
+        * "upperb" : upper frequency limit to use in the background-fitting module (in muHz)
+        * "seed" : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes.
+
+Data
+++++
+
+File format for a given star ID: 
+    * ID_LC.txt : lightcurve in units of days versus fractional flux) 
+    * ID_PS.txt : power spectrum in units of muHz versus ppm^2 muHz^-1 (normalized power density)
+
+.. warning::
+
+    The power spectrum **must** be in the specified units in order for the pipeline 
+    to properly process the data and provide reliable results. 
+
 
 Output
-++++++
+******
 
+Results
++++++++
+
+Subdirectories are automatically created for each individually processed star (by their ID).
+Results for each of the two main ``pySYD`` modules (i.e. ``find_excess`` and ``fit_background``) 
+will be concatenated into a single csv in the upper-level ``results/`` directory, which is
+helpful when running many stars.
+
+A single star will yield one summary figure (png) and one data product (csv) for each of the two
+main modules, for a total of 4 output files. If the monte-carlo sampling is used, an additional
+figure will show the posterior distributions for the estimated parameters. While not creating
+another output, the errors will be reflected in the ``background.csv`` file. There is also an 
+option to save the samples if desired for later use (by adding ``-samples`` to the command line). 
+See :ref:`examples` for examples on output plots.
 
 
 Command Line Interface
