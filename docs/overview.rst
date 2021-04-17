@@ -53,7 +53,7 @@ Data
 
 File format for a given star ID: 
 
-*  **ID_LC.txt** : lightcurve in units of days versus fractional flux) 
+*  **ID_LC.txt** : lightcurve in units of days versus fractional flux
 *  **ID_PS.txt** : power spectrum in units of muHz versus ppm^2 muHz^-1 (normalized power density)
 
 
