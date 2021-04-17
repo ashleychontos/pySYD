@@ -5,13 +5,25 @@ Overview
 
 A ``pySYD`` pipeline ``Target`` class object has two main methods:
 
-#. ``find_excess`` : attempts to find the power excess due to solar-like oscillations using a collapsed ACF with 3 different ``box`` sizes
-#. ``fit_background`` : perform a fit to the stellar background contribution (i.e. granulation) and measures the global asteroseismic properties 1) frequency corresponding to maximum power (numax or nu_max) and 2) the large frequency separation (delta_nu or dnu).
+#. ``find_excess`` : searched for power excess due to solar-like oscillations using a collapsed 
+   ACF approach with 3 different ``box`` sizes
+#. ``fit_background`` : optimizes the global fit by selecting the best-fit stellar background
+   model, correcting the power spectrum using this model, and then fitting for the global parameters
+   numax and dnu
 
-If stellar properties are provided, `pySYD` will estimate a value for numax and use that as an initial starting point. 
-If no information is provided, we suggest that the user first run findex (that runs by default anyway on a given target), 
-which will find a starting point for numax. However, if the pipeline does not find the proper numax, providing a value 
-in this csv will override the first module's value and use the provided value instead.
+.. note::
+
+    By default, both of these modules will run and is the recommended procedure if no prior stellar 
+    information is provided (i.e in star_info.csv, see below for more details). 
+
+    If stellar parameters (i.e. radius, effective temperature, surface gravity) are provided, ``pySYD`` 
+    will estimate a value for numax using a scaling relation. Therefore, the first module can be bypassed,
+    using the estimated numax as an initial starting point for the second module.
+
+    There is also an option to directly provide numax in the csv, which will override the value found in
+    the first module. Therefore, we suggest using this if you think the value found in the first module
+    is not the correct value. This will ensure that the second module will instead center around the 
+    desired numax.
 
 
 Structure
@@ -27,8 +39,8 @@ We recommend using the following structure under three main directories:
 Input
 *****
 
-Info
-++++
+Info/
++++++
 
 There are two main files provided:
 
@@ -48,8 +60,8 @@ There are two main files provided:
    * "seed" [int] : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes
 
 
-Data
-++++
+Data/
++++++
 
 File format for a given star ID: 
 
@@ -66,8 +78,8 @@ File format for a given star ID:
 Output
 ******
 
-Results
-+++++++
+Results/
+++++++++
 
 Subdirectories are automatically created for each individually processed star (by their ID).
 Results for each of the two main ``pySYD`` modules (i.e. ``find_excess`` and ``fit_background``) 
