@@ -85,7 +85,7 @@ pySYD ``sampling`` results:
 
 
 Ensemble of Stars
-+++++++++++++++++
+*****************
 
 If you are running OSX, and want to run an ensemble of stars in parallel, you 
 may need to perform some additional installation steps. See ###.
