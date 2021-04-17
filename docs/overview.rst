@@ -32,7 +32,7 @@ Structure
 We recommend using the following structure under three main directories:
 
 #. **info/** : [optional input] directory to provide prior information on the processed stars
-#. **data/** : [required input] directory containing the data to be processed
+#. **data/** : [required input] directory containing the light curves and power spectra
 #. **results/** : [optional output] directory for result figures and files
 
 
