@@ -19,19 +19,19 @@ KIC 1435467
 pySYD ``find_excess`` results:
 
 .. image:: figures/ex1_x.png
-  :width: 400
+  :width: 600
   :alt: Find excess output plot for KIC 1435467.
 
 pySYD ``fit_background`` results:
 
 .. image:: figures/ex1_b.png
-  :width: 400
+  :width: 600
   :alt: Fit background output plot for KIC 1435467.
 
 pySYD ``sampling`` results:
 
 .. image:: figures/ex1_s.png
-  :width: 400
+  :width: 600
   :alt: Posterior distributions for derived parameters of KIC 1435467.
 
 ====================
@@ -42,19 +42,19 @@ KIC 2309595
 pySYD ``find_excess`` results:
 
 .. image:: figures/ex2_x.png
-  :width: 400
+  :width: 600
   :alt: Find excess output plot for KIC 2309595.
 
 pySYD ``fit_background`` results:
 
 .. image:: figures/ex2_b.png
-  :width: 400
+  :width: 600
   :alt: Fit background output plot for KIC 2309595.
 
 pySYD ``sampling`` results:
 
 .. image:: figures/ex2_s.png
-  :width: 400
+  :width: 600
   :alt: Posterior distributions for derived parameters of KIC 2309595.
 
 ====================
@@ -65,19 +65,19 @@ KIC 11618103
 pySYD ``find_excess`` results:
 
 .. image:: figures/ex3_x.png
-  :width: 400
+  :width: 600
   :alt: Find excess output plot for KIC 11618103.
 
 pySYD ``fit_background`` results:
 
 .. image:: figures/ex3_b.png
-  :width: 400
+  :width: 600
   :alt: Fit background output plot for KIC 11618103.
 
 pySYD ``sampling`` results:
 
 .. image:: figures/ex3_s.png
-  :width: 400
+  :width: 600
   :alt: Posterior distributions for derived parameters of KIC 11618103.
 
 
