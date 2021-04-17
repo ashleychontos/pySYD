@@ -19,12 +19,9 @@ Structure
 
 We recommend using the following structure under three main directories:
 
-#. `` **info/** `` : [input] directory to provide prior information about the stars to be processed (although not a requirement)
-#. `` **data/** `` : [input] directory containing the data to be processed
-#. `` **results/** `` : [output] directory for resulting figures and files for processed targets
-                          * Subdirectories are automatically created for each processed star ID
-                          * Regardless of the number of stars processed, results will be concatenated into a 
-                            single csv file in the upper-level directory 
+#. **info/** : [optional input] directory to provide prior information about the stars to be processed
+#. **data/** : [required input] directory containing the data to be processed
+#. **results/** : [optional output] directory for result figures and files on processed targets
 
 
 Input
@@ -35,11 +32,11 @@ Info
 
 There are two main files provided:
 
-    #. **``info/todo.txt``** : this is a basic text file with one star ID per line, which 
+    #. **info/todo.txt** : this is a basic text file with one star ID per line, which 
        must match the data ID to be loaded in properly. If no stars are specified 
        via command line, the star(s) listed in the text file will be processed by
        default. This is recommended when running a large number of stars.
-    #. **``info/star_info.csv``** : a means for providing individual star information.  
+    #. **info/star_info.csv** : a means for providing individual star information.  
        Star IDs are crossmatched with this list and therefore, do not need to be 
        in any particular order. In order to read information in properly, it **must** 
        contain the following column heads:
@@ -58,8 +55,8 @@ Data
 ++++
 
 File format for a given star ID: 
-    * **``ID_LC.txt``** : lightcurve in units of days versus fractional flux) 
-    * **``ID_PS.txt``** : power spectrum in units of muHz versus ppm^2 muHz^-1 (normalized power density)
+    * **ID_LC.txt** : lightcurve in units of days versus fractional flux) 
+    * **ID_PS.txt** : power spectrum in units of muHz versus ppm^2 muHz^-1 (normalized power density)
 
 .. warning::
 
@@ -75,13 +72,13 @@ Results
 
 Subdirectories are automatically created for each individually processed star (by their ID).
 Results for each of the two main ``pySYD`` modules (i.e. ``find_excess`` and ``fit_background``) 
-will be concatenated into a single csv in the upper-level ``results/`` directory, which is
+will be concatenated into a single csv in the upper-level results directory, which is
 helpful when running many stars.
 
 A single star will yield one summary figure (png) and one data product (csv) for each of the two
 main modules, for a total of 4 output files. If the monte-carlo sampling is used, an additional
 figure will show the posterior distributions for the estimated parameters. While not creating
-another output, the errors will be reflected in the ``background.csv`` file. There is also an 
+another output, the errors will be reflected in the `background.csv` file. There is also an 
 option to save the samples if desired for later use (by adding ``-samples`` to the command line). 
 See :ref:`examples` for examples on output plots.
 
