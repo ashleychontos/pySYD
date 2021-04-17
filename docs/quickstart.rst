@@ -79,7 +79,7 @@ If you ran the setup feature, there are three example stars provided: 1435467 (t
 (i.e. the output plots) options are set to ``False``. We recommend using them for the example, since they are helpful to see how 
 the pipeline processes targets.
 
-To estimate uncertainties in the derived parameters, set ``-mc`` to something sufficient for bootstrap sampling.
+To estimate uncertainties in the derived parameters, set ``-mc`` to a number sufficient for bootstrap sampling.
 
 .. code-block:: bash
 
