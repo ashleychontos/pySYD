@@ -17,8 +17,8 @@ A ``pySYD`` pipeline ``Target`` class object has two main methods:
     information is provided (i.e in star_info.csv, see below for more details). 
 
     If stellar parameters (i.e. radius, effective temperature, surface gravity) are provided, ``pySYD`` 
-    will estimate a value for numax using a scaling relation. Therefore, the first module can be bypassed,
-    using the estimated numax as an initial starting point for the second module.
+    will estimate a value for numax using a scaling relation. The first module can therefore be bypassed,
+    which will use the estimated numax as an initial starting point for the second module.
 
     There is also an option to directly provide numax in the csv, which will override the value found in
     the first module. Therefore, we suggest using this if you think the value found in the first module
