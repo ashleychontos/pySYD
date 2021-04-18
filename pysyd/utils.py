@@ -42,13 +42,13 @@ def get_info(args, params={}, stars=np.array([])):
         todo = np.array(args.star)
         args.verbose = False
         args.show = False
-        if args.nthreads == 0:
-            args.nthreads = mp.cpu_count()
-        if len(todo) < args.nthreads:
-            args.nthreads = len(todo)
+        if args.n_threads == 0:
+            args.n_threads = mp.cpu_count()
+        if len(todo) < args.n_threads:
+            args.n_threads = len(todo)
         # divide stars into groups set by number of cpus/nthreads available
-        digitized = np.digitize(np.arange(len(todo))%args.nthreads,np.arange(args.nthreads))
-        stars = np.array([todo[digitized == i] for i in range(1, args.nthreads+1)], dtype=object)
+        digitized = np.digitize(np.arange(len(todo))%args.n_threads,np.arange(args.n_threads))
+        stars = np.array([todo[digitized == i] for i in range(1, args.n_threads+1)], dtype=object)
 
     # Adding constants and the star list
     params.update({
@@ -82,8 +82,8 @@ def check_inputs(args):
         the command line arguments
 """
 
-    checks={'lowerb':args.lowerb,'upperb':args.upperb,'lowerx':args.lowerx,
-            'upperx':args.upperx,'dnu':args.dnu,'numax':args.numax}
+    checks={'lower_b':args.lower_b,'upper_b':args.upper_b,'lower_x':args.lower_x,
+            'upper_x':args.upper_x,'dnu':args.dnu,'numax':args.numax}
     for check in checks:
         if checks[check] is not None:
             assert len(args.star) == len(checks[check]), "The number of values provided for %s does not equal the number of stars"%check
@@ -122,9 +122,7 @@ def get_excess_params(
         'step': args.step,
         'binning': args.binning,
         'smooth_width': args.smooth_width,
-        'n_trials': args.ntrials,
-        'lower': 10.,
-        'upper': 4000.,
+        'n_trials': args.n_trials,
     }
     findex.update(pars)
 
@@ -139,9 +137,9 @@ def get_excess_params(
     return args
 
 
-def get_background_params(args, fitbg={}, box_filter=2.5, num_mc_iter=1, ind_width=50,
-                          n_rms=20, n_peaks=5, smooth_ps=1, lower=None, upper=None, slope=False,
-                          samples=False,):
+def get_background_params(args, fitbg={}, box_filter=2.5, mc_iter=1, ind_width=50, n_rms=20, 
+                          n_peaks=5, smooth_ps=1, slope=False, samples=False, clip_ech=True, 
+                          clip_value=None, smooth_ech=None, interp_ech=False):
     """
     Get the parameters for the background-fitting routine.
 
@@ -188,17 +186,18 @@ def get_background_params(args, fitbg={}, box_filter=2.5, num_mc_iter=1, ind_wid
     """
 
     pars = {
-        'num_mc_iter': args.mciter,
         'box_filter': args.box_filter,
+        'mc_iter': args.mc_iter,
         'ind_width': args.ind_width,
-        'n_rms': args.nrms,
-        'n_peaks': args.npeaks,
+        'n_rms': args.n_rms,
+        'n_peaks': args.n_peaks,
         'smooth_ps': args.smooth_ps,
-        'clip': args.clip,
-        'clip_value': args.value,
-        'smooth_ech': args.smooth_ech,
         'slope': args.slope,
         'samples': args.samples,
+        'clip_ech': args.clip_ech,
+        'clip_value': args.clip_value,
+        'smooth_ech': args.smooth_ech,
+        'interp_ech': args.interp_ech,
     }
     fitbg.update(pars)
 
@@ -217,9 +216,10 @@ def get_background_params(args, fitbg={}, box_filter=2.5, num_mc_iter=1, ind_wid
     return args
 
 
-def get_star_info(args, cols=['rad','logg','teff','numax','lowerx','upperx','lowerb','upperb','seed']):
-    """Get star information stored in args.info. Please note: this is not required for pySYD to run
-       successfully. Default value is `files/star_info.csv`.
+def get_star_info(args, cols=['rad','logg','teff','numax','lower_x','upper_x','lower_b','upper_b','seed']):
+    """
+    Get star information stored in args.info. Please note: this is not required for pySYD to run
+    successfully. Default value is `info/star_info.csv`.
 
     Parameters
     ----------
@@ -259,8 +259,8 @@ def get_star_info(args, cols=['rad','logg','teff','numax','lowerx','upperx','low
                         args.params[todo]['mass'] = ((((args.params[todo]['rad']*args.params['radius_sun'])**(2.0))*10**(args.params[todo]['logg'])/args.params['G'])/args.params['mass_sun'])
                         args.params[todo]['numax'] = args.params['numax_sun']*args.params[todo]['mass']*(args.params[todo]['rad']**(-2.0))*((args.params[todo]['teff']/args.params['teff_sun'])**(-0.5))
                         args.params[todo]['dnu'] = args.params['dnu_sun']*(args.params[todo]['mass']**(0.5))*(args.params[todo]['rad']**(-1.5))
-            override={'lowerb':args.lowerb,'upperb':args.upperb,'lowerx':args.lowerx,
-                      'upperx':args.upperx,'dnu':args.dnu,'numax':args.numax}
+            override={'lower_b':args.lower_b,'upper_b':args.upper_b,'lower_x':args.lower_x,
+                      'upper_x':args.upper_x,'dnu':args.dnu,'numax':args.numax}
             for each in override:
                 if override[each] is not None:
                     # if numax is provided via CLI, findex is skipped
@@ -360,12 +360,12 @@ def load_data(star, lc_data=False, ps_data=False):
             if star.params[star.name]['excess']:
                 # Make a mask using the given frequency bounds for the find excess routine
                 mask = np.ones_like(star.freq, dtype=bool)
-                if star.params[star.name]['lowerx'] is not None:
-                    mask *= np.ma.getmask(np.ma.masked_greater_equal(star.freq, star.params[star.name]['lowerx']))
+                if star.params[star.name]['lower_x'] is not None:
+                    mask *= np.ma.getmask(np.ma.masked_greater_equal(star.freq, star.params[star.name]['lower_x']))
                 else:
                     mask *= np.ma.getmask(np.ma.masked_greater_equal(star.freq, star.findex['lower']))
-                if star.params[star.name]['upperx'] is not None:
-                    mask *= np.ma.getmask(np.ma.masked_less_equal(star.freq, star.params[star.name]['upperx']))
+                if star.params[star.name]['upper_x'] is not None:
+                    mask *= np.ma.getmask(np.ma.masked_less_equal(star.freq, star.params[star.name]['upper_x']))
                 else:
                     mask *= np.ma.getmask(np.ma.masked_less_equal(star.freq, star.findex['upper']))
                 star.freq = star.freq[mask]
@@ -433,10 +433,10 @@ def get_initial_guesses(star):
 
     # Mask power spectrum for fitbg module based on estimated/fitted numax
     mask = np.ones_like(star.frequency, dtype=bool)
-    if star.params[star.name]['lowerb'] is not None:
-        mask *= np.ma.getmask(np.ma.masked_greater_equal(star.frequency, star.params[star.name]['lowerb']))
-        if star.params[star.name]['upperb'] is not None:
-            mask *= np.ma.getmask(np.ma.masked_less_equal(star.frequency, star.params[star.name]['upperb']))
+    if star.params[star.name]['lower_b'] is not None:
+        mask *= np.ma.getmask(np.ma.masked_greater_equal(star.frequency, star.params[star.name]['lower_b']))
+        if star.params[star.name]['upper_b'] is not None:
+            mask *= np.ma.getmask(np.ma.masked_less_equal(star.frequency, star.params[star.name]['upper_b']))
         else:
             mask *= np.ma.getmask(np.ma.masked_less_equal(star.frequency, star.nyquist))
     else:
@@ -498,14 +498,14 @@ def save_fitbg(star):
     """Save results of fit background routine"""
     df = pd.DataFrame(star.fitbg['results'][star.name])
     star.df = df.copy()
-    if star.fitbg['num_mc_iter'] > 1:
+    if star.fitbg['mc_iter'] > 1:
         for column in star.df.columns.values.tolist():
             star.df['%s_err' % column] = np.array([mad_std(star.df[column].values)]*len(star.df))
     new_df = pd.DataFrame(columns=['parameter', 'value', 'uncertainty'])
     for c, col in enumerate(df.columns.values.tolist()):
         new_df.loc[c, 'parameter'] = col
         new_df.loc[c, 'value'] = star.fitbg['results'][star.name][col][0]
-        if star.fitbg['num_mc_iter'] > 1:
+        if star.fitbg['mc_iter'] > 1:
             new_df.loc[c, 'uncertainty'] = mad_std(star.fitbg['results'][star.name][col])
         else:
             new_df.loc[c, 'uncertainty'] = '--'

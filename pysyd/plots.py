@@ -28,18 +28,13 @@ def set_plot_params():
         'ytick.direction': 'inout',
     })
 
-def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
-    """TODO: Write description."""
 
-    import matplotlib.colors as mcolors
-    new_cmap = mcolors.LinearSegmentedColormap.from_list(
-        'trunc({name},{a:.2f},{b:.2f})'.format(name=cmap.name, a=minval, b=maxval), cmap(np.linspace(minval, maxval, n))
-    )
-
-    return new_cmap
 
 def plot_excess(star):
-    """Creates a plot summarising the results of the find excess routine."""
+    """
+    Creates a plot summarising the results of the find excess routine.
+
+    """
 
     plt.figure(figsize=(12,8))
 
@@ -101,7 +96,11 @@ def plot_excess(star):
 
 
 def plot_background(star):
-    """Creates a plot summarising the results of the fit background routine."""
+    """
+    Creates a plot summarising the results of the fit background routine.
+
+    """
+
     from pysyd.functions import return_max, max_elements
     from pysyd.models import harvey
 
@@ -176,8 +175,8 @@ def plot_background(star):
     ax4.set_xlim([min(star.region_freq), max(star.region_freq)])
 
     # Background-corrected power spectrum with n highest peaks
-    star.freq = star.frequency[star.params[star.name]['mask']]
-    star.psd = star.bg_corr_smooth[star.params[star.name]['mask']]
+    star.freq = star.frequency[star.params[star.name]['ps_mask']]
+    star.psd = star.bg_corr_smooth[star.params[star.name]['ps_mask']]
     peaks_f, peaks_p = max_elements(star.freq, star.psd, star.fitbg['n_peaks'])
     ax5 = fig.add_subplot(3, 3, 5)
     ax5.plot(star.freq, star.psd, 'w-', zorder=0, linewidth=1.0)
@@ -216,9 +215,13 @@ def plot_background(star):
     ax7.annotate(r'$\Delta\nu = %.2f$' % star.obs_dnu, xy=(0.025, 0.85), xycoords="axes fraction", fontsize=18, color='lime')
     ax7.set_xlim([min(star.zoom_lag), max(star.zoom_lag)])
 
+    if star.fitbg['interp_ech']:
+        interpolation='bilinear'
+    else:
+        interpolation='none'
     # echelle diagram
     ax8 = fig.add_subplot(3, 3, 8)
-    ax8.imshow(star.ech, extent=star.extent, interpolation='none', aspect='auto', origin='lower', cmap=plt.get_cmap('viridis'))
+    ax8.imshow(star.ech, extent=star.extent, interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap('viridis'))
     ax8.axvline([star.obs_dnu], color='white', linestyle='--', linewidth=1.0, dashes=(5, 5))
     ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
     ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % star.obs_dnu)
@@ -246,7 +249,10 @@ def plot_background(star):
 
 
 def plot_samples(star):
-    """Plot results of the Monte-Carlo sampling."""
+    """
+    Plot results of the Monte-Carlo sampling.
+
+    """
 
     plt.figure(figsize=(12, 8))
     panels = ['numax_smooth', 'amp_smooth', 'numax_gaussian', 'amp_gaussian', 'fwhm_gaussian', 'dnu']

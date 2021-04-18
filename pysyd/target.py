@@ -154,15 +154,15 @@ class Target:
                 pass
             else:
                 # If sampling is enabled (i.e., args.mciter > 1), a progress bar is created w/ verbose output
-                if self.fitbg['num_mc_iter'] > 1:
+                if self.fitbg['mc_iter'] > 1:
                     if self.verbose:
                         print('-------------------------------------------------')
                         print('Running sampling routine:')
-                        self.pbar = tqdm(total=self.fitbg['num_mc_iter'])
+                        self.pbar = tqdm(total=self.fitbg['mc_iter'])
                         self.pbar.update(1)
                     self.i = 1
                     # Continue to sample while the number of successful steps is less than args.mciter
-                    while self.i < self.fitbg['num_mc_iter']:
+                    while self.i < self.fitbg['mc_iter']:
                         self.sampling_step()
                     utils.save_fitbg(self)
                     plots.plot_samples(self)
@@ -311,7 +311,7 @@ class Target:
         self.i += 1
         if self.verbose:
             self.pbar.update(1)
-            if self.i == self.fitbg['num_mc_iter']:
+            if self.i == self.fitbg['mc_iter']:
                 self.pbar.close()
 
 
@@ -344,8 +344,8 @@ class Target:
         """
         # Exclude region with power excess and smooth to estimate red noise components
         boxkernel = Box1DKernel(int(np.ceil(self.fitbg['box_filter']/self.resolution)))
-        self.params[self.name]['mask'] = (self.frequency >= self.maxpower[0]) & (self.frequency <= self.maxpower[1])
-        self.smooth_pow = convolve(self.random_pow[~self.params[self.name]['mask']], boxkernel)
+        self.params[self.name]['ps_mask'] = (self.frequency >= self.maxpower[0]) & (self.frequency <= self.maxpower[1])
+        self.smooth_pow = convolve(self.random_pow[~self.params[self.name]['ps_mask']], boxkernel)
         # Temporary array for inputs into model optimization
         pars = np.zeros((self.nlaws*2 + 1))
         # Estimate amplitude for each harvey component
@@ -429,14 +429,14 @@ class Target:
                 else:
                     paras.append(pp)
                     chi, _ = chisquare(
-                        f_obs=self.random_pow[~self.params[self.name]['mask']],
+                        f_obs=self.random_pow[~self.params[self.name]['ps_mask']],
                         f_exp=models.harvey(
-                            self.frequency[~self.params[self.name]['mask']],
+                            self.frequency[~self.params[self.name]['ps_mask']],
                             pp,
                             total=True
                         )
                     )
-                    reduced_chi2.append(chi/(len(self.frequency[~self.params[self.name]['mask']])-len(pams)))
+                    reduced_chi2.append(chi/(len(self.frequency[~self.params[self.name]['ps_mask']])-len(pams)))
             else:
                 if self.verbose:
                     print('%d: %s harvey model w/ white noise fixed' % (t+1, dict1[t]))
@@ -458,14 +458,14 @@ class Target:
                 else:
                     paras.append(pp)
                     chi, p = chisquare(
-                        f_obs=self.random_pow[~self.params[self.name]['mask']],
+                        f_obs=self.random_pow[~self.params[self.name]['ps_mask']],
                         f_exp=models.harvey(
-                            self.frequency[~self.params[self.name]['mask']],
+                            self.frequency[~self.params[self.name]['ps_mask']],
                             pp,
                             total=True
                             )
                         )
-                    reduced_chi2.append(chi/(len(self.frequency[~self.params[self.name]['mask']])-len(pams)+1))
+                    reduced_chi2.append(chi/(len(self.frequency[~self.params[self.name]['ps_mask']])-len(pams)+1))
 
         # If the fitting converged
         if np.isfinite(min(reduced_chi2)):
@@ -506,10 +506,10 @@ class Target:
         sig = (self.sm_par*(self.exp_dnu/self.resolution))/np.sqrt(8.0*np.log(2.0))
         pssm = convolve_fft(np.copy(self.random_pow), Gaussian1DKernel(int(sig)))
         model = models.harvey(self.frequency, self.pars, total=True)
-        inner_freq = list(self.frequency[self.params[self.name]['mask']])
-        inner_obs = list(pssm[self.params[self.name]['mask']])
-        outer_freq = list(self.frequency[~self.params[self.name]['mask']])
-        outer_mod = list(model[~self.params[self.name]['mask']])
+        inner_freq = list(self.frequency[self.params[self.name]['ps_mask']])
+        inner_obs = list(pssm[self.params[self.name]['ps_mask']])
+        outer_freq = list(self.frequency[~self.params[self.name]['ps_mask']])
+        outer_mod = list(model[~self.params[self.name]['ps_mask']])
         if self.fitbg['slope']:
             # Correct for edge effects and residual slope in Gaussian fit
             inner_mod = model[self.params[self.name]['mask']]
@@ -521,8 +521,8 @@ class Target:
             corr_pssm = [inner_obs[z] - corrected[z] + inner_mod[z] for z in range(len(inner_obs))]
             final_y = np.array(corr_pssm + outer_mod)
         else:
-            outer_freq = list(self.frequency[~self.params[self.name]['mask']])
-            outer_mod = list(model[~self.params[self.name]['mask']])
+            outer_freq = list(self.frequency[~self.params[self.name]['ps_mask']])
+            outer_mod = list(model[~self.params[self.name]['ps_mask']])
             final_y = np.array(inner_obs + outer_mod)
         final_x = np.array(inner_freq + outer_freq)
         ss = np.argsort(final_x)
@@ -530,8 +530,8 @@ class Target:
         final_y = final_y[ss]
         self.pssm = np.copy(final_y)
         self.pssm_bgcorr = self.pssm-models.harvey(final_x, self.pars, total=True)
-        self.region_freq = self.frequency[self.params[self.name]['mask']]
-        self.region_pow = self.pssm_bgcorr[self.params[self.name]['mask']]
+        self.region_freq = self.frequency[self.params[self.name]['ps_mask']]
+        self.region_pow = self.pssm_bgcorr[self.params[self.name]['ps_mask']]
         idx = functions.return_max(self.region_freq, self.region_pow, index=True)
         self.fitbg['results'][self.name]['numax_smooth'].append(self.region_freq[idx])
         self.fitbg['results'][self.name]['amp_smooth'].append(self.region_pow[idx])
@@ -710,7 +710,7 @@ class Target:
         yax = np.array(list(yax)+list(yax))-min(yax)
         mask = np.ma.getmask(np.ma.masked_where(yax == 0.0, yax))
         # Clip the lower bound (`clip_value`)
-        if self.fitbg['clip']:
+        if self.fitbg['clip_ech']:
             if self.fitbg['clip_value'] is not None:
                 cut = self.fitbg['clip_value']
             else:
