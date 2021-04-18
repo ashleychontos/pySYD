@@ -117,14 +117,15 @@ def plot_background(star):
     # Initial background guesses
     star.smooth_power = convolve(star.power, Box1DKernel(int(np.ceil(star.fitbg['box_filter']/star.resolution))))
     ax2 = fig.add_subplot(3, 3, 2)
-    ax2.plot(star.frequency[star.frequency < star.maxpower[0]], star.power[star.frequency < star.maxpower[0]], 'w-', zorder=0)
-    ax2.plot(star.frequency[star.frequency > star.maxpower[1]], star.power[star.frequency > star.maxpower[1]], 'w-', zorder=0)
-    ax2.plot(star.frequency[star.frequency < star.maxpower[0]], star.smooth_power[star.frequency < star.maxpower[0]], 'r-', linewidth=0.75, zorder=1)
-    ax2.plot(star.frequency[star.frequency > star.maxpower[1]], star.smooth_power[star.frequency > star.maxpower[1]], 'r-', linewidth=0.75, zorder=1)
+    ax3.plot(star.frequency, star.power, c='lightgrey', zorder=0, alpha=0.5)
+    ax2.plot(star.frequency[star.frequency < star.maxpower[0]], star.power[star.frequency < star.maxpower[0]], 'w-', zorder=1)
+    ax2.plot(star.frequency[star.frequency > star.maxpower[1]], star.power[star.frequency > star.maxpower[1]], 'w-', zorder=1)
+    ax2.plot(star.frequency[star.frequency < star.maxpower[0]], star.smooth_power[star.frequency < star.maxpower[0]], 'r-', linewidth=0.75, zorder=2)
+    ax2.plot(star.frequency[star.frequency > star.maxpower[1]], star.smooth_power[star.frequency > star.maxpower[1]], 'r-', linewidth=0.75, zorder=2)
     for r in range(star.nlaws):
-        ax2.plot(star.frequency, harvey(star.frequency, [star.a_orig[r], star.b_orig[r], star.noise]), color='blue', linestyle=':', linewidth=1.5, zorder=3)
-    ax2.plot(star.frequency, harvey(star.frequency, star.pars, total=True), color='blue', linewidth=2., zorder=4)
-    ax2.errorbar(star.bin_freq, star.bin_pow, yerr=star.bin_err, color='lime', markersize=0., fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=2)
+        ax2.plot(star.frequency, harvey(star.frequency, [star.a_orig[r], star.b_orig[r], star.noise]), color='blue', linestyle=':', linewidth=1.5, zorder=4)
+    ax2.plot(star.frequency, harvey(star.frequency, star.pars, total=True), color='blue', linewidth=2., zorder=5)
+    ax2.errorbar(star.bin_freq, star.bin_pow, yerr=star.bin_err, color='lime', markersize=0., fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=3)
     for m, n in zip(star.mnu_orig, star.a_orig):
         ax2.plot(m, n, color='blue', fillstyle='none', mew=3.0, marker='s', markersize=5.0)
     ax2.axvline(star.maxpower[0], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5, 5))

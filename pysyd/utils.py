@@ -122,6 +122,8 @@ def get_excess_params(
         'step': args.step,
         'binning': args.binning,
         'smooth_width': args.smooth_width,
+        'lower_x': 10.
+        'upper_x': 5000.
         'n_trials': args.n_trials,
     }
     findex.update(pars)
@@ -362,8 +364,12 @@ def load_data(star, lc_data=False, ps_data=False):
                 mask = np.ones_like(star.freq, dtype=bool)
                 if star.params[star.name]['lower_x'] is not None:
                     mask *= np.ma.getmask(np.ma.masked_greater_equal(star.freq, star.params[star.name]['lower_x']))
+                else:
+                    mask *= np.ma.getmask(np.ma.masked_greater_equal(star.freq, star.findex['lower_x']))
                 if star.params[star.name]['upper_x'] is not None:
                     mask *= np.ma.getmask(np.ma.masked_less_equal(star.freq, star.params[star.name]['upper_x']))
+                else:
+                    mask *= np.ma.getmask(np.ma.masked_less_equal(star.freq, star.findex['upper_x']))
                 star.freq = star.freq[mask]
                 star.pow = star.pow[mask]
                 if star.params[star.name]['numax'] is not None:
