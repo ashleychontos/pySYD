@@ -12,10 +12,10 @@ A ``pySYD`` pipeline ``Target`` class object has two main methods:
    numax and dnu
    
 The main purpose for the first module is to inform the second module, the latter which does a bulk of the 
-heavy lifting within this framework. Find excess will provide a rough estimate for numax, which is translated 
+heavy lifting within this framework. ``Target.find_excess()`` will provide a rough estimate for numax, which is translated 
 into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode oscillations. 
-Fit background will then mask this region out to model the corresponding white and red noise contributions 
-present in the power spectrum. The stellar background contribution is corrected for, where then the global
+``Target.fit_background()`` will then mask this region out to model the corresponding white and red noise contributions 
+present in the power spectrum. This stellar background contribution is corrected for, where then the global
 asteroseismic parameters like numax and dnu can be more accurately derived. Ultimately, the second module  
 is where all parameters and uncertainties are derived.
 
