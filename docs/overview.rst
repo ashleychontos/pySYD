@@ -10,20 +10,28 @@ A ``pySYD`` pipeline ``Target`` class object has two main methods:
 #. ``fit_background`` : optimizes the global fit by selecting the best-fit stellar background
    model, correcting the power spectrum using this model, and then fitting for the global parameters
    numax and dnu
+   
+The main purpose for the first module is to inform the second module, the latter which does a bulk of the 
+heavy lifting within this framework. Find excess will provide a rough estimate for numax, which is translated 
+into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode oscillations. 
+Fit background will then mask this region out to model the corresponding white and red noise contributions 
+present in the power spectrum. The stellar background contribution is corrected for, where then the global
+asteroseismic parameters like numax and dnu can be more accurately derived. Ultimately, the second module  
+is where all parameters and uncertainties are derived.
 
 .. note::
 
-    By default, both of these modules will run and is the recommended procedure if no prior stellar 
-    information is provided (i.e in star_info.csv, see below for more details). 
+    By default, both of these modules will run and is the recommended procedure if no star information 
+    is provided (i.e in star_info.csv, see below for more details). 
 
-    If stellar parameters (i.e. radius, effective temperature, surface gravity) are provided, ``pySYD`` 
-    will estimate a value for numax using a scaling relation. The first module can therefore be bypassed,
+    If stellar parameters like the radius, effective temperature and/or surface gravity are provided, ``pySYD`` 
+    can estimate a value for numax using a scaling relation. Therefore the first module can be bypassed,
     which will use the estimated numax as an initial starting point for the second module.
 
-    There is also an option to directly provide numax in the csv, which will override the value found in
-    the first module. Therefore, we suggest using this if you think the value found in the first module
-    is not the correct value. This will ensure that the second module will instead center around the 
-    desired numax.
+    There is also an option to directly provide numax in the **info/star_info.csv** (or via command line, 
+    see advanced usage for more details), which will override the value found in the first module. Therefore, 
+    we suggest using this if you think the value found in the first module is not the correct value. This will 
+    ensure that the second module is properly centered around the correct numax.
 
 
 =========================
