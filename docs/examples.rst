@@ -11,6 +11,8 @@ for three KIC stars in the **data/** directory. If so, then you are ready to tes
 High SNR Examples
 *****************
 
+Below are examples of high signal-to-noise (SNR) detections in three stars of different evolutionary states.
+
 KIC 1435467
 +++++++++++
 
@@ -101,5 +103,20 @@ TODO (what to look for with non-detections)
 Ensemble of Stars
 *****************
 
-If you are running OSX, and want to run an ensemble of stars in parallel, you 
-may need to perform some additional installation steps. See ###.
+There is a parallel processing option included in the software, which is helpful when
+running many stars. This is turned on by using the following command:
+
+.. code-block::
+
+    $ pysyd run -parallel (-nthreads 15 ; -list path_to_star_list.txt)
+
+In the event that the parallel processing option is set to ``True`` like the above example, ``pySYD`` 
+will divide and group the list of stars based on the number of threads available. By default, ``-nthreads == 0``
+but can be specified via command line. If ``args.parallel is True`` but the ``-nthreads`` option is not used, 
+``pySYD`` will set the number of threads to the number of cpus available in the operating system via 
+``multiprocessing.cpu_count()`` or the number of stars, if the latter is less.
+
+.. note::
+
+    Remember that by default, the stars to be processed (i.e. todo) will read in from **info/todo.txt**
+    if no ``-list`` or ``-todo`` paths are provided.
