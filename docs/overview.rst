@@ -5,7 +5,7 @@ Overview
 
 A ``pySYD`` pipeline ``Target`` class object has two main methods:
 
-#. ``find_excess`` : searched for power excess due to solar-like oscillations using a collapsed 
+#. ``find_excess`` : searches for power excess due to solar-like oscillations using a collapsed 
    ACF approach with 3 different ``box`` sizes
 #. ``fit_background`` : optimizes the global fit by selecting the best-fit stellar background
    model, correcting the power spectrum using this model, and then fitting for the global parameters
