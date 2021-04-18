@@ -53,10 +53,10 @@ There are two main files provided:
    * "teff" [float] : effective temperature (units: K)
    * "logg" [float] : surface gravity (units: dex)
    * "numax" [float] : the frequency corresponding to maximum power (units: muHz)
-   * "lowerx" [float] : lower frequency limit to use in the findex module (units: muHz)
-   * "upperx" [float] : upper frequency limit to use in the findex module (units: muHz)
-   * "lowerb" [float] : lower frequency limit to use in the background-fitting module (units: muHz)
-   * "upperb" [float] : upper frequency limit to use in the background-fitting module (units: muHz)
+   * "lower_x" [float] : lower frequency limit to use in the findex module (units: muHz)
+   * "upper_x" [float] : upper frequency limit to use in the findex module (units: muHz)
+   * "lower_b" [float] : lower frequency limit to use in the background-fitting module (units: muHz)
+   * "upper_b" [float] : upper frequency limit to use in the background-fitting module (units: muHz)
    * "seed" [int] : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes
 
 
