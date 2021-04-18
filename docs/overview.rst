@@ -26,6 +26,8 @@ A ``pySYD`` pipeline ``Target`` class object has two main methods:
     desired numax.
 
 
+=========================
+
 Structure
 *********
 
