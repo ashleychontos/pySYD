@@ -9,7 +9,7 @@ from .utils import *
 
 __all__ = ['cli', 'functions', 'pipeline', 'models', 'target', 'plots', 'utils']
 
-__version__ = '0.4.4'
+__version__ = '0.4.5'
 
 _ROOT = os.path.abspath(os.getcwd())
 TODODIR = os.path.join(_ROOT, 'info', 'todo.txt')
