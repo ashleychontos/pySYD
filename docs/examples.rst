@@ -1,19 +1,20 @@
 .. _examples:
 
 Examples
-========
+########
 
 If ``pysyd setup`` was successfully executed, there should now be light curves and power spectra 
 for three KIC stars in the **data/** directory. If so, then you are ready to test out the software!
 
-
 ====================
 
-Single Star
-***********
+High SNR Examples
+*****************
 
 KIC 1435467
 +++++++++++
+
+KIC 1435467 is our least evolved example star, with numax ~1400 muHz.
 
 pySYD ``find_excess`` results:
 
@@ -38,6 +39,8 @@ pySYD ``sampling`` results:
 KIC 2309595
 +++++++++++
 
+KIC 2309595 is a subgiant, with numax ~650 muHz.
+
 pySYD ``find_excess`` results:
 
 .. image:: figures/ex2_x.png
@@ -61,6 +64,8 @@ pySYD ``sampling`` results:
 KIC 11618103
 ++++++++++++
 
+KIC 11618103 is an evolved RGB star, with numax of ~100 muHz.
+
 pySYD ``find_excess`` results:
 
 .. image:: figures/ex3_x.png
@@ -81,6 +86,16 @@ pySYD ``sampling`` results:
 
 
 ====================
+
+Low SNR Examples
+****************
+
+TODO
+
+Non-detection Examples
+**********************
+
+TODO (what to look for with non-detections)
 
 
 Ensemble of Stars
