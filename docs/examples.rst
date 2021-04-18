@@ -18,19 +18,19 @@ KIC 1435467 is our least evolved example star, with numax ~1400 muHz.
 
 pySYD ``find_excess`` results:
 
-.. image:: figures/ex1_x.png
+.. image:: figures/1435467_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 1435467.
 
 pySYD ``fit_background`` results:
 
-.. image:: figures/ex1_b.png
+.. image:: figures/1435467_background.png
   :width: 600
   :alt: Fit background output plot for KIC 1435467.
 
 pySYD ``sampling`` results:
 
-.. image:: figures/ex1_s.png
+.. image:: figures/1435467_samples.png
   :width: 600
   :alt: Posterior distributions for derived parameters of KIC 1435467.
 
@@ -43,19 +43,19 @@ KIC 2309595 is a subgiant, with numax ~650 muHz.
 
 pySYD ``find_excess`` results:
 
-.. image:: figures/ex2_x.png
+.. image:: figures/2309595_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 2309595.
 
 pySYD ``fit_background`` results:
 
-.. image:: figures/ex2_b.png
+.. image:: figures/2309595_background.png
   :width: 600
   :alt: Fit background output plot for KIC 2309595.
 
 pySYD ``sampling`` results:
 
-.. image:: figures/ex2_s.png
+.. image:: figures/2309595_samples.png
   :width: 600
   :alt: Posterior distributions for derived parameters of KIC 2309595.
 
@@ -68,19 +68,19 @@ KIC 11618103 is an evolved RGB star, with numax of ~100 muHz.
 
 pySYD ``find_excess`` results:
 
-.. image:: figures/ex3_x.png
+.. image:: figures/11618103_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 11618103.
 
 pySYD ``fit_background`` results:
 
-.. image:: figures/ex3_b.png
+.. image:: figures/11618103_background.png
   :width: 600
   :alt: Fit background output plot for KIC 11618103.
 
 pySYD ``sampling`` results:
 
-.. image:: figures/ex3_s.png
+.. image:: figures/11618103_samples.png
   :width: 600
   :alt: Posterior distributions for derived parameters of KIC 11618103.
 
