@@ -211,6 +211,18 @@ def main():
                             default=20, 
                             type=int,
     )
+    background.add_argument('-slope', '--slope',
+                            dest='slope',
+                            help='When true, this will correct for residual slope in a smoothed power spectrum before estimating numax',
+                            default=False, 
+                            action='store_true',
+    )
+    background.add_argument('-sp', '--sp', '-smoothps', '--smoothps',
+                            dest='smooth_ps',
+                            help='Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)',
+                            default=2.5,
+                            type=float,
+    )
     background.add_argument('-samples', '--samples',
                             dest='samples',
                             help='Save samples from monte carlo sampling (i.e. if mciter > 1)',
@@ -240,18 +252,6 @@ def main():
                             help='Turn on the bilinear interpolation for the echelle diagram (default=False).',
                             default=False,
                             action='store_true',
-    )
-    background.add_argument('-slope', '--slope',
-                            dest='slope',
-                            help='When true, this will correct for residual slope in a smoothed power spectrum before estimating numax',
-                            default=False, 
-                            action='store_true',
-    )
-    background.add_argument('-sp', '--sp', '-smoothps', '--smoothps',
-                            dest='smooth_ps',
-                            help='Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)',
-                            default=2.5,
-                            type=float,
     )
 
     parser_run.set_defaults(func=pipeline.main)
