@@ -362,12 +362,8 @@ def load_data(star, lc_data=False, ps_data=False):
                 mask = np.ones_like(star.freq, dtype=bool)
                 if star.params[star.name]['lower_x'] is not None:
                     mask *= np.ma.getmask(np.ma.masked_greater_equal(star.freq, star.params[star.name]['lower_x']))
-                else:
-                    mask *= np.ma.getmask(np.ma.masked_greater_equal(star.freq, star.findex['lower']))
                 if star.params[star.name]['upper_x'] is not None:
                     mask *= np.ma.getmask(np.ma.masked_less_equal(star.freq, star.params[star.name]['upper_x']))
-                else:
-                    mask *= np.ma.getmask(np.ma.masked_less_equal(star.freq, star.findex['upper']))
                 star.freq = star.freq[mask]
                 star.pow = star.pow[mask]
                 if star.params[star.name]['numax'] is not None:
