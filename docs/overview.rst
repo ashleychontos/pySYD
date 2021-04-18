@@ -30,8 +30,9 @@ is where all parameters and uncertainties are derived.
 
     There is also an option to directly provide numax in the **info/star_info.csv** (or via command line, 
     see advanced usage for more details), which will override the value found in the first module. Therefore, 
-    we suggest using this if you think the value found in the first module is not the correct value. This will 
-    ensure that the second module is properly centered around the correct numax.
+    we only recommend using this option if you think that the value found in the first module is not correct 
+    and will ensure that the second module is properly centered around the correct numax. This is also incredibly
+    helpful for lower SNR detections.
 
 
 =========================
