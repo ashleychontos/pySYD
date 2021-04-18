@@ -94,10 +94,14 @@ Low SNR Examples
 
 TODO
 
+====================
+
 Non-detection Examples
 **********************
 
 TODO (what to look for with non-detections)
+
+====================
 
 
 Ensemble of Stars
