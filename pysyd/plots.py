@@ -117,7 +117,7 @@ def plot_background(star):
     # Initial background guesses
     star.smooth_power = convolve(star.power, Box1DKernel(int(np.ceil(star.fitbg['box_filter']/star.resolution))))
     ax2 = fig.add_subplot(3, 3, 2)
-    ax3.plot(star.frequency, star.power, c='lightgrey', zorder=0, alpha=0.5)
+    ax2.plot(star.frequency, star.power, c='lightgrey', zorder=0, alpha=0.5)
     ax2.plot(star.frequency[star.frequency < star.maxpower[0]], star.power[star.frequency < star.maxpower[0]], 'w-', zorder=1)
     ax2.plot(star.frequency[star.frequency > star.maxpower[1]], star.power[star.frequency > star.maxpower[1]], 'w-', zorder=1)
     ax2.plot(star.frequency[star.frequency < star.maxpower[0]], star.smooth_power[star.frequency < star.maxpower[0]], 'r-', linewidth=0.75, zorder=2)
