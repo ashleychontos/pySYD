@@ -122,8 +122,8 @@ def get_excess_params(
         'step': args.step,
         'binning': args.binning,
         'smooth_width': args.smooth_width,
-        'lower_x': 10.
-        'upper_x': 5000.
+        'lower_x': 10.,
+        'upper_x': 5000.,
         'n_trials': args.n_trials,
     }
     findex.update(pars)
