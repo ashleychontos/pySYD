@@ -31,6 +31,7 @@ Contents:
    quickstart
    overview
    examples
+   cli
    performance
    api
    
