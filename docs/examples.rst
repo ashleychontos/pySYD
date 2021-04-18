@@ -103,8 +103,8 @@ TODO (what to look for with non-detections)
 Ensemble of Stars
 *****************
 
-There is a parallel processing option included in the software, which is helpful when
-running many stars. This is turned on by using the following command:
+There is a parallel processing option included in the software, which is helpful for
+running many stars. This is switched on by using the following command:
 
 .. code-block::
 
