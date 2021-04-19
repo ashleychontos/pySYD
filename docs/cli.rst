@@ -3,44 +3,106 @@
 Command Line Interface
 ======================
 
-There are two main ``pySYD`` subcommands: ``setup`` and ``run``. 
+By default, initialization of the ``pySYD`` command will use the paths:
 
-* `-bg`, `--bg`, `-fitbg`, `--fitbg`, `-background`, `--background` [boolean]
+- ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
+- ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
+- ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
+- ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
 
-Turn off the background fitting process (although this is not recommended). Asteroseismic estimates are typically unreliable without properly removing stellar contributions from granulation processes. Since this is the money maker, fitbg is set to `True` by default.
+based on the absolute path of the current working directory. All of these paths are already ready to go
+if you followed the suggestions in :ref:`structure`, used our ``setup`` feature or ran the :ref:`sixtyseconds`
+challenge.
 
-* `-ex`, `--ex`, `-findex`, `--findex`, `-excess`, `--excess` [boolean]
+Parent Parser
++++++++++++++
 
-Turn off the find excess module. This is only recommended when a list of numaxes or a list of stellar parameters (to estimate the numaxes) are provided. Otherwise the second module, which fits the background will not be able to run properly. Default=`True`
+The ``pySYD`` command line feature has two subcommands: ``setup`` and ``run``, the former which should only really
+be used once after installation. Command line options inherent to both subcommands include:
 
-* `-f`, `--f`, `-file`, `--file` [string]
+* ``-file``, ``--file``, ``-list``, ``--list``, ``-todo``, ``--todo`` : path to text file that contains the list of stars to process
+   * dest = ``args.file``
+   * type = string
+   * default = ``TODODIR``
+* ``-in``, ``--in``, ``-input``, ``--input``, ``-inpdir``, ``--inpdir`` : path to input data
+   * dest = ``args.inpdir``
+   * type = string
+   * default = ``INPDIR``
+* ``-info``, ``--info``, ``-information``, ``--information`` : path to the csv containing star information
+   * dest = ``args.info``
+   * type = string
+   * default = ``INFODIR``
+* ``-out``, ``--out``, ``-output``, ``--output``, ``-outdir``, ``--outdir`` : path that results are saved to
+   * dest = ``args.outdir``
+   * type = string
+   * default = ``OUTDIR``
+* ``-verbose``, ``--verbose`` : turn on verbose output
+   * dest = ``args.verbose``
+   * type = boolean
+   * default = ``False``
+   * action = ``store_true``
+   
 
-Path to txt file that contains the list of targets to process. Default=`'info/todo.txt'`
+Setup
++++++
+
+Initializes ``pysyd.pipeline.setup`` for quick and painless setup of directories, files, and examples. 
+
+
+Run
++++
+
+The main pySYD pipeline function occurs in two main steps: ``find_excess`` and ``fit_background``. Command line
+options relevant to higher level pipeline initialization include:
+
+* ``-bg``, ``--bg``, ``-fitbg``, ``--fitbg``, ``-background``, ``--background`` : turn off the background fitting procedure
+   * dest = ``args.background``
+   * type = boolean
+   * default = ``True``
+   * action = ``store_false``
+* ``-ex``, ``--ex``, ``-findex``, ``--findex``, ``-excess``, ``--excess`` : turn off the find excess module
+   * dest = ``args.background``
+   * type = boolean
+   * default = ``True``
+   * action = ``store_false``
+* ``-kc``, ``--kc``, ``-keplercorr``, ``--keplercorr`` : turn on the *Kepler* short-cadence artefact correction module
+   * dest = ``args.keplercorr``
+   * type = boolean
+   * default = ``False``
+   * action = ``store_true``
+* ``-nt``, ``--nt``, ``-nthread``, ``--nthread``, ``-nthreads``, ``--nthreads`` : number of processes to run in parallel
+   * dest = ``args.n_threads``
+   * type = int
+   * default = ``0``
+* ``-par``, ``--par``, ``-parallel``, ``--parallel`` : enable parallel processes for an ensemble of stars
+   * dest = ``args.parallel``
+   * type = boolean
+   * default = ``False``
+   * action = ``store_true``
+* ``-save``, ``--save`` : save output files and figures
+   * dest = ``args.save``
+   * type = boolean
+   * default = ``True``
+   * action = ``store_false``
+* ``-show``, ``--show`` : show output figures (note: this is not recommended if running many stars)
+   * dest = ``args.show``
+   * type = boolean
+   * default = ``False``
+   * action = ``store_true``
+* ``-star``, ``--star``, ``-stars``, ``--stars`` : list of stars to process (note: if ``None``, pySYD will default to star list read from ``args.file``)
+   * dest = ``args.star``
+   * nargs = '*'
+   * type = int
+   * default = ``None``
+   
+**Excess:**
+
+**Background:**
 
 * `-filter`, `--filter`, `-smooth`, `--smooth` [float]
 
 Box filter width in muHz for the power spectrum. The default is `2.5` muHz but will change to `0.5` muHz if the numax derived from `find_excess` or the numax provided in `info/stars_info.csv` is <= 500 muHz so that it doesn't oversmooth the power spectrum.
 
-* `-kc`, `--kc`, `-keplercorr`, `--keplercorr` [boolean]
-
-Turn on Kepler short-cadence artefact corrections
-
 * `-mc`, `--mc`, `-mciter`, `--mciter` [int]
 
 Number of MC iterations to run to quantify measurement uncertainties. It is recommended to check the results first before implementing this option and therefore, this is set to `1` by default.
-
-* `-show`, `--show`, `-plot`, `--plot`, `-plots`, `--plots` [boolean]
-
-Shows the appropriate output figures in real time. If the findex module is run, this will show one figure at the end of findex. If the fitbg module is run, a figure will appear at the end of the first iteration. If the monte carlo sampling is turned on, this will provide another figure at the end of the MC iterations. Regardless of this option, the figures will be saved to the output directory. If running more than one target, this is not recommended. 
-
-* `-t`, `--t`, `-target`, `--target`, `-targets`, `--targets` [int]
-
-Option to directly specify targets from the command line. This accepts * arguments and appends them to a list stored in `args.target`. If not specified, `args.target` is `None` and the pipeline will default to the Files/todo.txt file.
-
-* `-version`, `--version`
-
-Print ``pysyd`` package version and exit.
-
-* `-v`, `--v`, `-verbose`, `--verbose` [boolean]
-
-Turn on verbose output
