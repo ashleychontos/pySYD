@@ -10,7 +10,7 @@ By default, initialization of the ``pySYD`` command will use the paths:
 - ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
 - ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
 
-based on the absolute path of the current working directory. All of these paths are already ready to go
+which is based on the absolute path of the current working directory. All of these paths should be ready to go
 if you followed the suggestions in :ref:`structure`, used our ``setup`` feature or ran the :ref:`sixtyseconds`
 challenge.
 
@@ -46,14 +46,15 @@ be used once after installation. Command line options inherent to both subcomman
 Setup
 +++++
 
-Initializes ``pysyd.pipeline.setup`` for quick and painless setup of directories, files, and examples. 
+Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. 
 
 
 Run
 +++
 
-The main pySYD pipeline function occurs in two main steps: ``find_excess`` and ``fit_background``. Command line
-options relevant to higher level pipeline initialization include:
+The main pySYD pipeline function initialized through ``pysyd.pipeline.run`` occurs in two main steps: 
+``find_excess`` and ``fit_background``. CLI options relevant to pre-pipeline initialization or both
+submodules include:
 
 - ``-bg``, ``--bg``, ``-fitbg``, ``--fitbg``, ``-background``, ``--background`` : turn off the background fitting procedure
    * dest = ``args.background``
