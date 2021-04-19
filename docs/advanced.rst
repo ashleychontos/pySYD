@@ -1,3 +1,8 @@
+.. _advanced:
+
+Advanced Usage
+##############
+
 .. _cli:
 
 Command Line Interface
