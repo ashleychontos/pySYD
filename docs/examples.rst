@@ -112,7 +112,7 @@ running many stars. This is switched on by using the following command:
 
 .. code-block::
 
-    $ pysyd run -parallel (-nthreads 15 ; -list path_to_star_list.txt)
+    $ pysyd run -parallel (-nthreads 15 -list path_to_star_list.txt)
 
 In the event that the parallel processing option is set to ``True`` like the above example, ``pySYD`` 
 will divide and group the list of stars based on the number of threads available. By default, ``args.n_threads = 0``
