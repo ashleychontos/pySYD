@@ -3,7 +3,7 @@
 Getting Started
 ###############
 
-Jump down to :ref:`quickstartsummary` to get started right away!
+Jump down to :ref:`sixtyseconds` to get asteroseismic parameters for a star in ~60 seconds!
 
 .. _installation:
 
@@ -92,21 +92,21 @@ The uncertainties will appear in the verbose output, output csvs, and an additio
 the posterior distributions for the derived parameters.
 
 
-.. _quickstartsummary:
+.. _sixtyseconds:
 
-Quickstart
-**********
+Sixty-Second-Seismology
+***********************
 
 .. compound::
 
-    To summarize, the following steps will get you all set up and ready to
-    use ``pySYD``: :: 
+    To determine asteroseismic parameters for a single star in roughly sixty seconds, execute 
+    the following commands: :: 
     
-	$ mkdir ~/any_path_you_want
-	$ cd ~/any_path_you_want
+	$ mkdir ~/path_to_put_pysyd_stuff
+	$ cd ~/path_to_put_pysyd_stuff
         $ pip install pysyd
 	$ pysyd setup
 	$ pysyd run -star 1435467 -show -verbose -mc 200
         
-    and now you are an expert asteroseismologist!
+    ... and if you weren't one already, you are now an expert asteroseismologist!
     
