@@ -81,9 +81,8 @@ If you ran the setup feature, there are three example stars provided: 1435467 (t
 the pipeline processes targets.
 
 To estimate uncertainties in the derived parameters, set ``-mc`` to a number sufficient for bootstrap sampling. In the previous 
-example, ``-mc`` was not specified and is 1 by default (for 1 iteration). By changing this value, it will randomize the power 
-spectrum for the specified number of steps and attempt to recover the parameters. The uncertainties will appear in the verbose 
-output (shown below), output csvs, and an additional figure will show the posterior distributions for the derived parameters.
+example, ``-mc`` was not specified and is 1 by default (for 1 iteration). Below shows the same example with the
+sampling enabled, including the verbose output you should see if your software was installed successfully.
 
 .. code-block:: bash
 
