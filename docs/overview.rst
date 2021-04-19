@@ -5,19 +5,24 @@ Overview
 
 A ``pySYD`` pipeline ``Target`` class object has two main methods:
 
-#. ``find_excess`` : searches for power excess due to solar-like oscillations using a collapsed 
-   ACF approach with 3 different ``box`` sizes
-#. ``fit_background`` : optimizes the global fit by selecting the best-fit stellar background
-   model, correcting the power spectrum using this model, and then fitting for the global parameters
-   numax and dnu
-   
-The main purpose for the first module is to inform the second module, the latter which does a bulk of the 
-heavy lifting within this framework. ``Target.find_excess()`` will provide a rough estimate for numax, which is translated 
-into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode oscillations. 
-``Target.fit_background()`` will then mask this region out to model the corresponding white and red noise contributions 
-present in the power spectrum. This stellar background contribution is corrected for, where then the global
-asteroseismic parameters like numax and dnu can be more accurately derived. Ultimately, the second module  
-is where all parameters and uncertainties are derived.
+#. ``Target.find_excess`` :
+    * **Summary:** searches for power excess due to solar-like oscillations by implementing a collapsed 
+      autocorrelation function (ACF) using 3 different ``box`` sizes
+    * The main purpose for this first module is to provide a good starting point for the
+      second module. The output from this routine provides a rough estimate for numax, which is translated 
+      into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode
+      oscillations
+#. ``Target.fit_background`` : 
+    * **Summary:** optimizes the global fit by selecting the best-fit stellar background model, correcting 
+      the power spectrum using this model, and then fitting for the global parameters numax and dnu.
+    * Given the frequency range determined by the first module, this region is masked out to model 
+      the white and red noise contributions present in the power spectrum. The fitting procedure will
+      test a series of models and select the best-fit stellar background model and correct the power spectrum
+    * The module will then estimate numax using two different methods: 1) Fitting a Gaussian and 2) Using
+      a heavily smoothed filter. In our experiences with this methodology, the second method is typically more 
+      reliable for a wider range of cases.
+    * Using the masked power spectrum in the region centered around numax, an ACF is computed to determine
+      the characteristic frequency spacing.
 
 .. note::
 
