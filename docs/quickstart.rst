@@ -3,7 +3,7 @@
 Getting Started
 ###############
 
-Jump down to :ref:`sixtyseconds` to get asteroseismic parameters for a star in ~60 seconds!
+Jump down to :ref:`summary` to get asteroseismic parameters for a star in less than a minute!
 
 .. _installation:
 
@@ -92,10 +92,10 @@ The uncertainties will appear in the verbose output, output csvs, and an additio
 the posterior distributions for the derived parameters.
 
 
-.. _sixtyseconds:
+.. _summary:
 
-Sixty-Second-Seismology
-***********************
+Quickstart
+**********
 
 .. compound::
 
@@ -108,5 +108,5 @@ Sixty-Second-Seismology
 	$ pysyd setup
 	$ pysyd run -star 1435467 -show -verbose -mc 200
         
-    ... and if you weren't one already, you are now an expert asteroseismologist!
+    ... and if you weren't one already, you are now an asteroseismologist!
     
