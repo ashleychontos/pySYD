@@ -3,8 +3,9 @@
 Getting Started
 ###############
 
-.. _installation:
+Jump down to :ref:`quickstartsummary` to get started right away!
 
+.. _installation:
 
 Installation
 ************
@@ -99,7 +100,7 @@ Quickstart
 .. compound::
 
     To summarize, the following steps will get you all set up and ready to
-    use ``pySYD`` :: 
+    use ``pySYD``: :: 
     
 	$ mkdir ~/any_path_you_want
 	$ cd ~/any_path_you_want
