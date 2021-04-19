@@ -104,7 +104,5 @@ helpful when running many stars.
 
 A single star will yield one summary figure (png) and one data product (csv) for each of the two
 main modules, for a total of 4 output files. If the monte-carlo sampling is used, an additional
-figure will show the posterior distributions for the estimated parameters. While not creating
-another output, the errors will be reflected in the `background.csv` file. There is also an 
-option to save the samples if desired for later use (by adding ``-samples`` to the command line). 
-See :ref:`examples` for examples on output plots.
+figure will show the posterior distributions for the estimated parameters. See :ref:`examples` 
+for a guide on what the output plots are showing.
