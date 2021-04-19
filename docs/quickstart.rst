@@ -5,6 +5,7 @@ Getting Started
 
 .. _installation:
 
+
 Installation
 ************
 
@@ -64,7 +65,6 @@ The optional verbose command can be called with the setup feature:
 This will print the absolute paths of all directories that are created during setup.
 
 
-
 Example Fit
 ***********
 
@@ -90,3 +90,22 @@ value, it will randomize the power spectrum for the specified number of steps an
 The uncertainties will appear in the verbose output, output csvs, and an additional figure will show 
 the posterior distributions for the derived parameters.
 
+
+.. _quickstartsummary:
+
+Quickstart
+**********
+
+.. compound::
+
+    To summarize, the following steps will get you all set up and ready to
+    use ``pySYD`` :: 
+    
+	$ mkdir ~/any_path_you_want
+	$ cd ~/any_path_you_want
+        $ pip install pysyd
+	$ pysyd setup
+	$ pysyd run -star 1435467 -show -verbose -mc 200
+        
+    and now you are an expert asteroseismologist!
+    
