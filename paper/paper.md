@@ -24,6 +24,7 @@ affiliations:
    index: 2
 date: 30 April 2021
 bibliography: paper.bib
+
 ---
 
 # Summary
@@ -37,8 +38,6 @@ inaccessible. Asteroseismology is well-established in astronomy as a gold standa
 stellar characterization, which has broader implications to fields like galactic archeology 
 and planetary science. The field of asteroseismology is niche however, where most available 
 tools to perform these analyses typically require licenses and an expert user.
-
-# Statement of need
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global
 asteroseismic parameters. `pySYD` is adapted from the framework of the IDL-based `SYD` 
