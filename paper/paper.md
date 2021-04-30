@@ -22,11 +22,8 @@ affiliations:
    index: 1
  - name: NSF Graduate Research Fellow
    index: 2
- - name: Maryum needs to fill in
-   index: 3
 date: 30 April 2021
 bibliography: paper.bib
-
 ---
 
 # Summary
