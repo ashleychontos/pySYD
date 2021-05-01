@@ -1,5 +1,4 @@
 ---
-
 title: 'pySYD: Automated extraction of global asteroseismic parameters'
 tags:
   - Python
@@ -19,7 +18,6 @@ affiliations:
    index: 1
 date: 1 May 2021
 bibliography: paper.bib
-
 ---
 
 # Summary
