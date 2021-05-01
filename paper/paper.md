@@ -14,16 +14,17 @@ authors:
  - name: Maryum Sayeed 
    affiliation: 1
 affiliations:
- - name: Institute for Astronomy, University of Hawai'i, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
+ - name: Institute for Astronomy, University of Hawaii, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
    index: 1
 date: 1 May 2021
+output: html_document
 bibliography: paper.bib
 ---
 
 # Summary
 
 Asteroseismology, the study of stellar oscillations, is a powerful tool for determining fundamental stellar 
-properties `[@Aerts:2021]`. Specifically for stars that are similar to the Sun, turbulent 
+properties [@Aerts:2021]. Specifically for stars that are similar to the Sun, turbulent 
 near-surface convection excites sound waves that propagate within the stellar cavity. Different waves probe 
 different regions of the star and therefore, provide powerful constraints on stellar interiors that would 
 otherwise be inaccessible. Asteroseismology is well-established in astronomy as the gold standard for 
@@ -40,9 +41,9 @@ we now have very large data volumes that require automated software tools to ext
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
 parameters (e.g., numax, dnu, granulation amplitudes and timescales). `pySYD` is adapted from the framework 
-of the IDL-based ``SYD`` pipeline `[@Huber:2009]`, which was extensively used to measure asteroseismic parameters 
+of the IDL-based ``SYD`` pipeline [@huber2009], which was extensively used to measure asteroseismic parameters 
 for Kepler stars. Papers based on asteroseismic parameters measured using the `SYD` pipeline include 
-`@Huber:2011`, `@Chaplin:2014`, `@Serenelli:2017`, and `@Yu:2018`. `pySYD` was developed using the same 
+@huber2011, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed using the same 
 well-tested methodology, but has improved functionality including automated background model selection 
 and parallel processing as well as improved flexibility through a user-friendly interface, while still 
 maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been 
