@@ -4,20 +4,25 @@ tags:
   - Python
   - astronomy
   - stellar astrophysics
+  - asteroseismology
+  - stellar oscillations
+  - fundamental stellar properties
+  - solar-like oscillations
+  - global asteroseismology
 authors:
  - name: Ashley Chontos
    orcid: 0000-0003-1125-2564
-   affiliation: 1
+   affiliation: 1, 2
  - name: Daniel Huber
    orcid: 0000-0001-8832-4488
-   affiliation: 2
+   affiliation: 1
  - name: Maryum Sayeed 
    orcid: 0000-0001-6180-8482
    affiliation: 3
 affiliations:
- - name: NSF Graduate Research Fellow
-   index: 1
  - name: Institute for Astronomy, University of Hawai'i
+   index: 1
+ - name: NSF Graduate Research Fellow
    index: 2
  - name: Independent Researcher
    index: 3
