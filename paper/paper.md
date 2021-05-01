@@ -10,7 +10,7 @@ tags:
 authors:
   - name: Ashley Chontos^[corresponding author: achontos@hawaii.edu]
     orcid: 0000-0003-1125-2564
-    affiliation: "1, 2"
+    affiliation: 1
   - name: Daniel Huber
     orcid: 0000-0001-8832-4488
     affiliation: 1
@@ -19,8 +19,6 @@ authors:
 affiliations:
  - name: Institute for Astronomy, University of Hawai'i, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
    index: 1
- - name: NSF Graduate Research Fellow
-   index: 2
 date: 1 May 2021
 bibliography: paper.bib
 ---
