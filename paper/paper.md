@@ -18,7 +18,6 @@ authors:
     orcid: 0000-0001-8832-4488
     affiliation: 1
   - name: Maryum Sayeed
-    orcid:
     affiliation: 1
 affiliations:
  - name: Institute for Astronomy, University of Hawai'i, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
