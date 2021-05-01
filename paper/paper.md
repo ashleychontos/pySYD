@@ -18,7 +18,7 @@ affiliations:
    index: 1
 date: 1 May 2021
 output: html_document
-bibliography: paper.bib
+bibliography: paper/paper.bib
 ---
 
 # Summary
