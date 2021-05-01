@@ -24,7 +24,7 @@ bibliography: paper.bib
 # Summary
 
 Asteroseismology, the study of stellar oscillations, is a powerful tool for determining fundamental stellar 
-properties [@aerts2021]. Specifically for stars that are similar to the Sun, turbulent 
+properties '[@aerts2021]'. Specifically for stars that are similar to the Sun, turbulent 
 near-surface convection excites sound waves that propagate within the stellar cavity. Different waves probe 
 different regions of the star and therefore, provide powerful constraints on stellar interiors that would 
 otherwise be inaccessible. Asteroseismology is well-established in astronomy as the gold standard for 
@@ -41,9 +41,9 @@ we now have very large data volumes that require automated software tools to ext
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
 parameters (e.g., numax, dnu, granulation amplitudes and timescales). `pySYD` is adapted from the framework 
-of the IDL-based ``SYD`` pipeline [@huber2009], which was extensively used to measure asteroseismic parameters 
+of the IDL-based ``SYD`` pipeline '[@huber2009]', which was extensively used to measure asteroseismic parameters 
 for Kepler stars. Papers based on asteroseismic parameters measured using the `SYD` pipeline include 
-@huber2011, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed using the same 
+'@huber2011', '@chaplin2014', '@serenelli2017', and '@yu2018'. `pySYD` was developed using the same 
 well-tested methodology, but has improved functionality including automated background model selection 
 and parallel processing as well as improved flexibility through a user-friendly interface, while still 
 maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been 
