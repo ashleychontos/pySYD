@@ -1,5 +1,5 @@
 ---
-title: 'pySYD: Automated extraction of global asteroseismic parameters'
+title: "pySYD: Automated extraction of global asteroseismic parameters"
 tags:
   - Python
   - astronomy
