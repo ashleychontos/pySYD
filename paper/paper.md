@@ -54,9 +54,9 @@ we now have very large data volumes that require automated software tools to ext
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
 parameters (e.g., numax, dnu, granulation amplitudes and timescales). `pySYD` is adapted from the framework 
-of the IDL-based `SYD` pipeline [`@huber2009`], which was extensively used to measure asteroseismic parameters 
+of the IDL-based `SYD` pipeline [@Huber:2009], which was extensively used to measure asteroseismic parameters 
 for Kepler stars. Papers based on asteroseismic parameters measured using the `SYD` pipeline include 
-`@huber2011`, `@chaplin2014`, `@serenelli2017`, and `@yu2018`. `pySYD` was developed using the same 
+@Huber:2011, @Chaplin:2014, @Serenelli:2017, and @Yu:2018. `pySYD` was developed using the same 
 well-tested methodology, but has improved functionality including automated background model selection 
 and parallel processing as well as improved flexibility through a user-friendly interface, while still 
 maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been 
