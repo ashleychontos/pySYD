@@ -1,21 +1,26 @@
 ---
-title: 'pySYD: Automated extraction of global asteroseismic parameters'
+title: 'pySYD: Automated detection and extraction of global asteroseismology'
 tags:
   - Python
   - astronomy
   - stellar astrophysics
 authors:
- - name: Ashley Chontos^[corresponding author: achontos@hawaii.edu]
+ - name: Ashley Chontos
    orcid: 0000-0003-1125-2564
    affiliation: 1
  - name: Daniel Huber
    orcid: 0000-0001-8832-4488
-   affiliation: 1
+   affiliation: 2
  - name: Maryum Sayeed 
-   affiliation: 1
+   orcid: 0000-0001-6180-8482
+   affiliation: 3
 affiliations:
- - name: Institute for Astronomy, University of Hawaii, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
+ - name: NSF Graduate Research Fellow
    index: 1
+ - name: Institute for Astronomy, University of Hawai'i
+   index: 2
+ - name: Independent Researcher
+   index: 3
 date: 1 May 2021
 bibliography: paper.bib
 ---
