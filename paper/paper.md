@@ -17,8 +17,8 @@ affiliations:
  - name: Institute for Astronomy, University of Hawaii, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
    index: 1
 date: 1 May 2021
-output: html_document
 bibliography: paper/paper.bib
+
 ---
 
 # Summary
