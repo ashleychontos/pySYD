@@ -3,11 +3,8 @@ title: 'pySYD: Automated extraction of global asteroseismic parameters'
 tags:
   - Python
   - astronomy
-  - Kepler
-  - solar-like
   - stellar astrophysics
   - asteroseismology
-  - global asteroseismology
   - stellar oscillations
   - fundamental stellar properties
 authors:
@@ -25,18 +22,13 @@ affiliations:
  - name: NSF Graduate Research Fellow
    index: 2
 date: 1 May 2021
-bibliography: paper/paper.bib
-
-# Optional fields if submitting to a AAS journal too, see this blog post:
-# https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
-#aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
-#aas-journal: Astrophysical Journal <- The name of the AAS journal.
+bibliography: paper.bib
 ---
 
 # Summary
 
 Asteroseismology, the study of stellar oscillations, is a powerful tool for determining fundamental stellar 
-properties `[@Aerts:2021]`. Specifically for stars that are similar to the Sun, turbulent 
+properties [@Aerts:2021]. Specifically for stars that are similar to the Sun, turbulent 
 near-surface convection excites sound waves that propagate within the stellar cavity. Different waves probe 
 different regions of the star and therefore, provide powerful constraints on stellar interiors that would 
 otherwise be inaccessible. Asteroseismology is well-established in astronomy as the gold standard for 
@@ -53,9 +45,9 @@ we now have very large data volumes that require automated software tools to ext
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
 parameters (e.g., numax, dnu, granulation amplitudes and timescales). `pySYD` is adapted from the framework 
-of the IDL-based `SYD` pipeline `[@Huber:2009]`, which was extensively used to measure asteroseismic parameters 
+of the IDL-based `SYD` pipeline [@Huber:2009], which was extensively used to measure asteroseismic parameters 
 for Kepler stars. Papers based on asteroseismic parameters measured using the `SYD` pipeline include 
-`@Huber:2011`, `@Chaplin:2014`, `@Serenelli:2017`, and `@Yu:2018`. `pySYD` was developed using the same 
+@Huber:2011, @Chaplin:2014, @Serenelli:2017, and @Yu:2018. `pySYD` was developed using the same 
 well-tested methodology, but has improved functionality including automated background model selection 
 and parallel processing as well as improved flexibility through a user-friendly interface, while still 
 maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been 
