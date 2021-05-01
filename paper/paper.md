@@ -35,7 +35,7 @@ are critical for learning about these planets.
 Several tools have been developed for asteroseismic analyses (i.e. `OCT`, `COR`, `A2Z`), but nearly all of 
 them are closed-source and therefore inaccessible to the general astronomy community. Some open-source tools 
 exist (e.g., `DIAMONDS` and `lightkurve`), but they are either not optimized for large samples of stars or 
-have not been extensively tested against closed-source tools. Additionally, thanks to Kepler, K2 and TESS, 
+have not been extensively tested against closed-source tools. Additionally, thanks to *Kepler*, K2 and TESS, 
 we now have very large data volumes that require automated software tools to extract observables. 
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
@@ -47,14 +47,14 @@ well-tested methodology, but has improved functionality including automated back
 and parallel processing as well as improved flexibility through a user-friendly interface, while still 
 maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been 
 benchmarked against closed-source tools are critical to ensure the reproducibility of legacy results from 
-the Kepler mission.
+the *Kepler* mission.
 
 `pySYD` was developed to extend the userbase to expert and non-expert researchers alike. `pySYD` is already 
 being used by students that are new to astronomy and has already aided in new asteroseismic detections in
 over 100 stars. Additionally, there are already several manuscripts in preparation that are featuring results 
 from the software. The combination of well-tested methodology, improved flexibility, and parallel processing, 
 `pySYD` is a promising tool for experts and non-experts alike, which will be especially exciting for forthcoming 
-data releases from the *TESS* extended mission.
+data releases from the TESS extended mission.
 
 
 # Acknowledgements
