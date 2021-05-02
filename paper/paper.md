@@ -69,7 +69,7 @@ data releases from the TESS extended mission.
 
 # Acknowledgements
 
-We acknowledge contributions from Pavadol Yamsiri, and Dennis Stello, as well as support from the National 
+We acknowledge contributions from Dennis Stello, Pavadol Yamsiri, and others, as well as support from the National 
 Science Foundation and the National Aeronautics and Space Administration.
 
 # References
