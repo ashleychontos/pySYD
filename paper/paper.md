@@ -12,7 +12,7 @@ tags:
 authors:
  - name: Ashley Chontos
    orcid: 0000-0003-1125-2564
-   affiliation: 1, 2
+   affiliation: "1, 2"
  - name: Daniel Huber
    orcid: 0000-0001-8832-4488
    affiliation: 1
@@ -70,6 +70,6 @@ data releases from the TESS extended mission.
 # Acknowledgements
 
 We acknowledge contributions from Dennis Stello, Pavadol Yamsiri, and others, as well as support from the National 
-Science Foundation and the National Aeronautics and Space Administration.
+Science Foundation.
 
 # References
