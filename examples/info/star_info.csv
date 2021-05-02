@@ -1,6 +1,4 @@
-stars,rad,rad_err,teff,teff_err,logg,logg_err,numax,lower_x,upper_x,lower_b,upper_b,seed
+stars,radius,radius_err,teff,teff_err,logg,logg_err,numax,lower_x,upper_x,lower_b,upper_b,seed
 1435467,,,,,,,1500.0,100.0,,100.0,,
 2309595,,,,,,,670.0,,,,,
 11618103,,,,,,,100.0,,,,,
-33094,1.4,,5629,7,4.11,0.016,,,,,,
-53688090,1.4,,5629,7,4.11,0.016,,,,,,
