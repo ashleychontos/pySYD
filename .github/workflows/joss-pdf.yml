@@ -1,19 +1,19 @@
-name: Compile JOSS pdf
+name: Compile JOSS paper
 on: [push]
 jobs:
   paper:
     runs-on: ubuntu-latest
-    name: Compile pdf
+    name: Compile paper
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build draft pdf
+      - name: Build JOSS pdf
         uses: openjournals/openjournals-draft-action@master
         with:
           journal: joss
-          paper-path: paper/paper.md
-      - name: Upload built pdf
+          paper-path: docs/paper/paper.md
+      - name: Upload compiled pdf
         uses: actions/upload-artifact@v1
         with:
-          name: paper
-          path: paper/paper.pdf
+          name: PDF
+          path: docs/paper/paper.pdf
