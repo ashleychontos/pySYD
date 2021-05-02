@@ -15,8 +15,7 @@
 
 Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, and Maryum Sayeed. 
 
-Please cite the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract) and the following DOI if you make use of this software in your work.
-[need to do]
+Please cite [JOSS paper] as well as the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract) if you make use of this software in your work.
 
 ## Documentation
 
