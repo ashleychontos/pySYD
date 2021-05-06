@@ -44,14 +44,11 @@ learning about the planets that orbit them.
 # Statement of Need
 
 Thanks to *Kepler*, K2 and TESS, we now have very large data volumes that require automated software tools
-to extract observables. Several tools have been developed for asteroseismic analyses [e.g., `A2Z` @mathur2010; 
-`COR` @mosser2009; `OCT` @hekker2010], but nearly all of them are closed-source and therefore inaccessible to 
-the general astronomy community. Some open-source tools exist [e.g., `DIAMONDS` @corsaro2014; `lightkurve`
+to extract observables. Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, see @mathur2010; 
+`COR`, see @mosser2009; `OCT`, see @hekker2010], but nearly all of them are closed-source and therefore inaccessible to 
+the general astronomy community. Some open-source tools exist [e.g., `DIAMONDS`, see @corsaro2014; `lightkurve`, see
 @lightkurve], but they are either not optimized for large samples of stars or have not been extensively tested 
 against closed-source tools.
-
-`pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
-parameters (e.g., numax, dnu, granulation amplitudes and timescales). 
 
 `pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which was extensively used 
 to measure asteroseismic parameters for Kepler stars. Papers based on asteroseismic parameters measured using the 
@@ -63,6 +60,27 @@ benchmarked against closed-source tools are critical to ensure the reproducibili
 the *Kepler* mission. The combination of well-tested methodology, improved flexibility and parallel processing
 capabilities will also make `pySYD` a promising tool for the broader community to analyze current and 
 forthcoming data from the NASA TESS mission.
+
+# The `pySYD` software
+
+`pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
+parameters. Parameters include the frequency of maximum power (numax) and the characterist frequency spacing
+(dnu), as well as amplitudes and timescales for correlated red-noise due to different granulation processes. 
+A `pySYD` pipeline `Target` class object has two main methods:
+- `Target.find_excess()`: The first module searches for the power excess due to solar-like oscillations
+   by implementing a collapsed autocorrelation function using different bin sizes. The main purpose for
+   the first module is to provide a good starting point for the second module. The output from this routine
+   provides a rough estimate for numax, which is translated into a frequency range in the power spectrum
+   exhibiting the p-mode oscillations.
+- `Target.fit_background()`: Before the global parameters like numax and dnu are estimated, this module 
+   will first optimize the global fit by selecting the best-fit stellar background model.
+
+# Documentation & Examples
+
+The main documentation for the `pySYD` software is hosted by [ReadTheDocs](https://readthedocs.org) at
+[pysyd.readthedocs.io](https://pysyd.readthedocs.io). `pySYD` provides a convenient setup feature that 
+will download data for three example stars and automatically create the recommended files for an easy 
+quickstart. The features of the `pySYD` output results are described in detail in the documentation.
 
 # Acknowledgements
 
