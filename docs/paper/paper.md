@@ -31,28 +31,29 @@ bibliography: paper.bib
 # Summary
 
 Asteroseismology, the study of stellar oscillations, is a powerful tool for determining fundamental stellar 
-properties [@aerts2021]. Specifically for stars that are similar to the Sun, turbulent 
-near-surface convection excites sound waves that propagate within the stellar cavity. These waves penetrate 
+properties [@aerts2021]. Specifically for stars that are similar to the Sun, turbulent near-surface convection 
+excites sound waves that propagate within the stellar cavity [@bedding2014]. These waves penetrate 
 into different depths within the star and therefore provide powerful constraints on stellar interiors that would 
 otherwise be inaccessible. Asteroseismology is well-established in astronomy as the gold standard for 
 characterizing fundamental properties like masses, radii, densities, and ages for single stars, which has
-broad impact on several fields in astronomy. For example, ages of stars are important to reconstruct the 
+broad impacts on several fields in astronomy. For example, ages of stars are important to reconstruct the 
 formation history of the Milky Way (so-called galactic archeology). For exoplanets that are measured indirectly 
 through changes in stellar observables, precise and accurate stellar masses and radii are critical for 
-learning about these planets.
+learning about the planets that orbit them.
 
 # Statement of Need
 
 Thanks to *Kepler*, K2 and TESS, we now have very large data volumes that require automated software tools
-to extract observables. Several tools have been developed for asteroseismic analyses (i.e. `OCT`, `COR`, `A2Z`), 
-but nearly all of them are closed-source and therefore inaccessible to the general astronomy community. Some 
-open-source tools exist (e.g., `DIAMONDS` and `lightkurve`), but they are either not optimized for large samples 
-of stars or have not been extensively tested against closed-source tools.
+to extract observables. Several tools have been developed for asteroseismic analyses [e.g., `A2Z` @mathur2010; 
+`COR` @mosser2009; `OCT` @hekker2010], but nearly all of them are closed-source and therefore inaccessible to 
+the general astronomy community. Some open-source tools exist [e.g., `DIAMONDS` @corsaro2014; `lightkurve`
+@lightkurve], but they are either not optimized for large samples of stars or have not been extensively tested 
+against closed-source tools.
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
 parameters (e.g., numax, dnu, granulation amplitudes and timescales). 
 
-`pySYD` is adapted from the framework of the IDL-based ``SYD`` pipeline [@huber2009], which was extensively used 
+`pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which was extensively used 
 to measure asteroseismic parameters for Kepler stars. Papers based on asteroseismic parameters measured using the 
 `SYD` pipeline include @huber2011, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed using the same 
 well-tested methodology, but has improved functionality including automated background model selection 
