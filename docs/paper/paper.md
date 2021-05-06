@@ -64,16 +64,21 @@ forthcoming data from the NASA TESS mission.
 # The `pySYD` software
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
-parameters. Derived parameters include the frequency of maximum power (numax) and the characterist frequency spacing
-(dnu), as well as amplitudes and timescales for correlated red-noise due to different granulation processes. 
+parameters. Derived parameters include the frequency of maximum power (numax) and the large frequency spacing
+(dnu), as well as characteristic amplitues and timescales of correlated red-noise signals present in a 
+power spectrum which are due to stellar granulation processes.
+
 A `pySYD` pipeline `Target` class object has two main methods:
-- The first module searches for the power excess due to solar-like oscillations
-  by implementing a collapsed autocorrelation function using different bin sizes. The main purpose for
-  the first module is to provide a good starting point for the second module. The output from this routine
-  provides a rough estimate for numax, which is translated into a frequency range in the power spectrum
-  exhibiting the p-mode oscillations.
-- The second module is where all parameters are derived. Before global parameters like numax and dnu are estimated, 
-  this module will first optimize the global fit by selecting the best-fit stellar background model.
+- The first module searches for the power excess due to solar-like oscillations by implementing a collapsed 
+  autocorrelation function using different bin sizes. The main purpose for the first module is to provide a 
+  good starting point for the second module, which is when all the parameters are estimated. The output from 
+  this routine provides an estimate for numax, which is translated into a frequency range in the power spectrum 
+  exhibiting the solar-like oscillations.
+- Before global parameters like numax and dnu are estimated, the second module will first optimize the global 
+  fit by selecting the best-fit stellar background model based on a reduced chi-squared analysis. 
+  
+The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1,@astropy2], 
+Matplotlib, Numpy, and SciPy [@scipy].
 
 # Documentation & Examples
 
