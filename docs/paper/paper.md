@@ -59,9 +59,9 @@ well-tested methodology, but has improved functionality including automated back
 and parallel processing as well as improved flexibility through a user-friendly interface, while still 
 maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been 
 benchmarked against closed-source tools are critical to ensure the reproducibility of legacy results from 
-the *Kepler* mission. The combination of well-tested methodology, improved flexibility, and parallel processing, 
-will also make `pySYD` a promising tool for the broader community to analyze current and forthcoming data from
-the NASA TESS mission.
+the *Kepler* mission. The combination of well-tested methodology, improved flexibility and parallel processing
+capabilities will also make `pySYD` a promising tool for the broader community to analyze current and 
+forthcoming data from the NASA TESS mission.
 
 # Acknowledgements
 
