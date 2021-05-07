@@ -70,15 +70,18 @@ power spectrum which are due to stellar granulation processes.
 
 A `pySYD` pipeline `Target` class object has two main methods:
 - The first module searches for the power excess due to solar-like oscillations by implementing a collapsed 
-  autocorrelation function using different bin sizes. The main purpose for the first module is to provide a 
-  good starting point for the second module, which is when all the parameters are estimated. The output from 
+  autocorrelation function using three different bin sizes. The main purpose for the first module is to provide 
+  initial starting values for the second module, which is when all the parameters are estimated. The output from 
   this routine provides an estimate for numax, which is translated into a frequency range in the power spectrum 
   exhibiting the solar-like oscillations.
-- Before global parameters like numax and dnu are estimated, the second module will first optimize the global 
-  fit by selecting the best-fit stellar background model based on a reduced chi-squared analysis. 
+- Before global parameters like numax and dnu can be estimated, the second module will first optimize the global 
+  fit by selecting the best-fit stellar background model based on a reduced chi-squared analysis. The frequency
+  region provided by the first module will be masked out to determine the stellar background contribution. The 
+  power spectrum is then corrected by subtracting out the best-fit model, which will ideally removing all signals
+  from the power spectrum except for the Gaussian-like profile due to the oscillations.
   
-The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1,@astropy2], 
-Matplotlib, Numpy, and SciPy [@scipy].
+The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
+Matplotlib, Numpy, and SciPy [@scipy]. 
 
 # Documentation & Examples
 
