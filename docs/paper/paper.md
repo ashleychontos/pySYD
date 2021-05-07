@@ -89,8 +89,8 @@ Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been t
 results from the benchmark *Kepler* legacy sample in \autoref{fig:comparison}, which shows that there are no 
 systematic differences to at least $<0.5%$ in $\Delta\nu$ and $\sim1%$ in $\rm \nu_{max}$.
 
-![Direct comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ and $\Delta\nu$ for 
-30 *Kepler* legacy stars.\label{fig:comparison}](comparison.png)
+![Direct comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ 
+(right) for 30 *Kepler* legacy stars.\label{fig:comparison}](comparison.png)
 
 # Documentation & Examples
 
