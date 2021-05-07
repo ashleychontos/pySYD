@@ -75,18 +75,20 @@ A `pySYD` pipeline `Target` class object has two main methods:
 
 - The main purpose for the first module is to provide initial starting values for the second module, which is where
   all parameters are measured. The first module searches for the power excess due to solar-like oscillations by
-  implementing a collapsed autocorrelation method using three different bin sizes.  The output 
-  from this routine provides an estimate for $\rm \nu_{max}$, or the center of the ~Gaussian-like feature due to 
-  stellar oscillations. 
+  implementing a collapsed autocorrelation method using three different bin sizes.  The output from this routine 
+  provides an estimate for $\rm \nu_{max}$. 
 - Before global parameters like $\rm \nu_{max}$ and $\Delta\nu$ can be measured, the second module will first optimize 
-  the global fit by selecting the best-fit stellar background model based on a reduced chi-squared analysis. The results from the 
-  first module are translated into a frequency range in the power spectrum centered on the estimated value, which is
-  masked out to determine the stellar background contribution. The power spectrum is then corrected by subtracting out 
-  the best-fit model, which will ideally removing all signals from the power spectrum except for the Gaussian-like 
-  profile due to the oscillations.
+  the global fit by selecting the best-fit stellar background model. The results from the first module are translated 
+  into a frequency range in the power spectrum centered on the estimated $\rm \nu_{max}$, which is masked out to 
+  determine the stellar background contribution. The power spectrum is then corrected by subtracting out the best-fit 
+  model, which will ideally remove all signals from the power spectrum except for the Gaussian-like profile due to the 
+  oscillations.
   
 The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
-Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. 
+Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `SYD` resuls for
+the benchmark legacy *Kepler* sample in \autoref{fig:comparison}.
+
+![Caption for example figure.\label{fig:comparison}](comparison.png)
 
 # Documentation & Examples
 
