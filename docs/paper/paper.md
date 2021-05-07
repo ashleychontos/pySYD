@@ -46,9 +46,9 @@ learning about the planets that orbit them.
 Thanks to *Kepler*, K2 and TESS, we now have very large data volumes that require automated software tools
 to extract observables. Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, see @mathur2010; 
 `COR`, see @mosser2009; `OCT`, see @hekker2010], but nearly all of them are closed-source and therefore inaccessible to 
-the general astronomy community. Some open-source tools exist [e.g., `DIAMONDS`, see @corsaro2014; `lightkurve`, see
-@lightkurve], but they are either not optimized for large samples of stars or have not been extensively tested 
-against closed-source tools.
+the general astronomy community. Some open-source tools exist [e.g., `DIAMONDS`, see @corsaro2014; `PBjam`, see 
+@nielsen2021; `lightkurve`, see @lightkurve], but they are either not optimized for large samples of stars or have 
+not been extensively tested against closed-source tools.
 
 `pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which was extensively used 
 to measure asteroseismic parameters for Kepler stars. Papers based on asteroseismic parameters measured using the 
@@ -85,8 +85,8 @@ A `pySYD` pipeline `Target` class object has two main methods:
   oscillations.
   
 The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
-Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `SYD` resuls for
-the benchmark legacy *Kepler* sample in \autoref{fig:comparison}.
+Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `SYD` using 
+results from the benchmark *Kepler* legacy sample in \autoref{fig:comparison}. 
 
 ![Direct comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ and $\Delta\nu$ for 
 30 *Kepler* legacy stars.\label{fig:comparison}](comparison.png)
