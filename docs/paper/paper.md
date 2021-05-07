@@ -61,34 +61,39 @@ the *Kepler* mission. The combination of well-tested methodology, improved flexi
 capabilities will also make `pySYD` a promising tool for the broader community to analyze current and 
 forthcoming data from the NASA TESS mission.
 
-# The `pySYD` software
+# The `pySYD` library
 
-`pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic 
-parameters. Derived parameters include the frequency of maximum power (numax) and the large frequency spacing
-(dnu), as well as characteristic amplitues and timescales of correlated red-noise signals present in a 
-power spectrum which are due to stellar granulation processes.
+The driving mechanism for solar-like oscillations is stochastic, where oscillation modes are observed over a range 
+of frequencies. The ~Gaussian-like signature of solar-like oscillations is described by $\rm \nu_{max}$, or the center
+of this frequency range that corresponds to the maximum power, and the large frequency spacing ($\Delta\nu$). 
+
+`pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic parameters. 
+Derived parameters include $\rm \nu_{max}$ and $\Delta\nu$, as well as characteristic amplitudes and timescales 
+of correlated red-noise signals present in a power spectrum which are due to stellar granulation processes.
 
 A `pySYD` pipeline `Target` class object has two main methods:
-- The first module searches for the power excess due to solar-like oscillations by implementing a collapsed 
-  autocorrelation function using three different bin sizes. The main purpose for the first module is to provide 
-  initial starting values for the second module, which is when all the parameters are estimated. The output from 
-  this routine provides an estimate for numax, which is translated into a frequency range in the power spectrum 
-  exhibiting the solar-like oscillations.
-- Before global parameters like numax and dnu can be estimated, the second module will first optimize the global 
-  fit by selecting the best-fit stellar background model based on a reduced chi-squared analysis. The frequency
-  region provided by the first module will be masked out to determine the stellar background contribution. The 
-  power spectrum is then corrected by subtracting out the best-fit model, which will ideally removing all signals
-  from the power spectrum except for the Gaussian-like profile due to the oscillations.
+
+- The main purpose for the first module is to provide initial starting values for the second module, which is where
+  all parameters are measured. The first module searches for the power excess due to solar-like oscillations by
+  implementing a collapsed autocorrelation method using three different bin sizes.  The output 
+  from this routine provides an estimate for $\rm \nu_{max}$, or the center of the ~Gaussian-like feature due to 
+  stellar oscillations. 
+- Before global parameters like $\rm \nu_{max}$ and $\Delta\nu$ can be measured, the second module will first optimize 
+  the global fit by selecting the best-fit stellar background model based on a reduced chi-squared analysis. The results from the 
+  first module are translated into a frequency range in the power spectrum centered on the estimated value, which is
+  masked out to determine the stellar background contribution. The power spectrum is then corrected by subtracting out 
+  the best-fit model, which will ideally removing all signals from the power spectrum except for the Gaussian-like 
+  profile due to the oscillations.
   
 The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
-Matplotlib, Numpy, and SciPy [@scipy]. 
+Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. 
 
 # Documentation & Examples
 
 The main documentation for the `pySYD` software is hosted by [ReadTheDocs](https://readthedocs.org) at
 [pysyd.readthedocs.io](https://pysyd.readthedocs.io). `pySYD` provides a convenient setup feature that 
 will download data for three example stars and automatically create the recommended files for an easy 
-quickstart. The features of the `pySYD` output results are described in detail in the documentation.
+quickstart. The features of the `pySYD` output results are all described in detail in the documentation.
 
 # Acknowledgements
 
