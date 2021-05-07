@@ -88,7 +88,8 @@ The `pySYD` software was built using a number of powerful libraries, including A
 Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `SYD` resuls for
 the benchmark legacy *Kepler* sample in \autoref{fig:comparison}.
 
-![Caption for example figure.\label{fig:comparison}](comparison.png)
+![Direct comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ and $\Delta\nu$ for 
+30 *Kepler* legacy stars.\label{fig:comparison}](comparison.png)
 
 # Documentation & Examples
 
