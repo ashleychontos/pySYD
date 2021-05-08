@@ -44,8 +44,8 @@ learning about the planets that orbit them.
 # Statement of Need
 
 The NASA space telescopes *Kepler*, K2 and TESS have recently provided very large databases of high-precision 
-light curves of stars. By detecting brightness variations due to stellar oscillations these light curves allow the 
-application of asteroseismology to large numbers of stars, requiring automated software tools to extract observables. 
+light curves of stars. By detecting brightness variations due to stellar oscillations, these light curves allow the 
+application of asteroseismology to large numbers of stars thus requiring automated software tools to extract observables. 
 Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, see @mathur2010; `COR`, see @mosser2009; 
 `OCT`, see @hekker2010], but nearly all of them are closed-source and therefore inaccessible to the general astronomy 
 community. Some open-source tools exist [e.g., `DIAMONDS`, see @corsaro2014; `PBjam`, see @nielsen2021; `lightkurve`, 
