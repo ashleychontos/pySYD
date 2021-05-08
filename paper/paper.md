@@ -83,8 +83,7 @@ A `pySYD` pipeline `Target` class object has two main methods:
   first module are translated into a frequency range in the power spectrum centered on the estimated $\rm \nu_{max}$,
   which is masked out to determine the stellar background contribution. After subtracting the best-fit model from 
   the power spectrum, the peak of the smoothed power spectrum is used to estimate $\rm \nu_{max}$. An autocorrelation 
-  function (ACF) is computed using the region centered on $\rm \nu_{max}$, and used to calculate an estimate for
-  $\Delta\nu$. 
+  function is computed using the region centered on $\rm \nu_{max}$, and used to calculate an estimate for $\Delta\nu$. 
   
 The `pySYD` software depends on a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
 Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `IDL-SYD` using 
