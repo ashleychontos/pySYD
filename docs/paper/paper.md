@@ -54,7 +54,7 @@ have not yet been extensively tested against closed-source tools.
 
 `pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which has been used frequently  
 to measure asteroseismic parameters for *Kepler* stars and has been extensively tested against closed-source tools on
-*Kepler* data [@verner201;,@hekker2011]. Papers based on asteroseismic parameters measured using the 
+*Kepler* data [@verner2011;,@hekker2011]. Papers based on asteroseismic parameters measured using the 
 `SYD` pipeline include @huber2011, @bastien2013, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed 
 using the same well-tested methodology, but has improved functionality including automated background model selection 
 and parallel processing as well as improved flexibility through a user-friendly interface, while still 
