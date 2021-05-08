@@ -89,13 +89,13 @@ A `pySYD` pipeline `Target` class object has two main methods:
 The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
 Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `SYD` using 
 results from the *Kepler* sample for differing time series lengths (\autoref{fig:comparison}). 
-The comparison demonstrates that there are no systematic differences to at least $<0.5\%$ in $\Delta\nu$ and 
-$\sim1\%$ in $\rm \nu_{max}$, which is smaller or comparable to the typical random uncertainties [@huber2011].
+The comparisons show no significant systematic differences, with a median offset and scatter of $0.2\%$ and 
+$0.5\%$ for $\rm \nu_{max}$ as well as $0.01\%$ and $0.2\%$ for $\Delta\nu$, which is smaller or comparable 
+to the typical random uncertainties [@huber2011].
 
 ![Comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ 
 (right) for 30 *Kepler* stars, which are colored by the time series baseline. The bottom panels show the
-fractional residuals, where the residuals in $\rm \nu_{max}$ have a median=-0.00203 and $\sigma^{2}$=0.00589 
-and the residuals in $\Delta\nu$ have a median=-0.00008 and $\sigma^{2}$=0.00236.\label{fig:comparison}](comparison_new.png)
+fractional residuals.\label{fig:comparison}](comparison_new.png)
 
 # Documentation & Examples
 
