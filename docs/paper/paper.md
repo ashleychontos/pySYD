@@ -63,7 +63,7 @@ the *Kepler* mission. The combination of well-tested methodology, improved flexi
 capabilities will also make `pySYD` a promising tool for the broader community to analyze current and 
 forthcoming data from the NASA TESS mission.
 
-![Logo of `pySYD`.](logo.png){ width=50% }
+![](logo.png)
 
 # The `pySYD` library
 
