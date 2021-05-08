@@ -94,7 +94,8 @@ $\sim1\%$ in $\rm \nu_{max}$, which is smaller or comparable to the typical rand
 
 ![Comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ 
 (right) for 30 *Kepler* stars, which are colored by the time series baseline. The bottom panels show the
-fractional residuals.\label{fig:comparison}](comparison.png)
+fractional residuals, where the residuals in $\rm \nu_{max}$ have a median=-0.00203 and stdev=0.00589 and
+the residuals in $\Delta\nu$ have a median=-0.00008 and stdev=0.00236 for .\label{fig:comparison}](comparison_new.png)
 
 # Documentation & Examples
 
