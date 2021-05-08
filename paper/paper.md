@@ -95,7 +95,7 @@ typical random uncertainties [@huber2011].
 
 ![Comparison of `pySYD` and `IDL-SYD` results for global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ 
 (right) for 30 *Kepler* stars, which are colored by the time series baseline. The bottom panels show the
-fractional residuals.\label{fig:comparison}](comparison.png)
+fractional residuals.\label{fig:comparison}](comparison_new.png)
 
 # Documentation & Examples
 
