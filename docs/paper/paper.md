@@ -31,24 +31,26 @@ bibliography: paper.bib
 # Summary
 
 Asteroseismology, the study of stellar oscillations, is a powerful tool for determining fundamental stellar 
-properties [@aerts2021]. Specifically for stars that are similar to the Sun, turbulent near-surface convection 
+properties [@aerts2021]. For stars that are similar to the Sun, turbulent near-surface convection 
 excites sound waves that propagate within the stellar cavity [@bedding2014]. These waves penetrate 
 into different depths within the star and therefore provide powerful constraints on stellar interiors that would 
 otherwise be inaccessible. Asteroseismology is well-established in astronomy as the gold standard for 
 characterizing fundamental properties like masses, radii, densities, and ages for single stars, which has
 broad impacts on several fields in astronomy. For example, ages of stars are important to reconstruct the 
-formation history of the Milky Way (so-called galactic archeology). For exoplanets that are measured indirectly 
+formation history of the Milky Way (so-called galactic archeology). For exoplanets that are discovered indirectly 
 through changes in stellar observables, precise and accurate stellar masses and radii are critical for 
 learning about the planets that orbit them.
 
 # Statement of Need
 
-Thanks to *Kepler*, K2 and TESS, we now have very large data volumes that require automated software tools
-to extract observables. Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, see @mathur2010; 
-`COR`, see @mosser2009; `OCT`, see @hekker2010], but nearly all of them are closed-source and therefore inaccessible to 
-the general astronomy community. Some open-source tools exist [e.g., `DIAMONDS`, see @corsaro2014; `PBjam`, see 
-@nielsen2021; `lightkurve`, see @lightkurve], but they are either not optimized for large samples of stars or have 
-not been extensively tested against closed-source tools.
+The NASA space telescopes *Kepler*, K2 and TESS have recently provided very large databases of high-precision 
+light curves of stars. By detecting brightness variations due to stellar oscillations these light curves allow the 
+application of asteroseismology to large numbers of stars, requiring automated software tools to extract observables. 
+Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, see @mathur2010; `COR`, see @mosser2009; 
+`OCT`, see @hekker2010], but nearly all of them are closed-source and therefore inaccessible to the general astronomy 
+community. Some open-source tools exist [e.g., `DIAMONDS`, see @corsaro2014; `PBjam`, see @nielsen2021; `lightkurve`, 
+see @lightkurve], but they are either not optimized for large samples of stars or have not been extensively tested 
+against closed-source tools.
 
 `pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which was extensively used 
 to measure asteroseismic parameters for Kepler stars. Papers based on asteroseismic parameters measured using the 
@@ -63,41 +65,41 @@ forthcoming data from the NASA TESS mission.
 
 # The `pySYD` library
 
-The driving mechanism for solar-like oscillations is stochastic, where oscillation modes are observed over a range 
-of frequencies. The ~Gaussian-like signature of solar-like oscillations is described by $\rm \nu_{max}$, or the center
-of this frequency range that corresponds to the maximum power, and the large frequency spacing ($\Delta\nu$). 
+The excitation mechanism for solar-like oscillations is stochastic and oscillation modes are observed over a range 
+of frequencies. The power excess is approximately ~Gaussian and can be described by $\rm \nu_{max}$, or the central
+frequency of the oscillation envelope, and the so-called large frequency spacing ($\Delta\nu$). The observables 
+$\rm \nu_{max}$ and $\Delta\nu$ are directly related to fundamental properties of stars and are both scaled from 
+the Sun.  
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic parameters. 
 Derived parameters include $\rm \nu_{max}$ and $\Delta\nu$, as well as characteristic amplitudes and timescales 
-of correlated red-noise signals present in a power spectrum which are due to stellar granulation processes.
+of correlated red-noise signals due to stellar granulation.
 
 A `pySYD` pipeline `Target` class object has two main methods:
 
-- The main purpose for the first module is to provide initial starting values for the second module, which is where
-  all parameters are measured. The first module searches for the power excess due to solar-like oscillations by
-  implementing a collapsed autocorrelation method using three different bin sizes.  The output from this routine 
-  provides an estimate for $\rm \nu_{max}$. 
-- Before global parameters like $\rm \nu_{max}$ and $\Delta\nu$ can be measured, the second module will first optimize 
-  the global fit by selecting the best-fit stellar background model. The results from the first module are translated 
-  into a frequency range in the power spectrum centered on the estimated $\rm \nu_{max}$, which is masked out to 
-  determine the stellar background contribution. The power spectrum is then corrected by subtracting out the best-fit 
-  model, which will ideally remove all signals from the power spectrum except for the Gaussian-like profile due to the 
-  oscillations.
+- The first module searches for the power excess due to solar-like oscillations by implementing a frequency-resolved 
+  collapsed autocorrelation method.  The output from this routine provides an estimate for $\rm \nu_{max}$. 
+- The second module first optimizes and determines the best-fit stellar background model. The results from the first 
+  module are translated into a frequency range in the power spectrum centered on the estimated $\rm \nu_{max}$, which 
+  is masked out to determine the stellar background contribution. After subtracting the best-fit model from the power 
+  spectrum, the peak of the smoothed power spectrum is the adaptedd $\rm \nu_{max}$.
   
 The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
 Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `SYD` using 
-results from the benchmark *Kepler* legacy sample in \autoref{fig:comparison}, which shows that there are no 
-systematic differences to at least $<0.5%$ in $\Delta\nu$ and $\sim1%$ in $\rm \nu_{max}$.
+results from the *Kepler* sample in \autoref{fig:comparison}. The comparison shows that there are no 
+systematic differences to at least $<0.5\%$ in $\Delta\nu$ and $\sim1\%$ in $\rm \nu_{max}$, which is smaller
+or comparable to the typical random uncertainties [@huber2011].
 
-![Direct comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ 
-(right) for 30 *Kepler* legacy stars.\label{fig:comparison}](comparison.png)
+![Comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ 
+(right) for 30 *Kepler* stars, which are colored by the time series baseline. The bottom panels show the
+fractional residuals.\label{fig:comparison}](comparison.png)
 
 # Documentation & Examples
 
-The main documentation for the `pySYD` software is hosted by [ReadTheDocs](https://readthedocs.org) at
-[pysyd.readthedocs.io](https://pysyd.readthedocs.io). `pySYD` provides a convenient setup feature that 
-will download data for three example stars and automatically create the recommended files for an easy 
-quickstart. The features of the `pySYD` output results are all described in detail in the documentation.
+The main documentation for the `pySYD` software is hosted at [pysyd.readthedocs.io](https://pysyd.readthedocs.io). 
+`pySYD` provides a convenient setup feature that will download data for three example stars and automatically create 
+the recommended files for an easy quickstart. The features of the `pySYD` output results are described in detail in 
+the documentation.
 
 # Acknowledgements
 
