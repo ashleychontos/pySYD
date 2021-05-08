@@ -65,10 +65,10 @@ forthcoming data from the NASA TESS mission.
 
 # The `pySYD` library
 
-The excitation mechanism for solar-like oscillations is stochastic and oscillation modes are observed over a range 
-of frequencies. The power excess is approximately ~Gaussian and can be described by $\rm \nu_{max}$, or the central
-frequency of the oscillation envelope, and the so-called large frequency spacing ($\Delta\nu$). The observables 
-$\rm \nu_{max}$ and $\Delta\nu$ are directly related to fundamental properties of stars and are both scaled from 
+The excitation mechanism for solar-like oscillations is stochastic and modes are observed over a range of frequencies. 
+Oscillation modes are separated by the so-called large frequency spacing (or $\Delta\nu$), where the power excess
+is approximately ~Gaussian and centered on $\rm \nu_{max}$ or the frequency of maximum power. The observables 
+$\rm \nu_{max}$ and $\Delta\nu$ are directly related to fundamental properties of stars which are both scaled from 
 the Sun.  
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic parameters. 
