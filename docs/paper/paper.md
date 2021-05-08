@@ -54,7 +54,7 @@ have not been extensively tested against closed-source tools.
 
 `pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which was extensively used 
 to measure asteroseismic parameters for Kepler stars. Papers based on asteroseismic parameters measured using the 
-`SYD` pipeline include @huber2011, @bastien2013 @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed 
+`SYD` pipeline include @huber2011, @bastien2013, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed 
 using the same well-tested methodology, but has improved functionality including automated background model selection 
 and parallel processing as well as improved flexibility through a user-friendly interface, while still 
 maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been 
@@ -94,8 +94,8 @@ $\sim1\%$ in $\rm \nu_{max}$, which is smaller or comparable to the typical rand
 
 ![Comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ 
 (right) for 30 *Kepler* stars, which are colored by the time series baseline. The bottom panels show the
-fractional residuals, where the residuals in $\rm \nu_{max}$ have a median=-0.00203 and stdev=0.00589 and
-the residuals in $\Delta\nu$ have a median=-0.00008 and stdev=0.00236 for .\label{fig:comparison}](comparison_new.png)
+fractional residuals, where the residuals in $\rm \nu_{max}$ have a median=-0.00203 and $\sigma^{2}$=0.00589 
+and the residuals in $\Delta\nu$ have a median=-0.00008 and $\sigma^{2}$=0.00236.\label{fig:comparison}](comparison_new.png)
 
 # Documentation & Examples
 
