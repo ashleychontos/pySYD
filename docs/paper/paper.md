@@ -52,17 +52,16 @@ to the general astronomy community. Some open-source tools exist [e.g., `DIAMOND
 @nielsen2021; `lightkurve`, @lightkurve], but they are either optimized for smaller samples of stars or 
 have not yet been extensively tested against closed-source tools.
 
-`pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which has been used frequently  
+`pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which has been used frequently 
 to measure asteroseismic parameters for *Kepler* stars and has been extensively tested against closed-source tools on
-*Kepler* data [@verner2011;,@hekker2011]. Papers based on asteroseismic parameters measured using the 
-`SYD` pipeline include @huber2011, @bastien2013, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed 
-using the same well-tested methodology, but has improved functionality including automated background model selection 
-and parallel processing as well as improved flexibility through a user-friendly interface, while still 
-maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been 
-benchmarked against closed-source tools are critical to ensure the reproducibility of legacy results from 
-the *Kepler* mission. The combination of well-tested methodology, improved flexibility and parallel processing
-capabilities will also make `pySYD` a promising tool for the broader community to analyze current and 
-forthcoming data from the NASA TESS mission.
+*Kepler* data [@verner2011;@hekker2011]. Papers based on asteroseismic parameters measured using the `SYD` pipeline 
+include @huber2011, @bastien2013, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed using the same 
+well-tested methodology, but has improved functionality including automated background model selection and parallel 
+processing as well as improved flexibility through a user-friendly interface, while still maintaining its speed and 
+efficiency. Well-documented, open-source asteroseismology software that has been benchmarked against closed-source 
+tools are critical to ensure the reproducibility of legacy results from the *Kepler* mission. The combination of 
+well-tested methodology, improved flexibility and parallel processing capabilities will also make `pySYD` a promising 
+tool for the broader community to analyze current and forthcoming data from the NASA TESS mission.
 
 # The `pySYD` library
 
