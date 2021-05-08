@@ -30,32 +30,32 @@ bibliography: paper.bib
 
 # Summary
 
-Asteroseismology, the study of stellar oscillations, is a powerful tool for determining fundamental stellar 
-properties [@aerts2021]. For stars that are similar to the Sun, turbulent near-surface convection 
-excites sound waves that propagate within the stellar cavity [@bedding2014]. These waves penetrate 
-into different depths within the star and therefore provide powerful constraints on stellar interiors that would 
-otherwise be inaccessible. Asteroseismology is well-established in astronomy as the gold standard for 
-characterizing fundamental properties like masses, radii, densities, and ages for single stars, which has
-broad impacts on several fields in astronomy. For example, ages of stars are important to reconstruct the 
-formation history of the Milky Way (so-called galactic archeology). For exoplanets that are discovered indirectly 
-through changes in stellar observables, precise and accurate stellar masses and radii are critical for 
-learning about the planets that orbit them.
+Asteroseismology, the study of stellar oscillations, is a powerful tool for studying the interiors of stars
+and determining their fundamental properties [@aerts2021]. For stars that are similar to the Sun, turbulent 
+near-surface convection excites sound waves that propagate within the stellar cavity [@bedding2014]. These 
+waves penetrate into different depths within the star and therefore provide powerful constraints on stellar 
+interiors that would otherwise be inaccessible. Asteroseismology is well-established in astronomy as the 
+gold standard for characterizing fundamental properties like masses, radii, densities, and ages for single 
+stars, which has broad impacts on several fields in astronomy. For example, ages of stars are important to 
+reconstruct the formation history of the Milky Way (so-called galactic archeology). For exoplanets that are 
+discovered indirectly through changes in stellar observables, precise and accurate stellar masses and radii 
+are critical for learning about the planets that orbit them.
 
 # Statement of Need
 
 The NASA space telescopes *Kepler*, K2 and TESS have recently provided very large databases of high-precision 
 light curves of stars. By detecting brightness variations due to stellar oscillations, these light curves allow the 
-application of asteroseismology to large numbers of stars thus requiring automated software tools to extract observables. 
-Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, see @mathur2010; `COR`, see @mosser2009; 
-`OCT`, see @hekker2010], but nearly all of them are closed-source and therefore inaccessible to the general astronomy 
-community. Some open-source tools exist [e.g., `DIAMONDS`, see @corsaro2014; `PBjam`, see @nielsen2021; `lightkurve`, 
-see @lightkurve], but they are either not optimized for large samples of stars or have not been extensively tested 
-against closed-source tools.
+application of asteroseismology to large numbers of stars, which requires automated software tools to efficiently 
+extract observables. Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, see @mathur2010; 
+`COR`, see @mosser2009; `OCT`, see @hekker2010], but nearly all of them are closed-source and therefore inaccessible 
+to the general astronomy community. Some open-source tools exist [e.g., `DIAMONDS`, see @corsaro2014; `PBjam`, 
+see @nielsen2021; `lightkurve`, see @lightkurve], but they are either not optimized for large samples of stars or 
+have not been extensively tested against closed-source tools.
 
 `pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which was extensively used 
 to measure asteroseismic parameters for Kepler stars. Papers based on asteroseismic parameters measured using the 
-`SYD` pipeline include @huber2011, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed using the same 
-well-tested methodology, but has improved functionality including automated background model selection 
+`SYD` pipeline include @huber2011, @bastien2013 @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed 
+using the same well-tested methodology, but has improved functionality including automated background model selection 
 and parallel processing as well as improved flexibility through a user-friendly interface, while still 
 maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been 
 benchmarked against closed-source tools are critical to ensure the reproducibility of legacy results from 
@@ -63,15 +63,13 @@ the *Kepler* mission. The combination of well-tested methodology, improved flexi
 capabilities will also make `pySYD` a promising tool for the broader community to analyze current and 
 forthcoming data from the NASA TESS mission.
 
-![](logo.png)
-
 # The `pySYD` library
 
 The excitation mechanism for solar-like oscillations is stochastic and modes are observed over a range of frequencies. 
-Oscillation modes are separated by the so-called large frequency spacing (or $\Delta\nu$), where the power excess
-is approximately Gaussian-shaped and centered on $\rm \nu_{max}$, or the frequency of maximum power. The observables 
-$\rm \nu_{max}$ and $\Delta\nu$ are directly related to fundamental properties of stars which are both scaled from 
-the Sun.  
+Oscillation modes are separated by the so-called large frequency spacing (or $\Delta\nu$), with an approximately
+Gaussian-shaped power excess centered on $\rm \nu_{max}$, the frequency of maximum power. The observables 
+$\rm \nu_{max}$ and $\Delta\nu$ are directly related to fundamental properties such as surface gravity, density,
+mass and radius.  
 
 `pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic parameters. 
 Derived parameters include $\rm \nu_{max}$ and $\Delta\nu$, as well as characteristic amplitudes and timescales 
@@ -84,13 +82,13 @@ A `pySYD` pipeline `Target` class object has two main methods:
 - The second module starts by optimizing and determining the best-fit stellar background model. The results from the 
   first module are translated into a frequency range in the power spectrum centered on the estimated $\rm \nu_{max}$,
   which is masked out to determine the stellar background contribution. After subtracting the best-fit model from 
-  the power spectrum, the peak of the smoothed power spectrum is the adapted $\rm \nu_{max}$. An autocorrelation 
-  function (ACF) is computed using the region centered on the updated $\rm \nu_{max}$, and the peak in the ACF that 
-  is closest to the expected spacing is the measured $\Delta\nu$. 
+  the power spectrum, the peak of the smoothed power spectrum is used to estimate $\rm \nu_{max}$. An autocorrelation 
+  function (ACF) is computed using the region centered on $\rm \nu_{max}$, and used to calculate an estimate of
+  $\Delta\nu$. 
   
 The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
 Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `SYD` using 
-results from the *Kepler* sample for differing time series lengths and is shown in \autoref{fig:comparison}. 
+results from the *Kepler* sample for differing time series lengths (\autoref{fig:comparison}). 
 The comparison demonstrates that there are no systematic differences to at least $<0.5\%$ in $\Delta\nu$ and 
 $\sim1\%$ in $\rm \nu_{max}$, which is smaller or comparable to the typical random uncertainties [@huber2011].
 
