@@ -81,10 +81,12 @@ A `pySYD` pipeline `Target` class object has two main methods:
 
 - The first module searches for the power excess due to solar-like oscillations by implementing a frequency-resolved 
   collapsed autocorrelation method.  The output from this routine provides an estimate for $\rm \nu_{max}$. 
-- The second module first optimizes and determines the best-fit stellar background model. The results from the first 
-  module are translated into a frequency range in the power spectrum centered on the estimated $\rm \nu_{max}$, which 
-  is masked out to determine the stellar background contribution. After subtracting the best-fit model from the power 
-  spectrum, the peak of the smoothed power spectrum is the adaptedd $\rm \nu_{max}$.
+- The second module starts by optimizing and determining the best-fit stellar background model. The results from the 
+  first module are translated into a frequency range in the power spectrum centered on the estimated $\rm \nu_{max}$,
+  which is masked out to determine the stellar background contribution. After subtracting the best-fit model from 
+  the power spectrum, the peak of the smoothed power spectrum is the adapted $\rm \nu_{max}$. An autocorrelation 
+  function (ACF) is computed using the region centered on the updated $\rm \nu_{max}$, and the peak in the ACF that 
+  is closest to the expected spacing is the measured $\Delta\nu$. 
   
 The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
 Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `SYD` using 
