@@ -69,7 +69,7 @@ forthcoming data from the NASA TESS mission.
 
 The excitation mechanism for solar-like oscillations is stochastic and modes are observed over a range of frequencies. 
 Oscillation modes are separated by the so-called large frequency spacing (or $\Delta\nu$), where the power excess
-is approximately ~Gaussian and centered on $\rm \nu_{max}$ or the frequency of maximum power. The observables 
+is approximately Gaussian-shaped and centered on $\rm \nu_{max}$, or the frequency of maximum power. The observables 
 $\rm \nu_{max}$ and $\Delta\nu$ are directly related to fundamental properties of stars which are both scaled from 
 the Sun.  
 
@@ -88,9 +88,9 @@ A `pySYD` pipeline `Target` class object has two main methods:
   
 The `pySYD` software was built using a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
 Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `SYD` using 
-results from the *Kepler* sample in \autoref{fig:comparison}. The comparison shows that there are no 
-systematic differences to at least $<0.5\%$ in $\Delta\nu$ and $\sim1\%$ in $\rm \nu_{max}$, which is smaller
-or comparable to the typical random uncertainties [@huber2011].
+results from the *Kepler* sample for differing time series lengths and is shown in \autoref{fig:comparison}. 
+The comparison demonstrates that there are no systematic differences to at least $<0.5\%$ in $\Delta\nu$ and 
+$\sim1\%$ in $\rm \nu_{max}$, which is smaller or comparable to the typical random uncertainties [@huber2011].
 
 ![Comparison of `pySYD` and `SYD` results for global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ 
 (right) for 30 *Kepler* stars, which are colored by the time series baseline. The bottom panels show the
