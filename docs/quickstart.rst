@@ -3,7 +3,7 @@
 Getting Started
 ###############
 
-Jump down to :ref:`sixtyseconds` to get asteroseismic parameters for a star in ~60 seconds!
+Jump down to :ref:`summary` to get asteroseismic parameters for a star in less than a minute!
 
 .. _installation:
 
@@ -80,22 +80,61 @@ If you ran the setup feature, there are three example stars provided: 1435467 (t
 (i.e. the output plots) options are set to ``False``. We recommend using them for the example, since they are helpful to see how 
 the pipeline processes targets.
 
-To estimate uncertainties in the derived parameters, set ``-mc`` to a number sufficient for bootstrap sampling.
+To estimate uncertainties in the derived parameters, set ``-mc`` to a number sufficient for bootstrap sampling. In the previous 
+example, ``-mc`` was not specified and is 1 by default (for 1 iteration). Below shows the same example with the
+sampling enabled, including the verbose output you should see if your software was installed successfully.
 
 .. code-block:: bash
 
     $ pysyd run -star 1435467 -show -verbose -mc 200
+    
+    -------------------------------------------------
+    Target: 1435467
+    -------------------------------------------------
+    # LIGHT CURVE: 37919 lines of data read
+    # POWER SPECTRUM: 99518 lines of data read
+    oversampled by a factor of 5
+    time series cadence: 58 seconds
+    power spectrum resolution: 0.426868 muHz
+    -------------------------------------------------
+    Running find_excess module:
+    PS binned to 338 datapoints
+    power excess trial 1: numax = 1459.04 +/- 68.65
+    S/N: 1.77
+    power excess trial 2: numax = 1449.05 +/- 83.27
+    S/N: 2.18
+    power excess trial 3: numax = 1442.87 +/- 71.29
+    S/N: 6.16
+    selecting model 3
+    -------------------------------------------------
+    Running fit_background module:
+    PS binned to 343 data points
+    Comparing 4 different models:
+    1: one harvey model w/ white noise free parameter
+    2: one harvey model w/ white noise fixed
+    3: two harvey model w/ white noise free parameter
+    4: two harvey model w/ white noise fixed
+    Based on reduced chi-squared statistic: model 4
+    -------------------------------------------------
+    Running sampling routine:
+    100%|█████████████████████████████████████████| 200/200 [00:17<00:00, 11.75it/s]
 
-In the previous example, ``-mc`` was not specified and is 1 by default (for 1 iteration). By changing this 
-value, it will randomize the power spectrum for the specified number of steps and attempt to recover the parameters. 
-The uncertainties will appear in the verbose output, output csvs, and an additional figure will show 
-the posterior distributions for the derived parameters.
+    Output parameters:
+    numax (smoothed): 1312.62 +/- 69.30 muHz
+    maxamp (smoothed): 1.34 +/- 0.29 ppm^2/muHz. 
+    numax (gaussian): 1366.75 +/- 48.85 muHz
+    maxamp (gaussian): 1.20 +/- 0.23 ppm^2/muHz
+    fwhm (gaussian): 271.63 +/- 67.40 muHz
+    dnu: 71.00 +/- 0.83 muHz
+    -------------------------------------------------
+
+    Combining results into single csv file.
 
 
-.. _sixtyseconds:
+.. _summary:
 
-Sixty-Second-Seismology
-***********************
+Quickstart
+**********
 
 .. compound::
 
@@ -108,5 +147,5 @@ Sixty-Second-Seismology
 	$ pysyd setup
 	$ pysyd run -star 1435467 -show -verbose -mc 200
         
-    ... and if you weren't one already, you are now an expert asteroseismologist!
+    ... and if you weren't one already, you are now an asteroseismologist!
     
