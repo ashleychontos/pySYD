@@ -11,7 +11,7 @@ from pysyd import utils
 from pysyd.target import Target
 
 
-def main(args):
+def run(args):
     """
     Runs the pySYD pipeline.
 
@@ -22,17 +22,7 @@ def main(args):
     """
 
     args = utils.get_info(args)
-
-    if args.parallel:
-        # create the separate, asyncrhonous (nthread) processes
-        pool = mp.Pool(args.nthreads)
-        result_objects = [pool.apply_async(run, args=(group, args)) for group in args.params['groups']]
-        results = [r.get() for r in result_objects]
-        pool.close()
-        pool.join()    # postpones execution of the next line until all processes finish
-        count = np.sum(results)
-    else:
-        count = run(args.params['stars'], args)
+    count = main(args.params['stars'], args)
       
     # check to make sure that at least one star was successful (count == number of successful star executions)   
     if count != 0:
@@ -43,7 +33,36 @@ def main(args):
         utils.scrape_output(args)
 
 
-def run(group, args, count=0):
+def parallel(args):
+    """
+    Runs the pySYD pipeline in parallel.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        the command line arguments
+    """
+
+    args = utils.get_info(args, parallel=True)
+
+    # create the separate, asyncrhonous (nthread) processes
+    pool = mp.Pool(args.n_threads)
+    result_objects = [pool.apply_async(main, args=(group, args)) for group in args.params['groups']]
+    results = [r.get() for r in result_objects]
+    pool.close()
+    pool.join()    # postpones execution of the next line until all processes finish
+    count = np.sum(results)
+      
+    # check to make sure that at least one star was successful (count == number of successful star executions)   
+    if count != 0:
+        if args.verbose:
+            print('Combining results into single csv file.')
+            print()
+        # Concatenates output into two files
+        utils.scrape_output(args)
+
+
+def main(group, args, count=0):
     """
     A Target class is initialized and processed for each star in the stargroup.
 

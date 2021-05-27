@@ -13,8 +13,6 @@ def main():
                                      prog='pySYD',
     )
 
-    sub_parser = parser.add_subparsers(title='subcommands', dest='subcommand')
-
     # In the parent parser, we define arguments and options common to all subcommands
     parent_parser = argparse.ArgumentParser(add_help=False)
     parent_parser.add_argument('-file', '--file', '-list', '--list', '-todo', '--todo',
@@ -46,75 +44,75 @@ def main():
                                default='results/',
     )
 
-    # Setting up
-    parser_setup = sub_parser.add_parser('setup', parents=[parent_parser],
-                                         description='Easy setup for directories and files')
-    parser_setup.set_defaults(func=pipeline.setup)
+    # Main options 
+    main_parser = argparse.ArgumentParser(add_help=False)
 
-    # Run pySYD
-    parser_run = sub_parser.add_parser('run', parents=[parent_parser],
-                                       description='Run pySYD')
-    parser_run.add_argument('-bg', '--bg', '-fitbg', '--fitbg', '-background', '--background',
+    main_parser.add_argument('-bg', '--bg', '-fitbg', '--fitbg', '-background', '--background',
                             dest='background',
                             help='Turn off the background fitting process (although this is not recommended)',
                             default=True, 
                             action='store_false',
     )
-    parser_run.add_argument('-ex', '--ex', '-findex', '--findex', '-excess', '--excess',
+    main_parser.add_argument('-cad', '--cad', '-cadence', '--cadence', 
+                            dest='cadence',
+                            help='Cadence of time series (in seconds), which will automatically be calculated when time series data is available.',
+                            type=int,
+                            default=0, 
+    )
+    main_parser.add_argument('-ex', '--ex', '-findex', '--findex', '-excess', '--excess',
                             dest='excess',
                             help='Turn off the find excess module. This is only recommended when a list of numaxes or a list of stellar parameters (to estimate the numaxes) are provided.',
                             default=True, 
                             action='store_false',
     )
-    parser_run.add_argument('-kc', '--kc', '-kepcorr', '--kepcorr',
+    main_parser.add_argument('-kc', '--kc', '-kepcorr', '--kepcorr',
                             dest='kepcorr',
                             help='Turn on Kepler short-cadence artefact corrections',
                             default=False, 
                             action='store_true',
     )
-    parser_run.add_argument('-nt', '--nt', '-nthread', '--nthread', '-nthreads', '--nthreads',
-                            dest='n_threads',
-                            help='Number of processes to run in parallel',
-                            type=int,
-                            default=0,
+    main_parser.add_argument('-nyq', '--nyq', '-nyquist', '--nyquist', 
+                            dest='nyquist',
+                            help='Nyquist frequency of power spectrum. Relevant for when the time series is not provided.',
+                            default=None,
     )
-    parser_run.add_argument('-ofa', '--ofa', '-of_actual', '--of_actual',
+    main_parser.add_argument('-ofa', '--ofa', '-of_actual', '--of_actual',
                             dest='of_actual',
                             help='Provide the actual oversampling factor of the power spectrum (provided there is no light curve data). Default is `0`, which means it is calculated from the time series data.',
                             type=int,
                             default=0,
     )
-    parser_run.add_argument('-ofn', '--ofn', '-of_new', '--of_new',
+    main_parser.add_argument('-ofn', '--ofn', '-of_new', '--of_new',
                             dest='of_new',
                             help='The desired oversampling factor for the newly-computed power spectrum. Default is `5`.',
                             type=int,
                             default=5,
     )
-    parser_run.add_argument('-os', '--os', '-over', '--over', '-oversample', '--oversample',
+    main_parser.add_argument('-os', '--os', '-over', '--over', '-oversample', '--oversample',
                             dest='oversample',
                             help='Use an oversampled power spectrum in the analysis. Default is `False`.',
                             default=True,
                             action='store_false',
     )
-    parser_run.add_argument('-par', '--par', '-parallel', '--parallel',
-                            dest='parallel',
-                            help='Run batch of stars in parallel',
-                            default=False,
-                            action='store_true',
-    )
-    parser_run.add_argument('-save', '--save', 
+#    parser_run.add_argument('-par', '--par', '-parallel', '--parallel',
+#                            dest='parallel',
+#                            help='Run batch of stars in parallel',
+#                            default=False,
+#                            action='store_true',
+#    )
+    main_parser.add_argument('-save', '--save', 
                             dest='save',
                             help='Save output files and figures (default=True)',
                             default=True, 
                             action='store_false',
     )
-    parser_run.add_argument('-show', '--show',
+    main_parser.add_argument('-show', '--show',
                             dest='show',
                             help="""Shows output figures (default=False) Please note: If running multiple targets, this is not recommended! """,
                             default=False, 
                             action='store_true',
     )
-    parser_run.add_argument('-star', '--star', '-stars', '--stars',
+    main_parser.add_argument('-star', '--star', '-stars', '--stars',
                             dest='stars',
                             help="""List of targets to process (default=None). If this is not provided, it will default to read targets in from the default 'file' argument.""",
                             nargs='*',
@@ -123,7 +121,7 @@ def main():
     )
 
     # CLI relevant for finding power excess
-    excess = parser_run.add_argument_group('excess')
+    excess = main_parser.add_argument_group('excess')
 
     excess.add_argument('-bin', '--bin', '-binning', '--binning', 
                         dest='binning', 
@@ -165,7 +163,7 @@ def main():
     )
 
     # CLI relevant for background fitting
-    background = parser_run.add_argument_group('background')
+    background = main_parser.add_argument_group('background')
 
     background.add_argument('-bf', '--bf', '-box', '--box', '-boxfilter', '--boxfilter',
                             dest='box_filter',
@@ -280,7 +278,31 @@ def main():
                             action='store_true',
     )
 
-    parser_run.set_defaults(func=pipeline.main)
+    sub_parser = parser.add_subparsers(title='subcommands', dest='subcommand')
+
+    # Setting up
+    parser_setup = sub_parser.add_parser('setup', parents=[parent_parser],
+                                         description='Easy setup for directories and files')
+    parser_setup.set_defaults(func=pipeline.setup)
+
+    # Running pySYD in regular mode
+
+    parser_run = sub_parser.add_parser('run', help='Run pySYD in regular mode', 
+                                       parents=[parent_parser, main_parser])
+
+    parser_run.set_defaults(func=pipeline.run)
+
+    # Run pySYD
+    parser_parallel = sub_parser.add_parser('parallel', help='Run pySYD in parallel',
+                                            parents=[parent_parser, main_parser])
+    parser_parallel.add_argument('-nt', '--nt', '-nthread', '--nthread', '-nthreads', '--nthreads',
+                                 dest='n_threads',
+                                 help='Number of processes to run in parallel',
+                                 type=int,
+                                 default=0,
+    )
+
+    parser_parallel.set_defaults(func=pipeline.parallel)
 
     args = parser.parse_args()
     args.func(args)

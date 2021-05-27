@@ -14,10 +14,11 @@ from pysyd.models import *
 
 
 
-def get_info(args, stars=None, verbose=False, show=False, save=True, oversample=True, over_factor=1, 
-             G=6.67428e-8, teff_sun=5777.0, mass_sun=1.9891e33, radius_sun=6.95508e10, dnu_sun=135.1, 
+def get_info(args, parallel=False, stars=None, verbose=False, show=False, save=True, G=6.67428e-8, 
+             teff_sun=5777.0, mass_sun=1.9891e33, radius_sun=6.95508e10, dnu_sun=135.1, 
              numax_sun=3090.0, width_sun=1300.0, tau_sun=[5.2e6,1.8e5,1.7e4,2.5e3,280.0,80.0], 
-             tau_sun_single=[3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.], kepcorr=False, groups=[]):
+             tau_sun_single=[3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.], kepcorr=False, groups=[],
+             oversample=True, of_actual=0, of_new=5):
     """
     Loads todo.txt, sets up file paths, loads in any available star information,
     and sets up matplotlib params.
@@ -45,7 +46,7 @@ def get_info(args, stars=None, verbose=False, show=False, save=True, oversample=
     check_inputs(args)
     params['inpdir'] = args.inpdir
     params['outdir'] = args.outdir
-    if args.parallel:
+    if parallel:
         todo = np.array(args.stars)
         args.verbose = False
         args.show = False
@@ -61,10 +62,11 @@ def get_info(args, stars=None, verbose=False, show=False, save=True, oversample=
 
     # Adding constants and the star list
     params.update({
-        'numax_sun':3090.0, 'width_sun':1300.0, 'stars':args.stars, 'G':6.67428e-8, 'of_actual':args.of_actual,
+        'numax_sun':3090.0, 'width_sun':1300.0, 'stars':args.stars, 'G':6.67428e-8, 
         'show':args.show, 'oversample':args.oversample, 'tau_sun':[5.2e6,1.8e5,1.7e4,2.5e3,280.0,80.0], 
         'tau_sun_single': [3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.], 'radius_sun': 6.95508e10, 'save':args.save, 
-        'teff_sun':5777.0, 'mass_sun':1.9891e33, 'dnu_sun':135.1, 'kepcorr': args.kepcorr, 'groups':groups, 'of_new':args.of_new,
+        'teff_sun':5777.0, 'mass_sun':1.9891e33, 'dnu_sun':135.1, 'kepcorr': args.kepcorr, 'groups':groups, 
+        'of_actual':args.of_actual, 'of_new':args.of_new,
     })
     # Set file paths
     for star in args.stars:
@@ -325,10 +327,26 @@ def load_data(star, args):
             print('-------------------------------------------------')
         # Load light curve
         if not os.path.exists('%s/%d_LC.txt'%(args.inpdir, star.name)):
-            star.cadence = None
-            star.nyquist = None
-            if star.verbose:
-                print('# WARNING: no time series data provided')
+            if args.cadence != 0 and args.nyquist is not None:
+                star.cadence = args.cadence
+                star.nyquist = args.nyquist
+                nyquist = 10**6./(2.0*args.cadence)
+                if int(args.nyquist) != int(nyquist):
+                    if self.verbose:
+                        print('# WARNING: LC CADENCE AND PS NYQUIST ARE INCONSISTENT')
+            elif args.cadence != 0 and args.nyquist is None:
+                star.cadence = args.cadence
+                star.nyquist = 10**6./(2.0*args.cadence)
+            elif args.cadence == 0 and args.nyquist is not None:
+                star.cadence = 10**6./(2.0*args.nyquist)
+                star.nyquist = args.nyquist
+            else:
+                if star.verbose:
+                    print('# WARNING: NO TIME SERIES DATA PROVIDED')
+                    print('#          Please specify either:')
+                    print('#          1) the time series cadence or')
+                    print('#          2) the nyquist frequency of the power spectrum')
+                    print('#          for pySYD to run properly.')
         else:
             star.lc = True
             star.time, star.flux = get_file('%s/%d_LC.txt'%(args.inpdir, star.name))
@@ -360,7 +378,10 @@ def load_data(star, args):
                         print('#          -ofa == %d'%of_actual)
             if star.verbose:
                 print('# POWER SPECTRUM: %d lines of data read'%len(star.frequency))
-                print('# Oversampled by a factor of %d'%args.of_actual)
+                if args.of_actual == 1:
+                    print('# Critically sampled')
+                else:
+                    print('# Oversampled by a factor of %d'%args.of_actual)
             if args.oversample:
                 star.freq_cs = np.array(star.frequency[args.of_actual-1::args.of_actual])
                 star.pow_cs = np.array(star.power[args.of_actual-1::args.of_actual])

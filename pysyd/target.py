@@ -57,8 +57,6 @@ class Target:
             self.run = 1
         else:
             self.run = 0
-#            if self.verbose:
-#                print('ERROR: data not found for star %d' % self.name)
 
 
     def run_syd(self):
@@ -111,60 +109,6 @@ class Target:
                 print('selecting model %d' % self.findex['results'][self.name]['best'])
             utils.save_findex(self)
             plots.plot_excess(self)
-
-
-    def fit_background(self):
-        """
-        Perform a fit to the granulation background and measures the frequency of maximum power (numax),
-        the large frequency separation (dnu) and oscillation amplitude.
-
-        """
-
-        # Will only run routine if there is a prior numax estimate
-        if utils.check_fitbg(self):
-            # Check for guesses or find_excess results
-            self = utils.get_initial_guesses(self)
-            self.fitbg['results'][self.name] = {
-                'numax_smooth': [],
-                'A_smooth': [],
-                'numax_gauss': [],
-                'A_gauss': [],
-                'FWHM': [],
-                'dnu': [],
-                'white': []
-            }
-            if self.verbose:
-                print('-------------------------------------------------')
-                print('Running fit_background module:')
-                print('PS binned to %d data points' % len(self.bin_freq))
-
-            # Run first iteration (which has different steps than any other n>1 runs)
-            good = self.first_step()
-            if not good:
-                pass
-            else:
-                # If sampling is enabled (i.e., args.mciter > 1), a progress bar is created w/ verbose output
-                if self.fitbg['mc_iter'] > 1:
-                    if self.verbose:
-                        print('-------------------------------------------------')
-                        print('Running sampling routine:')
-                        self.pbar = tqdm(total=self.fitbg['mc_iter'])
-                        self.pbar.update(1)
-                    self.i = 1
-                    # Continue to sample while the number of successful steps is less than args.mciter
-                    while self.i < self.fitbg['mc_iter']:
-                        self.sampling_step()
-                    utils.save_fitbg(self)
-                    plots.plot_samples(self)
-                    if self.verbose:
-                        # Print results with uncertainties
-                        utils.verbose_output(self, sampling=True)
-                # Single iteration
-                else:
-                    utils.save_fitbg(self)
-                    if self.verbose:
-                        # Print results without uncertainties
-                        utils.verbose_output(self)
 
 
     def collapsed_acf(self, b, j=0, start=0, max_iterations=5000, max_snr=100.):
@@ -227,6 +171,60 @@ class Target:
                   print('power excess trial %d: numax = %.2f +/- %.2f' % (b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
                   print('S/N: %.2f' % snr)
         self.compare.append(snr)
+
+
+    def fit_background(self):
+        """
+        Perform a fit to the granulation background and measures the frequency of maximum power (numax),
+        the large frequency separation (dnu) and oscillation amplitude.
+
+        """
+
+        # Will only run routine if there is a prior numax estimate
+        if utils.check_fitbg(self):
+            # Check for guesses or find_excess results
+            self = utils.get_initial_guesses(self)
+            self.fitbg['results'][self.name] = {
+                'numax_smooth': [],
+                'A_smooth': [],
+                'numax_gauss': [],
+                'A_gauss': [],
+                'FWHM': [],
+                'dnu': [],
+                'white': []
+            }
+            if self.verbose:
+                print('-------------------------------------------------')
+                print('Running fit_background module:')
+                print('PS binned to %d data points' % len(self.bin_freq))
+
+            # Run first iteration (which has different steps than any other n>1 runs)
+            good = self.first_step()
+            if not good:
+                pass
+            else:
+                # If sampling is enabled (i.e., args.mciter > 1), a progress bar is created w/ verbose output
+                if self.fitbg['mc_iter'] > 1:
+                    if self.verbose:
+                        print('-------------------------------------------------')
+                        print('Running sampling routine:')
+                        self.pbar = tqdm(total=self.fitbg['mc_iter'])
+                        self.pbar.update(1)
+                    self.i = 1
+                    # Continue to sample while the number of successful steps is less than args.mciter
+                    while self.i < self.fitbg['mc_iter']:
+                        self.sampling_step()
+                    utils.save_fitbg(self)
+                    plots.plot_samples(self)
+                    if self.verbose:
+                        # Print results with uncertainties
+                        utils.verbose_output(self, sampling=True)
+                # Single iteration
+                else:
+                    utils.save_fitbg(self)
+                    if self.verbose:
+                        # Print results without uncertainties
+                        utils.verbose_output(self)
 
 
     def first_step(self):
