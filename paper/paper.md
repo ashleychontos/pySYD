@@ -109,7 +109,8 @@ the documentation.
 
 # Acknowledgements
 
-We acknowledge contributions from Dennis Stello, Jie Yu, Marc Hon, and other users of the `SYD` pipeline.
+We thank Dennis Stello, Jie Yu, Marc Hon, and other users of the SYD pipeline for discussion and suggestions 
+which helped with the development of this code.
 
 We also acknowledge support from the Alfred P. Sloan Foundation, the National Aeronatuics and Space Administration
 (80NSSC19K0597), and the National Science Foundation (AST-1717000, DGE-1842402).
