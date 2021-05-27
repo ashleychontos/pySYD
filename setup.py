@@ -19,7 +19,7 @@ setuptools.setup(
     license="MIT",
     author="Ashley Chontos",
     author_email="achontos@hawaii.edu",
-    description="Automated extraction of global asteroseismic parameters",
+    description="Automated measurements of global asteroseismic parameters",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ashleychontos/pysyd",

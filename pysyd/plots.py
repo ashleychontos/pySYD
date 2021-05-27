@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from astropy.convolution import convolve, Box1DKernel
 
+from pysyd import utils
 
 def set_plot_params():
     """Sets the matplotlib parameters."""
@@ -40,28 +41,29 @@ def plot_excess(star):
 
     # Time series data
     ax1 = plt.subplot(2, 3, 1)
-    ax1.plot(star.time, star.flux, 'w-')
-    ax1.set_xlim([min(star.time), max(star.time)])
+    if star.lc:
+        ax1.plot(star.time, star.flux, 'w-')
+        ax1.set_xlim([min(star.time), max(star.time)])
     ax1.set_title(r'$\rm Time \,\, series$')
     ax1.set_xlabel(r'$\rm Time \,\, [days]$')
     ax1.set_ylabel(r'$\rm Flux$')
 
     # log-log power spectrum with crude background fit
     ax2 = plt.subplot(2, 3, 2)
-    ax2.loglog(star.freq, star.pow, 'w-')
-    ax2.set_xlim([min(star.freq), max(star.freq)])
-    ax2.set_ylim([min(star.pow), max(star.pow)*1.25])
+    ax2.loglog(star.frequency, star.power, 'w-')
+    ax2.set_xlim([min(star.frequency), max(star.frequency)])
+    ax2.set_ylim([min(star.power), max(star.power)*1.25])
     ax2.set_title(r'$\rm Crude \,\, background \,\, fit$')
     ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
     if star.findex['binning'] is not None:
         ax2.loglog(star.bin_freq, star.bin_pow, 'r-')
-    ax2.loglog(star.freq, star.interp_pow, color='lime', linestyle='-', lw=2.0)
+    ax2.loglog(star.frequency, star.interp_pow, color='lime', linestyle='-', lw=2.0)
 
     # Crude background-corrected power spectrum
     ax3 = plt.subplot(2, 3, 3)
-    ax3.plot(star.freq, star.bgcorr_pow, 'w-')
-    ax3.set_xlim([min(star.freq), max(star.freq)])
+    ax3.plot(star.frequency, star.bgcorr_pow, 'w-')
+    ax3.set_xlim([min(star.frequency), max(star.frequency)])
     ax3.set_ylim([0.0, max(star.bgcorr_pow)*1.25])
     ax3.set_title(r'$\rm Background \,\, corrected \,\, PS$')
     ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
@@ -95,9 +97,19 @@ def plot_excess(star):
     plt.close()
 
 
-def plot_background(star):
+def plot_background(star, n_peaks=10):
     """
     Creates a plot summarising the results of the fit background routine.
+
+    Parameters
+    ----------
+    star : target.Target
+        the main pipeline Target class object
+    n_peaks : int
+        the number of peaks to highlight in the zoomed-in power spectrum
+
+    Results
+    -------
 
     """
 
@@ -108,18 +120,19 @@ def plot_background(star):
 
     # Time series data
     ax1 = fig.add_subplot(3, 3, 1)
-    ax1.plot(star.time, star.flux, 'w-')
-    ax1.set_xlim([min(star.time), max(star.time)])
+    if star.lc:
+        ax1.plot(star.time, star.flux, 'w-')
+        ax1.set_xlim([min(star.time), max(star.time)])
     ax1.set_title(r'$\rm Time \,\, series$')
     ax1.set_xlabel(r'$\rm Time \,\, [days]$')
     ax1.set_ylabel(r'$\rm Flux$')
 
     # Initial background guesses
-    star.smooth_power = convolve(star.power, Box1DKernel(int(np.ceil(star.fitbg['box_filter']/star.resolution))))
+    star.smooth_power = convolve(star.random_pow, Box1DKernel(int(np.ceil(star.fitbg['box_filter']/star.resolution))))
     ax2 = fig.add_subplot(3, 3, 2)
-    ax2.plot(star.frequency, star.power, c='lightgrey', zorder=0, alpha=0.5)
-    ax2.plot(star.frequency[star.frequency < star.maxpower[0]], star.power[star.frequency < star.maxpower[0]], 'w-', zorder=1)
-    ax2.plot(star.frequency[star.frequency > star.maxpower[1]], star.power[star.frequency > star.maxpower[1]], 'w-', zorder=1)
+    ax2.plot(star.frequency, star.random_pow, c='lightgrey', zorder=0, alpha=0.5)
+    ax2.plot(star.frequency[star.frequency < star.maxpower[0]], star.random_pow[star.frequency < star.maxpower[0]], 'w-', zorder=1)
+    ax2.plot(star.frequency[star.frequency > star.maxpower[1]], star.random_pow[star.frequency > star.maxpower[1]], 'w-', zorder=1)
     ax2.plot(star.frequency[star.frequency < star.maxpower[0]], star.smooth_power[star.frequency < star.maxpower[0]], 'r-', linewidth=0.75, zorder=2)
     ax2.plot(star.frequency[star.frequency > star.maxpower[1]], star.smooth_power[star.frequency > star.maxpower[1]], 'r-', linewidth=0.75, zorder=2)
     for r in range(star.nlaws):
@@ -141,9 +154,9 @@ def plot_background(star):
 
     # Fitted background
     ax3 = fig.add_subplot(3, 3, 3)
-    ax3.plot(star.frequency, star.power, c='lightgrey', zorder=0, alpha=0.5)
-    ax3.plot(star.frequency[star.frequency < star.maxpower[0]], star.power[star.frequency < star.maxpower[0]], 'w-', linewidth=0.75, zorder=1)
-    ax3.plot(star.frequency[star.frequency > star.maxpower[1]], star.power[star.frequency > star.maxpower[1]], 'w-', linewidth=0.75, zorder=1)
+    ax3.plot(star.frequency, star.random_pow, c='lightgrey', zorder=0, alpha=0.5)
+    ax3.plot(star.frequency[star.frequency < star.maxpower[0]], star.random_pow[star.frequency < star.maxpower[0]], 'w-', linewidth=0.75, zorder=1)
+    ax3.plot(star.frequency[star.frequency > star.maxpower[1]], star.random_pow[star.frequency > star.maxpower[1]], 'w-', linewidth=0.75, zorder=1)
     ax3.plot(star.frequency[star.frequency < star.maxpower[0]], star.smooth_power[star.frequency < star.maxpower[0]], 'r-', linewidth=0.75, zorder=2)
     ax3.plot(star.frequency[star.frequency > star.maxpower[1]], star.smooth_power[star.frequency > star.maxpower[1]], 'r-', linewidth=0.75, zorder=2)
     for r in range(star.nlaws):
@@ -178,7 +191,7 @@ def plot_background(star):
     # Background-corrected power spectrum with n highest peaks
     star.freq = star.frequency[star.params[star.name]['ps_mask']]
     star.psd = star.bg_corr_smooth[star.params[star.name]['ps_mask']]
-    peaks_f, peaks_p = max_elements(star.freq, star.psd, star.fitbg['n_peaks'])
+    peaks_f, peaks_p = max_elements(star.freq, star.psd, n_peaks)
     ax5 = fig.add_subplot(3, 3, 5)
     ax5.plot(star.freq, star.psd, 'w-', zorder=0, linewidth=1.0)
     ax5.scatter(peaks_f, peaks_p, s=25.0, edgecolor='r', marker='s', facecolor='none', linewidths=1.0)
@@ -243,7 +256,10 @@ def plot_background(star):
 
     plt.tight_layout()
     if star.params['save']:
-        plt.savefig('%sbackground.png' % star.params[star.name]['path'], dpi=300)
+        if star.fitbg['interp_ech']:
+            plt.savefig('%sbackground_smooth_echelle.png' % star.params[star.name]['path'], dpi=300)
+        else:
+            plt.savefig('%sbackground.png' % star.params[star.name]['path'], dpi=300)
     if star.params['show']:
         plt.show()
     plt.close()
@@ -255,13 +271,25 @@ def plot_samples(star):
 
     """
 
+    n = len(star.df.columns.values.tolist())
     plt.figure(figsize=(12, 8))
-    panels = ['numax_smooth', 'amp_smooth', 'numax_gaussian', 'amp_gaussian', 'fwhm_gaussian', 'dnu']
-    titles = [r'$\rm Smoothed \,\, \nu_{max} \,\, [\mu Hz]$', r'$\rm Smoothed \,\, A_{max} \,\, [ppm^{2} \mu Hz^{-1}]$', r'$\rm Gaussian \,\, \nu_{max} \,\, [\mu Hz]$', r'$\rm Gaussian \,\, A_{max} \,\, [ppm^{2} \mu Hz^{-1}]$', r'$\rm Gaussian \,\, FWHM \,\, [\mu Hz]$', r'$\rm \Delta\nu \,\, [\mu Hz]$']
-    for i in range(6):
-        ax = plt.subplot(2, 3, i+1)
-        ax.hist(star.df[panels[i]], bins=20, color='cyan', histtype='step', lw=2.5, facecolor='0.75')
-        ax.set_title(titles[i])
+    params = utils.get_params_dict()
+    if n <= 3:
+        x, y = 3, 1
+    elif n > 3 and n <= 6:
+        x, y = 3, 2
+    elif n > 6 and n <= 9:
+        x, y = 3, 3
+    elif  n > 9 and n <= 12:
+        x, y = 4, 3
+    elif n > 12 and n <= 16:
+        x, y = 4, 4
+    else:
+        x, y = 5, 4
+    for i, col in enumerate(star.df.columns.values.tolist()):
+        ax = plt.subplot(y, x, i+1)
+        ax.hist(star.df[col], bins=20, color='cyan', histtype='step', lw=2.5, facecolor='0.75')
+        ax.set_title(params[col]['label'])
 
     plt.tight_layout()
     if star.params['save']:

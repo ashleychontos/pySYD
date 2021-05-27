@@ -5,10 +5,14 @@ from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolv
 
 
 
-def set_seed(star):
-    """For Kepler targets that require a correction via CLI (--kc), a random seed is generated
-    from U~[1,10^6] and stored in stars_info.csv for reproducible results in later runs."""
-    seed = list(np.random.randint(1,high=10000000,size=1))
+def set_seed(star, lower=1, upper=10**7, size=1):
+    """
+    For Kepler targets that require a correction via CLI (--kc), a random seed is generated
+    from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
+
+    """
+
+    seed = list(np.random.randint(lower,high=upper,size=size))
     df = pd.read_csv(star.info)
     stars = df.targets.values.tolist()
     idx = stars.index(star.star)
@@ -18,12 +22,17 @@ def set_seed(star):
     return star
 
 
-def remove_artefact(star, lc=29.4244*60*1e-6):
-    """Removes SC artefacts in Kepler power spectra by replacing them with noise (using linear interpolation)
-    following an exponential distribution; known artefacts are:
+def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower = [240.0, 500.0], lf_upper = [380.0, 530.0], 
+                    hf_lower = [4530.0, 5011.0, 5097.0, 5575.0, 7020.0, 7440.0, 7864.0],
+                    hf_upper = [4534.0, 5020.0, 5099.0, 5585.0, 7030.0, 7450.0, 7867.0],):
+    """
+    Removes SC artefacts in Kepler power spectra by replacing them with noise (using linear interpolation)
+    following a chi-squared distribution. 
+
+    Known artefacts are:
     1) 1./LC harmonics
-    2) unknown artefacts at high frequencies (>5000 muHz)
-    3) excess power between 250-400 muHz (in Q0 and Q3 data only??)
+    2) high frequency artefacts (>5000 muHz)
+    3) low frequency artefacts 250-400 muHz (mostly present in Q0 and Q3 data)
 
     Parameters
     ----------
@@ -31,63 +40,45 @@ def remove_artefact(star, lc=29.4244*60*1e-6):
         the frequency of the power spectrum
     power : np.ndarray
         the power of the power spectrum
-    lc : float
-        TODO: Write description. Default value is `29.4244*60*1e-6`.
+    lcp : float
+        TODO: Write description. Default value is `1/(29.4244*60*1e-6)`.
+
     """
-    if star.params[star.star]['seed'] is None:
+
+    if star.params[star.name]['seed'] is None:
         star = set_seed(star)
-    f, a = star.frequency, star.power
-    oversample = int(round((1.0/((max(star.time)-min(star.time))*0.0864))/(star.frequency[1]-star.frequency[0])))
-    resolution = (star.frequency[1]-star.frequency[0])*oversample
-
     # LC period in Msec -> 1/LC ~muHz
-    lcp = 1.0/lc
-    art = (1.0 + np.arange(14))*lcp
-
-    # Lower limit of the artefacts
-    un1 = [4530.0, 5011.0, 5097.0, 5575.0, 7020.0, 7440.0, 7864.0]
-    # Upper limit of the artefacts
-    un2 = [4534.0, 5020.0, 5099.0, 5585.0, 7030.0, 7450.0, 7867.0]
+    artefact = (1.0+np.arange(14))*lcp
     # Estimate white noise
-    noisefl = np.mean(a[(f >= max(f)-100.0) & (f <= max(f)-50.0)])
+    white = np.mean(star.power[(star.frequency >= star.nyquist-100.0) & (star.frequency <= star.nyquist-50.0)])
 
-    np.random.seed(int(star.params[star.star]['seed']))
+    np.random.seed(int(star.params[star.name]['seed']))
     # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
-    for i in range(len(art)):
-        if art[i] < np.max(f):
-            use = np.where((f > art[i]-5.0*resolution) & (f < art[i]+5.0*resolution))[0]
-            if use[0] != -1:
-                a[use] = noisefl*np.random.chisquare(2, len(use))/2.0
+    for i in range(len(artefact)):
+        if artefact[i] < np.max(star.frequency):
+            mask = np.ma.getmask(np.ma.masked_inside(star.frequency, artefact[i]-5.0*star.resolution, artefact[i]+5.0*star.resolution))
+            if np.sum(mask) != 0:
+                star.power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
 
-    np.random.seed(int(star.params[star.star]['seed']))
-    # Routine 2: remove artefacts as identified in un1 & un2
-    for i in range(0, len(un1)):
-        if un1[i] < np.max(f):
-            use = np.where((f > un1[i]) & (f < un2[i]))[0]
-            if use[0] != -1:
-                a[use] = noisefl*np.random.chisquare(2, len(use))/2.0
+    np.random.seed(int(star.params[star.name]['seed']))
+    # Routine 2: fix high frequency artefacts
+    for lower, upper in zip(hf_lower, hf_upper):
+        if lower < np.max(star.frequency):
+            mask = np.ma.getmask(np.ma.masked_inside(star.frequency, lower, upper))
+            if np.sum(mask) != 0:
+                star.power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
 
-    np.random.seed(int(star.params[star.star]['seed']))
-    # Routine 3: remove two wider artefacts as identified in un1 & un2
-    un1 = [240.0, 500.0]
-    un2 = [380.0, 530.0]
-
-    for i in range(0,len(un1)):
-        # un1[i] : freq where artefact starts
-        # un2[i] : freq where artefact ends
-        # un_lower : initial freq to start fitting routine (aka un1[i]-20)
-        # un_upper : final freq to end fitting routine     (aka un2[i]+20)
-        flower, fupper = un1[i] - 20, un2[i] + 20
-        usenoise = np.where(((f >= flower) & (f <= un1[i])) |
-                            ((f >= un2[i]) & (f <= fupper)))[0]
+    np.random.seed(int(star.params[star.name]['seed']))
+    # Routine 3: remove wider, low frequency artefacts 
+    for lower, upper in zip(lf_lower, lf_upper):
+        low = np.ma.getmask(np.ma.masked_outside(star.frequency, lower-20., lower))
+        upp = np.ma.getmask(np.ma.masked_outside(star.frequency, upper, upper+20.))
         # Coeffs for linear fit
-        m, b = np.polyfit(f[usenoise], a[usenoise], 1)
-        # Index of artefact frequencies (ie. 240-380 muHz)
-        use = np.where((f >= un1[i]) & (f <= un2[i]))[0]
+        m, b = np.polyfit(star.frequency[~(low*upp)], star.power[~(low*upp)], 1)
+        mask = np.ma.getmask(np.ma.masked_inside(star.frequency, lower, upper))
         # Fill artefact frequencies with noise
-        a[use] = (f[use]*m+b)*np.random.chisquare(2, len(use))/2.0
-    # Power spectrum with artefact frequencies filled in with noise
-    star.power = a
+        star.power[mask] = ((star.frequency[mask]*m)+b)*(np.random.chisquare(2, np.sum(mask))/2.0)
+
     return star
 
 

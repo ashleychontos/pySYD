@@ -1,5 +1,6 @@
 import os
 import shutil
+import unittest
 import subprocess
 import numpy as np
 import pandas as pd
@@ -25,13 +26,13 @@ def main(args):
     if args.parallel:
         # create the separate, asyncrhonous (nthread) processes
         pool = mp.Pool(args.nthreads)
-        result_objects = [pool.apply_async(run, args=(group, args)) for group in args.params['stars']]
+        result_objects = [pool.apply_async(run, args=(group, args)) for group in args.params['groups']]
         results = [r.get() for r in result_objects]
         pool.close()
         pool.join()    # postpones execution of the next line until all processes finish
         count = np.sum(results)
     else:
-        count = run(args.params['todo'], args)
+        count = run(args.params['stars'], args)
       
     # check to make sure that at least one star was successful (count == number of successful star executions)   
     if count != 0:
@@ -42,7 +43,7 @@ def main(args):
         utils.scrape_output(args)
 
 
-def run(stargroup, args, count=0):
+def run(group, args, count=0):
     """
     A Target class is initialized and processed for each star in the stargroup.
 
@@ -56,7 +57,7 @@ def run(stargroup, args, count=0):
         the number of successful stars processed by pySYD for a given group of stars
     """
 
-    for star in stargroup:
+    for star in group:
         single = Target(star, args)
         if single.run:
             count+=1
@@ -64,7 +65,7 @@ def run(stargroup, args, count=0):
     return count
 
 
-def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/'):
+def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
     """
     Running this after installation will create the appropriate directories in the current working
     directory as well as download example data and files to test your installation.
@@ -81,17 +82,17 @@ def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/as
         path to download package data and examples from (source directory)
     """
 
-    print('\n\nDownloading relevant data from https://github.com/ashleychontos/pySYD:\n')
+    print('\n\nDownloading relevant data from source directory:\n')
     # create info directory
-    if len(args.file.split('/')) != 1:
-        path_info += '%s/'%'/'.join(args.file.split('/')[:-1])
+    if len(args.todo.split('/')) != 1:
+        path_info += '%s/'%'/'.join(args.todo.split('/')[:-1])
         if not os.path.exists(path_info):
             os.mkdir(path_info)
             note+=' - created input file directory: %s \n'%path_info
 
     # get example input files
     infile1='%sinfo/todo.txt'%raw
-    outfile1='%s%s'%(path_info,args.file.split('/')[-1])
+    outfile1='%s%s'%(path_info,args.todo.split('/')[-1])
     subprocess.call(['curl %s > %s'%(infile1, outfile1)], shell=True)
     infile2='%sinfo/star_info.csv'%raw
     outfile2='%s%s'%(path_info,args.info.split('/')[-1])
@@ -99,10 +100,10 @@ def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/as
 
     # if not successful, make empty input files for reference
     if not os.path.exists(outfile1):
-        f = open(args.file, "w")
+        f = open(args.todo, "w")
         f.close()
     if not os.path.exists(outfile2):
-        df = pd.DataFrame(columns=['stars','rad','teff','logg','numax','lowerx','upperx','lowerb','upperb','seed'])
+        df = pd.DataFrame(columns=['stars','radius','radius_err','teff','teff_err','logg','logg_err','numax','lower_x','upper_x','lower_b','upper_b','seed'])
         df.to_csv(args.info, index=False)
 
     # create data directory

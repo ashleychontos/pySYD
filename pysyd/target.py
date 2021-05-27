@@ -52,23 +52,13 @@ class Target:
         self.findex = args.findex
         self.fitbg = args.fitbg
         self.verbose = args.verbose
-        self.info = args.info
-        self.check_data()
-
-
-    def check_data(self):
-        """
-        Load star data.
-
-        """
-        # Make sure data load was successsful
-        lc_data, ps_data, self = utils.load_data(self)
-        if lc_data and ps_data:
+        self = utils.load_data(self, args)
+        if self.ps:
             self.run = 1
         else:
             self.run = 0
-            if self.verbose:
-                print('ERROR: data not found for star %d' % self.name)
+#            if self.verbose:
+#                print('ERROR: data not found for star %d' % self.name)
 
 
     def run_syd(self):
@@ -93,7 +83,7 @@ class Target:
 
         # Make sure the binning is specified, otherwise it cannot run
         if self.findex['binning'] is not None:
-            self.bin_freq, self.bin_pow = functions.bin_data(self.freq, self.pow, self.findex)
+            self.bin_freq, self.bin_pow = functions.bin_data(self.frequency, self.power, self.findex)
             if self.verbose:
                 print('-------------------------------------------------')
                 print('Running find_excess module:')
@@ -106,8 +96,8 @@ class Target:
 
             # Interpolate and divide to get a crude background-corrected power spectrum
             s = InterpolatedUnivariateSpline(smooth_freq, smooth_pow, k=1)
-            self.interp_pow = s(self.freq)
-            self.bgcorr_pow = self.pow/self.interp_pow
+            self.interp_pow = s(self.frequency)
+            self.bgcorr_pow = self.power/self.interp_pow
 
             # Calculate collapsed ACF using different box (or bin) sizes
             self.findex['results'][self.name] = {}
@@ -136,12 +126,12 @@ class Target:
             self = utils.get_initial_guesses(self)
             self.fitbg['results'][self.name] = {
                 'numax_smooth': [],
-                'amp_smooth': [],
-                'numax_gaussian': [],
-                'amp_gaussian': [],
-                'fwhm_gaussian': [],
+                'A_smooth': [],
+                'numax_gauss': [],
+                'A_gauss': [],
+                'FWHM': [],
                 'dnu': [],
-                'wn': []
+                'white': []
             }
             if self.verbose:
                 print('-------------------------------------------------')
@@ -149,7 +139,7 @@ class Target:
                 print('PS binned to %d data points' % len(self.bin_freq))
 
             # Run first iteration (which has different steps than any other n>1 runs)
-            good = self.single_step()
+            good = self.first_step()
             if not good:
                 pass
             else:
@@ -187,13 +177,13 @@ class Target:
         subset = np.ceil(self.boxes[b]/self.resolution)
         steps = np.ceil((self.boxes[b]*self.findex['step'])/self.resolution)
 
-        cumsum = np.zeros_like(self.freq)
-        md = np.zeros_like(self.freq)
+        cumsum = np.zeros_like(self.frequency)
+        md = np.zeros_like(self.frequency)
         # Iterates through entire power spectrum using box width
         while True:
-            if (start+subset) > len(self.freq):
+            if (start+subset) > len(self.frequency):
                 break
-            f = self.freq[int(start):int(start+subset)]
+            f = self.frequency[int(start):int(start+subset)]
             p = self.bgcorr_pow[int(start):int(start+subset)]
 
             lag = np.arange(0.0, len(p))*self.resolution
@@ -239,7 +229,7 @@ class Target:
         self.compare.append(snr)
 
 
-    def single_step(self):
+    def first_step(self):
         """
         The first step in the background fitting, which determines the best-fit stellar 
         contribution model (i.e. number of Harvey-like components) and corrects for this
@@ -256,8 +246,6 @@ class Target:
                      6) fits Gaussian to the "cutout" peak of the ACF, where center is dnu
 
         """
-        # Save a copy of original power spectrum
-        self.random_pow = np.copy(self.power)
         # Estimate white noise level
         self.get_white_noise()
         # Get initial guesses for the optimization of the background model
@@ -275,6 +263,11 @@ class Target:
         # Use the fitted dnu to create an echelle diagram and plot
         self.get_ridges()
         plots.plot_background(self)
+        # Get critically sampled power spectrum before sampling
+        mask = np.ma.getmask(np.ma.masked_inside(self.freq_cs, self.params[self.name]['fb_mask'][0], self.params[self.name]['fb_mask'][1]))
+        self.frequency, self.power = np.copy(self.freq_cs[mask]), np.copy(self.pow_cs[mask])
+        self.resolution = self.frequency[1]-self.frequency[0]
+
         return True
 
 
@@ -400,10 +393,12 @@ class Target:
         if self.verbose:
             print('Comparing %d different models:' % (self.nlaws*2))
         for law in range(self.nlaws):
-            bb = np.zeros((2, 2*(law+1)+1)).tolist()
-            for z in range(2*(law+1)):
-                bb[0][z] = -np.inf
-                bb[1][z] = np.inf
+            bb = np.zeros((2,2*(law+1)+1)).tolist()
+            for z in range(law+1):
+                bb[0][int(2*z)] = 0.
+                bb[1][int(2*z)] = np.inf
+                bb[0][int(2*z+1)] = 0.
+                bb[1][int(2*z+1)] = self.nyquist
             bb[0][-1] = 0.
             bb[1][-1] = np.inf
             bounds.append(tuple(bb))
@@ -491,7 +486,7 @@ class Target:
             for n in range(self.nlaws):
                 self.fitbg['results'][self.name]['a_%d' % (n+1)].append(self.pars[2*n])
                 self.fitbg['results'][self.name]['b_%d' % (n+1)].append(self.pars[2*n+1])
-            self.fitbg['results'][self.name]['wn'].append(self.pars[2*self.nlaws])
+            self.fitbg['results'][self.name]['white'].append(self.pars[2*self.nlaws])
             return False
         else:
             return True
@@ -534,7 +529,7 @@ class Target:
         self.region_pow = self.pssm_bgcorr[self.params[self.name]['ps_mask']]
         idx = functions.return_max(self.region_freq, self.region_pow, index=True)
         self.fitbg['results'][self.name]['numax_smooth'].append(self.region_freq[idx])
-        self.fitbg['results'][self.name]['amp_smooth'].append(self.region_pow[idx])
+        self.fitbg['results'][self.name]['A_smooth'].append(self.region_pow[idx])
         # Initial guesses for the parameters of the Gaussian fit to the power envelope
         self.guesses = [
             0.0,
@@ -556,9 +551,9 @@ class Target:
         new_freq = np.linspace(min(self.region_freq), max(self.region_freq), 10000)
         numax_fit = list(models.gaussian(new_freq, *p_gauss1))
         d = numax_fit.index(max(numax_fit))
-        self.fitbg['results'][self.name]['numax_gaussian'].append(new_freq[d])
-        self.fitbg['results'][self.name]['amp_gaussian'].append(p_gauss1[1])
-        self.fitbg['results'][self.name]['fwhm_gaussian'].append(p_gauss1[3])
+        self.fitbg['results'][self.name]['numax_gauss'].append(new_freq[d])
+        self.fitbg['results'][self.name]['A_gauss'].append(p_gauss1[1])
+        self.fitbg['results'][self.name]['FWHM'].append(p_gauss1[3])
         if output:
             return new_freq[d], 0.22*(self.exp_numax**0.797), self.params['width_sun']*(new_freq[d]/self.params['numax_sun'])/2., np.copy(new_freq), np.array(numax_fit)
 
@@ -809,7 +804,7 @@ class Target:
             for n in range(self.nlaws):
                 self.fitbg['results'][self.name]['a_%d' % (n+1)].append(self.pars[2*n])
                 self.fitbg['results'][self.name]['b_%d' % (n+1)].append(self.pars[2*n+1])
-            self.fitbg['results'][self.name]['wn'].append(self.pars[2*self.nlaws])
+            self.fitbg['results'][self.name]['white'].append(self.pars[2*self.nlaws])
         return False
 
 

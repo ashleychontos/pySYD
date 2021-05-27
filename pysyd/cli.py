@@ -5,16 +5,12 @@ import pysyd
 from pysyd import pipeline
 from pysyd import TODODIR, INFODIR, INPDIR, OUTDIR
 
+
 def main():
     # Properties inherent to both modules
     parser = argparse.ArgumentParser(
                                      description="pySYD: Automated Extraction of Global Asteroseismic Parameters", 
                                      prog='pySYD',
-    )
-    parser.add_argument('-version', '--version',
-                        action='version',
-                        version="%(prog)s {}".format(pysyd.__version__),
-                        help="Print version number and exit."
     )
 
     sub_parser = parser.add_subparsers(title='subcommands', dest='subcommand')
@@ -22,21 +18,21 @@ def main():
     # In the parent parser, we define arguments and options common to all subcommands
     parent_parser = argparse.ArgumentParser(add_help=False)
     parent_parser.add_argument('-file', '--file', '-list', '--list', '-todo', '--todo',
-                               dest='file',
+                               dest='todo',
                                help="""Path to txt file that contains the list of targets to process (default='info/todo.txt')""",
                                type=str,
-                               default=TODODIR,
+                               default='info/todo.txt',
     )
     parent_parser.add_argument('-in', '--in', '-input', '--input', '-inpdir', '--inpdir', 
                                dest='inpdir',
                                help='Path to input data',
-                               default=INPDIR,
+                               default='data/',
     )
     parent_parser.add_argument('-info', '--info', '-information', '--information',
                                dest='info',
                                help='Path to csv containing star information',
                                type=str,
-                               default=INFODIR,
+                               default='info/star_info.csv',
     )
     parent_parser.add_argument('-verbose', '--verbose',
                                dest='verbose',
@@ -47,7 +43,7 @@ def main():
     parent_parser.add_argument('-out', '--out', '-outdir', '--outdir', '-output', '--output',
                                dest='outdir',
                                help='Path to save results to',
-                               default=OUTDIR,
+                               default='results/',
     )
 
     # Setting up
@@ -70,8 +66,8 @@ def main():
                             default=True, 
                             action='store_false',
     )
-    parser_run.add_argument('-kc', '--kc', '-keplercorr', '--keplercorr',
-                            dest='keplercorr',
+    parser_run.add_argument('-kc', '--kc', '-kepcorr', '--kepcorr',
+                            dest='kepcorr',
                             help='Turn on Kepler short-cadence artefact corrections',
                             default=False, 
                             action='store_true',
@@ -81,6 +77,24 @@ def main():
                             help='Number of processes to run in parallel',
                             type=int,
                             default=0,
+    )
+    parser_run.add_argument('-ofa', '--ofa', '-of_actual', '--of_actual',
+                            dest='of_actual',
+                            help='Provide the actual oversampling factor of the power spectrum (provided there is no light curve data). Default is `0`, which means it is calculated from the time series data.',
+                            type=int,
+                            default=0,
+    )
+    parser_run.add_argument('-ofn', '--ofn', '-of_new', '--of_new',
+                            dest='of_new',
+                            help='The desired oversampling factor for the newly-computed power spectrum. Default is `5`.',
+                            type=int,
+                            default=5,
+    )
+    parser_run.add_argument('-os', '--os', '-over', '--over', '-oversample', '--oversample',
+                            dest='oversample',
+                            help='Use an oversampled power spectrum in the analysis. Default is `False`.',
+                            default=True,
+                            action='store_false',
     )
     parser_run.add_argument('-par', '--par', '-parallel', '--parallel',
                             dest='parallel',
@@ -101,7 +115,7 @@ def main():
                             action='store_true',
     )
     parser_run.add_argument('-star', '--star', '-stars', '--stars',
-                            dest='star',
+                            dest='stars',
                             help="""List of targets to process (default=None). If this is not provided, it will default to read targets in from the default 'file' argument.""",
                             nargs='*',
                             type=int,
@@ -153,17 +167,23 @@ def main():
     # CLI relevant for background fitting
     background = parser_run.add_argument_group('background')
 
-    background.add_argument('-iw', '--iw', '-width', '--width', '-indwidth', '--indwidth',
-                            dest='ind_width', 
-                            help='Number of independent points to use for binning of power spectrum (default=50)',
-                            default=50, 
-                            type=int,
-    )
     background.add_argument('-bf', '--bf', '-box', '--box', '-boxfilter', '--boxfilter',
                             dest='box_filter',
-                            help='Box filter width [in muHz] for plotting the power spectrum (default=2.5muHz).',
+                            help='Box filter width [in muHz] for plotting the power spectrum (default=2.5muHz)',
                             default=2.5,
                             type=float,
+    )
+    background.add_argument('-con', '--con', '-convert', '--convert',
+                            dest='convert', 
+                            help='Turn off sample conversion of {a,b}->{tau,sigma} (default=True)',
+                            default=True, 
+                            action='store_false',
+    )
+    background.add_argument('-drop', '--drop',
+                            dest='drop', 
+                            help='Turn off dropping the extra columns after converting the samples (default=True)',
+                            default=True, 
+                            action='store_false',
     )
     background.add_argument('-dnu', '--dnu',
                             dest='dnu',
@@ -171,6 +191,12 @@ def main():
                             nargs='*',
                             type=float,
                             default=None, 
+    )
+    background.add_argument('-iw', '--iw', '-width', '--width', '-indwidth', '--indwidth',
+                            dest='ind_width', 
+                            help='Number of independent points to use for binning of power spectrum (default=50)',
+                            default=50, 
+                            type=int,
     )
     background.add_argument('-numax', '--numax',
                             dest='numax',
