@@ -1,4 +1,3 @@
-import os
 import argparse
 
 import pysyd
@@ -12,6 +11,11 @@ def main():
                                      description="pySYD: Automated Extraction of Global Asteroseismic Parameters", 
                                      prog='pySYD',
     )
+    parser.add_argument('-version', '--version',
+                        action='version',
+                        version="%(prog)s {}".format(pysyd.__version__),
+                        help="Print version number and exit."
+    )
 
     # In the parent parser, we define arguments and options common to all subcommands
     parent_parser = argparse.ArgumentParser(add_help=False)
@@ -19,18 +23,18 @@ def main():
                                dest='todo',
                                help="""Path to txt file that contains the list of targets to process (default='info/todo.txt')""",
                                type=str,
-                               default='info/todo.txt',
+                               default=TODODIR,
     )
     parent_parser.add_argument('-in', '--in', '-input', '--input', '-inpdir', '--inpdir', 
                                dest='inpdir',
                                help='Path to input data',
-                               default='data/',
+                               default=INPDIR,
     )
     parent_parser.add_argument('-info', '--info', '-information', '--information',
                                dest='info',
                                help='Path to csv containing star information',
                                type=str,
-                               default='info/star_info.csv',
+                               default=INFODIR,
     )
     parent_parser.add_argument('-verbose', '--verbose',
                                dest='verbose',
@@ -41,7 +45,7 @@ def main():
     parent_parser.add_argument('-out', '--out', '-outdir', '--outdir', '-output', '--output',
                                dest='outdir',
                                help='Path to save results to',
-                               default='results/',
+                               default=OUTDIR,
     )
 
     # Main options 
@@ -94,12 +98,6 @@ def main():
                             default=True,
                             action='store_false',
     )
-#    parser_run.add_argument('-par', '--par', '-parallel', '--parallel',
-#                            dest='parallel',
-#                            help='Run batch of stars in parallel',
-#                            default=False,
-#                            action='store_true',
-#    )
     main_parser.add_argument('-save', '--save', 
                             dest='save',
                             help='Save output files and figures (default=True)',
@@ -286,7 +284,6 @@ def main():
     parser_setup.set_defaults(func=pipeline.setup)
 
     # Running pySYD in regular mode
-
     parser_run = sub_parser.add_parser('run', help='Run pySYD in regular mode', 
                                        parents=[parent_parser, main_parser])
 
