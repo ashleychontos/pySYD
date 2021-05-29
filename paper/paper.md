@@ -19,11 +19,15 @@ authors:
  - name: Maryum Sayeed 
    orcid: 0000-0001-6180-8482
    affiliation: 1
+ - name: Pavadol Yamsiri
+   affiliation: 3
 affiliations:
  - name: Institute for Astronomy, University of Hawai'i, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
    index: 1
  - name: NSF Graduate Research Fellow
    index: 2
+ - name: Sydney Institute for Astronomy, School of Physics, University of Sydney, NSW 2006, Australia
+   index: 3
 date: 6 May 2021
 bibliography: paper.bib
 ---
@@ -105,7 +109,8 @@ the documentation.
 
 # Acknowledgements
 
-We acknowledge contributions from Dennis Stello, Jie Yu, Pavadol Yamsiri, and other users of the `SYD` pipeline.
+We thank Dennis Stello, Jie Yu, Marc Hon, and other users of the SYD pipeline for discussion and suggestions 
+which helped with the development of this code.
 
 We also acknowledge support from the Alfred P. Sloan Foundation, the National Aeronatuics and Space Administration
 (80NSSC19K0597), and the National Science Foundation (AST-1717000, DGE-1842402).
