@@ -385,7 +385,7 @@ class Target:
         """
 
         # Get best fit model
-        names=['one', 'one', 'two', 'two', 'three', 'three', 'four', 'four', 'five', 'five', 'six', 'six']
+        names = ['one', 'one', 'two', 'two', 'three', 'three']
         reduced_chi2 = []
         bounds = []
         a = []
@@ -401,68 +401,41 @@ class Target:
                 bb[0][int(2*z)] = 0.
                 bb[1][int(2*z)] = np.inf
                 bb[0][int(2*z+1)] = 0.
-                bb[1][int(2*z+1)] = self.nyquist
+                bb[1][int(2*z+1)] = max(self.frequency)
             bb[0][-1] = 0.
             bb[1][-1] = np.inf
             bounds.append(tuple(bb))
         dict1 = dict(zip(np.arange(2*self.nlaws), names[:2*self.nlaws]))
         for t in range(2*self.nlaws):
-            if t % 2 == 0:
+            if t%2 == 0:
                 if self.verbose:
                     print('%d: %s harvey model w/ white noise free parameter'%(t+1, dict1[t]))
                 delta = 2*(self.nlaws-(t//2+1))
                 pams = list(self.pars[:(-delta-1)])
                 pams.append(self.pars[-1])
                 try:
-                    pp, _ = curve_fit(
-                        self.fitbg['functions'][t//2+1],
-                        self.bin_freq,
-                        self.bin_pow,
-                        p0=pams,
-                        sigma=self.bin_err
-                    )
+                    pp, _ = curve_fit(self.fitbg['functions'][t//2+1], self.bin_freq, self.bin_pow, p0=pams, sigma=self.bin_err)
                 except RuntimeError as _:
                     paras.append([])
                     reduced_chi2.append(np.inf)
                 else:
                     paras.append(pp)
-                    chi, _ = chisquare(
-                        f_obs=self.random_pow[~self.params[self.name]['ps_mask']],
-                        f_exp=models.harvey(
-                            self.frequency[~self.params[self.name]['ps_mask']],
-                            pp,
-                            total=True
-                        )
-                    )
+                    chi, _ = chisquare(f_obs=self.random_pow[~self.params[self.name]['ps_mask']], f_exp=models.harvey(self.frequency[~self.params[self.name]['ps_mask']], pp, total=True))
                     reduced_chi2.append(chi/(len(self.frequency[~self.params[self.name]['ps_mask']])-len(pams)))
             else:
                 if self.verbose:
-                    print('%d: %s harvey model w/ white noise fixed' % (t+1, dict1[t]))
+                    print('%d: %s harvey model w/ white noise fixed'%(t+1, dict1[t]))
                 delta = 2*(self.nlaws-(t//2+1))
                 pams = list(self.pars[:(-delta-1)])
                 pams.append(self.pars[-1])
                 try:
-                    pp, _ = curve_fit(
-                        self.fitbg['functions'][t//2+1],
-                        self.bin_freq,
-                        self.bin_pow,
-                        p0=pams,
-                        sigma=self.bin_err,
-                        bounds=bounds[t//2]
-                    )
+                    pp, _ = curve_fit(self.fitbg['functions'][t//2+1], self.bin_freq, self.bin_pow, p0=pams, sigma=self.bin_err, bounds=bounds[t//2])
                 except RuntimeError as _:
                     paras.append([])
                     reduced_chi2.append(np.inf)
                 else:
                     paras.append(pp)
-                    chi, p = chisquare(
-                        f_obs=self.random_pow[~self.params[self.name]['ps_mask']],
-                        f_exp=models.harvey(
-                            self.frequency[~self.params[self.name]['ps_mask']],
-                            pp,
-                            total=True
-                            )
-                        )
+                    chi, _ = chisquare(f_obs=self.random_pow[~self.params[self.name]['ps_mask']], f_exp=models.harvey(self.frequency[~self.params[self.name]['ps_mask']], pp, total=True))
                     reduced_chi2.append(chi/(len(self.frequency[~self.params[self.name]['ps_mask']])-len(pams)+1))
 
         # If the fitting converged
@@ -473,7 +446,7 @@ class Target:
                 self.mnu = self.mnu[:(self.nlaws)]
                 self.b = self.b[:(self.nlaws)]
             if self.verbose:
-                print('Based on reduced chi-squared statistic: model %d' % model)
+                print('Based on reduced chi-squared statistic: model %d'%model)
             self.bounds = bounds[self.nlaws-1]
             self.pars = paras[model-1]
             self.bg_corr = self.random_pow/models.harvey(self.frequency, self.pars, total=True)

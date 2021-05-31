@@ -394,9 +394,9 @@ def load_time_series(args, star, note=''):
         star.nyquist = 10**6./(2.0*star.cadence)
         if args.stitch:
             star = stitch_data(star)
-        note += '# LIGHT CURVE: %d lines of data read\n# Time series cadence: %d seconds\n'%(len(star.time),star.cadence)
+        note += '# LIGHT CURVE: %d lines of data read\n# Time series cadence: %d seconds'%(len(star.time),star.cadence)
         if args.stitch:
-            note += ' ** stitching light curve together ** \n'
+            note += '\n ** stitching light curve together **'
 
     return args, star, note
 
