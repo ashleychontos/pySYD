@@ -117,6 +117,12 @@ def main():
                             type=int,
                             default=None,
     )
+    main_parser.add_argument('-stitch', '--stitch', '-gap', '--gap', 
+                            dest='stitch',
+                            help='Turn on the stitch light curve tool, which is helpful for data with large gaps (default=True)',
+                            default=False, 
+                            action='store_true',
+    )
 
     # CLI relevant for finding power excess
     excess = main_parser.add_argument_group('excess')
@@ -279,8 +285,8 @@ def main():
     sub_parser = parser.add_subparsers(title='subcommands', dest='subcommand')
 
     # Setting up
-    parser_setup = sub_parser.add_parser('setup', parents=[parent_parser],
-                                         description='Easy setup for directories and files')
+    parser_setup = sub_parser.add_parser('setup', help='Easy setup for directories and files',
+                                         parents=[parent_parser])
     parser_setup.set_defaults(func=pipeline.setup)
 
     # Running pySYD in regular mode
@@ -289,7 +295,7 @@ def main():
 
     parser_run.set_defaults(func=pipeline.run)
 
-    # Run pySYD
+    # Run pySYD in parallel
     parser_parallel = sub_parser.add_parser('parallel', help='Run pySYD in parallel',
                                             parents=[parent_parser, main_parser])
     parser_parallel.add_argument('-nt', '--nt', '-nthread', '--nthread', '-nthreads', '--nthreads',

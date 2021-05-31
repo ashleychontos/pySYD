@@ -17,11 +17,11 @@ from pysyd.models import *
 def get_info(args, parallel=False, stars=None, verbose=False, show=False, save=True, G=6.67428e-8, 
              teff_sun=5777.0, mass_sun=1.9891e33, radius_sun=6.95508e10, dnu_sun=135.1, 
              numax_sun=3090.0, width_sun=1300.0, tau_sun=[5.2e6,1.8e5,1.7e4,2.5e3,280.0,80.0], 
-             tau_sun_single=[3.8e6, 2.5e5, 1.5e5, 1.0e5, 230., 70.], kepcorr=False, groups=[],
+             tau_sun_single=[3.8e6,2.5e5,1.5e5,1.0e5,230.,70.], kepcorr=False, groups=[],
              oversample=True, of_actual=0, of_new=5):
     """
-    Loads todo.txt, sets up file paths, loads in any available star information,
-    and sets up matplotlib params.
+    Loads todo.txt, sets up file paths, loads in any available star information, saves the 
+    relevant parameters for each of the two main routines and sets the plotting parameters.
 
     Parameters
     ----------
@@ -71,7 +71,7 @@ def get_info(args, parallel=False, stars=None, verbose=False, show=False, save=T
     # Set file paths
     for star in args.stars:
         params[star] = {}
-        params[star]['path'] = '%s/%d/' % (args.outdir,star)
+        params[star]['path'] = '%s/%d/'%(args.outdir,star)
     args.params = params
 
     # Initialise parameters for the find excess routine
@@ -87,7 +87,7 @@ def get_info(args, parallel=False, stars=None, verbose=False, show=False, save=T
 
 def check_inputs(args):
     """ 
-    Make sure the command line inputs are the proper lengths and/or types
+    Make sure the command line inputs are the proper lengths and types
 
     Parameters
     ----------
@@ -115,23 +115,23 @@ def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=1
     ----------
     args : argparse.Namespace
         the command line arguments
-    findex : dict
-        the parameters of the find excess routine
-    step : float
+    args.step : float
         TODO: Write description. Default value is `0.25`.
-    binning : float
+    args.binning : float
         logarithmic binning width. Default value is `0.005`.
-    n_trials : int
+    args.n_trials : int
         the number of trials. Default value is `3`.
-    lower : float
-        the lower frequency bound. Default value is `10.0`.
-    upper : float
-        the upper frequency bound. Default value is `4000.0`.
+    args.lower_x : float
+        the lower frequency bound (in muHz). Default value is `10.0` muHz.
+    args.upper_x : float
+        the upper frequency bound (in muHz). Default value is `4000.0` muHz.
 
     Returns
     -------
     args : argparse.Namespace
         the updated command line arguments
+    args.findex : Dict[str,object]
+        the parameters of the find excess routine
 
     """
 
@@ -163,42 +163,40 @@ def get_background_params(args, box_filter=2.5, mc_iter=1, ind_width=50, n_rms=2
     ----------
     args : argparse.Namespace
         the command line arguments
-
-    Uses
-    ----
-    fitbg : dict
-        the parameters relevant for the fit background routine, which is saved to args.fitbg
-    box_filter : args.box_filter
+    args.box_filter : float
         the size of the 1D box smoothing filter (in $\mu$Hz). Default value is `2.5`.
-    ind_width : int
+    args.ind_width : int
         the independent average smoothing width. Default value is `50`.
-    n_rms : int
+    args.n_rms : int
         number of data points to estimate red noise contributions. Default value is `20`.
-    n_peaks : int
+    args.n_peaks : int
         the number of peaks to select. Default value is `10`.
-    force : float
+    args.force : float
         if not false (i.e. non-zero) will force dnu to be the equal to this value. 
-    clip : bool
+    args.clip : bool
         if true will set the minimum frequency value of the echelle plot to `clip_value`. Default value is `True`.
-    clip_value : float
+    args.clip_value : float
         the minimum frequency of the echelle plot. Default value is `0.0`.
-    smooth_ech : float
+    args.smooth_ech : float
         option to smooth the output of the echelle plot
-    smooth_ps : float
+    args.smooth_ps : float
         TODO: Write description. Default value is `1.0`.
-    slope : bool
+    args.slope : bool
         if true will correct for edge effects and residual slope in Gaussian fit. Default value is `False`.
-    samples : bool
+    args.samples : bool
         if true, will save the monte carlo samples to a csv. Default value is `True`.
-    convert : args.convert
-        converts to Harvey parametrization {a_n,b_n} -> {tau_n,sigma_n}. Default value is `True`.
-    drop : args.drop
+    args.convert : bool
+        converts Harvey parametrization to physical quantities {a_n,b_n} -> {tau_n,sigma_n}. Default value is `True`.
+    args.drop : bool
         drops the extra columns after converting the samples. Default value is `True`.
 
     Returns
     -------
     args : argparse.Namespace
         the updated command line arguments
+    args.fitbg : Dict[str,object]
+        the parameters relevant for the fit background routine
+
     """
 
     fitbg = {
@@ -219,7 +217,7 @@ def get_background_params(args, box_filter=2.5, mc_iter=1, ind_width=50, n_rms=2
     }
 
     # Harvey components
-    fitbg['functions'] = {1: harvey_one, 2: harvey_two, 3: harvey_three, 4: harvey_four, 5: harvey_five, 6: harvey_six}
+    fitbg['functions'] = {1: harvey_one, 2: harvey_two, 3: harvey_three}
 
     # Initialise save folders
     if args.save:
@@ -235,20 +233,21 @@ def get_background_params(args, box_filter=2.5, mc_iter=1, ind_width=50, n_rms=2
 
 def get_star_info(args):
     """
-    Get star information stored in args.info. Please note: this is not required for pySYD to run
-    successfully. Default value is `info/star_info.csv`.
+    Reads in any star information provided via args.info and is 'info/star_info.csv' by default. 
+    ** Please note that this is NOT required for pySYD to run successfully **
 
     Parameters
     ----------
     args : argparse.Namespace
         the command line arguments
-    cols : list
+    columns : list
         the list of columns to provide stellar information for
 
     Returns
     -------
     args : argparse.Namespace
         the updated command line arguments
+
     """
 
     columns = get_data_columns(type='required')
@@ -306,34 +305,80 @@ def load_data(star, args):
     ----------
     star : target.Target
         the pySYD pipeline object
+    args : argparse.Namespace
+        command line arguments
 
     Returns
     -------
     star : target.Target
         the pySYD pipeline object
-    lc_data : bool
+    star.lc : bool
         will return `True` if the light curve data was loaded in properly otherwise `False`
-    ps_data : bool
+    star.ps : bool
         will return `True` if the power spectrum file was successfully loaded otherwise `False`
-    """
 
-    star.lc = False
-    star.ps = False
-    # Now done at beginning to make sure it only does this one per star
+    """
+    # Now done at beginning to make sure it only does this once per star
     if glob.glob('%s/%d_*'%(args.inpdir,star.name)) != []:
         if star.verbose:
-            print('\n\n-------------------------------------------------')
+            print('\n\n----------------------------------------------------')
             print('Target: %d'%star.name)
-            print('-------------------------------------------------')
+            print('----------------------------------------------------')
+
         # Load light curve
-        if not os.path.exists('%s/%d_LC.txt'%(args.inpdir, star.name)):
-            if args.cadence != 0 and args.nyquist is not None:
-                star.cadence = args.cadence
-                star.nyquist = args.nyquist
-                nyquist = 10**6./(2.0*args.cadence)
-                if int(args.nyquist) != int(nyquist):
-                    if self.verbose:
-                        print('# WARNING: LC CADENCE AND PS NYQUIST ARE INCONSISTENT')
+        args, star, note = load_time_series(args, star)
+        if star.verbose:
+            print(note)
+
+        # Load power spectrum
+        args, star, note = load_power_spectrum(args, star)
+        if star.verbose:
+            print(note)
+
+    return star
+
+
+def load_time_series(args, star, note=''):
+    """
+    If available, star.lc is set to `True`, the time series data
+    is loaded in, and then it calculates the cadence and nyquist 
+    freqency. If time series data is not provided, either the
+    cadence or nyquist frequency must be provided via CLI
+
+    Parameters
+    ----------
+    star : target.Target
+        the pySYD pipeline object
+    args : argparse.Namespace
+        command line arguments
+    args.cadence : int
+        cadence of time series data (if known but data is not available)
+    args.nyquist : float
+        nyquist frequency of the provided power spectrum
+    note : str
+        optional suppressed verbose output
+
+    Returns
+    -------
+    star : target.Target
+        the pySYD pipeline object
+    star.lc : bool
+        will return `True` if the light curve data was loaded in properly otherwise `False`
+    star.time : numpy.array
+        time array in days
+    star.flux : numpy.array
+        relative or normalized flux array
+
+    """
+    star.lc = False
+    # Try loading the light curve
+    if not os.path.exists('%s/%d_LC.txt'%(args.inpdir, star.name)):
+        if args.cadence != 0 and args.nyquist is not None:
+            star.cadence = args.cadence
+            star.nyquist = args.nyquist
+            nyquist = 10**6./(2.0*args.cadence)
+            if int(args.nyquist) != int(nyquist):
+                note += '# WARNING: LC CADENCE AND PS NYQUIST ARE INCONSISTENT\n'
             elif args.cadence != 0 and args.nyquist is None:
                 star.cadence = args.cadence
                 star.nyquist = 10**6./(2.0*args.cadence)
@@ -341,109 +386,39 @@ def load_data(star, args):
                 star.cadence = 10**6./(2.0*args.nyquist)
                 star.nyquist = args.nyquist
             else:
-                if star.verbose:
-                    print('# WARNING: NO TIME SERIES DATA PROVIDED')
-                    print('#          Please specify either:')
-                    print('#          1) the time series cadence or')
-                    print('#          2) the nyquist frequency of the power spectrum')
-                    print('#          for pySYD to run properly.')
-        else:
-            star.lc = True
-            star.time, star.flux = get_file('%s/%d_LC.txt'%(args.inpdir, star.name))
-            star.cadence = int(np.nanmedian(np.diff(star.time)*24.0*60.0*60.0))
-            star.nyquist = 10**6./(2.0*star.cadence)
-            if star.verbose:
-                print('# LIGHT CURVE: %d lines of data read'%len(star.time))
-                print('# Time series cadence: %d seconds'%star.cadence)
+                note += '# WARNING: NO TIME SERIES DATA PROVIDED\n#          Please specify either the time series cadence or the\n#          nyquist frequency of the PS for pySYD to run properly.\n'
+    else:
+        star.lc = True
+        star.time, star.flux = load_file('%s/%d_LC.txt'%(args.inpdir, star.name))
+        star.cadence = int(round(np.nanmedian(np.diff(star.time)*24.0*60.0*60.0),0))
+        star.nyquist = 10**6./(2.0*star.cadence)
+        if args.stitch:
+            star = stitch_data(star)
+        note += '# LIGHT CURVE: %d lines of data read\n# Time series cadence: %d seconds\n'%(len(star.time),star.cadence)
+        if args.stitch:
+            note += ' ** stitching light curve together ** \n'
 
-        # Load power spectrum
-        if not os.path.exists('%s/%d_PS.txt'%(args.inpdir, star.name)):
-            if star.verbose:
-                print('# ERROR: %s/%d_PS.txt not found'%(args.inpdir, star.name))
-        else:
-            star.ps = True
-            star.frequency, star.power = get_file('%s/%d_PS.txt'%(args.inpdir, star.name))
-            if star.lc:
-                of_actual = int(round((1./((max(star.time)-min(star.time))*0.0864))/(star.frequency[1]-star.frequency[0])))
-                if args.of_actual == 0:
-                    args.of_actual = of_actual
-                    star.params['of_actual'] = of_actual
-                if args.of_actual != of_actual:
-                    if star.verbose:
-                        print('# WARNING: THE OVERSAMPLING FACTORS ARE INCONSISTENT')
-                        print('#       -> i.e. the oversampling factor provided via CLI (i.e. -ofa) ')
-                        print('#          was %d but an oversampling factor of %d was calculated '%(args.of_actual,of_actual))
-                        print('#          from the time series data. This will likely cause fatal errors!')
-                        print('#          ** 12/10 recommend fixing this first **')
-                        print('#          -ofa == %d'%of_actual)
-            if star.verbose:
-                print('# POWER SPECTRUM: %d lines of data read'%len(star.frequency))
-                if args.of_actual == 1:
-                    print('# Critically sampled')
-                else:
-                    print('# Oversampled by a factor of %d'%args.of_actual)
-            if args.oversample:
-                star.freq_cs = np.array(star.frequency[args.of_actual-1::args.of_actual])
-                star.pow_cs = np.array(star.power[args.of_actual-1::args.of_actual])
-                if args.of_actual != args.of_new:
-                    if not star.lc:
-                        if star.verbose:
-                            print('-------------------------------------------------')
-                            print('#   ERROR: need time series data to compute an  #')
-                            print('#  oversampled power spectrum... exiting script #')
-                            print('-------------------------------------------------')
-                        star.ps = False
-                        return star
-                    else:
-                        star.freq_os, star.pow_os = lomb(star.time, star.flux).autopower(method='fast', samples_per_peak=args.of_new, maximum_frequency=star.nyquist)
-                else:
-                    star.freq_os, star.pow_os = np.copy(star.frequency), np.copy(star.power)
-            else:
-                if args.of_actual != 1:
-                    star.freq_cs = np.array(star.frequency[args.of_actual-1::args.of_actual])
-                    star.pow_cs = np.array(star.power[args.of_actual-1::args.of_actual])
-                else:
-                    star.freq_cs, star.pow_cs = np.copy(star.frequency), np.copy(star.power)
-                star.freq_os, star.pow_os = np.copy(star.freq_cs), np.copy(star.pow_cs)
-
-            star.resolution = star.freq_cs[1]-star.freq_cs[0]
-            if star.verbose:
-                print('# Power spectrum resolution: %.6f muHz'%star.resolution)
-            if args.kepcorr:
-                if star.verbose:
-                    print(' - using Kepler artefact correction - ')
-                star = remove_artefact(star)
-
-            # If running the first module, mask out any unwanted frequency regions
-            star.frequency, star.power = np.copy(star.freq_cs), np.copy(star.pow_cs)
-            if star.params[star.name]['excess']:
-                # Make a mask using the given frequency bounds for the find excess routine
-                mask = np.ones_like(star.frequency, dtype=bool)
-                if star.params[star.name]['lower_x'] is not None:
-                    mask *= np.ma.getmask(np.ma.masked_greater_equal(star.frequency, star.params[star.name]['lower_x']))
-                else:
-                    mask *= np.ma.getmask(np.ma.masked_greater_equal(star.frequency, min(star.freq_cs)))
-                if star.params[star.name]['upper_x'] is not None:
-                    mask *= np.ma.getmask(np.ma.masked_less_equal(star.frequency, star.params[star.name]['upper_x']))
-                else:
-                    mask *= np.ma.getmask(np.ma.masked_less_equal(star.frequency, star.nyquist))
-                star.params[star.name]['ex_mask'] = mask
-                star.frequency = star.frequency[mask]
-                star.power = star.power[mask]
-                if star.params[star.name]['numax'] is not None and star.params[star.name]['numax'] <= 500.:
-                    star.boxes = np.logspace(np.log10(0.5), np.log10(25.), star.findex['n_trials'])*1.
-                else:
-                    star.boxes = np.logspace(np.log10(50.), np.log10(500.), star.findex['n_trials'])*1.
-    return star
+    return args, star, note
 
 
-def get_file(path):
-    """Load either a light curve or a power spectrum data file and saves the data into `x` and `y`.
+def load_file(path):
+    """
+    Load a light curve or a power spectrum from a basic 2xN txt file
+    and stores the data into the `x` (independent variable) and `y`
+    (dependent variable) arrays, where N is the length of the series.
 
     Parameters
     ----------
     path : str
         the file path of the data file
+
+    Returns
+    -------
+    x : numpy.array
+        the independent variable i.e. the time or frequency array 
+    y : numpy.array
+        the dependent variable, in this case either the flux or power array
+
     """
     f = open(path, "r")
     lines = f.readlines()
@@ -454,14 +429,185 @@ def get_file(path):
     return x, y
 
 
+def stitch_data(star, gap=10):
+    """
+    For computation purposes and for special cases that this does not affect the integrity of the results,
+    this module 'stitches' a light curve together for time series data with large gaps. For stochastic p-mode
+    oscillations, this is justified if the lifetimes of the modes are smaller than the gap. 
+
+    Parameters
+    ----------
+    gap : int
+        how many consecutive cadences are nan to be considered a 'gap'. Default is `10`.
+    star : target.Target
+        needs 'time' and 'flux' attributes to work properly
+
+    Returns
+    -------
+    star : target.Target
+        pipeline target with a stitched time series
+
+    """
+    star.new_time, star.new_flux = np.copy(star.time), np.copy(star.flux)
+    new_flux = np.zeros_like(star.time)
+    for i in range(1,len(star.new_time)):
+        if (star.new_time[i]-star.new_time[i-1]) > gap*(star.cadence/24./60./60.):
+            star.new_time[i] = star.new_time[i-1]+(star.cadence/24./60./60.)
+
+    return star
+
+
+def load_power_spectrum(args, star, note=''):
+    """
+    Loads in the power spectrum data in for a given star,
+    which will return `False` if unsuccessful and therefore, not run the rest
+    of the pipeline.
+
+    Parameters
+    ----------
+    star : target.Target
+        the pySYD pipeline object
+    args : argparse.Namespace
+        command line arguments
+    args.kepcorr : bool
+        if true, will run the module to mitigate the Kepler artefacts in the power spectrum. Default is `False`.
+    args.oversample : bool
+        whether to use an oversampled power spectrum for the first iterations. Default is `True`.
+    args.of_actual : int
+        the oversampling factor, if the power spectrum is already oversampled.
+    args.of_new : float
+        the oversampling factor to use for the first iterations. Default is `5`.
+    note : str
+        optional suppressed verbose output
+
+    Returns
+    -------
+    star : target.Target
+        the pySYD pipeline object
+    star.ps : bool
+        will return `True` if the power spectrum file was successfully loaded otherwise `False`
+    star.frequency : numpy.array
+        frequency array in muHz
+    star.power : numpy.array
+        power spectral density array
+
+    """
+    star.ps = False
+    # Try loading the power spectrum
+    if not os.path.exists('%s/%d_PS.txt'%(args.inpdir, star.name)):
+        note += '# ERROR: %s/%d_PS.txt not found\n'%(args.inpdir, star.name)
+    else:
+        star.ps = True
+        star.frequency, star.power = load_file('%s/%d_PS.txt'%(args.inpdir, star.name))
+        if star.lc:
+            of_actual = int(round((1./((max(star.time)-min(star.time))*0.0864))/(star.frequency[1]-star.frequency[0])))
+            if args.of_actual == 0:
+                args.of_actual = of_actual
+                star.params['of_actual'] = of_actual
+            if args.of_actual != of_actual:
+                note += '# WARNING: THE OVERSAMPLING FACTORS ARE INCONSISTENT\n'
+        note += '# POWER SPECTRUM: %d lines of data read\n'%len(star.frequency)
+        if args.of_actual == 1:
+            note += '# PS is critically sampled\n'
+        else:
+            note += '# PS is oversampled by a factor of %d\n'%args.of_actual
+        if args.oversample:
+            star.freq_cs = np.array(star.frequency[args.of_actual-1::args.of_actual])
+            star.pow_cs = np.array(star.power[args.of_actual-1::args.of_actual])
+            if args.of_actual != args.of_new:
+                if not star.lc:
+                    note += '-------------------------------------------------\n#   ERROR: need time series data to compute an  #\n#  oversampled power spectrum... exiting script #\n-------------------------------------------------\n'
+                    star.ps = False
+                    return args, star, note
+                else:
+                    freq_os, pow_os = lomb(star.time, star.flux).autopower(method='fast', samples_per_peak=args.of_new, maximum_frequency=star.nyquist)
+                    star.freq_os = freq_os*(10.**6/(24.*60.*60.))
+                    star.pow_os = 4.*pow_os*np.var(star.flux*1e6)/(np.sum(pow_os)*(star.freq_os[1]-star.freq_os[0]))
+            else:
+                star.freq_os, star.pow_os = np.copy(star.frequency), np.copy(star.power)
+        else:
+            args.of_new = 1
+            if args.of_actual != 1:
+                star.freq_cs = np.array(star.frequency[args.of_actual-1::args.of_actual])
+                star.pow_cs = np.array(star.power[args.of_actual-1::args.of_actual])
+            else:
+                star.freq_cs, star.pow_cs = np.copy(star.frequency), np.copy(star.power)
+            star.freq_os, star.pow_os = np.copy(star.freq_cs), np.copy(star.pow_cs)
+
+        note += '# PS resolution: %.6f muHz\n'%(star.freq_cs[1]-star.freq_cs[0])
+        if args.oversample:
+            note += '# For first iteration: using oversampled PS [of %d]'%args.of_new
+        else:
+            note += '# For first iteration: using critically sampled PS'
+        if args.kepcorr:
+            note += '\n ** using Kepler artefact correction **'
+            star = remove_artefact(star)
+
+    return args, star, note
+
+
+def get_findex(star, minimum_freq=10., maximum_freq=4166.67):
+    """
+    Before running the first module (find excess), this masks out any unwanted
+    frequency regions and also gets appropriate bin sizes for the collapsed ACF
+    function if some prior information on numax is provided.
+
+    Parameters
+    ----------
+    star : target.Target
+        pySYD target object
+    star.oversample : bool
+        if `True`, it will use an oversampled power spectrum for this module
+    minimum_freq : float
+        minimum frequency to use for the power spectrum if `None` is provided (via info/star_info.csv). Default = `10.0` muHz. Please note: this is typically sufficient for most stars but may affect evolved stars!
+    maximum_freq : float
+        maximum frequency to use for the power spectrum if `None` is provided (via info/star_info.csv). Default = `5000.0` muHz.
+
+    Returns
+    -------
+    star : target.Target
+        updated pySYD target object
+
+    """
+
+    # If running the first module, mask out any unwanted frequency regions
+    if star.oversample:
+        star.frequency, star.power = np.copy(star.freq_os), np.copy(star.pow_os)
+        star.resolution = star.frequency[1]-star.frequency[0]
+    else:
+        star.frequency, star.power = np.copy(star.freq_cs), np.copy(star.pow_cs)
+        star.resolution = star.frequency[1]-star.frequency[0]
+    # Make a mask using the given frequency bounds for the find excess routine
+    mask = np.ones_like(star.frequency, dtype=bool)
+    if star.params[star.name]['lower_x'] is not None:
+        mask *= np.ma.getmask(np.ma.masked_greater_equal(star.frequency, star.params[star.name]['lower_x']))
+    else:
+        mask *= np.ma.getmask(np.ma.masked_greater_equal(star.frequency, minimum_freq))
+    if star.params[star.name]['upper_x'] is not None:
+        mask *= np.ma.getmask(np.ma.masked_less_equal(star.frequency, star.params[star.name]['upper_x']))
+    else:
+        mask *= np.ma.getmask(np.ma.masked_less_equal(star.frequency, star.nyquist))
+    star.params[star.name]['ex_mask'] = mask
+    star.freq = star.frequency[mask]
+    star.pow = star.power[mask]
+    if star.params[star.name]['numax'] is not None and star.params[star.name]['numax'] <= 500.:
+        star.boxes = np.logspace(np.log10(0.5), np.log10(25.), star.findex['n_trials'])*1.
+    else:
+        star.boxes = np.logspace(np.log10(50.), np.log10(500.), star.findex['n_trials'])*1.
+
+    return star
+
+
 def check_fitbg(star):
-    """Check if there is prior knowledge about numax as SYD needs this information to work well
-    (either from findex module or from star info csv).
+    """
+    Checks if there is prior knowledge about numax as pySYD needs this information to perform 
+    well (either be it from the `find_excess` module or from the info/star_info.csv).
 
     Returns
     -------
     result : bool
         will return `True` if there is prior value for numax otherwise `False`.
+
     """
     if star.params[star.name]['excess']:
         # Check whether output from findex module exists; 
@@ -472,23 +618,37 @@ def check_fitbg(star):
                 star.params[star.name][col] = df.loc[0, col]
         # Break if no numax is provided in any scenario
         if star.params[star.name]['numax'] is None:
-            print(
-                '# ERROR: pySYD cannot run without any value for numax'
-            )
+            print('# ERROR: pySYD cannot run without any value for numax')
             return False
         else:
             return True
     else:
         if star.verbose:
-            print(
-                '# WARNING: you are not running findex. \n# A value of %.2f muHz was provided for numax.'%star.params[star.name]['numax']
-            )
+            print('# WARNING: you are not running findex. \n# A value of %.2f muHz was provided for numax.'%star.params[star.name]['numax'])
         return True
 
 
-def get_initial_guesses(star):
+def get_fitbg(star, minimum_freq=10., maximum_freq=4166.67):
     """
-    Get initial guesses for the granulation background.
+    Gets initial guesses for granulation components (i.e. timescales and amplitudes) using
+    solar scaling relations. This resets the power spectrum and has its own independent
+    filter (i.e. [lower,upper] mask) to use for this subroutine.
+
+    Parameters
+    ----------
+    star : target.Target
+        pySYD target object
+    star.oversample : bool
+        if `True`, it will use an oversampled power spectrum for the first iteration or 'step'
+    minimum_freq : float
+        minimum frequency to use for the power spectrum if `None` is provided (via info/star_info.csv). Default = `10.0` muHz. Please note: this is typically sufficient for most stars but may affect evolved stars!
+    maximum_freq : float
+        maximum frequency to use for the power spectrum if `None` is provided (via info/star_info.csv). Default = `5000.0` muHz.
+
+    Returns
+    -------
+    star : target.Target
+        updated pySYD target object
 
     """
     from pysyd.functions import mean_smooth_ind
@@ -496,21 +656,27 @@ def get_initial_guesses(star):
     if star.params[star.name]['lower_b'] is not None:
         lower = star.params[star.name]['lower_b']
     else:
-        lower = min(star.frequency)
+        lower = minimum_freq
     if star.params[star.name]['upper_b'] is not None:
         upper = star.params[star.name]['upper_b']
     else:
         if star.nyquist is not None:
             upper = star.nyquist
         else:
-            upper = 5000.
+            upper = maximum_freq
     star.params[star.name]['fb_mask']=[lower,upper]
-    star.frequency, star.power = np.copy(star.freq_os), np.copy(star.pow_os)
-    star.resolution = (star.freq_cs[1]-star.freq_cs[0])/star.params['of_actual']
 
+    # Check if oversampling is desired for the first iteration and get appropriate PS
+    if star.oversample:
+        star.frequency, star.power = np.copy(star.freq_os), np.copy(star.pow_os)
+        star.resolution = star.frequency[1]-star.frequency[0]
+    else:
+        star.frequency, star.power = np.copy(star.freq_cs), np.copy(star.pow_cs)
+        star.resolution = star.frequency[1]-star.frequency[0]
     # Mask power spectrum for fitbg module
     mask = np.ma.getmask(np.ma.masked_inside(star.frequency, star.params[star.name]['fb_mask'][0], star.params[star.name]['fb_mask'][1]))
-    star.frequency, star.random_pow = np.copy(star.frequency[mask]), np.copy(star.power[mask])
+    star.frequency, star.power = np.copy(star.frequency[mask]), np.copy(star.power[mask])
+    star.random_pow = np.copy(star.power)
     
     # Use scaling relations from sun to get starting points
     star = solar_scaling(star)
@@ -532,11 +698,16 @@ def get_initial_guesses(star):
     return star
 
 
-def solar_scaling(star, scaling='tau_sun_single'):
+def solar_scaling(star, scaling='tau_sun_single', max_laws=3, minimum_freq=10.):
     """
     Uses scaling relations from the Sun to:
-        1) estimate the width of the region of oscillations using numax
-        2) guess starting values for granulation timescales
+    1) estimate the width of the region of oscillations using numax
+    2) guess starting values for granulation timescales
+
+    Parameters
+    ----------
+    max_laws : int
+        the maximum number of resolvable Harvey-like components
 
     """
 
@@ -554,8 +725,13 @@ def solar_scaling(star, scaling='tau_sun_single'):
     star.b = b[mnu >= min(star.frequency)]
     star.mnu = mnu[mnu >= min(star.frequency)]
     if len(star.mnu)==0:
-        star.b = b[mnu >= 10] 
-        star.mnu = mnu[mnu >= 10]
+        star.b = b[mnu >= minimum_freq] 
+        star.mnu = mnu[mnu >= minimum_freq]
+    elif len(star.mnu) > max_laws:
+        star.b = b[mnu >= min(star.frequency)][-max_laws:]
+        star.mnu = mnu[mnu >= min(star.frequency)][-max_laws:]
+    else:
+        pass
     star.nlaws = len(star.mnu)
     star.mnu_orig = np.copy(star.mnu)
     star.b_orig = np.copy(star.b)
@@ -564,12 +740,14 @@ def solar_scaling(star, scaling='tau_sun_single'):
 
 
 def save_findex(star):
-    """Save the results of the find excess routine into the save folder of the current star.
+    """
+    Save the results of the find excess routine into the save folder of the current star.
 
     Parameters
     ----------
-    results : list
-        the results of the find excess routine
+    star : target.Target
+        pipeline target with the results of the `find_excess` routine
+
     """
     best = star.findex['results'][star.name]['best']
     variables = ['star', 'numax', 'dnu', 'snr']
@@ -580,24 +758,23 @@ def save_findex(star):
 
 def convert_samples(df, drop=True):
     """
-    Converts {a_n, b_n} Harvey parametrization to {tau_n, sigma_n} before
-    saving any information from fit_background. This makes it easier to
-    compute uncertainties for the latter without having to do error 
-    propagation.
+    Converts the {a_n, b_n} Harvey parametrization to the physical quanities
+    {tau_n, sigma_n} before saving any information from fit_background. This 
+    makes it easier to propagate the uncertainties to the latter
 
     Parameters
     ----------
     df : pandas.DataFrame
         the results of the fits background routine
     drop : bool
-        drops the additional columns after the samples are converted
-    cols_to_drop : list
+        drops the additional columns after the samples are converted (default is `True`)
+    cols_to_drop : List[str]
         the list of columns to drop
 
     Returns
     -------
     df : pandas.DataFrame
-        the converted results of the fits background routine
+        the converted results of the `fit_background` routine
 
     """
     cols_to_drop=[]
@@ -626,6 +803,11 @@ def save_fitbg(star):
     """
     Saves the results of the `fit_background` module.
 
+    Parameters
+    ----------
+    star : target.Target
+        pipeline target with the results of the `fit_background` routine
+
     """
     df = pd.DataFrame(star.fitbg['results'][star.name])
     if star.fitbg['convert']:
@@ -639,9 +821,9 @@ def save_fitbg(star):
             new_df.loc[c, 'uncertainty'] = mad_std(df[col].values)
         else:
             new_df.loc[c, 'uncertainty'] = '--'
-    new_df.to_csv('%sbackground.csv' % star.params[star.name]['path'], index=False)
+    new_df.to_csv('%sbackground.csv'%star.params[star.name]['path'], index=False)
     if star.fitbg['samples']:
-        df.to_csv('%ssamples.csv' % star.params[star.name]['path'], index=False)
+        df.to_csv('%ssamples.csv'%star.params[star.name]['path'], index=False)
 
 
 def verbose_output(star, sampling=False):
@@ -650,7 +832,7 @@ def verbose_output(star, sampling=False):
 
     """
     note=''
-    df = pd.read_csv('%sbackground.csv' % star.params[star.name]['path'])
+    df = pd.read_csv('%sbackground.csv'%star.params[star.name]['path'])
     params = get_params_dict()
     if sampling:
         note+='\nOutput parameters:'
@@ -658,11 +840,11 @@ def verbose_output(star, sampling=False):
         for idx in df.index.values.tolist():
             note+=line%(df.loc[idx,'parameter'],df.loc[idx,'value'],df.loc[idx,'uncertainty'],params[df.loc[idx,'parameter']]['unit'])
     else:
-        note+='-------------------------------------------------\nOutput parameters:'
+        note+='----------------------------------------------------\nOutput parameters:'
         line='\n%s: %.2f %s'
         for idx in df.index.values.tolist():
             note+=line%(df.loc[idx,'parameter'],df.loc[idx,'value'],params[df.loc[idx,'parameter']]['unit'])
-    note+='\n-------------------------------------------------'
+    note+='\n----------------------------------------------------'
     print(note)
 
 

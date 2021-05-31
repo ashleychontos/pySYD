@@ -50,20 +50,20 @@ def plot_excess(star):
 
     # log-log power spectrum with crude background fit
     ax2 = plt.subplot(2, 3, 2)
-    ax2.loglog(star.frequency, star.power, 'w-')
-    ax2.set_xlim([min(star.frequency), max(star.frequency)])
-    ax2.set_ylim([min(star.power), max(star.power)*1.25])
+    ax2.loglog(star.freq, star.pow, 'w-')
+    ax2.set_xlim([min(star.freq), max(star.freq)])
+    ax2.set_ylim([min(star.pow), max(star.pow)*1.25])
     ax2.set_title(r'$\rm Crude \,\, background \,\, fit$')
     ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
     if star.findex['binning'] is not None:
         ax2.loglog(star.bin_freq, star.bin_pow, 'r-')
-    ax2.loglog(star.frequency, star.interp_pow, color='lime', linestyle='-', lw=2.0)
+    ax2.loglog(star.freq, star.interp_pow, color='lime', linestyle='-', lw=2.0)
 
     # Crude background-corrected power spectrum
     ax3 = plt.subplot(2, 3, 3)
-    ax3.plot(star.frequency, star.bgcorr_pow, 'w-')
-    ax3.set_xlim([min(star.frequency), max(star.frequency)])
+    ax3.plot(star.freq, star.bgcorr_pow, 'w-')
+    ax3.set_xlim([min(star.freq), max(star.freq)])
     ax3.set_ylim([0.0, max(star.bgcorr_pow)*1.25])
     ax3.set_title(r'$\rm Background \,\, corrected \,\, PS$')
     ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')

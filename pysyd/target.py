@@ -15,26 +15,26 @@ from pysyd import plots
 
 class Target:
     """
-    A pipeline target. Initialization will cause the pipeline to process the target.
+    A pySYD pipeline target. Initialization stores all the relevant information and
+    checks/loads in data for the given target. pySYD no longer requires BOTH the time
+    series data and the power spectrum, but requires additional information via CLI if
+    the former is not provided i.e. cadence or nyquist frequency, the oversampling
+    factor (if relevant), etc.
 
     Attributes
     ----------
     star : int
         the star ID
-    params : dict
+    params : Dict[str,object]
         the pipeline parameters
-    findex : dict
+    findex : Dict[str,object]
         the parameters of the find excess routine
-    fitbg : dict
+    fitbg : Dict[str,object]
         the parameters of the fit background routine
     verbose : bool
-        if true, verbosity will increase
-    show_plots : bool
-        if true, plots will be shown
-    keplercorr : bool
-        if true will correct Kepler artefacts in the power spectrum
-    filter : float
-        the box filter width [muHz] for the power spectrum
+        if true, turns on the verbose output
+    oversample : bool
+        if true, uses an oversampled power spectrum for the first iteration to estimate parameters (default is `False`)
 
     Parameters
     ----------
@@ -44,6 +44,7 @@ class Target:
     Methods
     -------
     TODO: Add methods
+
     """
 
     def __init__(self, star, args):
@@ -52,6 +53,7 @@ class Target:
         self.findex = args.findex
         self.fitbg = args.fitbg
         self.verbose = args.verbose
+        self.oversample = args.oversample
         self = utils.load_data(self, args)
         if self.ps:
             self.run = 1
@@ -61,29 +63,34 @@ class Target:
 
     def run_syd(self):
         """
-        Run the pipeline routines.
+        Run the pySYD pipeline routines sequentially:
+        1) the find excess module to identify the any solar-like oscillations
+        2) estimates the stellar background contributions before estimating the
+           global asteroseismic parameters
 
         """
         # Run the find excess routine
         if self.params[self.name]['excess']:
+            self = utils.get_findex(self)
             self.find_excess()
         # Run the fit background routine
         if self.params[self.name]['background']:
-            self.fit_background()
+            if utils.check_fitbg(self):
+                self = utils.get_fitbg(self)
+                self.fit_background()
 
 
     def find_excess(self):
         """
         Automatically finds power excess due to solar-like oscillations using a
-        frequency resolved collapsed autocorrelation function.
+        frequency-resolved, collapsed autocorrelation function (ACF).
 
         """
-
         # Make sure the binning is specified, otherwise it cannot run
         if self.findex['binning'] is not None:
-            self.bin_freq, self.bin_pow = functions.bin_data(self.frequency, self.power, self.findex)
+            self.bin_freq, self.bin_pow = functions.bin_data(self.freq, self.pow, self.findex)
             if self.verbose:
-                print('-------------------------------------------------')
+                print('----------------------------------------------------')
                 print('Running find_excess module:')
                 print('PS binned to %d datapoints' % len(self.bin_freq))
             # Smooth the binned power spectrum for a rough estimate of background
@@ -94,8 +101,8 @@ class Target:
 
             # Interpolate and divide to get a crude background-corrected power spectrum
             s = InterpolatedUnivariateSpline(smooth_freq, smooth_pow, k=1)
-            self.interp_pow = s(self.frequency)
-            self.bgcorr_pow = self.power/self.interp_pow
+            self.interp_pow = s(self.freq)
+            self.bgcorr_pow = self.pow/self.interp_pow
 
             # Calculate collapsed ACF using different box (or bin) sizes
             self.findex['results'][self.name] = {}
@@ -115,19 +122,28 @@ class Target:
         """
         TODO
 
+        Parameters
+        ----------
+        b : int
+            the trial number
+        j : int
+        start : int
+        max_iterations : int
+        max_snr : float
+
         """
         # Computes a collapsed ACF using different "box" (or bin) sizes
         self.findex['results'][self.name][b+1] = {}
         subset = np.ceil(self.boxes[b]/self.resolution)
         steps = np.ceil((self.boxes[b]*self.findex['step'])/self.resolution)
 
-        cumsum = np.zeros_like(self.frequency)
-        md = np.zeros_like(self.frequency)
+        cumsum = np.zeros_like(self.freq)
+        md = np.zeros_like(self.freq)
         # Iterates through entire power spectrum using box width
         while True:
-            if (start+subset) > len(self.frequency):
+            if (start+subset) > len(self.freq):
                 break
-            f = self.frequency[int(start):int(start+subset)]
+            f = self.freq[int(start):int(start+subset)]
             p = self.bgcorr_pow[int(start):int(start+subset)]
 
             lag = np.arange(0.0, len(p))*self.resolution
@@ -179,52 +195,40 @@ class Target:
         the large frequency separation (dnu) and oscillation amplitude.
 
         """
+        self.fitbg['results'][self.name] = {'numax_smooth':[],'A_smooth':[],'numax_gauss':[],'A_gauss':[],
+                                            'FWHM':[],'dnu':[],'white':[]}
+        if self.verbose:
+            print('----------------------------------------------------')
+            print('Running fit_background module:')
+            print('PS binned to %d data points' % len(self.bin_freq))
 
-        # Will only run routine if there is a prior numax estimate
-        if utils.check_fitbg(self):
-            # Check for guesses or find_excess results
-            self = utils.get_initial_guesses(self)
-            self.fitbg['results'][self.name] = {
-                'numax_smooth': [],
-                'A_smooth': [],
-                'numax_gauss': [],
-                'A_gauss': [],
-                'FWHM': [],
-                'dnu': [],
-                'white': []
-            }
-            if self.verbose:
-                print('-------------------------------------------------')
-                print('Running fit_background module:')
-                print('PS binned to %d data points' % len(self.bin_freq))
-
-            # Run first iteration (which has different steps than any other n>1 runs)
-            good = self.first_step()
-            if not good:
-                pass
+        # Run first iteration (which has different steps than any other n>1 runs)
+        good = self.first_step()
+        if not good:
+            pass
+        else:
+            # If sampling is enabled (i.e., args.mciter > 1), a progress bar is created w/ verbose output
+            if self.fitbg['mc_iter'] > 1:
+                if self.verbose:
+                    print('----------------------------------------------------')
+                    print('Running sampling routine:')
+                    self.pbar = tqdm(total=self.fitbg['mc_iter'])
+                    self.pbar.update(1)
+                self.i = 1
+                # Continue to sample while the number of successful steps is less than args.mciter
+                while self.i < self.fitbg['mc_iter']:
+                    self.sampling_step()
+                utils.save_fitbg(self)
+                plots.plot_samples(self)
+                if self.verbose:
+                    # Print results with uncertainties
+                    utils.verbose_output(self, sampling=True)
+            # Single iteration
             else:
-                # If sampling is enabled (i.e., args.mciter > 1), a progress bar is created w/ verbose output
-                if self.fitbg['mc_iter'] > 1:
-                    if self.verbose:
-                        print('-------------------------------------------------')
-                        print('Running sampling routine:')
-                        self.pbar = tqdm(total=self.fitbg['mc_iter'])
-                        self.pbar.update(1)
-                    self.i = 1
-                    # Continue to sample while the number of successful steps is less than args.mciter
-                    while self.i < self.fitbg['mc_iter']:
-                        self.sampling_step()
-                    utils.save_fitbg(self)
-                    plots.plot_samples(self)
-                    if self.verbose:
-                        # Print results with uncertainties
-                        utils.verbose_output(self, sampling=True)
-                # Single iteration
-                else:
-                    utils.save_fitbg(self)
-                    if self.verbose:
-                        # Print results without uncertainties
-                        utils.verbose_output(self)
+                utils.save_fitbg(self)
+                if self.verbose:
+                    # Print results without uncertainties
+                    utils.verbose_output(self)
 
 
     def first_step(self):
@@ -261,10 +265,11 @@ class Target:
         # Use the fitted dnu to create an echelle diagram and plot
         self.get_ridges()
         plots.plot_background(self)
-        # Get critically sampled power spectrum before sampling
-        mask = np.ma.getmask(np.ma.masked_inside(self.freq_cs, self.params[self.name]['fb_mask'][0], self.params[self.name]['fb_mask'][1]))
-        self.frequency, self.power = np.copy(self.freq_cs[mask]), np.copy(self.pow_cs[mask])
-        self.resolution = self.frequency[1]-self.frequency[0]
+        # If oversampling is True, get critically sampled power spectrum before sampling
+        if self.oversample:
+            mask = np.ma.getmask(np.ma.masked_inside(self.freq_cs, self.params[self.name]['fb_mask'][0], self.params[self.name]['fb_mask'][1]))
+            self.frequency, self.power = np.copy(self.freq_cs[mask]), np.copy(self.pow_cs[mask])
+            self.resolution = self.frequency[1]-self.frequency[0]
 
         return True
 
@@ -389,7 +394,7 @@ class Target:
             a.append(self.pars[2*n])
         self.a_orig = np.array(a)
         if self.verbose:
-            print('Comparing %d different models:' % (self.nlaws*2))
+            print('Comparing %d different models:'%(self.nlaws*2))
         for law in range(self.nlaws):
             bb = np.zeros((2,2*(law+1)+1)).tolist()
             for z in range(law+1):
@@ -404,7 +409,7 @@ class Target:
         for t in range(2*self.nlaws):
             if t % 2 == 0:
                 if self.verbose:
-                    print('%d: %s harvey model w/ white noise free parameter' % (t+1, dict1[t]))
+                    print('%d: %s harvey model w/ white noise free parameter'%(t+1, dict1[t]))
                 delta = 2*(self.nlaws-(t//2+1))
                 pams = list(self.pars[:(-delta-1)])
                 pams.append(self.pars[-1])
@@ -749,11 +754,10 @@ class Target:
             starty = min(self.frequency)
             for ii in range(len(gridx)):
                 for jj in range(len(gridy)):
-                    use = np.where((modx >= startx) & (modx < startx+self.obs_dnu/n_across) & (self.frequency >= starty) & (self.frequency < starty+self.obs_dnu))[0]
-                    if len(use) == 0:
-                        arr[ii, jj] = np.nan
+                    if self.bg_corr[((modx >= startx)&(modx < startx+self.obs_dnu/n_across))&((self.frequency >= starty)&(self.frequency < starty+self.obs_dnu))] != []:
+                        arr[ii, jj] = np.sum(self.bg_corr[((modx >= startx)&(modx < startx+self.obs_dnu/n_across))&((self.frequency >= starty)&(self.frequency < starty+self.obs_dnu))])
                     else:
-                        arr[ii, jj] = np.sum(self.bg_corr[use])
+                        arr[ii, jj] = np.nan
                     gridy[jj] = starty + self.obs_dnu/2.0
                     starty += self.obs_dnu
                 gridx[ii] = startx + self.obs_dnu/n_across/2.0

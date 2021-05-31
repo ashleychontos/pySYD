@@ -13,18 +13,19 @@ from pysyd.target import Target
 
 def run(args):
     """
-    Runs the pySYD pipeline.
+    Main script to run the pySYD pipeline
 
     Parameters
     ----------
     args : argparse.Namespace
         the command line arguments
+
     """
 
     args = utils.get_info(args)
     count = main(args.params['stars'], args)
       
-    # check to make sure that at least one star was successful (count == number of successful star executions)   
+    # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
     if count != 0:
         if args.verbose:
             print('Combining results into single csv file.')
@@ -33,14 +34,18 @@ def run(args):
         utils.scrape_output(args)
 
 
+
 def parallel(args):
     """
-    Runs the pySYD pipeline in parallel.
+    Uses multiprocessing to run the pySYD pipeline in parallel. Stars are assigned
+    evenly to `groups`, which is set by the number of threads or CPUs available.
+    Stars will then run one-by-one per group
 
     Parameters
     ----------
     args : argparse.Namespace
         the command line arguments
+
     """
 
     args = utils.get_info(args, parallel=True)
@@ -53,7 +58,7 @@ def parallel(args):
     pool.join()    # postpones execution of the next line until all processes finish
     count = np.sum(results)
       
-    # check to make sure that at least one star was successful (count == number of successful star executions)   
+    # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
     if count != 0:
         if args.verbose:
             print('Combining results into single csv file.')
@@ -68,12 +73,16 @@ def main(group, args, count=0):
 
     Parameters
     ----------
-    stargroup : 
+    group : 
         list of stars to be processed as a group
     args : argparse.Namespace
         the command line arguments
+
+    Returns
+    -------
     count : int
         the number of successful stars processed by pySYD for a given group of stars
+
     """
 
     for star in group:
@@ -87,18 +96,19 @@ def main(group, args, count=0):
 def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
     """
     Running this after installation will create the appropriate directories in the current working
-    directory as well as download example data and files to test your installation.
+    directory as well as download example data and files to test your pySYD installation
 
     Parameters
     ----------
     args : argparse.Namespace
         the command line arguments
-    note : str
-        optional verbose output
+    note : Optional[str]
+        suppressed (optional verbose output
     path_info : str
         path where star list and information are saved. Default is 'info/'
     raw : str
         path to download package data and examples from (source directory)
+
     """
 
     print('\n\nDownloading relevant data from source directory:\n')
