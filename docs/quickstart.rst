@@ -29,16 +29,20 @@ You may test your installation by using ``pysyd --help`` to see available comman
 .. code-block:: bash
 		
     $ pysyd --help
-    usage: pySYD [-h] [-version] {setup,run} ...
+    usage: pySYD [-h] [-version] {setup,run,parallel} ...
 
     pySYD: Automated Extraction of Global Asteroseismic Parameters
 
     optional arguments:
-      -h, --help           show this help message and exit
-      -version, --version  Print version number and exit.
+      -h, --help            show this help message and exit
+      -version, --version   Print version number and exit.
 
     subcommands:
-      {setup,run}
+      {setup,run,parallel}
+        setup               Easy setup for directories and files
+        run                 Run pySYD in regular mode
+        parallel            Run pySYD in parallel
+
 
 
 Setting Up
@@ -88,46 +92,51 @@ sampling enabled, including the verbose output you should see if your software w
 
     $ pysyd run -star 1435467 -show -verbose -mc 200
     
-    -------------------------------------------------
+    ----------------------------------------------------
     Target: 1435467
-    -------------------------------------------------
+    ----------------------------------------------------
     # LIGHT CURVE: 37919 lines of data read
+    # Time series cadence: 59 seconds
     # POWER SPECTRUM: 99518 lines of data read
-    oversampled by a factor of 5
-    time series cadence: 58 seconds
-    power spectrum resolution: 0.426868 muHz
-    -------------------------------------------------
+    # PS is oversampled by a factor of 5
+    # PS resolution: 0.426868 muHz
+    # For first iteration: using oversampled PS [of 5]
+    ----------------------------------------------------
     Running find_excess module:
-    PS binned to 338 datapoints
-    power excess trial 1: numax = 1459.04 +/- 68.65
-    S/N: 1.77
-    power excess trial 2: numax = 1449.05 +/- 83.27
-    S/N: 2.18
-    power excess trial 3: numax = 1442.87 +/- 71.29
-    S/N: 6.16
+    PS binned to 319 datapoints
+    power excess trial 1: numax = 1438.23 +/- 71.21
+    S/N: 2.95
+    power excess trial 2: numax = 1473.82 +/- 64.02
+    S/N: 5.79
+    power excess trial 3: numax = 1449.98 +/- 97.23
+    S/N: 23.96
     selecting model 3
-    -------------------------------------------------
+    ----------------------------------------------------
     Running fit_background module:
-    PS binned to 343 data points
+    PS binned to 1709 data points
     Comparing 4 different models:
     1: one harvey model w/ white noise free parameter
     2: one harvey model w/ white noise fixed
     3: two harvey model w/ white noise free parameter
     4: two harvey model w/ white noise fixed
     Based on reduced chi-squared statistic: model 4
-    -------------------------------------------------
+    ----------------------------------------------------
     Running sampling routine:
-    100%|█████████████████████████████████████████| 200/200 [00:17<00:00, 11.75it/s]
+    100%|████████████████████████████████████████████████████████████████████████████████| 200/200 [00:16<00:00, 11.83it/s]
 
     Output parameters:
-    numax (smoothed): 1312.62 +/- 69.30 muHz
-    maxamp (smoothed): 1.34 +/- 0.29 ppm^2/muHz. 
-    numax (gaussian): 1366.75 +/- 48.85 muHz
-    maxamp (gaussian): 1.20 +/- 0.23 ppm^2/muHz
-    fwhm (gaussian): 271.63 +/- 67.40 muHz
-    dnu: 71.00 +/- 0.83 muHz
-    -------------------------------------------------
-
+    numax_smooth: 1298.79 +/- 68.35 muHz
+    A_smooth: 1.74 +/- 0.30 ppm^2/muHz
+    numax_gauss: 1333.77 +/- 48.10 muHz
+    A_gauss: 1.32 +/- 0.26 ppm^2/muHz
+    FWHM: 299.98 +/- 58.80 muHz
+    dnu: 70.60 +/- 0.77 muHz
+    white: 1.19 +/- 0.03 ppm^2/muHz
+    sigma_1: 71.20 +/- 15.84 ppm
+    tau_1: 307.18 +/- 193.28 s
+    sigma_2: 56.65 +/- 14.30 ppm
+    tau_2: 94.69 +/- 41.69 s
+    ----------------------------------------------------
     Combining results into single csv file.
 
 
