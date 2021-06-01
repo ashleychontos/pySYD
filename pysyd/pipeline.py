@@ -93,7 +93,7 @@ def main(group, args, count=0):
     return count
 
 
-def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
+def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
     """
     Running this after installation will create the appropriate directories in the current working
     directory as well as download example data and files to test your pySYD installation
@@ -113,18 +113,18 @@ def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/as
 
     print('\n\nDownloading relevant data from source directory:\n')
     # create info directory
-    if len(args.todo.split('/')) != 1:
-        path_info += '%s/'%'/'.join(args.todo.split('/')[:-1])
+    if len(os.path.split(args.todo)) != 1:
+        path_info = os.path.split(args.todo)[0]
         if not os.path.exists(path_info):
             os.mkdir(path_info)
             note+=' - created input file directory: %s \n'%path_info
-
+    print(path_info)
     # get example input files
     infile1='%sinfo/todo.txt'%raw
-    outfile1='%s%s'%(path_info,args.todo.split('/')[-1])
+    outfile1=os.path.join(path_info,'info.txt')
     subprocess.call(['curl %s > %s'%(infile1, outfile1)], shell=True)
     infile2='%sinfo/star_info.csv'%raw
-    outfile2='%s%s'%(path_info,args.info.split('/')[-1])
+    outfile2=os.path.join(path_info,os.path.split(args.info)[-1])
     subprocess.call(['curl %s > %s'%(infile2, outfile2)], shell=True)
 
     # if not successful, make empty input files for reference
@@ -144,7 +144,7 @@ def setup(args, note='', path_info='', raw='https://raw.githubusercontent.com/as
     for target in ['1435467', '2309595', '11618103']:
         for ext in ['LC', 'PS']:
             infile='%sdata/%s_%s.txt'%(raw, target, ext)
-            outfile='%s/%s_%s.txt'%(args.inpdir, target, ext)
+            outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
             subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
     print('\n')
     note+=' - example data saved\n'
