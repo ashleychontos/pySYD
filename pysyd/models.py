@@ -24,6 +24,7 @@ def harvey(frequency, pars, nlaws=None, mode='regular', total=False):
     -------
     model : np.ndarray
         the Harvey model
+
     """
 
     if nlaws is None:
@@ -67,6 +68,7 @@ def gaussian(frequency, offset, amplitude, center, width):
     -------
     result : np.ndarray
         the Gaussian function
+
     """
 
     model = np.zeros_like(frequency)
@@ -95,6 +97,7 @@ def harvey_one(frequency, a1, b1, white_noise):
     -------
     model : np.ndarray
         the first Harvey component
+
     """
 
     model = np.zeros_like(frequency)
@@ -127,6 +130,7 @@ def harvey_two(frequency, a1, b1, a2, b2, white_noise):
     -------
     model : np.ndarray
         the second Harvey component
+
     """
 
     model = np.zeros_like(frequency)
@@ -164,6 +168,7 @@ def harvey_three(frequency, a1, b1, a2, b2, a3, b3, white_noise):
     -------
     model : np.ndarray
         the third Harvey component
+    
     """
 
     model = np.zeros_like(frequency)

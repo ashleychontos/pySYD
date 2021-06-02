@@ -10,6 +10,22 @@ def set_seed(star, lower=1, upper=10**7, size=1):
     For Kepler targets that require a correction via CLI (--kc), a random seed is generated
     from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
 
+    Parameters
+    ----------
+    star : target.Target
+        the pySYD pipeline object
+    lower : int 
+        lower limit for random seed value. Default value is `1`.
+    upper : int
+        upper limit for random seed value. Default value is `10**7`.
+    size : int
+        number of seed values returned. Default value is `1`.
+
+    Returns
+    -------
+    star : target.Target
+        the pySYD pipeline object
+        
     """
 
     seed = list(np.random.randint(lower,high=upper,size=size))
@@ -36,13 +52,22 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower = [240.0, 500.0], 
 
     Parameters
     ----------
-    frequency : np.ndarray
-        the frequency of the power spectrum
-    power : np.ndarray
-        the power of the power spectrum
+    star : target.Target
+        the pySYD pipeline object
     lcp : float
-        TODO: Write description. Default value is `1/(29.4244*60*1e-6)`.
-
+        long cadence period in Msec
+    lf_lower : List[float]
+        lower limit of low frequency artefact
+    lf_upper : List[float]
+        upper limit of low frequency artefact
+    hf_lower : List[float]
+        lower limit of high frequency artefact
+    hf_upper : List[float]
+        upper limit of high frequency artefact
+    Returns
+    -------
+    star : target.Target
+        the pySYD pipeline object
     """
 
     if star.params[star.name]['seed'] is None:
@@ -82,7 +107,7 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower = [240.0, 500.0], 
     return star
 
 
-def gaussian_bounds(x, y, guesses, best_x=None, sigma=None):
+def gaussian_bounds(x, y, guesses, sigma=None):
     """Get the bounds for the parameters of a Gaussian fit to the data.
 
     Parameters
@@ -91,16 +116,17 @@ def gaussian_bounds(x, y, guesses, best_x=None, sigma=None):
         the x values of the data
     y : np.ndarray
         the y values of the data
-    best_x : Optional[float]
-        TODO: Write description. Default value is `None`.
+    guesses : List[float]
+        initial guesses for a gaussian fit
     sigma : Optional[float]
-        TODO: Write description. Default value is `None`.
+        sigma from a standard Normal distribution 
 
     Returns
     -------
     bb : List[Tuple]
         list of parameter bounds of a Gaussian fit to the data
     """
+
     offset, amp, center, width = guesses
     if sigma is None:
         sigma = (max(x)-min(x))/8.0/np.sqrt(8.0*np.log(2.0))
@@ -214,6 +240,7 @@ def mean_smooth_ind(x, y, width):
     se : np.ndarray
         standard error
     """
+
     step = width-1
     j=0
     
@@ -235,114 +262,6 @@ def mean_smooth_ind(x, y, width):
     sy = sy[(sy != 0.0)]
     se[(se == 0.0)] = np.median(se)
     return sx, sy, se
-
-
-def smooth(array, width, params, method='box', mode=None, fft=False, silent=False):
-    """Smooths using a variety of methods. TODO: Write description.
-
-    Parameters
-    ----------
-    array : np.ndarray
-        the data
-    TODO: Add parameters
-
-    Returns
-    -------
-    TODO: Add return arguments
-    """
-
-    if method == 'box':
-
-        if isinstance(width, int):
-            kernel = Box1DKernel(width)
-        else:
-            width = int(np.ceil(width/params['resolution']))
-            kernel = Box1DKernel(width)
-
-        if fft:
-            smoothed_array = convolve_fft(array, kernel)
-        else:
-            smoothed_array = convolve(array, kernel)
-
-        if not silent:
-            print('%s kernel: kernel size = %.2f muHz' % (method, width*params['resolution']))
-
-    elif method == 'gaussian':
-
-        n = 2*len(array)
-        forward = array[:].tolist()
-        reverse = array[::-1].tolist()
-
-        if n % 4 != 0:
-            start = int(np.ceil(n/4))
-        else:
-            start = int(n/4)
-        end = len(array)
-
-        final = np.array(reverse[start:end]+forward[:]+reverse[:start])
-
-        if isinstance(width, int):
-            kernel = Gaussian1DKernel(width)
-        else:
-            width = int(np.ceil(width/params['resolution']))
-            kernel = Gaussian1DKernel(width, mode=mode)
-
-        if fft:
-            smoothed = convolve_fft(final, kernel)
-        else:
-            smoothed = convolve(final, kernel)
-
-        smoothed_array = smoothed[int(n/4):int(3*n/4)]
-
-        if not silent:
-            print('%s kernel: sigma = %.2f muHz' % (method, width*params['resolution']))
-    else:
-        print('Do not understand the smoothing method chosen.')
-
-    return smoothed_array
-
-
-def smooth_gauss(array, fwhm, params, silent=False):
-    """TODO: Write description.
-
-    Parameters
-    ----------
-    TODO: Add parameters
-
-    Returns
-    -------
-    TODO: Add return arguments
-    """
-
-    sigma = fwhm/np.sqrt(8.0*np.log(2.0))
-
-    n = 2*len(array)
-    N = np.arange(1, n+1, 1)
-    mu = len(array)
-    total = np.sum((1.0/(sigma*np.sqrt(2.0*np.pi)))*np.exp(-0.5*(((N-mu)/sigma)**2.0)))
-    weights = ((1.0/(sigma*np.sqrt(2.0*np.pi)))*np.exp(-0.5*(((N-mu)/sigma)**2.0)))/total
-
-    forward = array[:]
-    reverse = array[::-1]
-
-    if n % 4 != 0:
-        start = int(np.ceil(n/4))
-    else:
-        start = int(n/4)
-    end = int(n/2)
-
-    final = np.array(reverse[start:end]+forward[:]+reverse[:start])
-    fft = np.fft.irfft(np.fft.rfft(final)*np.fft.rfft(weights))
-    dq = deque(fft)
-    dq.rotate(int(n/2))
-    smoothed = np.array(dq)
-    smoothed_array = smoothed[int(n/4):int(3*n/4)]
-    if not silent:
-        print('gaussian kernel using ffts: sigma = %.2f muHz' % (sigma*params['resolution']))
-    if params['edge'][0]:
-        smoothed_array = smoothed_array[:-params['edge'][1]]
-
-    return np.array(smoothed_array)
 
 
 def bin_data(x, y, params):
@@ -392,3 +311,4 @@ def delta_nu(numax):
     """
 
     return 0.22*(numax**0.797)
+

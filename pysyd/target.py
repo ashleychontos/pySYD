@@ -68,6 +68,10 @@ class Target:
         2) estimates the stellar background contributions before estimating the
            global asteroseismic parameters
 
+        Returns
+        ----------
+        None
+
         """
         # Run the find excess routine
         if self.params[self.name]['excess']:
@@ -84,6 +88,10 @@ class Target:
         """
         Automatically finds power excess due to solar-like oscillations using a
         frequency-resolved, collapsed autocorrelation function (ACF).
+
+        Returns
+        ----------
+        None
 
         """
         # Make sure the binning is specified, otherwise it cannot run
@@ -120,16 +128,24 @@ class Target:
 
     def collapsed_acf(self, b, j=0, start=0, max_iterations=5000, max_snr=100.):
         """
-        TODO
+        Computes a collapsed autocorrelation function (ACF).
 
         Parameters
         ----------
         b : int
             the trial number
         j : int
+            index at which to start storing the cumulative sum and mean of ACF. Default value is `0`.
         start : int
+            index at which to start masking the frequency and power spectrum. Default value is `0`.
         max_iterations : int
+            maximum number of interations to try in curve fitting routine. Default value is `5000`.
         max_snr : float
+            maximum SNR corresponding to power excess. Default value is `100.0`.
+
+        Returns
+        ----------
+        None
 
         """
         # Computes a collapsed ACF using different "box" (or bin) sizes
@@ -194,6 +210,10 @@ class Target:
         Perform a fit to the granulation background and measures the frequency of maximum power (numax),
         the large frequency separation (dnu) and oscillation amplitude.
 
+        Returns
+        ----------
+        None
+
         """
         self.fitbg['results'][self.name] = {'numax_smooth':[],'A_smooth':[],'numax_gauss':[],'A_gauss':[],
                                             'FWHM':[],'dnu':[],'white':[]}
@@ -234,7 +254,7 @@ class Target:
     def first_step(self):
         """
         The first step in the background fitting, which determines the best-fit stellar 
-        contribution model (i.e. number of Harvey-like components) and corrects for this
+        contribution model (i.e. number of Harvey-like components) and corrects for this.
 
         TODO: implement more robust criterion (i.e. BIC or AIC) and also include the simplest model.
         before estimating numax and dnu.
@@ -246,6 +266,11 @@ class Target:
                      4) takes the autocorrelation (using ffts) of the masked power spectrum that contains the power excess
                      5) selects the peak (via -npeaks, default=10) closest to the expected spacing based on the calculated numax
                      6) fits Gaussian to the "cutout" peak of the ACF, where center is dnu
+        
+        Returns
+        ----------
+        result : bool
+            will return `True` if the model converges, otherwise `False`.
 
         """
         # Estimate white noise level
@@ -283,6 +308,10 @@ class Target:
         when the args.mciter > 1, where args.mciter = 200 is typically sufficient for 
         estimating an uncertainty.
 
+        Returns
+        ----------
+        None
+
         """
         # Randomize power spectrum to get uncertainty on measured values
         self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
@@ -316,6 +345,10 @@ class Target:
         Estimate the white noise level (in muHz) by taking a mean over a region 
         in the power spectrum near the nyquist frequency.
 
+        Returns
+        ----------
+        None
+
         """
         if self.nyquist < 400.0:
             mask = (self.frequency > 200.0) & (self.frequency < 270.0)
@@ -336,6 +369,10 @@ class Target:
         Estimates amplitude of red noise components by using a smoothed version of the power
         spectrum with the power excess region masked out. This will take the mean of a specified 
         number of points (via -nrms, default=20) for each Harvey-like component.
+        
+        Returns
+        ----------
+        None
 
         """
         # Exclude region with power excess and smooth to estimate red noise components
@@ -367,7 +404,7 @@ class Target:
 
         Parameters
         ----------
-        names : list
+        names : List[str]
             the number of Harvey components to use in the background model
         bounds : list
             the bounds on the Harvey parameters for a given model
@@ -381,7 +418,8 @@ class Target:
         Returns
         -------
         again : bool
-            will return `True` if fitting failed and the iteration must be repeated otherwise `False`.
+            will return `True` if fitting failed and the iteration must be repeated, otherwise `False`.
+
         """
 
         # Get best fit model
@@ -472,6 +510,10 @@ class Target:
         """
         Estimate numax by smoothing the power spectrum and taking the peak.
 
+        Returns
+        ----------
+        None
+
         """
 
         sig = (self.sm_par*(self.exp_dnu/self.resolution))/np.sqrt(8.0*np.log(2.0))
@@ -518,6 +560,16 @@ class Target:
     def get_numax_gaussian(self, output=False):
         """
         Estimate numax by fitting a Gaussian to the power envelope of the smoothed power spectrum.
+    
+        Parameters
+        ----------
+        output : bool
+            if `True`, return Gaussian fit parameters. Default value is `False`.
+
+        Returns
+        -------
+        again : bool
+            will return `True` if fitting failed and the iteration must be repeated, otherwise `False`.
 
         """
 
@@ -540,7 +592,12 @@ class Target:
         Parameters
         ----------
         fft : bool
-            if true will use FFT to compute the ACF
+            if true will use FFT to compute the ACF. Default value is `True`.
+
+        Returns
+        ----------
+        None
+
         """
         # Optional smoothing of PS to remove fine structure before computing ACF
         if self.fitbg['smooth_ps'] is not None:
@@ -573,11 +630,14 @@ class Target:
 
         Parameters
         ----------
-        dnu : float
-            the estimated value of dnu
         threshold : float
             the threshold is multiplied by the full-width half-maximum value, centered on the peak 
-            in the ACF to determine the width of the cutout region
+            in the ACF to determine the width of the cutout region.
+        
+        Returns
+        ----------
+        None
+
         """
         self.compute_acf()
         # Get peaks from ACF
@@ -620,7 +680,7 @@ class Target:
 
         # Boundary conditions and initial guesses stay the same for all iterations
         self.acf_guesses = [np.mean(self.zoom_auto), self.best_auto, self.best_lag, self.best_lag*0.01*2.]
-        self.acf_bb = functions.gaussian_bounds(self.zoom_lag, self.zoom_auto, self.acf_guesses, best_x=self.best_lag, sigma=10**-2)
+        self.acf_bb = functions.gaussian_bounds(self.zoom_lag, self.zoom_auto, self.acf_guesses, sigma=10**-2)
         # Fit a Gaussian function to the selected peak in the ACF to get dnu
         p_gauss3, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
        	# If dnu is provided, use that instead
@@ -637,6 +697,10 @@ class Target:
     def get_frequency_spacing(self):
         """
         Estimate a value for dnu.
+
+        Returns
+        ----------
+        None
 
         """
         self.compute_acf()
@@ -658,7 +722,11 @@ class Target:
         Parameters
         ----------
         start : float
-            TODO: Write description. Default value is `0.0`.
+            lower limit of distance modulus. Default value is `0.0`.
+
+        Returns
+        ----------
+        None
 
         """
 
@@ -701,13 +769,21 @@ class Target:
         Parameters
         ----------
         n_across : int
-            TODO: Write description. Default value is `50`.
+            number of grid points in x-axis of echelle diagram. Default value is `50`.
         startx : float
-            TODO: Write description. Default value is `0.0`.
+            lower limit of distance modulus. Default value is `0.0`.
 
         Returns
         -------
-        TODO: Write return arguments.
+        smoothed : np.ndarray
+            resulting echelle diagram based on the observed $\delta \nu$ 
+        gridx : np.ndarray
+            grid of x-axis measurements (distance modulus) for echelle diagram
+        gridy : np.ndarray
+            grid of y-axis measurements (frequency) for echelle diagram
+        extent : List[float]
+            The bounding box in data coordinates that the image will fill. 
+            The image is stretched individually along x and y to fill the box.
 
         """
 
@@ -754,8 +830,13 @@ class Target:
 
     def get_red_noise(self):
         """
-        TODO
+        Calculates red noise level, or stellar background contribution, from power spectrum.
 
+        Returns
+        -------
+        result : bool
+            will return `False` if model converges, otherwise `True`.
+        
         """
         # Use as initial guesses for the optimized model
         try:
@@ -785,8 +866,12 @@ class Target:
 
     def estimate_dnu(self):
         """
-        Estimate a value for dnu.
+        Estimate a value for $\delta \nu$.
 
+        Returns
+        ----------
+        None
+        
         """
 	
         # define the peak in the ACF
