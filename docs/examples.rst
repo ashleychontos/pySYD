@@ -161,7 +161,7 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 ``sampling`` results:
 
-.. image:: figures/66278992_samples.png
+.. image:: figures/6278992_samples.png
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 6278992.
 
