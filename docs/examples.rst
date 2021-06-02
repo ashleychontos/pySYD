@@ -32,6 +32,7 @@ KIC 1435467 is our least evolved example star, with numax ~1400 muHz.
 | **Bottom right:** Same as bottom left but for the large step size (optimized for main-sequence stars).
 
 
+
 ``fit_background`` results:
 
 .. image:: figures/1435467_background.png
@@ -47,6 +48,7 @@ KIC 1435467 is our least evolved example star, with numax ~1400 muHz.
 | **Bottom left:** ACF peak extracted in the center right panel (white) and a Gaussian fit to that peak (green). The center of the Gaussian is the estimate of Dnu.
 | **Bottom middle:** Echelle diagram of the background corrected power spectrum using the measured Dnu value.
 | **Bottom right:** Echelle diagram collapsed along the frequency direction.
+
 
 
 ``sampling`` results:
