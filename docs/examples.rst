@@ -113,7 +113,28 @@ KIC 11618103 is an evolved RGB star, with numax of ~100 muHz.
 Low SNR Examples
 ****************
 
-To be added.
+KIC 6062024
++++++++++++
+
+KIC 6062024 is a subgiant, with numax ~1200 muHz.
+
+``find_excess`` results:
+
+.. image:: figures/6062024_excess.png
+  :width: 600
+  :alt: Find excess output plot for KIC 6062024.
+
+``fit_background`` results:
+
+.. image:: figures/6062024_background.png
+  :width: 600
+  :alt: Fit background output plot for KIC 6062024.
+
+``sampling`` results:
+
+.. image:: figures/6062024_samples.png
+  :width: 600
+  :alt: Distributions of Monte-Carlo samples for KIC 6062024.
 
 ====================
 
