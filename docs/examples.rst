@@ -136,12 +136,35 @@ KIC 6062024 is a subgiant, with numax ~1200 muHz.
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 6062024.
 
+
 ====================
 
 Non-detection Examples
 **********************
 
-To be added.
+KIC 6278992
++++++++++++
+
+KIC 6278992 is a main-sequence star with no solar-like oscillations.
+
+``find_excess`` results:
+
+.. image:: figures/6278992_excess.png
+  :width: 600
+  :alt: Find excess output plot for KIC 6278992.
+
+``fit_background`` results:
+
+.. image:: figures/6278992_background.png
+  :width: 600
+  :alt: Fit background output plot for KIC 6278992.
+
+``sampling`` results:
+
+.. image:: figures/66278992_samples.png
+  :width: 600
+  :alt: Distributions of Monte-Carlo samples for KIC 6278992.
+
 
 ====================
 
