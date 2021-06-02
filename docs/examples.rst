@@ -24,11 +24,11 @@ KIC 1435467 is our least evolved example star, with numax ~1400 muHz.
   :width: 600
   :alt: Find excess output plot for KIC 1435467.
   
-**Top left:** Original time series.        
-**Top middle:** Original power spectrum (white) and heavily smoothed power spectrum (green). The latter is used as an initial (crude) background fit to search for oscillations.
-**Top right:** Power spectrum after correcting the crude background fit.
-**Bottom left:** Frequency-resolved, collapsed autocorrelation function of the background-corrected power spectrum using a small step size. This step size is optimized for low-frequency oscillators. The green line is a Gaussian fit to the data, which provides the initial numax estimate.
-**Bottom middle:** Same as bottom left but for the medium step size (optimized for subgiant stars).
+**Top left:** Original time series.\
+**Top middle:** Original power spectrum (white) and heavily smoothed power spectrum (green). The latter is used as an initial (crude) background fit to search for oscillations.\
+**Top right:** Power spectrum after correcting the crude background fit.\
+**Bottom left:** Frequency-resolved, collapsed autocorrelation function of the background-corrected power spectrum using a small step size. This step size is optimized for low-frequency oscillators. The green line is a Gaussian fit to the data, which provides the initial numax estimate.\
+**Bottom middle:** Same as bottom left but for the medium step size (optimized for subgiant stars).\
 **Bottom right:** Same as bottom left but for the large step size (optimized for main-sequence stars).
 
 
