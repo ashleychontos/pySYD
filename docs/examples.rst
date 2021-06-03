@@ -56,7 +56,7 @@ KIC 1435467 is our least evolved example star, with numax ~1400 muHz.
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 1435467.
 
-Each panel shows the samples of parameter estimates from Monte-Carlo simulations. Reported uncertainties on each parameter are calculated by taking the standard deviation of each distribution.
+Each panel shows the samples of parameter estimates from Monte-Carlo simulations. Reported uncertainties on each parameter are calculated by taking the robust standard deviation of each distribution.
 
 ====================
 
