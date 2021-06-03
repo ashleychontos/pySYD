@@ -36,6 +36,7 @@ def get_info(args, parallel=False, stars=None, verbose=False, show=False, save=T
     -------
     args : argparse.Namespace
         the updated command line arguments
+
     """
 
     params={}
@@ -93,6 +94,10 @@ def check_inputs(args):
     ----------
     args : argparse.Namespace
         the command line arguments
+
+    Returns
+    ----------
+    None
 
     """
 
@@ -180,7 +185,7 @@ def get_background_params(args, box_filter=2.5, mc_iter=1, ind_width=50, n_rms=2
     args.smooth_ech : float
         option to smooth the output of the echelle plot
     args.smooth_ps : float
-        TODO: Write description. Default value is `1.0`.
+        frequency with which to smooth power spectrum. Default value is `1.0`.
     args.slope : bool
         if true will correct for edge effects and residual slope in Gaussian fit. Default value is `False`.
     args.samples : bool
