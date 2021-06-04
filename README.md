@@ -3,9 +3,10 @@
 
 ## **Automated Measurements of Global Asteroseismic Parameters**
 
-[![PyPI Status](https://badge.fury.io/py/pysyd.svg)](https://badge.fury.io/py/pysyd)
-[![Documentation Status](https://readthedocs.org/projects/pysyd/badge/?version=latest)](https://pysyd.readthedocs.io/en/latest/?badge=latest)
+[![PyPI](https://badge.fury.io/py/pysyd.svg)](https://badge.fury.io/py/pysyd)
+[![Documentation](https://readthedocs.org/projects/pysyd/badge/?version=latest)](https://pysyd.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+[![JOSS](https://joss.theoj.org/papers/6465a9dd3141c207175f200c7f891f1e/status.svg)](https://joss.theoj.org/papers/6465a9dd3141c207175f200c7f891f1e)
 
 </div>
 
