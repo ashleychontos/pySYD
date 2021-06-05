@@ -14,7 +14,9 @@
 
 ## Attribution
 
-Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, and Maryum Sayeed. 
+Written by Ashley Chontos. Developed by Ashley Chontos, Daniel Huber, Maryum Sayeed and Pavadol Yamsiri.
+
+We thank Dennis Stello, Jie Yu, Marc Hon, and other users of the `SYD` pipeline for discussion and sgugestions which helped the development of this code.
 
 Please cite our [JOSS paper](https://github.com/openjournals/joss-papers/blob/joss.03331/joss.03331/10.21105.joss.03331.pdf) as well as the [original publication](https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract) discussing the methodology if you make use of `pySYD` in your work.
 
