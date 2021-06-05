@@ -1,8 +1,12 @@
+name: Compile JOSS .tex
+on: [push]
 jobs:
-  tests:
+  paper:
     runs-on: ubuntu-latest
+    name: Compile paper
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: TeX
         uses: docker://openjournals/paperdraft:latest
         with:
