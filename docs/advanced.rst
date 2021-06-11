@@ -22,7 +22,7 @@ challenge.
 Parent Parser
 +++++++++++++
 
-The ``pySYD`` command line feature has two subcommands: ``setup`` and ``run``, the former which should only really
+The ``pySYD`` command line feature has three subcommands: ``setup``, ``run`` and ``parallel``, the former which should only really
 be used once after installation. Command line options inherent to both subcommands include:
 
 - ``-file``, ``--file``, ``-list``, ``--list``, ``-todo``, ``--todo`` : path to text file that contains the list of stars to process
