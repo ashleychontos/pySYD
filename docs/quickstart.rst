@@ -73,16 +73,21 @@ This will print the absolute paths of all directories that are created during se
 Example Fit
 ***********
 
-If you ran the setup feature, there are three example stars provided: 1435467 (the least evolved), 
+If you ran the setup feature, there are data for three example stars provided: 1435467 (the least evolved), 
 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
 .. code-block:: bash
 
     $ pysyd run -star 1435467 -show -verbose
+    add output and figures
 
 ``pySYD`` is optimized for running multiple stars and therefore by default, both the ``-verbose`` and ``-show`` 
 (i.e. the output plots) options are set to ``False``. We recommend using them for the example, since they are helpful to see how 
-the pipeline processes targets.
+the pipeline processes targets. The above command should yield the following output:
+
+.. code-block:: bash
+
+    get it.
 
 To estimate uncertainties in the derived parameters, set ``-mc`` to a number sufficient for bootstrap sampling. In the previous 
 example, ``-mc`` was not specified and is 1 by default (for 1 iteration). Below shows the same example with the
@@ -139,6 +144,8 @@ sampling enabled, including the verbose output you should see if your software w
     ----------------------------------------------------
     Combining results into single csv file.
 
+
+Please visit :ref:`examples` for more examples and more details about what these results mean.
 
 .. _summary:
 
