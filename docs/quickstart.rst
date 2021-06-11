@@ -145,7 +145,7 @@ sampling enabled, including the verbose output you should see if your software w
     Combining results into single csv file.
 
 
-Please visit :ref:`examples` for more examples and more details about what these results mean.
+Please visit :ref:`examples` for more examples and details about what these results mean.
 
 .. _summary:
 
