@@ -175,17 +175,16 @@ Ensemble of Stars
 *****************
 
 There is a parallel processing option included in the software, which is helpful for
-running many stars. This is switched on by using the following command:
+running many stars. This can be accessed through the following command:
 
 .. code-block::
 
-    $ pysyd run -parallel (-nthreads 15 -list path_to_star_list.txt)
+    $ pysyd parallel (-nthreads 15 -list path_to_star_list.txt)
 
-In the event that the parallel processing option is set to ``True`` like the above example, ``pySYD`` 
-will divide and group the list of stars based on the number of threads available. By default, ``args.n_threads = 0``
-but can be specified by using the command line option. If ``args.parallel is True`` but the ``-nthreads`` 
-option is not used, ``pySYD`` will set the number of threads to the number of cpus available for the local operating 
-system via ``multiprocessing.cpu_count()``.
+For parallel processing, ``pySYD`` will divide and group the list of stars based on the number of threads available. 
+By default, ``args.n_threads = 0`` but can be specified by using the command line option. If parallelization is preferred
+but the ``-nthreads`` option is not used, ``pySYD`` will use ``multiprocessing.cpu_count()`` to determine the number of
+cpus available for the local operating system and set the number of threads to ``mulitprocessing.cpu_count()-1``.
 
 .. note::
 
