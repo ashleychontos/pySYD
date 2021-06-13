@@ -1,8 +1,3 @@
-.. _cli:
-
-Command Line Interface
-######################
-
 .. _advanced:
 
 Advanced Usage
@@ -21,14 +16,14 @@ if you followed the suggestions in :ref:`structure` or used our ``setup`` featur
 There are currently three modes that ``pySYD`` can operate in via command line: ``setup``, ``run`` and ``parallel``. These are discussed in more detail below, including what commands and options are available in each mode.
 
 Setup
-****
++++++
 
 Inherits=[parent_parser]
 
 Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. 
 
 Run
-***
++++
 
 Inherits=[parent_parser,main_parser]
 
@@ -37,9 +32,19 @@ The main pySYD pipeline function initialized through ``pysyd.pipeline.run`` occu
 
 
 Parallel
-********
+++++++++
 
 Inherits=[parent_parser,main_parser]
+
+Operates the same way as the other mode, but processes stars in parallel. Based on the number of threads
+available, stars are separated into groups (where the number of groups is exactly equal to the number of 
+threads).
+
+=======
+
+Command Line Interface
+**********************
+
 
 Parent Parser
 =============
