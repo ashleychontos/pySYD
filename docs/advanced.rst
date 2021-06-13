@@ -19,22 +19,22 @@ Modes
 There are currently three modes that ``pySYD`` can operate in via command line: 
 
 #. ``setup`` : Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. This mode only
-inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below).
+   inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below).
 
 #. ``run`` : The main pySYD pipeline function is initialized through ``pysyd.pipeline.run`` and runs the two core modules 
-(i.e. ``find_excess`` and ``fit_background``) for each star consecutively. This mode operates using most CLI options, inheriting
-both the :ref:`parent<parentparse>` and :ref:`main parser<mainparse>` options.
+   (i.e. ``find_excess`` and ``fit_background``) for each star consecutively. This mode operates using most CLI options, inheriting
+   both the :ref:`parent<parentparse>` and :ref:`main parser<mainparse>` options.
 
 #. ``parallel`` : Operates the same way as the previous mode, but processes stars simultaneously in parallel. Based on the number of threads
-available, stars are separated into groups (where the number of groups is exactly equal to the number of threads). This mode uses all CLI
-options, including the number of threads to use for parallelization.
+   available, stars are separated into groups (where the number of groups is exactly equal to the number of threads). This mode uses all CLI
+   options, including the number of threads to use for parallelization.
 
 =======
 
 .. _cli:
 
 Command Line Interface
-*************************
+#########################
 
 .. _parentparse:
 
