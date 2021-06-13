@@ -27,8 +27,8 @@ Run
 
 Inherits=[parent_parser,main_parser]
 
-The main pySYD pipeline function initialized through ``pysyd.pipeline.run`` occurs in two main steps: 
-``find_excess`` and ``fit_background``.
+The main pySYD pipeline function initialized through ``pysyd.pipeline.run`` runs the two core modules 
+(i.e. ``find_excess`` and ``fit_background``) on each star consecutively.
 
 
 Parallel
@@ -36,7 +36,7 @@ Parallel
 
 Inherits=[parent_parser,main_parser]
 
-Operates the same way as the other mode, but processes stars in parallel. Based on the number of threads
+Operates the same way as the previous mode, but processes stars simultaneously in parallel. Based on the number of threads
 available, stars are separated into groups (where the number of groups is exactly equal to the number of 
 threads).
 
