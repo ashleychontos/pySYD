@@ -27,7 +27,7 @@ There are currently three modes that ``pySYD`` can operate in via command line:
 
 #. ``parallel`` : Operates the same way as the previous mode, but processes stars simultaneously in parallel. Based on the number of threads
    available, stars are separated into groups (where the number of groups is exactly equal to the number of threads). This mode uses all CLI
-   options, including the number of threads to use for parallelization.
+   options, including the number of threads to use for parallelization (:ref:`see here<parallel>`).
 
 =======
 
@@ -135,8 +135,8 @@ Accesses all science-related functions and is therefore for both ``run`` and ``p
    * nargs = '*'
    * default = ``None``
    
-Excess Parser
-================
+Excess Group
+***************
 
 - ``-bin``, ``--bin``, ``-binning``, ``--binning``
    * dest = ``args.binning``
@@ -179,8 +179,8 @@ Excess Parser
    * default = `4000.0`
    * unit = muHz
 
-Background Parser
-=====================
+Background Group
+******************
 
 - ``-bf``, ``--bf``, ``-box``, ``--box``, ``-boxfilter``, ``--boxfilter``
    * dest = ``args.box_filter``
@@ -277,7 +277,8 @@ Background Parser
    * default = ``None``
    * unit = muHz
    
-   
+.. _parallel:
+
 Parallel Parser
 ===================
 
