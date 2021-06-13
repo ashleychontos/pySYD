@@ -14,7 +14,7 @@ which by default, is the absolute path of the current working directory (or howe
 if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
 
 Modes
-======
+******
 
 There are currently three modes that ``pySYD`` can operate in via command line: 
 
@@ -34,12 +34,12 @@ There are currently three modes that ``pySYD`` can operate in via command line:
 .. _cli:
 
 Command Line Interface
-#########################
+=======================
 
 .. _parentparse:
 
 Parent Parser
-================
++++++++++++++++
 
 Higher level functionality of the software. All three modes inherent the parent parser.
 
@@ -73,7 +73,7 @@ Higher level functionality of the software. All three modes inherent the parent 
 .. _mainparse:
 
 Main Parser
-==============
++++++++++++++
 
 Accesses all science-related functions and is therefore for both ``run`` and ``parallel`` modes.
 
@@ -280,7 +280,7 @@ Background Group
 .. _parallel:
 
 Parallel Parser
-===================
+++++++++++++++++
 
 - ``-nt``, ``--nt``, ``-nthread``, ``--nthread``, ``-nthreads``, ``--nthreads`` 
    * dest = ``args.n_threads``
