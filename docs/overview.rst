@@ -5,14 +5,14 @@ Overview
 
 A ``pySYD`` pipeline ``Target`` class object has two main methods:
 
-#. ``Target.find_excess`` :
+#. The find excess routine (via ``Target.find_excess``) :
     * **Summary:** searches for power excess due to solar-like oscillations by implementing a frequency-resolved, collapsed 
       autocorrelation function (ACF) using 3 different ``box`` sizes
     * The main purpose for this first module is to provide a good starting point for the
       second module. The output from this routine provides a rough estimate for numax, which is translated 
       into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode
       oscillations
-#. ``Target.fit_background`` : 
+#. The background fitting routine (via ``Target.fit_background``) : 
     * **Summary:** performs a fit to the granulation background, corrects 
       the power spectrum using this model, and then fits for the global parameters numax and dnu.
     * Given the frequency range determined by the first module, this region is masked out to model 
