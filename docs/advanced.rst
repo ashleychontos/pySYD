@@ -34,12 +34,12 @@ There are currently three modes that ``pySYD`` can operate in via command line:
 .. _cli:
 
 Command Line Interface
-=======================
+************************
 
 .. _parentparse:
 
 Parent Parser
-+++++++++++++++
+===============
 
 Higher level functionality of the software. All three modes inherent the parent parser.
 
@@ -73,7 +73,7 @@ Higher level functionality of the software. All three modes inherent the parent 
 .. _mainparse:
 
 Main Parser
-+++++++++++++
+=============
 
 Accesses all science-related functions and is therefore for both ``run`` and ``parallel`` modes.
 
@@ -136,7 +136,7 @@ Accesses all science-related functions and is therefore for both ``run`` and ``p
    * default = ``None``
    
 Excess Group
-***************
+++++++++++++++
 
 - ``-bin``, ``--bin``, ``-binning``, ``--binning``
    * dest = ``args.binning``
@@ -180,7 +180,7 @@ Excess Group
    * unit = muHz
 
 Background Group
-******************
+++++++++++++++++++
 
 - ``-bf``, ``--bf``, ``-box``, ``--box``, ``-boxfilter``, ``--boxfilter``
    * dest = ``args.box_filter``
@@ -280,7 +280,7 @@ Background Group
 .. _parallel:
 
 Parallel Parser
-++++++++++++++++
+================
 
 - ``-nt``, ``--nt``, ``-nthread``, ``--nthread``, ``-nthreads``, ``--nthreads`` 
    * dest = ``args.n_threads``
