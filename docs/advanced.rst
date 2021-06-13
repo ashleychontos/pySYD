@@ -138,6 +138,8 @@ Accesses all science-related functions and is therefore for both ``run`` and ``p
 Excess Group
 ++++++++++++++
 
+All CLI options relevant to the first (find excess) module:
+
 - ``-bin``, ``--bin``, ``-binning``, ``--binning``
    * dest = ``args.binning``
    * help = Interval for binning of spectrum in log(muHz) (bins equally in logspace).
@@ -181,6 +183,8 @@ Excess Group
 
 Background Group
 ++++++++++++++++++
+
+All CLI options relevant to the second (background fitting) module:
 
 - ``-bf``, ``--bf``, ``-box``, ``--box``, ``-boxfilter``, ``--boxfilter``
    * dest = ``args.box_filter``
@@ -281,6 +285,8 @@ Background Group
 
 Parallel Parser
 ================
+
+Additional option for the number of threads to use when running stars in parallel.
 
 - ``-nt``, ``--nt``, ``-nthread``, ``--nthread``, ``-nthreads``, ``--nthreads`` 
    * dest = ``args.n_threads``
