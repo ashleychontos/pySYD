@@ -1,53 +1,45 @@
 .. _advanced:
 
 Advanced Usage
-##############
+#################
 
-By default, initialization of the ``pySYD`` command will use the paths:
+Initialization of ``pySYD`` via command line will use the following paths:
 
 - ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
 - ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
 - ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
 - ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
 
-which is based on the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
+which by default, is the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
 if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
 
-There are currently three modes that ``pySYD`` can operate in via command line: ``setup``, ``run`` and ``parallel``. These are discussed in more detail below, including what commands and options are available in each mode.
+Modes
+======
 
-Setup
-+++++
+There are currently three modes that ``pySYD`` can operate in via command line: 
 
-Inherits=[parent_parser]
+#. ``setup`` : Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. This mode only
+inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below).
 
-Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. 
+#. ``run`` : The main pySYD pipeline function is initialized through ``pysyd.pipeline.run`` and runs the two core modules 
+(i.e. ``find_excess`` and ``fit_background``) for each star consecutively. This mode operates using most CLI options, inheriting
+both the :ref:`parent<parentparse>` and :ref:`main parser<mainparse>` options.
 
-Run
-+++
-
-Inherits=[parent_parser,main_parser]
-
-The main pySYD pipeline function initialized through ``pysyd.pipeline.run`` runs the two core modules 
-(i.e. ``find_excess`` and ``fit_background``) on each star consecutively.
-
-
-Parallel
-++++++++
-
-Inherits=[parent_parser,main_parser]
-
-Operates the same way as the previous mode, but processes stars simultaneously in parallel. Based on the number of threads
-available, stars are separated into groups (where the number of groups is exactly equal to the number of 
-threads).
+#. ``parallel`` : Operates the same way as the previous mode, but processes stars simultaneously in parallel. Based on the number of threads
+available, stars are separated into groups (where the number of groups is exactly equal to the number of threads). This mode uses all CLI
+options, including the number of threads to use for parallelization.
 
 =======
 
-Command Line Interface
-**********************
+.. _cli:
 
+Command Line Interface
+*************************
+
+.. _parentparse:
 
 Parent Parser
-=============
+================
 
 Higher level functionality of the software. All three modes inherent the parent parser.
 
@@ -78,8 +70,10 @@ Higher level functionality of the software. All three modes inherent the parent 
    * default = ``False``
    * action = ``store_true``
 
+.. _mainparse:
+
 Main Parser
-===========
+==============
 
 Accesses all science-related functions and is therefore for both ``run`` and ``parallel`` modes.
 
@@ -142,7 +136,7 @@ Accesses all science-related functions and is therefore for both ``run`` and ``p
    * default = ``None``
    
 Excess Parser
-=============
+================
 
 - ``-bin``, ``--bin``, ``-binning``, ``--binning``
    * dest = ``args.binning``
@@ -186,7 +180,7 @@ Excess Parser
    * unit = muHz
 
 Background Parser
-=================
+=====================
 
 - ``-bf``, ``--bf``, ``-box``, ``--box``, ``-boxfilter``, ``--boxfilter``
    * dest = ``args.box_filter``
@@ -285,7 +279,7 @@ Background Parser
    
    
 Parallel Parser
-===============
+===================
 
 - ``-nt``, ``--nt``, ``-nthread``, ``--nthread``, ``-nthreads``, ``--nthreads`` 
    * dest = ``args.n_threads``
