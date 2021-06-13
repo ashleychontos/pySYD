@@ -32,7 +32,9 @@ A ``pySYD`` pipeline ``Target`` class object has two main methods:
     and the second module will use the estimated numax as an initial starting point.
 
     There is also an option to directly provide numax in the **info/star_info.csv** (or via command line, 
-    see advanced usage for more details), which will override the value found in the first module. This option is recommended if you think that the value found in the first module is inaccurate, or if you have a visual estimate of numax from the power spectrum.
+    see :ref:`advanced usage<advanced>` for more details), which will override the value found in the first module. This option 
+    is recommended if you think that the value found in the first module is inaccurate, or if you have a visual 
+    estimate of numax from the power spectrum.
 
 
 =========================
