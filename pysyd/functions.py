@@ -10,6 +10,22 @@ def set_seed(star, lower=1, upper=10**7, size=1):
     For Kepler targets that require a correction via CLI (--kc), a random seed is generated
     from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
 
+    Parameters
+    ----------
+    star : target.Target
+        the pySYD pipeline object
+    lower : int 
+        lower limit for random seed value. Default value is `1`.
+    upper : int
+        upper limit for random seed value. Default value is `10**7`.
+    size : int
+        number of seed values returned. Default value is `1`.
+
+    Returns
+    -------
+    star : target.Target
+        the pySYD pipeline object
+        
     """
 
     seed = list(np.random.randint(lower,high=upper,size=size))
@@ -36,13 +52,22 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_
 
     Parameters
     ----------
-    frequency : np.ndarray
-        the frequency of the power spectrum
-    power : np.ndarray
-        the power of the power spectrum
+    star : target.Target
+        the pySYD pipeline object
     lcp : float
-        TODO: Write description. Default value is `1/(29.4244*60*1e-6)`.
-
+        long cadence period in Msec
+    lf_lower : List[float]
+        lower limit of low frequency artefact
+    lf_upper : List[float]
+        upper limit of low frequency artefact
+    hf_lower : List[float]
+        lower limit of high frequency artefact
+    hf_upper : List[float]
+        upper limit of high frequency artefact
+    Returns
+    -------
+    star : target.Target
+        the pySYD pipeline object
     """
 
     if star.params[star.name]['seed'] is None:
@@ -82,6 +107,7 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_
     return star
 
 
+<<<<<<< HEAD
 def whiten_mixed(star):
     """
     Generates random white noise in place of ell=1 for subgiants with mixed modes to better
@@ -199,16 +225,17 @@ def gaussian_bounds(x, y, guesses, best_x=None, sigma=None):
         the x values of the data
     y : np.ndarray
         the y values of the data
-    best_x : Optional[float]
-        TODO: Write description. Default value is `None`.
+    guesses : List[float]
+        initial guesses for a gaussian fit
     sigma : Optional[float]
-        TODO: Write description. Default value is `None`.
+        sigma from a standard Normal distribution 
 
     Returns
     -------
     bb : List[Tuple]
         list of parameter bounds of a Gaussian fit to the data
     """
+
     offset, amp, center, width = guesses
     if sigma is None:
         sigma = (max(x)-min(x))/8.0/np.sqrt(8.0*np.log(2.0))
@@ -304,14 +331,14 @@ def return_max(x_array, y_array, exp_dnu=None, index=False):
 
 def bin_data(x, y, width, log=False, mode=['mean', 'median', 'gaussian']):
     """
-    Bin a series of data.
+    Bins a series of data.
 
     Parameters
     ----------
-    x : numpy.ndarray
-        the independent variable series
-    y : numpy.ndarray
-        the dependent variable series
+    x : np.ndarray
+        the x values of the data
+    y : np.ndarray
+        the y values of the data
     width : float
         bin width in muHz
     log : bool
@@ -319,12 +346,13 @@ def bin_data(x, y, width, log=False, mode=['mean', 'median', 'gaussian']):
 
     Returns
     -------
-    bin_x : numpy.ndarray
-        mean/median of the binned y data
-    bin_y : numpy.ndarray
-        mean/median of the binned y data
+    bin_x : np.ndarray
+        binned frequencies
+    bin_y : np.ndarray
+        binned power
     bin_yerr : numpy.ndarray
         standard deviation of the binned y data
+
     """
     if log:
         mi = np.log10(min(x))
@@ -348,8 +376,56 @@ def bin_data(x, y, width, log=False, mode=['mean', 'median', 'gaussian']):
     return bin_x, bin_y, bin_yerr
 
 
+def mean_smooth_ind(x, y, width):
+    """
+    Smooths the data using independent mean smoothing and binning.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        the x values of the data
+    y : np.ndarray
+        the y values of the data
+    width : float
+        independent average smoothing width
+
+    Returns
+    -------
+    sx : np.ndarray
+        binned mean smoothed x data
+    sy : np.ndarray
+        binned mean smoothed y data
+    se : np.ndarray
+        standard error
+
+    """
+
+    step = width-1
+    j=0
+    
+    sx = np.zeros_like(x)
+    sy = np.zeros_like(x)
+    se = np.zeros_like(x)
+
+    j = 0
+
+    while (j+step < len(x)-1):
+
+        sx[j] = np.mean(x[j:j+step])
+        sy[j] = np.mean(y[j:j+step])
+        se[j] = np.std(y[j:j+step])/np.sqrt(width)
+        j += step
+
+    sx = sx[(sx != 0.0)]
+    se = se[(sy != 0.0)]
+    sy = sy[(sy != 0.0)]
+    se[(se == 0.0)] = np.median(se)
+    return sx, sy, se
+
+
 def delta_nu(numax):
-    """Estimates dnu using numax scaling relation.
+    """
+    Estimates dnu using numax scaling relation.
 
     Parameters
     ----------
@@ -360,6 +436,8 @@ def delta_nu(numax):
     -------
     dnu : float
         the estimated dnu
+
     """
 
     return 0.22*(numax**0.797)
+

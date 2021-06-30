@@ -18,8 +18,8 @@ def harvey(frequency, guesses, mode='regular', total=False):
 
     Returns
     -------
-    model : numpy.ndarray
-        the stellar background model
+    model : np.ndarray
+        the Harvey model
 
     """
     nlaws = int((len(guesses)-1)/2)
@@ -62,8 +62,9 @@ def gaussian(frequency, offset, amplitude, center, width):
 
     Returns
     -------
-    result : numpy.ndarray
-        the modeled Gaussian array
+    result : np.ndarray
+        the Gaussian function
+
     """
 
     model = np.zeros_like(frequency)
@@ -117,6 +118,7 @@ def harvey_one(frequency, tau_1, sigma_1, white_noise):
     -------
     model : numpy.ndarray
         the one-Harvey model
+
     """
 
     model = np.zeros_like(frequency)
@@ -149,6 +151,7 @@ def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise):
     -------
     model : numpy.ndarray
         the two-Harvey model
+
     """
 
     model = np.zeros_like(frequency)

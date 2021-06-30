@@ -173,6 +173,10 @@ def get_groups(args, parallel=False):
     args.params['groups'] : ndarray
         star groups to process (groups == number of threads)
 
+    Returns
+    ----------
+    None
+
     """
     if parallel:
         todo = np.array(args.params['stars'])
@@ -276,6 +280,26 @@ def get_background_params(args, CLI, lower_bg=10.0, upper_bg=4000.0, ind_width=2
         number of samples used to estimate uncertainty. Default value is `1`.
     samples : bool
         if true, will save the monte carlo samples to a csv. Default value is `False`.
+    args.n_peaks : int
+        the number of peaks to select. Default value is `10`.
+    args.force : float
+        if not false (i.e. non-zero) will force dnu to be the equal to this value. 
+    args.clip : bool
+        if true will set the minimum frequency value of the echelle plot to `clip_value`. Default value is `True`.
+    args.clip_value : float
+        the minimum frequency of the echelle plot. Default value is `0.0`.
+    args.smooth_ech : float
+        option to smooth the output of the echelle plot
+    args.smooth_ps : float
+        frequency with which to smooth power spectrum. Default value is `1.0`.
+    args.slope : bool
+        if true will correct for edge effects and residual slope in Gaussian fit. Default value is `False`.
+    args.samples : bool
+        if true, will save the monte carlo samples to a csv. Default value is `True`.
+    args.convert : bool
+        converts Harvey parametrization to physical quantities {a_n,b_n} -> {tau_n,sigma_n}. Default value is `True`.
+    args.drop : bool
+        drops the extra columns after converting the samples. Default value is `True`.
 
     Returns
     -------
@@ -737,6 +761,29 @@ def load_power_spectrum(args, star, note='', long=10**6):
 
 
 def check_input(args, star, note):
+    """
+    Checks the type(s) of input data and creates any additional, optional
+    arrays as well as critically-sampled power spectra (when applicable).
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        command line arguments
+    star : target.Target
+        pySYD target object
+    note : str, optional
+        optional verbose output
+
+    Returns
+    -------
+    args : argparse.Namespace
+        updated command line arguments
+    star : target.Target
+        updated pySYD target object
+    note : str, optional
+        updated optional verbose output
+
+    """
     if star.lc:
         args.of_actual = int(round((1./((max(star.time)-min(star.time))*0.0864))/(star.frequency[1]-star.frequency[0])))
         star.freq_cs = np.array(star.frequency[args.of_actual-1::args.of_actual])

@@ -34,9 +34,17 @@ def set_plot_params():
 
 
 def plot_excess(star):
-    """
-    Creates a plot summarising the results of the find excess routine.
+    """Creates a plot summarising the results of the find excess routine.
 
+    Parameters
+    ----------
+    star : target.Target
+        the pySYD pipeline object
+
+    Returns
+    -------
+    None
+    
     """
 
     plt.figure(figsize=(12,8))
@@ -115,6 +123,7 @@ def plot_background(star, n_peaks=10):
 
     Results
     -------
+    None
 
     """
 
@@ -284,6 +293,15 @@ def plot_samples(star):
     """
     Plot results of the Monte-Carlo sampling.
 
+    Parameters
+    ----------
+    star : target.Target
+        the pySYD pipeline object
+
+    Returns
+    -------
+    None
+    
     """
 
     n = len(star.df.columns.values.tolist())
