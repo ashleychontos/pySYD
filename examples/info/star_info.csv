@@ -1,0 +1,4 @@
+stars,radius,radius_err,teff,teff_err,logg,logg_err,numax,dnu,lower_ex,upper_ex,lower_bg,upper_bg,lower_ps,upper_ps,lower_ech,upper_ech,seed
+1435467,,,,,,,,,100.0,,100.0,,,,,,
+2309595,,,,,,,,,100.0,,100.0,,,,,,
+11618103,,,,,,,,,,,,,,,,,
