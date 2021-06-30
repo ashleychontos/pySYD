@@ -1,72 +1,69 @@
 import numpy as np
 
 
-def harvey(frequency, pars, nlaws=None, mode='regular', total=False):
-    """Harvey model of the stellar granulation background of a target. TODO: Write description.
+def harvey(frequency, guesses, mode='regular', total=False):
+    """
+    The main model for the stellar background fitting
 
     Parameters
     ----------
-    frequency : np.ndarray
+    frequency : numpy.ndarray
         the frequency of the power spectrum
-    pars : list
+    guesses : list
         the parameters of the Harvey model
-    mode : str
-        the mode of the Harvey model.
-        The regular mode means both the second order and fourth order terms are added.
-        The second mode means only the second order terms are added.
-        The fourth mode means only the fourth order terms are added.
-        Default value is `'regular'`.
-    total : bool
-        if the model contains more than one harvey model, it will add up all background contributions.
-        Default valus is `False`.
+    mode : {'regular', 'second', 'fourth'}
+        the mode of which Harvey model parametrization to use. Default mode is `regular`.
+        The 'regular' mode is when both the second and fourth order terms are added in the denominator
+        whereas, 'second' only adds the second order term and 'fourth' only adds the fourth order term.
 
     Returns
     -------
-    model : np.ndarray
-        the Harvey model
-    """
+    model : numpy.ndarray
+        the stellar background model
 
-    if nlaws is None:
-        nlaws = int((len(pars)-1)/2.0)
+    """
+    nlaws = int((len(guesses)-1)/2)
     model = np.zeros_like(frequency)
 
     if mode == 'regular':
         for i in range(nlaws):
-            model += pars[i*2]/(1.0+(pars[(i*2)+1]*frequency)**2.0+(pars[(i*2)+1]*frequency)**4.0)
+            model += (4.*(guesses[(i*2)+1]**2.)*guesses[i*2])/(1.0+(2.*np.pi*guesses[i*2]*frequency)**2.0+(2.*np.pi*guesses[i*2]*frequency)**4.0)
     elif mode == 'second':
         for i in range(nlaws):
-            model += pars[i*2]/(1.0+(pars[(i*2)+1]*frequency)**2.0)
+            model += (4.*(guesses[(i*2)+1]**2.)*guesses[i*2])/(1.0+(2.*np.pi*guesses[i*2]*frequency)**2.0)
     elif mode == 'fourth':
         for i in range(nlaws):
-            model += pars[i*2]/(1.0+(pars[(i*2)+1]*frequency)**4.0)
+            model += (4.*(guesses[(i*2)+1]**2.)*guesses[i*2])/(1.0+(2.*np.pi*guesses[i*2]*frequency)**4.0)
     else:
-        print('Wrong mode input for the harvey model function.')
+        pass
 
     if total:
-        model += pars[2*nlaws]
+        model += guesses[2*nlaws]
+
     return model
 
 
 def gaussian(frequency, offset, amplitude, center, width):
-    """The Gaussian function.
+    """
+    The Gaussian function.
 
     Parameters
     ----------
-    frequency : np.ndarray
-        the frequency of the power spectrum
+    frequency : numpy.ndarray
+        the frequency array
     offset : float
         the vertical offset
     amplitude : float
-        the amplitude
+        amplitude of the Gaussian
     center : float
-        the center
+        center of the Gaussian
     width : float
-        the width
+        the width of the Gaussian
 
     Returns
     -------
-    result : np.ndarray
-        the Gaussian function
+    result : numpy.ndarray
+        the modeled Gaussian array
     """
 
     model = np.zeros_like(frequency)
@@ -77,100 +74,124 @@ def gaussian(frequency, offset, amplitude, center, width):
     return model
 
 
-def harvey_one(frequency, a1, b1, white_noise):
-    """The first Harvey component.
+def harvey_none(frequency, white_noise):
+    """
+    No Harvey model
 
     Parameters
     ----------
-    frequency : np.ndarray
-        the frequency of the power spectrum
-    a1 : float
-        parametrization of the amplitude of the first harvey model
-    b1 : float
-        the characteristic frequency of the first harvey model
+    frequency : numpy.ndarray
+        the frequency array
     white_noise : float
         the white noise component
 
     Returns
     -------
-    model : np.ndarray
-        the first Harvey component
+    model : numpy.ndarray
+        the no-Harvey (white noise) model
+
     """
 
     model = np.zeros_like(frequency)
-
-    model += a1/(1.0+(b1*frequency)**2.0+(b1*frequency)**4.0)
     model += white_noise
 
     return model
 
 
-def harvey_two(frequency, a1, b1, a2, b2, white_noise):
-    """The second Harvey component.
+def harvey_one(frequency, tau_1, sigma_1, white_noise):
+    """
+    One Harvey model
 
     Parameters
     ----------
-    frequency : np.ndarray
-        the frequency of the power spectrum
-    a1 : float
-        parametrization of the amplitude of the first harvey model
-    b1 : float
-        the characteristic frequency of the first harvey model
-    a2 : float
-        parametrization of the amplitude of the second harvey model
-    b2 : float
-        the characteristic frequency of the second harvey model
+    frequency : numpy.ndarray
+        the frequency array
+    tau_1 : float
+        timescale of the first harvey component [Ms]
+    sigma_1 : float
+        amplitude of the first harvey component
     white_noise : float
         the white noise component
 
     Returns
     -------
-    model : np.ndarray
-        the second Harvey component
+    model : numpy.ndarray
+        the one-Harvey model
     """
 
     model = np.zeros_like(frequency)
-
-    model += a1/(1.0+(b1*frequency)**2.0+(b1*frequency)**4.0)
-    model += a2/(1.0+(b2*frequency)**2.0+(b2*frequency)**4.0)
+    model += (4.*(sigma_1**2.)*tau_1)/(1.0+(2.*np.pi*tau_1*frequency)**2.0+(2.*np.pi*tau_1*frequency)**4.0)
     model += white_noise
 
     return model
 
 
-def harvey_three(frequency, a1, b1, a2, b2, a3, b3, white_noise):
-    """The third Harvey component.
+def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise):
+    """
+    Two Harvey model
 
     Parameters
     ----------
-    frequency : np.ndarray
-        the frequency of the power spectrum
-    a1 : float
-        parametrization of the amplitude of the first harvey model
-    b1 : float
-        the characteristic frequency of the first harvey model
-    a2 : float
-        parametrization of the amplitude of the second harvey model
-    b2 : float
-        the characteristic frequency of the second harvey model
-    a3 : float
-        parametrization of the amplitude of the third harvey model
-    b3 : float
-        the characteristic frequency of the third harvey model
+    frequency : numpy.ndarray
+        the frequency array
+    tau_1 : float
+        timescale of the first harvey component
+    sigma_1 : float
+        amplitude of the first harvey component
+    tau_2 : float
+        timescale of the second harvey component
+    sigma_2 : float
+        amplitude of the second harvey component
     white_noise : float
         the white noise component
 
     Returns
     -------
-    model : np.ndarray
-        the third Harvey component
+    model : numpy.ndarray
+        the two-Harvey model
     """
 
     model = np.zeros_like(frequency)
+    model += (4.*(sigma_1**2.)*tau_1)/(1.0+(2.*np.pi*tau_1*frequency)**2.0+(2.*np.pi*tau_1*frequency)**4.0)
+    model += (4.*(sigma_2**2.)*tau_2)/(1.0+(2.*np.pi*tau_2*frequency)**2.0+(2.*np.pi*tau_2*frequency)**4.0)
+    model += white_noise
 
-    model += a1/(1.0+(b1*frequency)**2.0+(b1*frequency)**4.0)
-    model += a2/(1.0+(b2*frequency)**2.0+(b2*frequency)**4.0)
-    model += a3/(1.0+(b3*frequency)**2.0+(b3*frequency)**4.0)
+    return model
+
+
+def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise):
+    """
+    Three Harvey model
+
+    Parameters
+    ----------
+    frequency : numpy.ndarray
+        the frequency array
+    tau_1 : float
+        timescale of the first harvey component
+    sigma_1 : float
+        amplitude of the first harvey component
+    tau_2 : float
+        timescale of the second harvey component
+    sigma_2 : float
+        amplitude of the second harvey component
+    tau_3 : float
+        timescale of the third harvey component
+    sigma_3 : float
+        amplitude of the third harvey component
+    white_noise : float
+        the white noise component
+
+    Returns
+    -------
+    model : numpy.ndarray
+        the three-Harvey model
+    """
+
+    model = np.zeros_like(frequency)
+    model += (4.*(sigma_1**2.)*tau_1)/(1.0+(2.*np.pi*tau_1*frequency)**2.0+(2.*np.pi*tau_1*frequency)**4.0)
+    model += (4.*(sigma_2**2.)*tau_2)/(1.0+(2.*np.pi*tau_2*frequency)**2.0+(2.*np.pi*tau_2*frequency)**4.0)
+    model += (4.*(sigma_3**2.)*tau_3)/(1.0+(2.*np.pi*tau_3*frequency)**2.0+(2.*np.pi*tau_3*frequency)**4.0)
     model += white_noise
 
     return model

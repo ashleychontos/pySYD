@@ -5,6 +5,7 @@ from pysyd import pipeline
 from pysyd import TODODIR, INFODIR, INPDIR, OUTDIR
 
 
+
 def main():
     # Properties inherent to both modules
     parser = argparse.ArgumentParser(
@@ -19,286 +20,381 @@ def main():
 
     # In the parent parser, we define arguments and options common to all subcommands
     parent_parser = argparse.ArgumentParser(add_help=False)
-    parent_parser.add_argument('-file', '--file', '-list', '--list', '-todo', '--todo',
+    parent_parser.add_argument('--file', '--list', '--todo',
+                               metavar='path',
                                dest='todo',
-                               help="""Path to txt file that contains the list of targets to process (default='info/todo.txt')""",
+                               help='List of stars to process',
                                type=str,
                                default=TODODIR,
     )
-    parent_parser.add_argument('-in', '--in', '-input', '--input', '-inpdir', '--inpdir', 
+    parent_parser.add_argument('--in', '--input', '--inpdir', 
+                               metavar='path',
                                dest='inpdir',
-                               help='Path to input data',
+                               help='Input directory',
+                               type=str,
                                default=INPDIR,
     )
-    parent_parser.add_argument('-info', '--info', '-information', '--information',
+    parent_parser.add_argument('--info', '--information',
+                               metavar='path',
                                dest='info',
-                               help='Path to csv containing star information',
+                               help='Path to star info',
                                type=str,
                                default=INFODIR,
     )
-    parent_parser.add_argument('-verbose', '--verbose',
+    parent_parser.add_argument('--out', '--outdir', '--output',
+                               metavar='path',
+                               dest='outdir',
+                               help='Output directory',
+                               type=str,
+                               default=OUTDIR,
+    )
+    parent_parser.add_argument('--verbose', '-v', 
                                dest='verbose',
-                               help='Turn on verbose output (default=False)',
+                               help='Turn on verbose output',
                                default=False, 
                                action='store_true',
-    )
-    parent_parser.add_argument('-out', '--out', '-outdir', '--outdir', '-output', '--output',
-                               dest='outdir',
-                               help='Path to save results to',
-                               default=OUTDIR,
     )
 
     # Main options 
     main_parser = argparse.ArgumentParser(add_help=False)
 
-    main_parser.add_argument('-bg', '--bg', '-fitbg', '--fitbg', '-background', '--background',
-                            dest='background',
-                            help='Turn off the background fitting process (although this is not recommended)',
-                            default=True, 
-                            action='store_false',
+    main_parser.add_argument('--bg', '--fitbg', '--background', '-b', 
+                             dest='background',
+                             help='Turn off background fitting routine',
+                             default=True, 
+                             action='store_false',
     )
-    main_parser.add_argument('-cad', '--cad', '-cadence', '--cadence', 
-                            dest='cadence',
-                            help='Cadence of time series (in seconds), which will automatically be calculated when time series data is available.',
-                            type=int,
-                            default=0, 
+    main_parser.add_argument('--ex', '--findex', '--excess', '-x', 
+                             dest='excess',
+                             help='Turn off the find excess module',
+                             default=True, 
+                             action='store_false',
     )
-    main_parser.add_argument('-ex', '--ex', '-findex', '--findex', '-excess', '--excess',
-                            dest='excess',
-                            help='Turn off the find excess module. This is only recommended when a list of numaxes or a list of stellar parameters (to estimate the numaxes) are provided.',
-                            default=True, 
-                            action='store_false',
+    main_parser.add_argument('--kc', '--kepcorr', '-k', 
+                             dest='kepcorr',
+                             help='Turn on the Kepler short-cadence artefact correction routine',
+                             default=False, 
+                             action='store_true',
     )
-    main_parser.add_argument('-kc', '--kc', '-kepcorr', '--kepcorr',
-                            dest='kepcorr',
-                            help='Turn on Kepler short-cadence artefact corrections',
-                            default=False, 
-                            action='store_true',
+    main_parser.add_argument('--ofa', '--of_actual',
+                             metavar='n',
+                             dest='of_actual',
+                             help='The oversampling factor (OF) of the input PS',
+                             type=int,
+                             default=None,
     )
-    main_parser.add_argument('-nyq', '--nyq', '-nyquist', '--nyquist', 
-                            dest='nyquist',
-                            help='Nyquist frequency of power spectrum. Relevant for when the time series is not provided.',
-                            default=None,
+    main_parser.add_argument('--ofn', '--of_new',
+                             metavar='n',
+                             dest='of_new',
+                             help='The OF to be used for the first iteration',
+                             type=int,
+                             default=None,
     )
-    main_parser.add_argument('-ofa', '--ofa', '-of_actual', '--of_actual',
-                            dest='of_actual',
-                            help='Provide the actual oversampling factor of the power spectrum (provided there is no light curve data). Default is `0`, which means it is calculated from the time series data.',
-                            type=int,
-                            default=0,
+    main_parser.add_argument('--save',
+                             dest='save',
+                             help='Do not save output files/figures',
+                             default=True, 
+                             action='store_false',
     )
-    main_parser.add_argument('-ofn', '--ofn', '-of_new', '--of_new',
-                            dest='of_new',
-                            help='The desired oversampling factor for the newly-computed power spectrum. Default is `5`.',
-                            type=int,
-                            default=5,
+    main_parser.add_argument('--show', '-s', 
+                             dest='show',
+                             help='Display figures',
+                             default=False, 
+                             action='store_true',
     )
-    main_parser.add_argument('-os', '--os', '-over', '--over', '-oversample', '--oversample',
-                            dest='oversample',
-                            help='Use an oversampled power spectrum in the analysis. Default is `False`.',
-                            default=True,
-                            action='store_false',
-    )
-    main_parser.add_argument('-save', '--save', 
-                            dest='save',
-                            help='Save output files and figures (default=True)',
-                            default=True, 
-                            action='store_false',
-    )
-    main_parser.add_argument('-show', '--show',
-                            dest='show',
-                            help="""Shows output figures (default=False) Please note: If running multiple targets, this is not recommended! """,
-                            default=False, 
-                            action='store_true',
-    )
-    main_parser.add_argument('-star', '--star', '-stars', '--stars',
-                            dest='stars',
-                            help="""List of targets to process (default=None). If this is not provided, it will default to read targets in from the default 'file' argument.""",
-                            nargs='*',
-                            type=int,
-                            default=None,
-    )
-    main_parser.add_argument('-stitch', '--stitch', '-gap', '--gap', 
-                            dest='stitch',
-                            help='Turn on the stitch light curve tool, which is helpful for data with large gaps (default=True)',
-                            default=False, 
-                            action='store_true',
+    main_parser.add_argument('--star', '--stars',
+                             metavar='star',
+                             dest='stars',
+                             help='List of stars to process',
+                             type=str,
+                             nargs='*',
+                             default=None,
     )
 
     # CLI relevant for finding power excess
-    excess = main_parser.add_argument_group('excess')
+    excess = main_parser.add_argument_group('(CRUDE) EXCESS FIT')
 
-    excess.add_argument('-bin', '--bin', '-binning', '--binning', 
+    excess.add_argument('--bin', '--binning',
+                        metavar='value',  
                         dest='binning', 
-                        help='Look up to be sure (default=0.005)',
+                        help='Binning interval for PS (in muHz)',
                         default=0.005, 
                         type=float,
     )
-    excess.add_argument('-sw', '--sw', '-smoothwidth', '--smoothwidth',
+    excess.add_argument('--bm', '--mode', '--bmode',
+                        metavar='mode',
+                        choices=["mean", "median", "gaussian"],
+                        dest='mode',
+                        help='Binning mode',
+                        default='mean',
+                        type=str,
+    )
+    excess.add_argument('--sw', '--smoothwidth',
+                        metavar='value', 
                         dest='smooth_width',
-                        help='Box filter width [muHz] for the power spectrum (default=1.5muHz)',
-                        default=1.5,
+                        help='Box filter width (in muHz) for smoothing the PS',
+                        default=50.0,
                         type=float,
     )
-    excess.add_argument('-lx', '--lx', '-lowerx', '--lowerx', 
-                        dest='lower_x',
-                        help='Lower limit of power spectrum to use in findex module (default=10.0muHz)',
+    excess.add_argument('--lx', '--lowerx', 
+                        metavar='freq', 
+                        dest='lower_ex',
+                        help='Lower frequency limit of PS',
                         nargs='*',
                         default=None,
                         type=float,
     )
-    excess.add_argument('-ux', '--ux', '-upperx', '--upperx', 
-                        dest='upper_x',
-                        help='Upper limit of power spectrum to use in findex module (default=4000.0muHz)',
+    excess.add_argument('--ux', '--upperx', 
+                        metavar='freq', 
+                        dest='upper_ex',
+                        help='Upper frequency limit of PS',
                         nargs='*',
                         default=None,
                         type=float,
     )
-    excess.add_argument('-step', '--step', '-steps', '--steps', 
+    excess.add_argument('--step', '--steps', 
+                        metavar='value', 
                         dest='step', 
-                        help='Look up to be sure (default=0.25)',
                         default=0.25,
                         type=float, 
     )
-    excess.add_argument('-trials', '--trials', '-ntrials', '--ntrials',
+    excess.add_argument('--trials', '--ntrials',
+                        metavar='n', 
                         dest='n_trials',
-                        help='Number of trials to estimate numax (default=3)',
                         default=3, 
                         type=int,
     )
 
     # CLI relevant for background fitting
-    background = main_parser.add_argument_group('background')
+    background = main_parser.add_argument_group('BACKGROUND-RELATED')
 
-    background.add_argument('-bf', '--bf', '-box', '--box', '-boxfilter', '--boxfilter',
-                            dest='box_filter',
-                            help='Box filter width [in muHz] for plotting the power spectrum (default=2.5muHz)',
-                            default=2.5,
-                            type=float,
-    )
-    background.add_argument('-con', '--con', '-convert', '--convert',
-                            dest='convert', 
-                            help='Turn off sample conversion of {a,b}->{tau,sigma} (default=True)',
-                            default=True, 
-                            action='store_false',
-    )
-    background.add_argument('-drop', '--drop',
-                            dest='drop', 
-                            help='Turn off dropping the extra columns after converting the samples (default=True)',
-                            default=True, 
-                            action='store_false',
-    )
-    background.add_argument('-dnu', '--dnu',
-                            dest='dnu',
-                            help='Brute force method to provide value for dnu',
+    background.add_argument('--lb', '--lowerb', 
+                            metavar='freq', 
+                            dest='lower_bg',
+                            help='Lower frequency limit of PS',
                             nargs='*',
+                            default=None,
                             type=float,
-                            default=None, 
     )
-    background.add_argument('-iw', '--iw', '-width', '--width', '-indwidth', '--indwidth',
+    background.add_argument('--ub', '--upperb', 
+                            metavar='freq', 
+                            dest='upper_bg',
+                            help='Upper frequency limit of PS',
+                            nargs='*',
+                            default=None,
+                            type=float,
+    )
+    background.add_argument('--iw', '--indwidth',
+                            metavar='value', 
                             dest='ind_width', 
-                            help='Number of independent points to use for binning of power spectrum (default=50)',
-                            default=50, 
-                            type=int,
-    )
-    background.add_argument('-numax', '--numax',
-                            dest='numax',
-                            help='Brute force method to bypass findex and provide value for numax. Please note: len(args.numax) == len(args.targets) for this to work! This is mostly intended for single star runs.',
-                            nargs='*',
-                            type=float,
-                            default=None,
-    )
-    background.add_argument('-lb', '--lb', '-lowerb', '--lowerb', 
-                            dest='lower_b',
-                            help='Lower limit of power spectrum to use in fitbg module (default=None). Please note: unless numax is known, it is not suggested to fix this beforehand.',
-                            nargs='*',
-                            default=None,
+                            help='Width of binning for PS [in muHz]',
+                            default=20., 
                             type=float,
     )
-    background.add_argument('-ub', '--ub', '-upperb', '--upperb', 
-                            dest='upper_b',
-                            help='Upper limit of power spectrum to use in fitbg module (default=None). Please note: unless numax is known, it is not suggested to fix this beforehand.',
-                            nargs='*',
-                            default=None,
+    background.add_argument('--bf', '--box', '--boxfilter',
+                            metavar='value', 
+                            dest='box_filter',
+                            help='Box filter width [in muHz] for plotting the PS',
+                            default=1.0,
                             type=float,
     )
-    background.add_argument('-mc', '--mc', '-iter', '--iter', '-mciter', '--mciter', 
-                            dest='mc_iter', 
-                            help='Number of MC iterations (default=1)',
-                            default=1, 
-                            type=int,
-    )
-    background.add_argument('-peak', '--peak', '-peaks', '--peaks', '-npeaks', '--npeaks', 
-                            dest='n_peaks', 
-                            help='Number of peaks to fit in ACF (default=5)',
-                            default=5, 
-                            type=int,
-    )
-    background.add_argument('-rms', '--rms', '-nrms', '--nrms', 
+    background.add_argument('--rms', '--nrms', 
+                            metavar='n', 
                             dest='n_rms', 
-                            help='Number of points used to estimate amplitudes of individual background components (default=20).',
+                            help='Number of points to estimate the amplitude of red-noise component(s)',
                             default=20, 
                             type=int,
     )
-    background.add_argument('-slope', '--slope',
-                            dest='slope',
-                            help='When true, this will correct for residual slope in a smoothed power spectrum before estimating numax',
-                            default=False, 
-                            action='store_true',
-    )
-    background.add_argument('-sp', '--sp', '-smoothps', '--smoothps',
-                            dest='smooth_ps',
-                            help='Box filter width [muHz] for the power spectrum (Default = 2.5 muHz)',
-                            default=2.5,
-                            type=float,
-    )
-    background.add_argument('-samples', '--samples',
-                            dest='samples',
-                            help='Save samples from monte carlo sampling (i.e. if mciter > 1)',
-                            default=False, 
-                            action='store_true',
-    )
-    background.add_argument('-ce', '--ce', '-clipech', '--clipech',
-                            dest='clip_ech',
-                            help='Disable the automatic clipping of high peaks in the echelle diagram',
-                            default=True, 
-                            action='store_false',
-    )
-    background.add_argument('-cv', '--cv', '-value', '--value',
-                            dest='clip_value',
-                            help='Clip value for echelle diagram (i.e. if clip=True). If none is provided, it will cut at 3x the median value of the folded power spectrum.',
+    background.add_argument('--laws', '--nlaws', 
+                            metavar='n', 
+                            dest='n_laws', 
+                            help='Force number of red-noise component(s)',
                             default=None, 
-                            type=float,
+                            type=int,
     )
-    background.add_argument('-se', '--se', '-smoothech', '--smoothech',
-                            dest='smooth_ech',
-                            help='Option to smooth the echelle diagram output using a box filter [muHz]',
-                            default=None,
-                            type=float,
-    )
-    background.add_argument('-ie', '--ie', '-interpech', '--interpech',
-                            dest='interp_ech',
-                            help='Turn on the bilinear interpolation for the echelle diagram (default=False).',
-                            default=False,
-                            action='store_true',
+    background.add_argument('--use', 
+                            metavar='metric', 
+                            dest='use', 
+                            help="Which model metric to use, choices=['bic','aic']",
+                            default='bic', 
+                            type=str,
     )
 
-    sub_parser = parser.add_subparsers(title='subcommands', dest='subcommand')
+    # CLI relevant for the global parameters
+    numax = main_parser.add_argument_group('NUMAX-RELATED')
+    numax.add_argument('--sm', '--smpar',
+                       metavar='value', 
+                       dest='sm_par',
+                       help='Value of smoothing parameter to estimate smoothed numax (typically between 1-4).',
+                       default=None, 
+                       type=float,
+    )
+    numax.add_argument('--numax',
+                       metavar='value',
+                       dest='numax',
+                       help='Skip find excess module and force numax',
+                       nargs='*',
+                       default=None,
+                       type=float,
+    )
+    numax.add_argument('--lp', '--lowerp', 
+                       metavar='freq', 
+                       dest='lower_ps',
+                       help='Lower frequency limit for zoomed in PS',
+                       nargs='*',
+                       default=None,
+                       type=float,
+    )
+    numax.add_argument('--up', '--upperp', 
+                       metavar='freq', 
+                       dest='upper_ps',
+                       help='Upper frequency limit for zoomed in PS',
+                       nargs='*',
+                       default=None,
+                       type=float,
+    )
+    numax.add_argument('--ew', '--exwidth',
+                       metavar='value', 
+                       dest='width',
+                       help='Fractional value of width to use for power excess, where width is computed using a solar scaling relation.',
+                       default=1.0,
+                       type=float,
+    )
+
+    dnu = main_parser.add_argument_group('DNU-RELATED')
+    dnu.add_argument('--dnu',
+                     metavar='value',
+                     dest='dnu',
+                     help='Brute force method to provide value for dnu',
+                     nargs='*',
+                     type=float,
+                     default=None, 
+    )
+    dnu.add_argument('--sp', '--smoothps',
+                     metavar='value', 
+                     dest='smooth_ps',
+                     help='Box filter width [in muHz] of PS for ACF', 
+                     default=2.5,
+                     type=float,
+    )
+    dnu.add_argument('--peak', '--peaks', '--npeaks',
+                     metavar='n', 
+                     dest='n_peaks', 
+                     help='Number of peaks to fit in the ACF',
+                     default=5, 
+                     type=int,
+    )
+    dnu.add_argument('--thresh', '--threshold',
+                     metavar='value', 
+                     dest='threshold',
+                     help='Fractional value of FWHM to use for ACF',
+                     default=1.0,
+                     type=float,
+    )
+
+    echelle = main_parser.add_argument_group('ECHELLE-RELATED')
+    echelle.add_argument('--cv', '--value',
+                         metavar='value', 
+                         dest='clip_value',
+                         help='Clip value to use for echelle diagram (ED)',
+                         default=None, 
+                         type=float,
+    )
+    echelle.add_argument('--clipech', 
+                         dest='clip_ech',
+                         help='Disable the auto-clipping of high peaks in the ED',
+                         default=True, 
+                         action='store_false',
+    )
+    echelle.add_argument('--le', '--lowere', 
+                         metavar='freq', 
+                         dest='lower_ech',
+                         help='Lower frequency limit of folded PS to whiten mixed modes',
+                         nargs='*',
+                         default=None,
+                         type=float,
+    )
+    echelle.add_argument('--ue', '--uppere', 
+                         metavar='freq', 
+                         dest='upper_ech',
+                         help='Upper frequency limit of folded PS to whiten mixed modes',
+                         nargs='*',
+                         default=None,
+                         type=float,
+    )
+    echelle.add_argument('--hey',
+                         dest='hey', 
+                         help="Use Daniel Hey's plugin for echelle",
+                         default=False, 
+                         action='store_true',
+    )
+    echelle.add_argument('--ie', '-interpech', '--interpech',
+                         dest='interp_ech',
+                         help='Turn on the interpolation of the output ED',
+                         default=False,
+                         action='store_true',
+    )
+    echelle.add_argument('--se', '--smoothech',
+                         metavar='value', 
+                         dest='smooth_ech',
+                         help='Smooth ED using a box filter [in muHz]',
+                         default=None,
+                         type=float,
+    )
+    echelle.add_argument('--xe', '--xech', '--nacross',
+                         metavar='n', 
+                         dest='n_across',
+                         help='Resolution for the x-axis of the ED',
+                         default=50,
+                         type=int, 
+    )
+    echelle.add_argument('--ye', '--yech', '--ndown',
+                         metavar='n', 
+                         dest='n_down',
+                         help='The number of orders to plot on the ED y-axis',
+                         default=5,
+                         type=int,
+    )
+
+    mcmc = main_parser.add_argument_group('MCMC PARAMETERS')
+    mcmc.add_argument('--mc', '--iter', '--mciter', 
+                      metavar='n', 
+                      dest='mc_iter', 
+                      help='Number of Monte-Carlo iterations',
+                      default=1, 
+                      type=int,
+    )
+    mcmc.add_argument('--samples', 
+                      dest='samples',
+                      help='Save samples from the Monte-Carlo sampling',
+                      default=False, 
+                      action='store_true',
+    )
+
+    sub_parser = parser.add_subparsers(title='pySYD modes', dest='modes')
 
     # Setting up
-    parser_setup = sub_parser.add_parser('setup', help='Easy setup for directories and files',
-                                         parents=[parent_parser])
+    parser_setup = sub_parser.add_parser('setup', help='Easy setup of relevant directories and files',
+                                         parents=[parent_parser], formatter_class=argparse.MetavarTypeHelpFormatter)
     parser_setup.set_defaults(func=pipeline.setup)
 
+    # Load data in for a target
+    parser_load = sub_parser.add_parser('load', help='Load in data for a given target',
+                                       parents=[parent_parser, main_parser], formatter_class=argparse.MetavarTypeHelpFormatter)
+
+    parser_load.set_defaults(func=pipeline.load)
+
     # Running pySYD in regular mode
-    parser_run = sub_parser.add_parser('run', help='Run pySYD in regular mode', 
-                                       parents=[parent_parser, main_parser])
+    parser_run = sub_parser.add_parser('run', help='Run the main pySYD pipeline',
+                                       parents=[parent_parser, main_parser], formatter_class=argparse.MetavarTypeHelpFormatter)
 
     parser_run.set_defaults(func=pipeline.run)
 
     # Run pySYD in parallel
     parser_parallel = sub_parser.add_parser('parallel', help='Run pySYD in parallel',
-                                            parents=[parent_parser, main_parser])
+                                            parents=[parent_parser, main_parser], formatter_class=argparse.MetavarTypeHelpFormatter)
     parser_parallel.add_argument('-nt', '--nt', '-nthread', '--nthread', '-nthreads', '--nthreads',
+                                 metavar='n', 
                                  dest='n_threads',
                                  help='Number of processes to run in parallel',
                                  type=int,

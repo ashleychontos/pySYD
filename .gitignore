@@ -8,7 +8,6 @@ paper/_*
 build
 dist
 *.egg-info
-sydpy/files/results/
 *background.csv
 *excess.csv
 *__pycache__/

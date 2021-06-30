@@ -13,18 +13,18 @@ def set_seed(star, lower=1, upper=10**7, size=1):
     """
 
     seed = list(np.random.randint(lower,high=upper,size=size))
-    df = pd.read_csv(star.info)
-    stars = df.targets.values.tolist()
-    idx = stars.index(star.star)
+    df = pd.read_csv(star.params['info'])
+    stars = [str(each) for each in df.stars.values.tolist()]
+    idx = stars.index(star.name)
     df.loc[idx,'seed'] = int(seed[0])
-    star.params[star.star]['seed'] = seed[0]
-    df.to_csv(star.info,index=False)
+    star.params[star.name]['seed'] = seed[0]
+    df.to_csv(star.params['info'],index=False)
     return star
 
 
-def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower = [240.0, 500.0], lf_upper = [380.0, 530.0], 
-                    hf_lower = [4530.0, 5011.0, 5097.0, 5575.0, 7020.0, 7440.0, 7864.0],
-                    hf_upper = [4534.0, 5020.0, 5099.0, 5585.0, 7030.0, 7450.0, 7867.0],):
+def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_upper =[380.0,530.0], 
+                    hf_lower = [4530.0,5011.0,5097.0,5575.0,7020.0,7440.0,7864.0],
+                    hf_upper = [4534.0,5020.0,5099.0,5585.0,7030.0,7450.0,7867.0],):
     """
     Removes SC artefacts in Kepler power spectra by replacing them with noise (using linear interpolation)
     following a chi-squared distribution. 
@@ -50,7 +50,7 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower = [240.0, 500.0], 
     # LC period in Msec -> 1/LC ~muHz
     artefact = (1.0+np.arange(14))*lcp
     # Estimate white noise
-    white = np.mean(star.power[(star.frequency >= star.nyquist-100.0) & (star.frequency <= star.nyquist-50.0)])
+    white = np.mean(star.power[(star.frequency >= star.nyquist-100.0)&(star.frequency <= star.nyquist-50.0)])
 
     np.random.seed(int(star.params[star.name]['seed']))
     # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
@@ -82,8 +82,116 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower = [240.0, 500.0], 
     return star
 
 
+def whiten_mixed(star):
+    """
+    Generates random white noise in place of ell=1 for subgiants with mixed modes to better
+    constrain the characteristic frequency spacing.
+
+    Parameters
+    ----------
+    star : target.Target
+        pySYD pipeline target
+    star.frequency : np.ndarray
+        the frequency of the power spectrum
+    star.power : np.ndarray
+        the power spectrum
+
+    """
+    if star.params[star.name]['seed'] is None:
+        star = set_seed(star)
+    # Estimate white noise
+    white = np.mean(star.power[(star.frequency >= star.nyquist-100.0)&(star.frequency <= star.nyquist-50.0)])
+
+    # Take the provided dnu and "fold" the power spectrum
+    folded_freq = np.copy(star.frequency)%star.params[star.name]['dnu']
+    mask = np.ma.getmask(np.ma.masked_inside(folded_freq, star.params[star.name]['ech_mask'][0], star.params[star.name]['ech_mask'][1]))
+    np.random.seed(int(star.params[star.name]['seed']))
+    # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
+    if np.sum(mask) != 0:
+        star.power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
+
+    return star
+
+
+def log_likelihood(observations, model):
+    """
+    Until we figure out a better method, we are computing the likelhood using
+    the mean squared error.
+
+    Parameters
+    ----------
+    observations : ndarray
+        the observed power spectrum
+    model : ndarray
+        model generated at the observed frequencies
+
+    Returns
+    -------
+    LL : float
+        the natural logarithm of the likelihood (or the MSE)
+
+    """
+
+    return -0.5*(np.sum((observations-model)**2.))
+
+
+def compute_aic(observations, model, n_parameters):
+    """
+    Computes the Akaike Information Criterion (AIC) given the modeled
+    power spectrum.
+
+    Parameters
+    ----------
+    observations : ndarray
+        the observed power spectrum
+    model : ndarray
+        model generated at the observed frequencies
+    n_parameters : int
+        number of free parameters in the given model
+
+    Returns
+    -------
+    aic : float
+        AIC value
+
+    """
+    N = len(observations)
+    LL = log_likelihood(observations, model)
+    aic = (-2.*LL)/N + (2.*n_parameters)/N
+
+    return aic
+
+
+def compute_bic(observations, model, n_parameters):
+    """
+    Computes the Bayesian Information Criterion (BIC) given the modeled 
+    power spectrum.
+
+    Parameters
+    ----------
+    observations : ndarray
+        the observed power spectrum
+    model : ndarray
+        model generated at the observed frequencies
+    n_parameters : int
+        number of free parameters in the given model
+
+    Returns
+    -------
+    aic : float
+        AIC value
+
+    """
+    N = len(observations)
+    LL = log_likelihood(observations, model)
+    bic = -2.*LL + np.log(N)*n_parameters
+
+    return bic
+
+
 def gaussian_bounds(x, y, guesses, best_x=None, sigma=None):
-    """Get the bounds for the parameters of a Gaussian fit to the data.
+    """
+    Get the bounds for the parameters of a Gaussian fit to the data.
 
     Parameters
     ----------
@@ -154,7 +262,8 @@ def max_elements(x, y, npeaks):
 
 
 def return_max(x_array, y_array, exp_dnu=None, index=False):
-    """Return the either the value of peak or the index of the peak corresponding to the most likely dnu given a prior estimate,
+    """
+    Return the either the value of peak or the index of the peak corresponding to the most likely dnu given a prior estimate,
     otherwise just the maximum value.
 
     Parameters
@@ -193,188 +302,50 @@ def return_max(x_array, y_array, exp_dnu=None, index=False):
         return x_array[idx], y_array[idx]
 
 
-def mean_smooth_ind(x, y, width):
-    """Smooths the data using independent mean smoothing and binning.
+def bin_data(x, y, width, log=False, mode=['mean', 'median', 'gaussian']):
+    """
+    Bin a series of data.
 
     Parameters
     ----------
-    x : np.ndarray
-        the x values of the data
-    y : np.ndarray
-        the y values of the data
+    x : numpy.ndarray
+        the independent variable series
+    y : numpy.ndarray
+        the dependent variable series
     width : float
-        independent average smoothing width
+        bin width in muHz
+    log : bool
+        creates bins by using the log of the min/max values (i.e. not equally spaced in log if `True`)
 
     Returns
     -------
-    sx : np.ndarray
-        binned mean smoothed x data
-    sy : np.ndarray
-        binned mean smoothed y data
-    se : np.ndarray
-        standard error
+    bin_x : numpy.ndarray
+        mean/median of the binned y data
+    bin_y : numpy.ndarray
+        mean/median of the binned y data
+    bin_yerr : numpy.ndarray
+        standard deviation of the binned y data
     """
-    step = width-1
-    j=0
-    
-    sx = np.zeros_like(x)
-    sy = np.zeros_like(x)
-    se = np.zeros_like(x)
-
-    j = 0
-
-    while (j+step < len(x)-1):
-
-        sx[j] = np.mean(x[j:j+step])
-        sy[j] = np.mean(y[j:j+step])
-        se[j] = np.std(y[j:j+step])/np.sqrt(width)
-        j += step
-
-    sx = sx[(sx != 0.0)]
-    se = se[(sy != 0.0)]
-    sy = sy[(sy != 0.0)]
-    se[(se == 0.0)] = np.median(se)
-    return sx, sy, se
-
-
-def smooth(array, width, params, method='box', mode=None, fft=False, silent=False):
-    """Smooths using a variety of methods. TODO: Write description.
-
-    Parameters
-    ----------
-    array : np.ndarray
-        the data
-    TODO: Add parameters
-
-    Returns
-    -------
-    TODO: Add return arguments
-    """
-
-    if method == 'box':
-
-        if isinstance(width, int):
-            kernel = Box1DKernel(width)
-        else:
-            width = int(np.ceil(width/params['resolution']))
-            kernel = Box1DKernel(width)
-
-        if fft:
-            smoothed_array = convolve_fft(array, kernel)
-        else:
-            smoothed_array = convolve(array, kernel)
-
-        if not silent:
-            print('%s kernel: kernel size = %.2f muHz' % (method, width*params['resolution']))
-
-    elif method == 'gaussian':
-
-        n = 2*len(array)
-        forward = array[:].tolist()
-        reverse = array[::-1].tolist()
-
-        if n % 4 != 0:
-            start = int(np.ceil(n/4))
-        else:
-            start = int(n/4)
-        end = len(array)
-
-        final = np.array(reverse[start:end]+forward[:]+reverse[:start])
-
-        if isinstance(width, int):
-            kernel = Gaussian1DKernel(width)
-        else:
-            width = int(np.ceil(width/params['resolution']))
-            kernel = Gaussian1DKernel(width, mode=mode)
-
-        if fft:
-            smoothed = convolve_fft(final, kernel)
-        else:
-            smoothed = convolve(final, kernel)
-
-        smoothed_array = smoothed[int(n/4):int(3*n/4)]
-
-        if not silent:
-            print('%s kernel: sigma = %.2f muHz' % (method, width*params['resolution']))
+    if log:
+        mi = np.log10(min(x))
+        ma = np.log10(max(x))
+        no = np.int(np.ceil((ma-mi)/width))
+        bins = np.logspace(mi, mi+(no+1)*width, no)
     else:
-        print('Do not understand the smoothing method chosen.')
-
-    return smoothed_array
-
-
-def smooth_gauss(array, fwhm, params, silent=False):
-    """TODO: Write description.
-
-    Parameters
-    ----------
-    TODO: Add parameters
-
-    Returns
-    -------
-    TODO: Add return arguments
-    """
-
-    sigma = fwhm/np.sqrt(8.0*np.log(2.0))
-
-    n = 2*len(array)
-    N = np.arange(1, n+1, 1)
-    mu = len(array)
-    total = np.sum((1.0/(sigma*np.sqrt(2.0*np.pi)))*np.exp(-0.5*(((N-mu)/sigma)**2.0)))
-    weights = ((1.0/(sigma*np.sqrt(2.0*np.pi)))*np.exp(-0.5*(((N-mu)/sigma)**2.0)))/total
-
-    forward = array[:]
-    reverse = array[::-1]
-
-    if n % 4 != 0:
-        start = int(np.ceil(n/4))
-    else:
-        start = int(n/4)
-    end = int(n/2)
-
-    final = np.array(reverse[start:end]+forward[:]+reverse[:start])
-    fft = np.fft.irfft(np.fft.rfft(final)*np.fft.rfft(weights))
-    dq = deque(fft)
-    dq.rotate(int(n/2))
-    smoothed = np.array(dq)
-    smoothed_array = smoothed[int(n/4):int(3*n/4)]
-    if not silent:
-        print('gaussian kernel using ffts: sigma = %.2f muHz' % (sigma*params['resolution']))
-    if params['edge'][0]:
-        smoothed_array = smoothed_array[:-params['edge'][1]]
-
-    return np.array(smoothed_array)
-
-
-def bin_data(x, y, params):
-    """Bins data logarithmically.
-
-    Parameters
-    ----------
-    x : np.ndarray
-        the x values of the data
-    y : np.ndarray
-        the y values of the data
-    params : list
-        binning parameters
-
-    Returns
-    -------
-    bin_freq : np.ndarray
-        binned frequencies
-    bin_pow : np.ndarray
-        binned power
-    """
-
-    mi = np.log10(min(x))
-    ma = np.log10(max(x))
-    no = np.int(np.ceil((ma-mi)/params['binning']))
-    bins = np.logspace(mi, mi+(no+1)*params['binning'], no)
+        bins = np.arange(min(x), max(x)+width, width)
 
     digitized = np.digitize(x, bins)
-    bin_freq = np.array([x[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
-    bin_pow = np.array([y[digitized == i].mean() for i in range(1, len(bins)) if len(y[digitized == i]) > 0])
+    if mode == 'mean':
+        bin_x = np.array([x[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+        bin_y = np.array([y[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+    elif mode == 'median':
+        bin_x = np.array([np.median(x[digitized == i]) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+        bin_y = np.array([np.median(y[digitized == i]) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+    else:
+        pass
+    bin_yerr = np.array([y[digitized == i].std()/np.sqrt(len(y[digitized == i])) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
 
-    return bin_freq, bin_pow
+    return bin_x, bin_y, bin_yerr
 
 
 def delta_nu(numax):

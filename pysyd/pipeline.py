@@ -11,7 +11,8 @@ from pysyd import utils
 from pysyd.target import Target
 
 
-def run(args):
+
+def run(args, count=0, CLI=True):
     """
     Main script to run the pySYD pipeline
 
@@ -22,9 +23,10 @@ def run(args):
 
     """
 
-    args = utils.get_info(args)
-    count = main(args.params['stars'], args)
-      
+    single = load(args, CLI=CLI)
+    if single.ps:
+        count+=1
+        single.run_syd()
     # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
     if count != 0:
         if args.verbose:
@@ -34,8 +36,33 @@ def run(args):
         utils.scrape_output(args)
 
 
+def load(args, star=None, CLI=True):
+    """
+    A Target class is initialized and processed for each star in the stargroup.
 
-def parallel(args):
+    Parameters
+    ----------
+    args : argparse.Namespace
+        the command line arguments
+
+    Returns
+    -------
+    single : target.Target
+        current data available for the provided target
+
+    """
+    if star is None:
+        assert len(args.stars) == 1, "You can only load in data for one star at a time."
+    else:
+        args.stars = [star]
+
+    args = utils.get_info_all(args, parallel=False, CLI=CLI)
+    single = Target(args.stars[0], args)
+
+    return single
+
+
+def parallel(args, CLI=True):
     """
     Uses multiprocessing to run the pySYD pipeline in parallel. Stars are assigned
     evenly to `groups`, which is set by the number of threads or CPUs available.
@@ -48,11 +75,11 @@ def parallel(args):
 
     """
 
-    args = utils.get_info(args, parallel=True)
+    args = utils.get_info_all(args, parallel=True, CLI=CLI)
 
     # create the separate, asyncrhonous (nthread) processes
     pool = mp.Pool(args.n_threads)
-    result_objects = [pool.apply_async(main, args=(group, args)) for group in args.params['groups']]
+    result_objects = [pool.apply_async(pipe, args=(group, args)) for group in args.params['groups']]
     results = [r.get() for r in result_objects]
     pool.close()
     pool.join()    # postpones execution of the next line until all processes finish
@@ -67,7 +94,7 @@ def parallel(args):
         utils.scrape_output(args)
 
 
-def main(group, args, count=0):
+def pipe(group, args, count=0):
     """
     A Target class is initialized and processed for each star in the stargroup.
 
@@ -86,8 +113,9 @@ def main(group, args, count=0):
     """
 
     for star in group:
+        load(args, star=star, CLI=CLI)
         single = Target(star, args)
-        if single.run:
+        if single.ps:
             count+=1
             single.run_syd()
     return count
@@ -132,7 +160,7 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
         f = open(args.todo, "w")
         f.close()
     if not os.path.exists(outfile2):
-        df = pd.DataFrame(columns=['stars','radius','radius_err','teff','teff_err','logg','logg_err','numax','lower_x','upper_x','lower_b','upper_b','seed'])
+        df = pd.DataFrame(columns=utils.get_data_columns(type='csv'))
         df.to_csv(args.info, index=False)
 
     # create data directory
