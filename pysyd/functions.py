@@ -107,7 +107,6 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_
     return star
 
 
-<<<<<<< HEAD
 def whiten_mixed(star):
     """
     Generates random white noise in place of ell=1 for subgiants with mixed modes to better
@@ -262,7 +261,8 @@ def gaussian_bounds(x, y, guesses, best_x=None, sigma=None):
 
 
 def max_elements(x, y, npeaks):
-    """Get the first n peaks of the given data.
+    """
+    Get the first n peaks of the given data.
 
     Parameters
     ----------
@@ -313,6 +313,7 @@ def return_max(x_array, y_array, exp_dnu=None, index=False):
     result : Union[int, float]
         if `index` is `True`, result will be the index of the peak otherwise if `index` is `False` it will instead return the
         value of the peak.
+
     """
     if exp_dnu is None:
         lst = list(y_array)
@@ -374,53 +375,6 @@ def bin_data(x, y, width, log=False, mode=['mean', 'median', 'gaussian']):
     bin_yerr = np.array([y[digitized == i].std()/np.sqrt(len(y[digitized == i])) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
 
     return bin_x, bin_y, bin_yerr
-
-
-def mean_smooth_ind(x, y, width):
-    """
-    Smooths the data using independent mean smoothing and binning.
-
-    Parameters
-    ----------
-    x : np.ndarray
-        the x values of the data
-    y : np.ndarray
-        the y values of the data
-    width : float
-        independent average smoothing width
-
-    Returns
-    -------
-    sx : np.ndarray
-        binned mean smoothed x data
-    sy : np.ndarray
-        binned mean smoothed y data
-    se : np.ndarray
-        standard error
-
-    """
-
-    step = width-1
-    j=0
-    
-    sx = np.zeros_like(x)
-    sy = np.zeros_like(x)
-    se = np.zeros_like(x)
-
-    j = 0
-
-    while (j+step < len(x)-1):
-
-        sx[j] = np.mean(x[j:j+step])
-        sy[j] = np.mean(y[j:j+step])
-        se[j] = np.std(y[j:j+step])/np.sqrt(width)
-        j += step
-
-    sx = sx[(sx != 0.0)]
-    se = se[(sy != 0.0)]
-    sy = sy[(sy != 0.0)]
-    se[(se == 0.0)] = np.median(se)
-    return sx, sy, se
 
 
 def delta_nu(numax):

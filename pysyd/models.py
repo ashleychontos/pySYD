@@ -15,11 +15,13 @@ def harvey(frequency, guesses, mode='regular', total=False):
         the mode of which Harvey model parametrization to use. Default mode is `regular`.
         The 'regular' mode is when both the second and fourth order terms are added in the denominator
         whereas, 'second' only adds the second order term and 'fourth' only adds the fourth order term.
+    total : bool
+        If `True`, returns the summed model over multiple components.
 
     Returns
     -------
     model : np.ndarray
-        the Harvey model
+        the stellar background model
 
     """
     nlaws = int((len(guesses)-1)/2)

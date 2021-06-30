@@ -7,7 +7,14 @@ from pysyd import utils
 
 
 def set_plot_params():
-    """Sets the matplotlib parameters."""
+    """
+    Sets the matplotlib parameters.
+
+    Returns
+    -------
+    None
+
+    """
 
     plt.style.use('dark_background')
     plt.rcParams.update({
@@ -34,7 +41,8 @@ def set_plot_params():
 
 
 def plot_excess(star):
-    """Creates a plot summarising the results of the find excess routine.
+    """
+    Creates a plot summarizing the results of the find excess routine.
 
     Parameters
     ----------
@@ -112,7 +120,7 @@ def plot_excess(star):
 
 def plot_background(star, n_peaks=10):
     """
-    Creates a plot summarising the results of the fit background routine.
+    Creates a plot summarizing the results of the fit background routine.
 
     Parameters
     ----------

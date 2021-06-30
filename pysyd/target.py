@@ -62,7 +62,7 @@ class Target:
            global asteroseismic parameters
 
         Returns
-        ----------
+        -------
         None
 
         """
@@ -242,65 +242,9 @@ class Target:
                     utils.verbose_output(self)
 
 
-    def first_step(self):
-        """
-        The first step in the background fitting, which determines the best-fit stellar 
-        contribution model (i.e. number of Harvey-like components) and corrects for this.
-
-        TODO: implement more robust criterion (i.e. BIC or AIC) and also include the simplest model.
-        before estimating numax and dnu.
-
-        single_step: The main iteration of the background fitting, which operates in the following steps:
-                     1) determines the best-fit model (i.e. number of Harvey components) using a reduced chi-sq analysis
-                     2) corrects for stellar background contributions by dividing the power spectrum by the best-fit model
-                     3) estimates two values for numax by fitting a Gaussian and by using a heavy smoothing filter
-                     4) takes the autocorrelation (using ffts) of the masked power spectrum that contains the power excess
-                     5) selects the peak (via -npeaks, default=10) closest to the expected spacing based on the calculated numax
-                     6) fits Gaussian to the "cutout" peak of the ACF, where center is dnu
-        
-        Returns
-        ----------
-        result : bool
-            will return `True` if the model converges, otherwise `False`.
-
-        """
-        while self.i < self.fitbg['mc_iter']:
-            # Requires convergence of background fit before going to the next step 
-            if self.fit_background():
-                self.get_numax()
-                self.get_dnu()
-                # First step?
-                if self.i == 0:
-                    # Plot results
-                    plots.plot_background(self)
-                    if self.fitbg['mc_iter'] > 1:
-                        # Switch to critically-sampled PS if sampling
-                        mask = np.ma.getmask(np.ma.masked_inside(self.freq_cs, self.params[self.name]['bg_mask'][0], self.params[self.name]['bg_mask'][1]))
-                        self.frequency, self.power = np.copy(self.freq_cs[mask]), np.copy(self.pow_cs[mask])
-                        self.resolution = self.frequency[1]-self.frequency[0]
-                        if self.verbose:
-                            print('----------------------------------------------------\nRunning sampling routine:')
-                            self.pbar = tqdm(total=self.fitbg['mc_iter'])
-                            self.pbar.update(1)
-                else:
-                    if self.verbose:
-                        self.pbar.update(1)
-                self.i += 1
-                if self.i == self.fitbg['mc_iter'] and self.fitbg['mc_iter'] > 1:
-                    self.pbar.close()
-        # Save results of second module
-        utils.save_fitbg(self)
-        if self.fitbg['mc_iter'] > 1:
-            # Plot results if sampling
-            plots.plot_samples(self)
-        if self.verbose:
-            # Print results
-            utils.verbose_output(self)
-
-
     def fit_background(self):
         """
-        Fits for stellar background contribution due to granulation. 
+        Fits the stellar background contribution due to granulation. 
 
         Returns
         -------
@@ -342,7 +286,7 @@ class Target:
         in the power spectrum near the nyquist frequency.
 
         Returns
-        ----------
+        -------
         None
 
         """
@@ -368,15 +312,15 @@ class Target:
         Estimates amplitude of red noise components by using a smoothed version of the power
         spectrum with the power excess region masked out. This will take the mean of a specified 
         number of points (via -nrms, default=20) for each Harvey-like component.
-        
-        Returns
-        ----------
-        None
 
         Parameters
         ----------
         a : List[float]
             initial guesses for the amplitudes of all Harvey components
+
+        Returns
+        -------
+        None
 
         """
         # Exclude region with power excess and smooth to estimate red noise components
@@ -466,7 +410,6 @@ class Target:
                     self.bic.append(b)
                     a = functions.compute_aic(observations, model, n_parameters=len(pp))
                     self.aic.append(a)
-#                note += '\n BIC = %.2f | AIC = %.2f'%(b, a)
                     if self.verbose:
                         print(note)
             # If the fitting converged (fix to bic? depending on performance)
@@ -518,6 +461,11 @@ class Target:
     def save_best_model(self, use='bic'):
         """
         Saves information re: the selected best-fit model (for the stellar background).
+        
+        Parameters
+        ----------
+        use : str
+            which metric to use for model selection, choices ~['bic','aic']. Default is `'bic'`.
 
         """
         if self.fitbg['n_laws'] is None:
@@ -552,6 +500,14 @@ class Target:
 
 
     def get_numax(self):
+        """
+        Simple function to call both numax methods.
+
+        Returns
+        -------
+        None
+
+        """
         self.get_numax_smooth()
         self.get_numax_gaussian()
 
@@ -561,7 +517,7 @@ class Target:
         computes the background-corrected power spectrum and saves to a text file.
 
         Returns
-        ----------
+        -------
         None
 
         """
@@ -592,18 +548,12 @@ class Target:
     
         Parameters
         ----------
-        output : bool
-            if `True`, return Gaussian fit parameters. Default value is `False`.
+        maxfev : int, optional
+            maximum number of attempts for the scipy.curve_fit optimization step
 
         Returns
         -------
-        again : bool
-            will return `True` if fitting failed and the iteration must be repeated, otherwise `False`.
-
-        Parameters
-        ----------
-        maxfev : int, optional
-            maximum number of attempts for the scipy.curve_fit optimization step
+        None
 
         """
         constants = utils.Constants()
@@ -628,7 +578,7 @@ class Target:
             if true will use FFT to compute the ACF. Default value is `True`.
 
         Returns
-        ----------
+        -------
         None
 
         """
@@ -667,7 +617,7 @@ class Target:
             in the ACF to determine the width of the cutout region.
         
         Returns
-        ----------
+        -------
         None
 
         """
@@ -724,7 +674,7 @@ class Target:
         Estimate a value for dnu.
 
         Returns
-        ----------
+        -------
         None
 
         """
@@ -752,7 +702,7 @@ class Target:
             lower limit of distance modulus. Default value is `0.0`.
 
         Returns
-        ----------
+        -------
         None
 
         """
@@ -801,11 +751,11 @@ class Target:
 
         Returns
         -------
-        smoothed : np.ndarray
+        smoothed : numpy.meshgrid
             resulting echelle diagram based on the observed $\delta \nu$ 
-        gridx : np.ndarray
+        gridx : numpy.ndarray
             grid of x-axis measurements (distance modulus) for echelle diagram
-        gridy : np.ndarray
+        gridy : numpy.ndarray
             grid of y-axis measurements (frequency) for echelle diagram
         extent : List[float]
             The bounding box in data coordinates that the image will fill. 
