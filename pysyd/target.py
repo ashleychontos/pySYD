@@ -83,7 +83,7 @@ class Target:
         frequency-resolved, collapsed autocorrelation function (ACF).
 
         Returns
-        ----------
+        -------
         None
 
         """
@@ -144,7 +144,7 @@ class Target:
             maximum SNR corresponding to power excess. Default value is `100.0`.
 
         Returns
-        ----------
+        -------
         None
 
         """
@@ -202,44 +202,42 @@ class Target:
         the large frequency separation (dnu) and oscillation amplitude.
 
         Returns
-        ----------
+        -------
         None
 
         """
-        self.fitbg['results'][self.name] = {'numax_smooth':[],'A_smooth':[],'numax_gauss':[],'A_gauss':[],
-                                            'FWHM':[],'dnu':[],'white':[]}
+        while self.i < self.fitbg['mc_iter']:
+            # Requires convergence of background fit before going to the next step 
+            if self.fit_background():
+                self.get_numax()
+                self.get_dnu()
+                # First step?
+                if self.i == 0:
+                    # Plot results
+                    plots.plot_background(self)
+                    if self.fitbg['mc_iter'] > 1:
+                        # Switch to critically-sampled PS if sampling
+                        mask = np.ma.getmask(np.ma.masked_inside(self.freq_cs, self.params[self.name]['bg_mask'][0], self.params[self.name]['bg_mask'][1]))
+                        self.frequency, self.power = np.copy(self.freq_cs[mask]), np.copy(self.pow_cs[mask])
+                        self.resolution = self.frequency[1]-self.frequency[0]
+                        if self.verbose:
+                            print('----------------------------------------------------\nRunning sampling routine:')
+                            self.pbar = tqdm(total=self.fitbg['mc_iter'])
+                            self.pbar.update(1)
+                else:
+                    if self.verbose:
+                        self.pbar.update(1)
+                self.i += 1
+                if self.i == self.fitbg['mc_iter'] and self.fitbg['mc_iter'] > 1:
+                    self.pbar.close()
+        # Save results of second module
+        utils.save_fitbg(self)
+        if self.fitbg['mc_iter'] > 1:
+            # Plot results if sampling
+            plots.plot_samples(self)
         if self.verbose:
-            print('----------------------------------------------------')
-            print('Running fit_background module:')
-            print('PS binned to %d data points' % len(self.bin_freq))
-
-        # Run first iteration (which has different steps than any other n>1 runs)
-        good = self.first_step()
-        if not good:
-            pass
-        else:
-            # If sampling is enabled (i.e., args.mciter > 1), a progress bar is created w/ verbose output
-            if self.fitbg['mc_iter'] > 1:
-                if self.verbose:
-                    print('----------------------------------------------------')
-                    print('Running sampling routine:')
-                    self.pbar = tqdm(total=self.fitbg['mc_iter'])
-                    self.pbar.update(1)
-                self.i = 1
-                # Continue to sample while the number of successful steps is less than args.mciter
-                while self.i < self.fitbg['mc_iter']:
-                    self.sampling_step()
-                utils.save_fitbg(self)
-                plots.plot_samples(self)
-                if self.verbose:
-                    # Print results with uncertainties
-                    utils.verbose_output(self, sampling=True)
-            # Single iteration
-            else:
-                utils.save_fitbg(self)
-                if self.verbose:
-                    # Print results without uncertainties
-                    utils.verbose_output(self)
+            # Print results
+            utils.verbose_output(self)
 
 
     def fit_background(self):
@@ -410,6 +408,7 @@ class Target:
                     self.bic.append(b)
                     a = functions.compute_aic(observations, model, n_parameters=len(pp))
                     self.aic.append(a)
+#                note += '\n BIC = %.2f | AIC = %.2f'%(b, a)
                     if self.verbose:
                         print(note)
             # If the fitting converged (fix to bic? depending on performance)
@@ -510,6 +509,7 @@ class Target:
         """
         self.get_numax_smooth()
         self.get_numax_gaussian()
+
 
     def get_numax_smooth(self, divide=True):
         """
@@ -656,7 +656,7 @@ class Target:
         self.zoom_auto = self.auto[(self.lag>=self.params[self.name]['acf_mask'][0])&(self.lag<=self.params[self.name]['acf_mask'][1])]
         # Boundary conditions and initial guesses stay the same for all iterations
         self.acf_guesses = [np.mean(self.zoom_auto), self.best_auto, self.best_lag, self.best_lag*0.01*2.]
-        self.acf_bb = functions.gaussian_bounds(self.zoom_lag, self.zoom_auto, self.acf_guesses, sigma=10**-2)
+        self.acf_bb = functions.gaussian_bounds(self.zoom_lag, self.zoom_auto, self.acf_guesses, best_x=self.best_lag, sigma=10**-2)
         # Fit a Gaussian function to the selected peak in the ACF to get dnu
         p_gauss3, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.acf_guesses, bounds=self.acf_bb[0])
        	# If dnu is provided, use that instead
@@ -762,7 +762,6 @@ class Target:
             The image is stretched individually along x and y to fill the box.
 
         """
-
         if self.globe['smooth_ech'] is not None:
             boxkernel = Box1DKernel(int(np.ceil(self.globe['smooth_ech']/self.resolution)))
             smooth_y = convolve(self.bg_corr, boxkernel)
@@ -819,9 +818,6 @@ class Target:
         else:
             self.pars = pars
             self.bg_corr = self.random_pow/models.harvey(self.frequency, self.pars, total=True)
-            self.sm_par = 4.0*(self.fitbg['results'][self.name]['numax_gauss'][0]/constants.numax_sun)**0.2
-            if self.sm_par < 1.0:
-                self.sm_par = 1.0
             # save final values for Harvey components
             for n in range(self.nlaws):
                 self.fitbg['results'][self.name]['tau_%d'%(n+1)].append(self.pars[2*n]*10**6.)

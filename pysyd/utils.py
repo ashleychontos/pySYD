@@ -855,7 +855,7 @@ def get_findex(star):
 
 def check_fitbg(star):
     """
-    Checks if there is a starting value for numax as pySYD needs this information for the 
+    Checks if there is a starting value for numax as pySYD needs this information to begin the 
     second module (whether be it from the first module, CLI or saved to info/star_info.csv).
 
     Returns
@@ -875,8 +875,6 @@ def check_fitbg(star):
         else:
             print('# ERROR: the second module cannot run without any prior info for numax')
             return False
-#    if star.verbose:
-#        print('# Using numax=%.2f muHz as initial guess for second module'%star.params[star.name]['numax'])
     return True
 
 
