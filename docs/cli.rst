@@ -3,8 +3,11 @@
 Command Line Interface
 ************************
 
-.. _parentparse:
+In order to maximize the performance of the software, we have included many optional commands to help identify the
+best possible asteroseismic parameters in even the lowest SNR cases. Examples of these optional features are shown 
+in advanced usage (ref).
 
+.. _parentparse:
 
 Parent Parser
 ===============
