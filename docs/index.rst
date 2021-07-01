@@ -23,7 +23,7 @@ For a basic introduction to these parameters and asteroseismic data analysis of 
 - Easily accessible + command-line friendly
 - Ability to save samples for further analyses
 
-Please cite our `_JOSS paper <>`_ as well as `Huber et al. 2009 <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_ if you make use of ``pySYD`` in your work.
+Please cite our recent JOSS paper `Chontos+2021 <https://joss.theoj.org/papers/6465a9dd3141c207175f200c7f891f1e>`_ as well as `Huber+2009 <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_ if you make use of ``pySYD`` in your work.
 
 Code contributions are welcome and should be submitted as a pull request.
 
