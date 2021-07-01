@@ -103,20 +103,26 @@ if you followed the suggestions in :ref:`structure` or used our ``setup`` featur
 
 A ``pySYD`` pipeline ``Target`` class object has two main function calls:
 
-#. The find routine :
-    * **Summary:** searches for power excess due to solar-like oscillations by implementing a frequency-resolved, collapsed 
+#. The first module :
+    * **Summary:** a crude, quick way to identify the power excess due to solar-like oscillations
+    * This uses a heavy smoothing filter to divide out the background and then implements a frequency-resolved, collapsed 
       autocorrelation function (ACF) using 3 different ``box`` sizes
     * The main purpose for this first module is to provide a good starting point for the
       second module. The output from this routine provides a rough estimate for numax, which is translated 
       into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode
       oscillations
 #. The second routine : 
-    * **Summary:** performs a fit to the granulation background, corrects 
-      the power spectrum using this model, and then fits for the global parameters numax and dnu.
+    * **Summary:** performs a more rigorous analysis to determine both the stellar background contribution
+      as well as the global asteroseismic parameters.
     * Given the frequency range determined by the first module, this region is masked out to model 
-      the white and red noise contributions present in the power spectrum. The fitting procedure will
-      test a series of models and select the best-fit stellar background model and correct the power spectrum
-    * The module will then estimate numax using two different methods: 1) Fitting a Gaussian to the smoothed, background corrected power spectrum and 2) Finding the frequency corresponding to the maximum power of the smoothed, background corrected power spectrum. The second method has typically been adopted as the default numax value reported in the literature since it makes no assumptions about the shape of the power excess.
+      the white- and red-noise contributions present in the power spectrum. The fitting procedure will
+      test a series of models and select the best-fit stellar background model based on the BIC.
+    * The power spectrum is corrected by dividing out this contribution, which also saves as an output text file.
+    * Now that the background has been removed, the global parameters can be more accurately estimated. Numax is
+      estimated by using a smoothing filter, where the peak of the heavily smoothed, background-corrected power
+      spectrum is the first and the second fits a Gaussian to this same power spectrum. The smoothed numax has 
+      typically been adopted as the default numax value reported in the literature since it makes no assumptions 
+      about the shape of the power excess.
     * Using the masked power spectrum in the region centered around numax, an autocorrelation is computed to determine
       the large frequency spacing.
 
