@@ -39,6 +39,36 @@ A ``pySYD`` pipeline ``Target`` class object has two main methods:
 
 =========================
 
+Initialization of ``pySYD`` via command line will use the following paths:
+
+- ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
+- ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
+- ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
+- ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
+
+which by default, is the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
+if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
+
+Modes
+******
+
+There are currently four main ``pySYD`` modes: 
+
+#. ``setup`` : Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. This mode only
+   inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below).
+
+#. ``load`` : Initializes ``pysyd.pipeline.load`` to load in data for a single target. Because this does handle data, this has 
+   full access to both the :ref:`parent<parentparse>` and :ref:`main parser<mainparse>`.
+
+#. ``run`` : The main pySYD pipeline function is initialized through ``pysyd.pipeline.run`` and runs the two core modules 
+   (i.e. ``find_excess`` and ``fit_background``) for each star consecutively. This mode operates using most CLI options, inheriting
+   both the :ref:`parent<parentparse>` and :ref:`main parser<mainparse>` options.
+
+#. ``parallel`` : Operates the same way as the previous mode, but processes stars simultaneously in parallel. Based on the number of threads
+   available, stars are separated into groups (where the number of groups is exactly equal to the number of threads). This mode uses all CLI
+   options, including the number of threads to use for parallelization (:ref:`see here<parallel>`).
+
+
 Structure
 *********
 
