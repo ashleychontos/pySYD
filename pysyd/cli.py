@@ -300,7 +300,7 @@ def main():
                          default=None, 
                          type=float,
     )
-    echelle.add_argument('--clipech', 
+    echelle.add_argument('--ce', '--clipech', 
                          dest='clip_ech',
                          help='Disable the auto-clipping of high peaks in the ED',
                          default=True, 

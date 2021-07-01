@@ -1,6 +1,5 @@
 .vscode
 docs/_*
-paper/_*
 *.DS_store
 *.pyc
 .*
