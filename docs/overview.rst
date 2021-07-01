@@ -1,24 +1,14 @@
 .. _overview:
 
 
-Initialization of ``pySYD`` via command line will use the following paths:
-
-- ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
-- ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
-- ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
-- ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
-
-which by default, is the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
-if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
-
-
 Modes
 ******
 
 There are currently four main ``pySYD`` modes: 
 
 #. ``setup`` : Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. This mode only
-   inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below).
+   inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below). Using this feature will
+   set up the paths and files consistent with what is recommended and discussed in more detail below.
 
 #. ``load`` : Initializes ``pysyd.pipeline.load`` to load in data for a single target. Because this does handle data, this has 
    full access to both the :ref:`parent<parentparse>` and :ref:`main parser<mainparse>`.
@@ -32,7 +22,6 @@ There are currently four main ``pySYD`` modes:
    options, including the number of threads to use for parallelization (:ref:`see here<parallel>`).
 
 =========================
-
 
 Recommended Structure
 ***********************
@@ -67,7 +56,6 @@ There are two main files provided:
    * "upper_bg" [float] : upper frequency limit to use in the fit_background module (units: muHz)
    * "seed" [int] : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes
 
-
 Data/
 ++++++++
 
@@ -76,12 +64,10 @@ File format for a given star ID:
 *  **ID_LC.txt** : time series data in units of days
 *  **ID_PS.txt** : power spectrum in units of muHz versus power or power density
 
-
 .. warning::
 
     Time and frequency in the time series and power spectrum file **must** be in the specified units (days and muHz) in order for the pipeline 
     to properly process the data and provide reliable results. 
-
 
 Output
 ********
@@ -104,6 +90,16 @@ for a guide on what the output plots are showing.
 
 Pipeline Overview
 ++++++++++++++++++++
+
+Initialization of ``pySYD`` via command line will look in the following paths:
+
+- ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
+- ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
+- ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
+- ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
+
+which by default, is the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
+if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
 
 A ``pySYD`` pipeline ``Target`` class object has two main function calls:
 
