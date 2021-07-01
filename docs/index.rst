@@ -16,7 +16,14 @@ For a basic introduction to these parameters and asteroseismic data analysis of 
 
 ``pySYD`` is a python-based implementation of the IDL-based SYD pipeline `(Huber et al. 2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_, which was extensively used to measure asteroseismic parameters for Kepler stars. Papers based on asteroseismic parameters measured using the ``SYD`` pipeline include `Huber et al. 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H/abstract>`_, `Chaplin et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C/abstract>`_, `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_ and `Yu et al. 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y/abstract>`_.
 
-Please cite `Huber et al. 2009 <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_ and the following DOI if you make use of pySYD in your work.
+``pySYD`` adapts the well-tested methodology from ``SYD`` while also improving these existing analyses and expanding upon numerous new
+(optional) features. Improvements include:
+
+- Statistical best-fit background model selection
+- Easily accessible + command-line friendly
+- Ability to save samples for further analyses
+
+Please cite our recent JOSS paper `Chontos+2021 <https://joss.theoj.org/papers/6465a9dd3141c207175f200c7f891f1e>`_ as well as `Huber+2009 <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_ if you make use of ``pySYD`` in your work.
 
 Code contributions are welcome and should be submitted as a pull request.
 
@@ -25,11 +32,12 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
 **Contents:**
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    quickstart
    overview
    examples
+   cli
    performance
    advanced
    api
