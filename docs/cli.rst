@@ -5,142 +5,134 @@ Command Line Interface
 
 .. _parentparse:
 
+
 Parent Parser
 ===============
 
 Higher level functionality of the software. All three modes inherent the parent parser.
 
-- ``-file``, ``--file``, ``-list``, ``--list``, ``-todo``, ``--todo``
+- ``--file``, ``--list``, ``--todo``
    * dest = ``args.file``
    * help = Path to text file that contains the list of stars to process (convenient for running many stars).
    * type = ``str``
    * default = ``TODODIR``
-- ``-in``, ``--in``, ``-input``, ``--input``, ``-inpdir``, ``--inpdir``
+- ``--in``, ``--input``, ``--inpdir``
    * dest = ``args.inpdir``
    * help = Path to input data
    * type = ``str``
    * default = ``INPDIR``
-- ``-info``, ``--info``, ``-information``, ``--information`` 
+- ``--info``, ``--information`` 
    * dest = ``args.info``
    * help = Path to the csv containing star information (although not required).
    * type = ``str``
    * default = ``INFODIR``
-- ``-out``, ``--out``, ``-output``, ``--output``, ``-outdir``, ``--outdir``
+- ``--out``, ``--output``, ``--outdir``
    * dest = ``args.outdir``
    * help = Path that results are saved to
    * type = ``str``
    * default = ``OUTDIR``
-- ``-verbose``, ``--verbose``
+- ``--verbose``, ``-v``
    * dest = ``args.verbose``
    * help = Turn on verbose output
    * type = ``bool``
    * default = ``False``
    * action = ``store_true``
 
+
 .. _mainparse:
+
 
 Main Parser
 =============
 
 Accesses all science-related functions and is therefore for both ``run`` and ``parallel`` modes.
 
-- ``-bg``, ``--bg``, ``-fitbg``, ``--fitbg``, ``-background``, ``--background``
+-  ``--bg``, ``--fitbg``, ``--background``, ``-b``
    * dest = ``args.background``
    * help = Turn off the background fitting procedure
    * type = ``bool``
    * default = ``True``
    * action = ``store_false``
-- ``-cad``, ``--cad``, ``-cadence``, ``--cadence``
-   * dest = ``args.cadence``
-   * help = cadence of time series (used to calculate nyquist frequency), which will automatically be calculated when time series data is available. 
-   * type = ``int``
-   * default = `0`
-   * unit = seconds
-- ``-ex``, ``--ex``, ``-findex``, ``--findex``, ``-excess``, ``--excess``
+- ``--ex``, ``--findex``, ``--excess``, ``-x``
    * dest = ``args.background``
    * help = turn off find excess module
    * type = ``bool``
    * default = ``True``
    * action = ``store_false``
-- ``-kc``, ``--kc``, ``-kepcorr``, ``--kepcorr``
+- ``--kc``, ``--kepcorr``, ``-k``
    * dest = ``args.kepcorr``
    * help = turn on the *Kepler* short-cadence artefact correction module
    * type = ``bool``
    * default = ``False``
    * action = ``store_true``
-- ``-nyq``, ``--nyq``, ``-nyquist``, ``--nyquist``
-   * dest = ``args.nyquist``
-   * help = nyquist frequency of the power spectrum (relevant for when the time series is not provided) 
-   * type = ``float``
-   * default = ``None``
-   * unit = muHz
-- ``-ofa``, ``--ofa``, ``-of_actual``, ``--of_actual``
+- ``--ofa``, ``--of_actual``
    * dest = ``args.of_actual``
    * help = The oversampling factor of the provided power spectrum. Default is `0`, which means it is calculated from the time series data. Note: This needs to be provided if there is no time series data!
    * type = ``int``
    * default = `0`
-- ``-ofn``, ``--ofn``, ``-of_new``, ``--of_new``
+- ``--ofn``, ``--of_new``
    * dest = ``args.of_new``
    * help = The new oversampling factor to use in the first iterations of both modules. Default is `5` (see performance for more details).
    * type = int
    * default = `5`
-- ``-save``, ``--save``
+- ``--save``
    * dest = ``args.save``
    * help = save output files and figures
    * type = ``bool``
    * default = ``True``
    * action = ``store_false``
-- ``-show``, ``--show`` 
+- ``--show``, ``s`` 
    * dest = ``args.show``
    * help = show output figures (note: this is not recommended if running many stars)
    * type = ``bool``
    * default = ``False``
    * action = ``store_true``
-- ``-star``, ``--star``, ``-stars``, ``--stars``
+- ``--star``, ``--stars``
    * dest = ``args.star``
    * help = List of stars to process. Default is ``None``, which will read in the star list from ``args.file``.
    * nargs = '*'
    * default = ``None``
-   
+
+
 Excess Group
 ++++++++++++++
 
 All CLI options relevant to the first (find excess) module:
 
-- ``-bin``, ``--bin``, ``-binning``, ``--binning``
+- ``--bin``, ``--binning``
    * dest = ``args.binning``
    * help = Interval for binning of spectrum in log(muHz) (bins equally in logspace).
    * type = ``float``
    * default = `0.005`
    * unit = log(muHz)
-- ``-bm``, ``--bm``, ``-mode``, ``--mode``, ``-bmode``, ``--bmode`` 
+- ``--bm``, ``--mode``, ``--bmode`` 
    * dest = ``args.mode``
    * help = Which mode to use when binning. Choices are ["mean", "median", "gaussian"]
    * type = ``str``
    * default = ``mean``
-- ``-sw``, ``--sw``, ``-smoothwidth``, ``--smoothwidth``
+- ``--sw``, ``--smoothwidth``
    * dest = ``args.smooth_width``
-   * help = Box filter width for smoothing the power spectrum
-   * type = ``int``
-   * default = `20`
-- ``-step``, ``--step``, ``-steps``, ``--steps``
+   * help = Box filter width (in muHz) for smoothing the power spectrum
+   * type = ``float``
+   * default = `50.0`
+- ``--step``, ``--steps``
    * dest = ``args.step``
    * help = The step width for the collapsed ACF wrt the fraction of the boxsize
    * type = ``float``
    * default = `0.25`
-- ``-trials``, ``--trials``, ``-ntrials``, ``--ntrials``
+- ``--trials``, ``--ntrials``
    * dest = ``args.n_trials``
    * help = Number of trials to estimate numax
    * type = int
    * default = `3`
-- ``-lx``, ``--lx``, ``-lowerx``, ``--upperx``
+- ``--lx``, ``--lowerx``
    * dest = ``args.lower_ex``
    * help = Lower limit of power spectrum to use in findex module
    * nargs = '*'
    * type = ``float``
    * default = `10.0`
    * unit = muHz
-- ``-ux``, ``--ux``, ``-upperx``, ``--upperx``
+- ``--ux``, ``--upperx``
    * dest = ``args.upper_ex``
    * help = Upper limit of power spectrum to use in findex module
    * nargs = '*'
@@ -148,105 +140,186 @@ All CLI options relevant to the first (find excess) module:
    * default = `4000.0`
    * unit = muHz
 
-Background Group
-++++++++++++++++++
 
-All CLI options relevant to the second (background fitting) module:
+Background-related
++++++++++++++++++++++
 
-- ``-bf``, ``--bf``, ``-box``, ``--box``, ``-boxfilter``, ``--boxfilter``
-   * dest = ``args.box_filter``
-   * help = Box filter width for plotting the power spectrum
-   * type = ``float``
-   * default = `1.0`
-   * unit = muHz
-- ``-dnu``, ``--dnu``
-   * dest = ``args.dnu``
-   * help = Brute force method to provide value for dnu
-   * nargs = '*'
-   * type = ``float``
-   * default = ``None``
-- ``-iw``, ``--iw``, ``-width``, ``--width``, ``-indwidth``, ``--indwidth``
-   * dest = ``args.ind_width``
-   * help = Width * resolution to use for binning of power spectrum in muHz (default=100*res)
-   * type = ``float``
-   * default = `100.0`
-- ``-numax``, ``--numax``
-   * dest = ``args.numax``
-   * help = Brute force method to bypass findex and provide value for numax. Please note: len(args.numax) == len(args.targets) for this to work! This is mostly intended for single star runs.
-   * nargs = '*'
-   * type = ``float``
-   * default = ``None``
-- ``-lb``, ``--lb``, ``-lowerb``, ``--upperb``
+All CLI options relevant to the background-fitting process:
+
+- ``--lb``, ``--upperb``
    * dest = ``args.lower_bg``
    * help = Lower limit of power spectrum to use in fitbg module. Please note: unless numax is known, it is not suggested to fix this beforehand.
    * nargs = '*'
    * type = ``float``
    * default = ``None``
    * unit = muHz
-- ``-ub``, ``--ub``, ``-upperb``, ``--upperb``
+- ``--ub``,  ``--upperb``
    * dest = ``args.upper_bg``
    * help = Upper limit of power spectrum to use in fitbg module. Please note: unless numax is known, it is not suggested to fix this beforehand.
    * nargs = '*'
    * type = ``float``
    * default = ``None``
    * unit = muHz
-- ``-mc``, ``--mc``, ``-iter``, ``--iter``, ``-mciter``, ``--mciter``
-   * dest = ``args.mc_iter``
-   * help = Number of Monte-Carlo iterations
-   * type = ``int``
-   * default = `1`
-- ``-peak``, ``--peak``, ``-peaks``, ``--peaks``, ``-npeaks``, ``--npeaks``
-   * dest = ``args.n_peaks``
-   * help = Number of peaks to fit in the ACF
-   * type = ``int``
-   * default = `5`
-- ``-rms``, ``--rms``, ``-nrms``, ``--nrms``
+- ``--iw``, ``--indwidth``
+   * dest = ``args.ind_width``
+   * help = Width of binning for power spectrum (in muHz)
+   * type = ``float``
+   * default = `20.0`
+- ``--bf``, ``--box``, ``--boxfilter``
+   * dest = ``args.box_filter``
+   * help = Box filter width (in muHz) for plotting the power spectrum
+   * type = ``float``
+   * default = `1.0`
+   * unit = muHz
+- ``--rms``, ``--nrms``
    * dest = ``args.n_rms``
    * help = Number of points used to estimate amplitudes of individual background components (this should rarely need to be touched)
    * type = int
    * default = `20`
-- ``-slope``, ``--slope`` 
-   * dest = ``args.slope``
-   * help = When true, this will correct for residual slope in a smoothed power spectrum before estimating numax
-   * type = ``bool``
-   * default = ``False``
-   * action = ``store_true``
-- ``-sp``, ``--sp``, ``-smoothps``, ``--smoothps``
+- ``--laws``, ``--nlaws``
+   * dest = ``args.n_laws``
+   * help = Force the number of red-noise component(s)
+   * type = int
+   * default = `None`
+- ``--use``
+   * dest = ``args.use``
+   * help = Which model metric to use for the best-fit background model, choices~['bic','aic']
+   * type = str
+   * default = `'bic'`
+
+   
+Numax-related
+++++++++++++++++++
+
+All CLI options relevant to estimating numax:
+
+- ``--sm``, ``--smpar``
+   * dest = ``args.sm_par``
+   * help = Value of smoothing parameter to estimate the smoothed numax (typical values range from `1`-`4`)
+   * type = ``float``
+   * default = `None`
+- ``--numax``
+   * dest = ``args.numax``
+   * help = Brute force method to bypass findex and provide value for numax. Please note: len(args.numax) == len(args.targets) for this to work! This is mostly intended for single star runs.
+   * nargs = '*'
+   * type = ``float``
+   * default = ``None``
+- ``--lp``, ``--lowerp``
+   * dest = ``args.lower_ps``
+   * help = Lower frequency limit for zoomed in power spectrum (around power excess)
+   * nargs = '*'
+   * type = ``float``
+   * default = ``None``
+   * unit = muHz
+- ``--up``,  ``--upperp``
+   * dest = ``args.upper_ps``
+   * help = Upper frequency limit for zoomed in power spectrum (around power excess)
+   * nargs = '*'
+   * type = ``float``
+   * default = ``None``
+   * unit = muHz
+- ``--ew``, ``--exwidth``
+   * dest = ``args.width``
+   * help = Fractional value of width to use for power excess, where width is computed using a solar scaling relation and then centered on the estimated numax.
+   * type = ``float``
+   * default = `1.0`
+
+
+Dnu-related
+++++++++++++++++++
+
+All CLI options relevant to determining dnu:
+
+- ``--dnu``
+   * dest = ``args.dnu``
+   * help = Brute force method to provide value for dnu
+   * nargs = '*'
+   * type = ``float``
+   * default = ``None``
+- ``--sp``, ``--smoothps``
    * dest = ``args.smooth_ps``
    * help = Box filter width for smoothing of the power spectrum. The default is 2.5, but will switch to 0.5 for more evolved stars (numax < 500 muHz).
    * type = ``float``
    * default = `2.5`
    * unit = muHz
-- ``-samples``, ``--samples`` 
-   * dest = ``args.samples``
-   * help = Save samples from Monte-Carlo sampling
-   * type = ``bool``
-   * default = ``False``
-   * action = ``store_true``
-- ``-ce``, ``--ce``, ``-clipech``, ``--clipech`` 
+- ``--peak``, ``--peaks``, ``--npeaks``
+   * dest = ``args.n_peaks``
+   * help = Number of peaks to fit in the ACF
+   * type = ``int``
+   * default = `5`
+- ``--thresh``, ``--threshold``
+   * dest = ``args.threshold``
+   * help = Fractional value of the ACF FWHM to use for determining dnu
+   * type = ``float``
+   * default = ``1.0``
+   
+Echelle-related
+++++++++++++++++++
+
+All CLI options relevant for the echelle diagram output:
+
+- ``--ce``, ``--clipech`` 
    * dest = ``args.clip_ech``
    * help = Disable the automatic clipping of high peaks in the echelle diagram
    * type = ``bool``
    * default = ``True``
    * action = ``store_false``
-- ``-cv``, ``--cv``, ``-value``, ``--value``
+- ``--cv``, ``--value``
    * dest = ``args.clip_value``
    * help = Clip value for echelle diagram (i.e. if ``args.clip_ech`` is ``True``). If none is provided, it will cut at 3x the median value of the folded power spectrum.
    * type = ``float``
    * default = ``None``
    * unit = muHz
-- ``-ie``, ``--ie``, ``-interpech``, ``--interpech`` 
+- ``--le``, ``--uppere``
+   * dest = ``args.lower_ech``
+   * help = Lower frequency limit of the folded PS to whiten mixed modes before determining the correct dnu
+   * nargs = '*'
+   * type = ``float``
+   * default = ``None``
+   * unit = muHz
+- ``--ue``,  ``--uppere``
+   * dest = ``args.upper_ech``
+   * help = Upper frequency limit of the folded PS to whiten mixed modes before determining the correct dnu
+   * nargs = '*'
+   * type = ``float``
+   * default = ``None``
+   * unit = muHz
+- ``--hey``
+   * dest = ``args.hey``
+   * help = Plugin for Daniel Hey's echelle package (not currently implemented yet)
+   * type = ``bool``
+   * default = ``False``
+   * action = ``store_true``
+- ``--ie``, ``--interpech`` 
    * dest = ``args.interp_ech``
    * help = Turn on the bilinear interpolation for the echelle diagram
    * type = ``bool``
    * default = ``False``
    * action = ``store_true``
-- ``-se``, ``--se``, ``-smoothech``, ``--smoothech``
+- ``--se``, ``--smoothech``
    * dest = ``args.smooth_ech``
    * help = Option to smooth the echelle diagram output using a box filter
    * type = ``float``
    * default = ``None``
    * unit = muHz
+   
+   
+Sampling-related
+++++++++++++++++++
+
+All CLI options relevant for the Monte-Carlo sampling:
+
+- ``--mc``, ``--iter``, ``--mciter``
+   * dest = ``args.mc_iter``
+   * help = Number of Monte-Carlo iterations
+   * type = ``int``
+   * default = `1`
+- ``--samples`` 
+   * dest = ``args.samples``
+   * help = Save samples from Monte-Carlo sampling
+   * type = ``bool``
+   * default = ``False``
+   * action = ``store_true``
    
 .. _parallel:
 
