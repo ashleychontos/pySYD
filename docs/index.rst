@@ -30,6 +30,7 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
    quickstart
    overview
    examples
+   cli
    performance
    advanced
    api
