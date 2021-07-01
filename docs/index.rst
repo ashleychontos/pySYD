@@ -25,7 +25,7 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
 **Contents:**
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    quickstart
    overview
