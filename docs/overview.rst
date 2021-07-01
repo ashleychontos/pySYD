@@ -1,5 +1,7 @@
 .. _overview:
 
+Software Overview
+####################
 
 Modes
 ******
@@ -88,8 +90,8 @@ for a guide on what the output plots are showing.
 ==========================
 
 
-Pipeline Overview
-++++++++++++++++++++
+Main Pipeline
+++++++++++++++++
 
 Initialization of ``pySYD`` via command line will look in the following paths:
 
