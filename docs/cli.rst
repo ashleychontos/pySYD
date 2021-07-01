@@ -9,7 +9,7 @@ Command Line Interface
 Parent Parser
 ===============
 
-Higher level functionality of the software. All three modes inherent the parent parser.
+Higher level functionality of the software. All four modes inherent the parent parser.
 
 - ``--file``, ``--list``, ``--todo``
    * dest = ``args.file``
@@ -45,7 +45,7 @@ Higher level functionality of the software. All three modes inherent the parent 
 Main Parser
 =============
 
-Accesses all science-related functions and is therefore for both ``run`` and ``parallel`` modes.
+Accesses dataa and all science-related functions and is therefore relevant for the ``load``, ``run`` and ``parallel`` modes.
 
 -  ``--bg``, ``--fitbg``, ``--background``, ``-b``
    * dest = ``args.background``
