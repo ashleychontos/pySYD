@@ -1,5 +1,7 @@
+import pickle
 import numpy as np
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
 from scipy.interpolate import InterpolatedUnivariateSpline
@@ -13,38 +15,40 @@ from pysyd import plots
 
 
 class Target:
-    """
-    A pySYD pipeline target. Initialization stores all the relevant information and
-    checks/loads in data for the given target. pySYD no longer requires BOTH the time
-    series data and the power spectrum, but requires additional information via CLI if
-    the former is not provided i.e. cadence or nyquist frequency, the oversampling
-    factor (if relevant), etc.
-
-    Attributes
-    ----------
-    star : int
-        the star ID
-    params : Dict[str,object]
-        the pipeline parameters
-    findex : Dict[str,object]
-        the parameters of the find excess routine
-    fitbg : Dict[str,object]
-        the parameters of the fit background routine
-    verbose : bool
-        if true, turns on the verbose output
-
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the parsed and updated command line arguments
-
-    Methods
-    -------
-    TODO: Add methods
-
-    """
 
     def __init__(self, star, args):
+        """
+        A pySYD pipeline target. Initialization stores all the relevant information and
+        checks/loads in data for the given target. pySYD no longer requires BOTH the time
+        series data and the power spectrum, but requires additional information via CLI if
+        the former is not provided i.e. cadence or nyquist frequency, the oversampling
+        factor (if relevant), etc.
+    
+        Attributes
+        ----------
+        star : int
+            the star ID
+        params : Dict[str,object]
+            the pipeline parameters
+        findex : Dict[str,object]
+            the parameters of the find excess routine
+        fitbg : Dict[str,object]
+            the parameters relevant for the background-fitting procedure
+        globe : Dict[str,object]
+            parameters relevant for estimating global asteroseismic parameters numax and dnu
+        verbose : bool
+            if true, turns on the verbose output
+    
+        Parameters
+        ----------
+        args : argparse.Namespace
+            the parsed and updated command line arguments
+
+        Methods
+        -------
+        TODO: Add methods
+
+        """
         self.name = star
         self.params = args.params
         self.findex = args.findex
@@ -75,6 +79,18 @@ class Target:
             if utils.check_fitbg(self):
                 self = utils.get_fitbg(self)
                 self.fit_global()
+#        if self.params['show'] and self.pickles != []:
+#            for p, pkl in enumerate(self.pickles):
+#                with open(pkl,'rb') as file:
+#                    fig = pickle.load(file)
+#                plt.show(block=False)
+        if self.params['show']:
+            if self.verbose:
+                print('Displaying figures...')
+            plt.show(block=False)
+            if self.verbose:
+                input('------------ please press RETURN to exit -------------')
+                input('------------------------------------------------------')
 
 
     def find_excess(self):
@@ -91,7 +107,7 @@ class Target:
         if self.findex['binning'] is not None:
             self.bin_freq, self.bin_pow, _ = functions.bin_data(self.freq, self.pow, width=self.findex['binning'], log=True, mode=self.findex['mode'])
             if self.verbose:
-                print('----------------------------------------------------')
+                print('------------------------------------------------------')
                 print('Running find_excess module:')
                 print('PS binned to %d datapoints' % len(self.bin_freq))
                 print('Binned freq res: %.2f muHz'%(self.bin_freq[1]-self.bin_freq[0]))
@@ -120,6 +136,7 @@ class Target:
                 print('selecting model %d'%self.findex['results'][self.name]['best'])
             utils.save_findex(self)
             plots.plot_excess(self)
+            self.pickles.append('excess.pickle')
 
 
     def collapsed_acf(self, b, start=0, max_iterations=5000, max_snr=100.):
@@ -215,13 +232,14 @@ class Target:
                 if self.i == 0:
                     # Plot results
                     plots.plot_background(self)
+                    self.pickles.append('background.pickle')
                     if self.fitbg['mc_iter'] > 1:
                         # Switch to critically-sampled PS if sampling
                         mask = np.ma.getmask(np.ma.masked_inside(self.freq_cs, self.params[self.name]['bg_mask'][0], self.params[self.name]['bg_mask'][1]))
                         self.frequency, self.power = np.copy(self.freq_cs[mask]), np.copy(self.pow_cs[mask])
                         self.resolution = self.frequency[1]-self.frequency[0]
                         if self.verbose:
-                            print('----------------------------------------------------\nRunning sampling routine:')
+                            print('------------------------------------------------------\nRunning sampling routine:')
                             self.pbar = tqdm(total=self.fitbg['mc_iter'])
                             self.pbar.update(1)
                 else:
@@ -235,6 +253,7 @@ class Target:
         if self.fitbg['mc_iter'] > 1:
             # Plot results if sampling
             plots.plot_samples(self)
+            self.pickles.append('samples.pickle')
         if self.verbose:
             # Print results
             utils.verbose_output(self)
@@ -260,7 +279,7 @@ class Target:
         self.bin_err = bin_err[mask]
 
         if self.i == 0 and self.verbose:
-            print('----------------------------------------------------')
+            print('------------------------------------------------------')
             print('Running fit_background module:')
             print('PS binned to %d data points' % len(bin_freq))
         # Estimate white noise level
@@ -375,7 +394,8 @@ class Target:
             self.bic = []
             self.aic = []
             self.paras = []
-            print('Comparing %d different models:'%(self.nlaws+1))
+            if self.verbose:
+                print('Comparing %d different models:'%(self.nlaws+1))
             for nlaws in range(self.nlaws+1):
                 note=''
                 bb = np.zeros((2,2*nlaws+1)).tolist()

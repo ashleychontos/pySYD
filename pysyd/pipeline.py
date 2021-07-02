@@ -12,7 +12,7 @@ from pysyd.target import Target
 
 
 
-def run(args, count=0, CLI=True):
+def run(args=None, star=None, CLI=True, verbose=False, count=0):
     """
     Main script to run the pySYD pipeline
 
@@ -22,8 +22,12 @@ def run(args, count=0, CLI=True):
         the command line arguments
 
     """
+    if not CLI and star is not None:
+        args = utils.Constants()
+        args.verbose = verbose
+        args.stars = [star]
 
-    single = load(args, CLI=CLI)
+    single = load(args=args, CLI=CLI)
     if single.ps:
         count+=1
         single.run_syd()
@@ -36,7 +40,7 @@ def run(args, count=0, CLI=True):
         utils.scrape_output(args)
 
 
-def load(args, star=None, CLI=True):
+def load(args=None, star=None, CLI=True, verbose=False):
     """
     A Target class is initialized and processed for each star in the stargroup.
 
@@ -51,9 +55,9 @@ def load(args, star=None, CLI=True):
         current data available for the provided target
 
     """
-    if star is None:
-        assert len(args.stars) == 1, "You can only load in data for one star at a time."
-    else:
+    if not CLI and star is not None:
+        args = utils.Constants()
+        args.verbose = verbose
         args.stars = [star]
 
     args = utils.get_info_all(args, parallel=False, CLI=CLI)
@@ -74,7 +78,6 @@ def parallel(args, CLI=True):
         the command line arguments
 
     """
-
     args = utils.get_info_all(args, parallel=True, CLI=CLI)
 
     # create the separate, asyncrhonous (nthread) processes

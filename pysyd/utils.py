@@ -38,7 +38,7 @@ def get_info_all(args, parallel, CLI=True):
     # Get parameters for all modules
     args = get_pysyd_parameters(args, parallel, CLI)
     # Get invidual/specific star info from csv file (if it exists)
-    args = get_csv_info(args)
+    args = get_csv_info(args, CLI)
     if CLI:
         # Check the input variables
         check_input_args(args)
@@ -127,6 +127,10 @@ def get_main_params(args, CLI, stars=None, verbose=False, show=False, save=True,
     else:
         args.todo = os.path.join(os.path.abspath(os.getcwd()), 'info', 'todo.txt')
         args.info = os.path.join(os.path.abspath(os.getcwd()), 'info', 'star_info.csv')
+        args.inpdir = os.path.join(os.path.abspath(os.getcwd()), 'data')
+        args.of_actual = of_actual
+        args.of_new = of_new
+        args.kepcorr = kepcorr
         params = {
             'stars': stars,
             'inpdir': os.path.join(os.path.abspath(os.getcwd()), 'data'),
@@ -134,9 +138,6 @@ def get_main_params(args, CLI, stars=None, verbose=False, show=False, save=True,
             'info': args.info,
             'show': show,
             'save': save,
-            'of_actual': of_actual,
-            'of_new': of_new,
-            'kepcorr': kepcorr,
         }
 
     # Open star list
@@ -150,6 +151,7 @@ def get_main_params(args, CLI, stars=None, verbose=False, show=False, save=True,
         params[star]['path'] = os.path.join(params['outdir'], star)
         if params['save'] and not os.path.exists(params[star]['path']):
             os.makedirs(params[star]['path'])
+        params[star]['ech_mask'] = None
     args.params = params
 
     return args
@@ -196,7 +198,7 @@ def get_groups(args, parallel=False):
 
 
 def get_excess_params(args, CLI, n_trials=3, step=0.25, binning=0.005, smooth_width=50.0, 
-                      lower_ex=10.0, upper_ex=4000.0):
+                      lower_ex=10.0, upper_ex=4000.0, mode='mean'):
     """
     Get the parameters for the find excess routine.
 
@@ -427,7 +429,7 @@ def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_p
     return args
 
 
-def get_csv_info(args):
+def get_csv_info(args, CLI=True):
     """
     Reads in any star information provided via args.info and is 'info/star_info.csv' by default. 
     ** Please note that this is NOT required for pySYD to run successfully **
@@ -445,6 +447,9 @@ def get_csv_info(args):
         the updated command line arguments
 
     """
+    if not CLI:
+        args.excess = True
+        args.background = True
     constants = Constants()
     columns = get_data_columns(type='required')
     # Open file if it exists
@@ -609,12 +614,13 @@ def load_data(star, args):
         will return `True` if the power spectrum file was successfully loaded otherwise `False`
 
     """
+    star.pickles=[]
     # Now done at beginning to make sure it only does this once per star
     if glob.glob(os.path.join(args.inpdir,'%s*'%str(star.name))) != []:
         if star.verbose:
-            print('\n\n----------------------------------------------------')
+            print('\n\n------------------------------------------------------')
             print('Target: %s'%str(star.name))
-            print('----------------------------------------------------')
+            print('------------------------------------------------------')
 
         # Load light curve
         args, star, note = load_time_series(args, star)

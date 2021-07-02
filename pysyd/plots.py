@@ -1,8 +1,11 @@
 import os
+import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.convolution import convolve, Box1DKernel
 
+from pysyd import functions
+from pysyd import models
 from pysyd import utils
 
 
@@ -55,7 +58,7 @@ def plot_excess(star):
     
     """
 
-    plt.figure(figsize=(12,8))
+    fig = plt.figure("Find excess results for %s"%star.name, figsize=(12,8))
 
     # Time series data
     ax1 = plt.subplot(2, 3, 1)
@@ -110,12 +113,10 @@ def plot_excess(star):
     plt.tight_layout()
     if star.params['save']:
         plt.savefig(os.path.join(star.params[star.name]['path'],'excess.png'), dpi=300)
-    if star.params['show']:
-        plt.show(block=False)
-    if star.verbose:
-        print('----------------------------------------------------')
-        input('------------------- press RETURN -------------------')
-    plt.close()
+    with open('excess.pickle','wb') as f:
+        pickle.dump(fig, f)
+    if not star.params['show']:
+        plt.close()
 
 
 def plot_background(star, n_peaks=10):
@@ -135,14 +136,11 @@ def plot_background(star, n_peaks=10):
 
     """
 
-    from pysyd.functions import return_max, max_elements
-    from pysyd import models
-
     exp_numax=star.fitbg['results'][star.name]['numax_gauss'][0]
     exp_dnu=0.22*(exp_numax**0.797)
     obs_dnu=star.fitbg['results'][star.name]['dnu'][0]
 
-    fig = plt.figure(figsize=(12, 12))
+    fig = plt.figure("Global fit for %s"%star.name, figsize=(12, 12))
     # Time series data
     ax1 = fig.add_subplot(3, 3, 1)
     if star.lc:
@@ -208,7 +206,7 @@ def plot_background(star, n_peaks=10):
     # Smoothed power excess w/ gaussian
     ax4 = fig.add_subplot(3, 3, 4)
     ax4.plot(star.region_freq, star.region_pow, 'w-', zorder=0)
-    idx = return_max(star.region_freq, star.region_pow, index=True)
+    idx = functions.return_max(star.region_freq, star.region_pow, index=True)
     ax4.plot([star.region_freq[idx]], [star.region_pow[idx]], color='red', marker='s', markersize=7.5, zorder=0)
     ax4.axvline([star.region_freq[idx]], color='white', linestyle='--', linewidth=1.5, zorder=0)
     ax4.plot(star.new_freq, star.numax_fit, 'b-', zorder=3)
@@ -222,7 +220,7 @@ def plot_background(star, n_peaks=10):
     mask = np.ma.getmask(np.ma.masked_inside(star.frequency, star.params[star.name]['ps_mask'][0], star.params[star.name]['ps_mask'][1]))
     star.freq = star.frequency[mask]
     star.psd = star.bg_corr_smooth[mask]
-    peaks_f, peaks_p = max_elements(star.freq, star.psd, n_peaks)
+    peaks_f, peaks_p = functions.max_elements(star.freq, star.psd, n_peaks)
     ax5 = fig.add_subplot(3, 3, 5)
     ax5.plot(star.freq, star.psd, 'w-', zorder=0, linewidth=1.0)
     ax5.scatter(peaks_f, peaks_p, s=25.0, edgecolor='r', marker='s', facecolor='none', linewidths=1.0)
@@ -289,15 +287,13 @@ def plot_background(star, n_peaks=10):
             plt.savefig(os.path.join(star.params[star.name]['path'],'background_sm_ech.png'), dpi=300)
         else:
             plt.savefig(os.path.join(star.params[star.name]['path'],'background.png'), dpi=300)
-    if star.params['show']:
-        plt.show(block=False)
-    if star.verbose:
-        print('----------------------------------------------------')
-        input('------------------- press RETURN -------------------')
-    plt.close()
+    with open('background.pickle','wb') as f:
+        pickle.dump(fig, f)
+    if not star.params['show']:
+        plt.close()
 
 
-def plot_samples(star):
+def plot_samples(star, notebook=False):
     """
     Plot results of the Monte-Carlo sampling.
 
@@ -313,20 +309,26 @@ def plot_samples(star):
     """
 
     n = len(star.df.columns.values.tolist())
-    plt.figure(figsize=(12, 8))
     params = utils.get_params_dict()
     if n <= 3:
         x, y = 3, 1
+        size=(12,6)
     elif n > 3 and n <= 6:
         x, y = 3, 2
+        size=(12,8)
     elif n > 6 and n <= 9:
         x, y = 3, 3
+        size=(12,12)
     elif  n > 9 and n <= 12:
         x, y = 4, 3
+        size=(12,8)
     elif n > 12 and n <= 16:
         x, y = 4, 4
+        size=(12,12)
     else:
         x, y = 5, 4
+        size=(12,8)
+    fig = plt.figure("Posteriors for %s"%star.name, figsize=size)
     for i, col in enumerate(star.df.columns.values.tolist()):
         ax = plt.subplot(y, x, i+1)
         ax.hist(star.df[col], bins=20, color='cyan', histtype='step', lw=2.5, facecolor='0.75')
@@ -336,6 +338,45 @@ def plot_samples(star):
     plt.tight_layout()
     if star.params['save']:
         plt.savefig(os.path.join(star.params[star.name]['path'],'samples.png'), dpi=300)
-    if star.params['show']:
-        plt.show(block=False)
-    plt.close()
+    with open('samples.pickle','wb') as f:
+        pickle.dump(fig, f)
+    if not star.params['show']:
+        plt.close()
+
+
+def time_series(star, notebook=True):
+
+    fig = plt.figure(figsize=(10,6))
+    ax = plt.subplot(1,1,1)
+    ax.plot(star.time, star.flux, 'w-')
+    ax.set_xlim([min(star.time), max(star.time)])
+    ax.tick_params(axis='both', which='minor', length=10, width=1.25, direction='inout')
+    ax.tick_params(axis='both', which='major', length=15, width=1.25, direction='inout')  
+    ax.tick_params(labelsize=22)
+    plt.xlabel(r'$\rm Time \,\, [days]$', fontsize=28)
+    plt.ylabel(r'$\rm Normalized \,\, flux$', fontsize=28)
+    plt.tight_layout()
+    with open('lc.pickle', 'wb') as f:
+        pickle.dump(fig, f)
+    if not star.params['show']:
+        plt.close()
+
+
+def frequency_series(star, notebook=True):
+
+    fig = plt.figure(figsize=(10,6))
+    ax = plt.subplot(1,1,1)
+    ax.plot(star.frequency, star.power, 'w-')
+    ax.set_xlim([min(star.frequency), max(star.frequency)])
+    ax.tick_params(axis='both', which='minor', length=10, width=1.25, direction='inout')
+    ax.tick_params(axis='both', which='major', length=15, width=1.25, direction='inout')  
+    ax.tick_params(labelsize=22)
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    plt.xlabel(r'$\rm Frequency \,\, [\mu Hz]$', fontsize=28)
+    plt.ylabel(r'$\rm Power \,\, [ppm^2 \, \mu Hz^{-1}]$', fontsize=28)
+    plt.tight_layout()
+    with open('ps.pickle', 'wb') as f:
+        pickle.dump(fig, f)
+    if not star.params['show']:
+        plt.close()

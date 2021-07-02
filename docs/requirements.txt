@@ -1,9 +1,9 @@
 astropy>=4.0.0
 matplotlib>=1.5.3
-numpy>=1.16
-pandas>=0.20.0
-scipy>=1.5.0
+numpy
+pandas>=1.0.5
+scipy
+tqdm
 nbsphinx
 sphinx_rtd_theme
 asteroid_sphinx_theme
-tqdm
