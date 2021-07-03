@@ -57,7 +57,7 @@ The NASA space telescopes *Kepler*, K2 and TESS have recently provided very larg
 of stars. By detecting brightness variations due to solar-like oscillations, these light curves allow the application of 
 asteroseismology to large numbers of stars, which requires automated software tools to efficiently extract observables. 
 Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, @mathur2010; `COR`, @mosser2009; `OCT`, @hekker2010; 
-`SYD`, @huber2019], but most of them are closed-source and thus inaccessible to the general astronomy community. Some open-source 
+`SYD`, @huber2009], but most of them are closed-source and thus inaccessible to the general astronomy community. Some open-source 
 tools exist [e.g., `DIAMONDS` and `FAMED`, @corsaro2014; `PBjam`, @nielsen2021; `lightkurve`, @lightkurve], but they are either 
 optimized for smaller samples of stars or have not yet been extensively tested against closed-source tools.
 
