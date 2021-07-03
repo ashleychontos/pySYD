@@ -43,41 +43,42 @@ in astronomy as the gold standard for characterizing fundamental properties like
 and ages for single stars, which has broad impacts on several fields in astronomy. For example, ages of stars 
 are important to reconstruct the formation history of the Milky Way (so-called galactic archeology). For 
 exoplanets that are discovered indirectly through changes in stellar observables, precise and accurate stellar 
-masses and radii are critical for learning about the planets that orbit them.
+masses and radii are critical for learning about the planets that orbit them. 
+
+`pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic parameters given a
+power spectrum. Derived parameters include seismic observables $\rm \nu_{max}$ and $\Delta\nu$, which are directly tied
+to the surface gravity and density of the star [@kjeldsen1995]. `pySYD` also performs a maximum likelihood estimation for 
+determining the stellar background contribution, characterizing different time scales and amplitudes of granulation 
+processes. 
 
 # Statement of Need
 
-The NASA space telescopes *Kepler*, K2 and TESS have recently provided very large databases of high-precision 
-light curves of stars. By detecting brightness variations due to stellar oscillations, these light curves allow the 
-application of asteroseismology to large numbers of stars, which requires automated software tools to efficiently 
-extract observables. Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, @mathur2010; 
-`COR`, @mosser2009; `OCT`, @hekker2010], but many of them are closed-source and therefore inaccessible 
-to the general astronomy community. Some open-source tools exist [e.g., `DIAMONDS` and `FAMED`, @corsaro2014; `PBjam`, 
-@nielsen2021; `lightkurve`, @lightkurve], but they are either optimized for smaller samples of stars or 
-have not yet been extensively tested against closed-source tools.
+The NASA space telescopes *Kepler*, K2 and TESS have recently provided very large databases of high-precision light curves 
+of stars. By detecting brightness variations due to solar-like oscillations, these light curves allow the application of 
+asteroseismology to large numbers of stars, which requires automated software tools to efficiently extract observables. 
+Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, @mathur2010; `COR`, @mosser2009; `OCT`, @hekker2010; 
+`SYD`, @huber2019], but most of them are closed-source and thus inaccessible to the general astronomy community. Some open-source 
+tools exist [e.g., `DIAMONDS` and `FAMED`, @corsaro2014; `PBjam`, @nielsen2021; `lightkurve`, @lightkurve], but they are either 
+optimized for smaller samples of stars or have not yet been extensively tested against closed-source tools.
 
-`pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which has been used frequently 
-to measure asteroseismic parameters for *Kepler* stars and has been extensively tested against closed-source tools on
-*Kepler* data [@verner2011;@hekker2011]. Papers based on asteroseismic parameters measured using the `SYD` pipeline 
-include @huber2011, @bastien2013, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed using the same 
-well-tested methodology, but has improved functionality including automated background model selection and parallel 
-processing as well as improved flexibility through a user-friendly interface, while still maintaining its speed and 
-efficiency. Well-documented, open-source asteroseismology software that has been benchmarked against closed-source 
-tools are critical to ensure the reproducibility of legacy results from the *Kepler* mission. The combination of 
-well-tested methodology, improved flexibility and parallel processing capabilities will also make `pySYD` a promising 
-tool for the broader community to analyze current and forthcoming data from the NASA TESS mission.
+`pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which has been used frequently to measure 
+asteroseismic parameters for *Kepler* stars and has been extensively tested against other closed-source tools on *Kepler* 
+data [@verner2011;@hekker2011]. Papers based on asteroseismic parameters measured from the `SYD` pipeline include @huber2011, 
+@bastien2013, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed using the same methodology as the IDL `SYD` 
+pipeline, but comes with many new enhancements including automated background model selection as well as parallel processing. 
+The improved flexibility of the software makes it more accessible to the broader astronomy community by providing many new, optional 
+features for optimal results, while still maintaining its speed and efficiency. Well-documented, open-source asteroseismology software 
+that has been benchmarked against closed-source tools are critical to ensure the reproducibility of legacy results from the *Kepler* 
+mission [@borucki2010]. The combination of the well-tested methodology and improved accessibility also makes `pySYD` a promising tool 
+to analyze current and forthcoming data from the NASA TESS mission [@ricker2099].
 
 # The `pySYD` library
 
 The excitation mechanism for solar-like oscillations is stochastic and modes are observed over a range of frequencies. 
 Oscillation modes are separated by the so-called large frequency spacing ($\Delta\nu$), with an approximately
 Gaussian-shaped power excess centered on $\rm \nu_{max}$, the frequency of maximum power. The observables 
-$\rm \nu_{max}$ and $\Delta\nu$ are directly related to fundamental properties such as surface gravity, density,
-mass and radius [@kjeldsen1995].  
-
-`pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic parameters. 
-Derived parameters include $\rm \nu_{max}$ and $\Delta\nu$, as well as characteristic amplitudes and timescales 
-of correlated red-noise signals due to stellar granulation.
+$\rm \nu_{max}$ and $\Delta\nu$ are directly related to fundamental stellar properties such as surface gravity, 
+density, mass and radius [@kjeldsen1995].
 
 A `pySYD` pipeline `Target` class object has two main methods:
 
