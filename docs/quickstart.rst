@@ -37,7 +37,7 @@ You may test your installation by using ``pysyd --help`` to see available comman
       -h, --help            show this help message and exit
       -version, --version   Print version number and exit.
 
-    pySYD modes:
+    pySYD :ref:`modes`:
       {setup,load,run,parallel}
         setup               Easy setup of relevant directories and files
 	load                Load in data for a given target
