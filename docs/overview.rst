@@ -3,6 +3,8 @@
 Software Overview
 ####################
 
+.. _modes:
+
 Modes
 ******
 
