@@ -45,7 +45,7 @@ are important to reconstruct the formation history of the Milky Way (so-called g
 exoplanets that are discovered indirectly through changes in stellar observables, precise and accurate stellar 
 masses and radii are critical for learning about the planets that orbit them. 
 
-`pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic parameters given a
+`pySYD` is a Python package for detecting solar-like oscillations and measuring global asteroseismic parameters given an input
 power spectrum. Derived parameters include seismic observables $\rm \nu_{max}$ and $\Delta\nu$, which are directly tied
 to the surface gravity and density of the star [@kjeldsen1995]. `pySYD` also performs a maximum likelihood estimation for 
 determining the stellar background contribution, characterizing different time scales and amplitudes of granulation 
@@ -61,16 +61,16 @@ Several tools have been developed for asteroseismic analyses [e.g., `A2Z`, @math
 tools exist [e.g., `DIAMONDS` and `FAMED`, @corsaro2014; `PBjam`, @nielsen2021; `lightkurve`, @lightkurve], but they are either 
 optimized for smaller samples of stars or have not yet been extensively tested against closed-source tools.
 
-`pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009], which has been used frequently to measure 
-asteroseismic parameters for *Kepler* stars and has been extensively tested against other closed-source tools on *Kepler* 
-data [@verner2011;@hekker2011]. Papers based on asteroseismic parameters measured from the `SYD` pipeline include @huber2011, 
-@bastien2013, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed using the same methodology as the IDL `SYD` 
-pipeline, but comes with many new enhancements including automated background model selection as well as parallel processing. 
-The improved flexibility of the software makes it more accessible to the broader astronomy community by providing many new, optional 
-features for optimal results, while still maintaining its speed and efficiency. Well-documented, open-source asteroseismology software 
-that has been benchmarked against closed-source tools are critical to ensure the reproducibility of legacy results from the *Kepler* 
-mission [@borucki2010]. The combination of the well-tested methodology and improved accessibility also makes `pySYD` a promising tool 
-to analyze current and forthcoming data from the NASA TESS mission [@ricker2015].
+`pySYD` is adapted from the framework of the IDL-based `SYD` pipeline [@huber2009; hereafter referred to as `IDL-SYD`], which has 
+been used frequently to measure asteroseismic parameters for *Kepler* stars and has been extensively tested against other closed-source 
+tools on *Kepler* data [@verner2011;@hekker2011]. Papers based on asteroseismic parameters measured from `IDL-SYD` include @huber2011, 
+@bastien2013, @chaplin2014, @serenelli2017, and @yu2018. `pySYD` was developed using the same methodology as `IDL-SYD`, but comes with 
+many new enhancements including automated background model selection as well as parallel processing. The improved flexibility of the 
+software makes it more accessible to the broader astronomy community by providing many new, optional features to obtain optimal results 
+while still maintaining its speed and efficiency. Well-documented, open-source asteroseismology software that has been benchmarked against 
+closed-source tools are critical to ensure the reproducibility of legacy results from the *Kepler* mission [@borucki2010]. Additionally, the 
+combination of the well-tested methodology and improved accessibility makes `pySYD` a promising tool to analyze current and forthcoming data 
+from the NASA TESS mission [@ricker2015].
 
 # The `pySYD` library
 
@@ -91,11 +91,19 @@ A `pySYD` pipeline `Target` class object has two main methods:
   function is computed using the region centered on $\rm \nu_{max}$, and used to calculate an estimate for $\Delta\nu$. 
   
 The `pySYD` software depends on a number of powerful libraries, including Astropy [@astropy1;@astropy2], 
-Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. `pySYD` has been tested against `IDL-SYD` using 
-results from the *Kepler* sample for differing time series lengths (\autoref{fig:comparison}). The comparisons 
-show no significant systematic differences, with a median offset and scatter of $0.2\%$ and $0.5\%$ for 
-$\rm \nu_{max}$ as well as $0.01\%$ and $0.2\%$ for $\Delta\nu$, which is smaller or comparable to the 
-typical random uncertainties [@huber2011].
+Matplotlib [@matplotlib], Numpy [@numpy], and SciPy [@scipy]. 
+
+# Comparison to Closed-source `IDL-SYD`
+
+How is it different? How is it the same?
+
+Initially intended as a direct translation from IDL to Python, `pySYD` inherits all of the core operations and
+techniques that made `IDL-SYD` successful.
+
+`pySYD` has been tested against `IDL-SYD` using results from the *Kepler* sample for differing time series 
+lengths (\autoref{fig:comparison}). The comparisons show no significant systematic differences, with a median 
+offset and scatter of $0.2\%$ and $0.5\%$ for $\rm \nu_{max}$ as well as $0.01\%$ and $0.2\%$ for $\Delta\nu$, 
+which is smaller or comparable to the typical random uncertainties [@huber2011].
 
 ![Comparison of `pySYD` and `IDL-SYD` results for global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ 
 (right) for 30 *Kepler* stars, which are colored by the time series baseline. The bottom panels show the
