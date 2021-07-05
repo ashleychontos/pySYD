@@ -27,10 +27,13 @@ def run(args=None, star=None, CLI=True, verbose=False, count=0):
         args.verbose = verbose
         args.stars = [star]
 
-    single = load(args=args, CLI=CLI)
-    if single.ps:
-        count+=1
-        single.run_syd()
+    args = utils.get_info_all(args, parallel=False, CLI=CLI)
+    for star in args.stars:
+        single = load(args=args, star=star, CLI=CLI)
+        if single.ps:
+            count+=1
+            single.run_syd()
+
     # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
     if count != 0:
         if args.verbose:
@@ -59,9 +62,9 @@ def load(args=None, star=None, CLI=True, verbose=False):
         args = utils.Constants()
         args.verbose = verbose
         args.stars = [star]
+        args = utils.get_info_all(args, parallel=False, CLI=CLI)
 
-    args = utils.get_info_all(args, parallel=False, CLI=CLI)
-    single = Target(args.stars[0], args)
+    single = Target(star, args)
 
     return single
 
