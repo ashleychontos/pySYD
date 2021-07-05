@@ -29,7 +29,7 @@ You may test your installation by using ``pysyd --help`` to see available comman
 .. code-block:: bash
 		
     $ pysyd --help
-    usage: pySYD [-h] [-version] {setup,run,parallel} ...
+    usage: pySYD [-h] [-version] {setup,load,run,parallel} ...
 
     pySYD: Automated Extraction of Global Asteroseismic Parameters
 
@@ -37,12 +37,12 @@ You may test your installation by using ``pysyd --help`` to see available comman
       -h, --help            show this help message and exit
       -version, --version   Print version number and exit.
 
-    subcommands:
-      {setup,run,parallel}
-        setup               Easy setup for directories and files
-        run                 Run pySYD in regular mode
+    pySYD :ref:`modes`:
+      {setup,load,run,parallel}
+        setup               Easy setup of relevant directories and files
+	load                Load in data for a given target
+        run                 Run the main pySYD pipeline
         parallel            Run pySYD in parallel
-
 
 
 Setting Up
