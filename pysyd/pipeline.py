@@ -37,7 +37,8 @@ def run(args=None, star=None, CLI=True, verbose=False, count=0):
     # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
     if count != 0:
         if args.verbose:
-            print('Combining results into single csv file.')
+            print(' - combining results into single csv file')
+            print('------------------------------------------------------')
             print()
         # Concatenates output into two files
         utils.scrape_output(args)

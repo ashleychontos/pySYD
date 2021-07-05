@@ -75,22 +75,18 @@ class Target:
             self = utils.get_findex(self)
             self.find_excess()
         # Run the global fitting routine
-        if self.params[self.name]['background']:
-            if utils.check_fitbg(self):
-                self = utils.get_fitbg(self)
-                self.fit_global()
-#        if self.params['show'] and self.pickles != []:
-#            for p, pkl in enumerate(self.pickles):
-#                with open(pkl,'rb') as file:
-#                    fig = pickle.load(file)
-#                plt.show(block=False)
+        if utils.check_fitbg(self):
+            self = utils.get_fitbg(self)
+            self.fit_global()
         if self.params['show']:
+            note=''
             if self.verbose:
-                print('Displaying figures...')
+                note+=' - displaying figures'
+            print(note)
             plt.show(block=False)
-            if self.verbose:
-                input('------------ please press RETURN to exit -------------')
-                input('------------------------------------------------------')
+            input(' - press RETURN to exit')
+            if not self.verbose:
+                print('')
 
 
     def find_excess(self):
@@ -246,7 +242,7 @@ class Target:
                     if self.verbose:
                         self.pbar.update(1)
                 self.i += 1
-                if self.i == self.fitbg['mc_iter'] and self.fitbg['mc_iter'] > 1:
+                if self.i == self.fitbg['mc_iter'] and self.fitbg['mc_iter'] > 1 and self.verbose:
                     self.pbar.close()
         # Save results of second module
         utils.save_fitbg(self)
@@ -299,29 +295,16 @@ class Target:
 
     def get_white_noise(self):
         """
-        Estimate the white noise level (in muHz) by taking a mean over a region 
-        in the power spectrum near the nyquist frequency.
+        Estimate the white noise level (in muHz) by taking the mean of
+        the last 10% of the power spectrum.
 
         Returns
         -------
         None
 
         """
-        if hasattr(self, 'nyquist') and max(self.frequency) > self.nyquist:
-            if self.nyquist < 400.:
-                mask = (self.frequency > 200.)&(self.frequency < 270.)
-                self.noise = np.mean(self.random_pow[mask])
-            elif self.nyquist > 400. and self.nyquist < 5000.:
-                mask = (self.frequency > 4000.)&(self.frequency < 4167.)
-                self.noise = np.mean(self.random_pow[mask])
-            elif self.nyquist > 5000. and self.nyquist < 9000.:
-                mask = (self.frequency > 8000.)&(self.frequency < 8200.)
-                self.noise = np.mean(self.random_pow[mask])
-            else:
-                pass
-        else:
-            mask = (self.frequency > (max(self.frequency)-0.1*max(self.frequency)))&(self.frequency < max(self.frequency))
-            self.noise = np.mean(self.random_pow[mask])
+        mask = (self.frequency > (max(self.frequency)-0.1*max(self.frequency)))&(self.frequency < max(self.frequency))
+        self.noise = np.mean(self.random_pow[mask])
 
 
     def estimate_initial_red(self, a=[]):

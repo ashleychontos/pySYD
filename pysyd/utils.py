@@ -429,7 +429,7 @@ def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_p
     return args
 
 
-def get_csv_info(args, CLI=True):
+def get_csv_info(args, CLI=True, run_excess=True):
     """
     Reads in any star information provided via args.info and is 'info/star_info.csv' by default. 
     ** Please note that this is NOT required for pySYD to run successfully **
@@ -447,9 +447,6 @@ def get_csv_info(args, CLI=True):
         the updated command line arguments
 
     """
-    if not CLI:
-        args.excess = True
-        args.background = True
     constants = Constants()
     columns = get_data_columns(type='required')
     # Open file if it exists
@@ -457,8 +454,7 @@ def get_csv_info(args, CLI=True):
         df = pd.read_csv(args.info)
         stars = [str(each) for each in df.stars.values.tolist()]
         for i, star in enumerate(args.stars):
-            args.params[star]['excess'] = args.excess
-            args.params[star]['background'] = args.background
+            args.params[star]['excess'] = run_excess
             args.params[star]['force'] = False
             if star in stars:
                 idx = stars.index(star)
@@ -484,8 +480,7 @@ def get_csv_info(args, CLI=True):
     # same if the file does not exist
     else:
         for star in args.stars:
-            args.params[star]['excess'] = args.excess
-            args.params[star]['background'] = args.background
+            args.params[star]['excess'] = run_excess
             args.params[star]['force'] = False
             for column in columns:
                 args.params[star][column] = None
@@ -696,6 +691,7 @@ def load_time_series(args, star, note=''):
 
     """
     star.lc = False
+    star.nyquist = None
     # Try loading the light curve
     if os.path.exists(os.path.join(args.inpdir, '%s_LC.txt'%star.name)):
         star.lc = True

@@ -43,7 +43,7 @@ def set_plot_params():
 
 
 
-def plot_excess(star):
+def plot_excess(star, notebook=False):
     """
     Creates a plot summarizing the results of the find excess routine.
 
@@ -51,6 +51,8 @@ def plot_excess(star):
     ----------
     star : target.Target
         the pySYD pipeline object
+    notebook : bool
+        if running script out of Jupyter notebook (for output plots)
 
     Returns
     -------
@@ -113,13 +115,14 @@ def plot_excess(star):
     plt.tight_layout()
     if star.params['save']:
         plt.savefig(os.path.join(star.params[star.name]['path'],'excess.png'), dpi=300)
-    with open('excess.pickle','wb') as f:
-        pickle.dump(fig, f)
+    if notebook:
+        with open('excess.pickle','wb') as f:
+            pickle.dump(fig, f)
     if not star.params['show']:
         plt.close()
 
 
-def plot_background(star, n_peaks=10):
+def plot_background(star, n_peaks=10, notebook=False):
     """
     Creates a plot summarizing the results of the fit background routine.
 
@@ -129,6 +132,8 @@ def plot_background(star, n_peaks=10):
         the main pipeline Target class object
     n_peaks : int
         the number of peaks to highlight in the zoomed-in power spectrum
+    notebook : bool
+        if running script out of Jupyter notebook (for output plots)
 
     Results
     -------
@@ -287,8 +292,9 @@ def plot_background(star, n_peaks=10):
             plt.savefig(os.path.join(star.params[star.name]['path'],'background_sm_ech.png'), dpi=300)
         else:
             plt.savefig(os.path.join(star.params[star.name]['path'],'background.png'), dpi=300)
-    with open('background.pickle','wb') as f:
-        pickle.dump(fig, f)
+    if notebook:
+        with open('background.pickle','wb') as f:
+            pickle.dump(fig, f)
     if not star.params['show']:
         plt.close()
 
@@ -301,6 +307,8 @@ def plot_samples(star, notebook=False):
     ----------
     star : target.Target
         the pySYD pipeline object
+    notebook : bool
+        if running script out of Jupyter notebook (for output plots)
 
     Returns
     -------
@@ -338,15 +346,16 @@ def plot_samples(star, notebook=False):
     plt.tight_layout()
     if star.params['save']:
         plt.savefig(os.path.join(star.params[star.name]['path'],'samples.png'), dpi=300)
-    with open('samples.pickle','wb') as f:
-        pickle.dump(fig, f)
+    if notebook:
+        with open('samples.pickle','wb') as f:
+            pickle.dump(fig, f)
     if not star.params['show']:
         plt.close()
 
 
 def time_series(star, notebook=True):
 
-    fig = plt.figure(figsize=(10,6))
+    fig = plt.figure("%s time series"%star.name, figsize=(10,6))
     ax = plt.subplot(1,1,1)
     ax.plot(star.time, star.flux, 'w-')
     ax.set_xlim([min(star.time), max(star.time)])
@@ -356,15 +365,16 @@ def time_series(star, notebook=True):
     plt.xlabel(r'$\rm Time \,\, [days]$', fontsize=28)
     plt.ylabel(r'$\rm Normalized \,\, flux$', fontsize=28)
     plt.tight_layout()
-    with open('lc.pickle', 'wb') as f:
-        pickle.dump(fig, f)
+    if notebook:
+        with open('lc.pickle','wb') as f:
+            pickle.dump(fig, f)
     if not star.params['show']:
         plt.close()
 
 
 def frequency_series(star, notebook=True):
 
-    fig = plt.figure(figsize=(10,6))
+    fig = plt.figure("%s power spectrum"%star.name, figsize=(10,6))
     ax = plt.subplot(1,1,1)
     ax.plot(star.frequency, star.power, 'w-')
     ax.set_xlim([min(star.frequency), max(star.frequency)])
@@ -376,7 +386,8 @@ def frequency_series(star, notebook=True):
     plt.xlabel(r'$\rm Frequency \,\, [\mu Hz]$', fontsize=28)
     plt.ylabel(r'$\rm Power \,\, [ppm^2 \, \mu Hz^{-1}]$', fontsize=28)
     plt.tight_layout()
-    with open('ps.pickle', 'wb') as f:
-        pickle.dump(fig, f)
+    if notebook:
+        with open('ps.pickle','wb') as f:
+            pickle.dump(fig, f)
     if not star.params['show']:
         plt.close()
