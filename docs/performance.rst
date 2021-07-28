@@ -11,7 +11,7 @@ The resulting values are compared for the two methods below for the frequency of
 (left) and the large frequency separation (Dnu) on the right. For reference,
 ``SYD == pySYD`` and ``IDL == SYD``.
 
-.. image:: figures/comparison.png
+.. image:: figures/new.png
 
 There residuals show no strong systematics to within <0.5% in Dnu and <~1% in numax, which is smaller than the typical 
 random uncertainties. This confirms that the open-source python implementation of the SYD pipeline presented here provides consistent results with the legacy IDL version that has been used in the literature.
