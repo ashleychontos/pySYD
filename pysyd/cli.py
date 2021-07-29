@@ -200,6 +200,12 @@ def main():
                             default=None, 
                             type=int,
     )
+    background.add_argument('--ab', '-ab', 
+                            dest='ab',
+                            help='Use the {a,b} parametrization for Harvey models',
+                            default=False, 
+                            action='store_true',
+    )
     background.add_argument('--use', 
                             metavar='metric', 
                             dest='use', 

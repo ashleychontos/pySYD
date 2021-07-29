@@ -385,7 +385,10 @@ class Target:
                 if nlaws != 0:
                     for z in range(nlaws):
                         bb[0][int(2*z)] = 0.
-                        bb[1][int(2*z)] = self.baseline/10**6.
+                        if self.fitbg['ab']:
+                            bb[1][int(2*z)] = np.inf
+                        else:
+                            bb[1][int(2*z)] = self.baseline/10**6.
                         bb[0][int(2*z+1)] = 0.
                         bb[1][int(2*z+1)] = np.inf
                 bb[0][-1] = 0.
@@ -479,6 +482,7 @@ class Target:
             if self.nlaws != model:
                 self.nlaws = model
                 self.b = self.b[:(self.nlaws)]
+                self.mnu = self.mnu[:(self.nlaws)]
             if self.verbose:
                 print('Based on %s statistic: model %d'%(use.upper(),model))
             self.bounds = self.bounds[model]
@@ -534,7 +538,7 @@ class Target:
                 self.sm_par = 1.
         sig = (self.sm_par*(self.params[self.name]['dnu']/self.resolution))/np.sqrt(8.0*np.log(2.0))
         self.pssm = convolve_fft(np.copy(self.random_pow), Gaussian1DKernel(int(sig)))
-        self.pssm_bgcorr = self.pssm/models.harvey(self.frequency, self.pars, total=True)
+        self.pssm_bgcorr = self.pssm-models.harvey(self.frequency, self.pars, total=True)
         mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.params[self.name]['ps_mask'][0], self.params[self.name]['ps_mask'][1]))
         self.region_freq = self.frequency[mask]
         self.region_pow = self.pssm_bgcorr[mask]

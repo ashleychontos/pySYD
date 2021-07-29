@@ -28,11 +28,13 @@ def run(args=None, star=None, CLI=True, verbose=False, count=0):
         args.stars = [star]
 
     args = utils.get_info_all(args, parallel=False, CLI=CLI)
-    for star in args.stars:
+    for star in args.params['stars']:
         single = load(args=args, star=star, CLI=CLI)
-        if single.ps:
+        if hasattr(single, 'ps'):
             count+=1
             single.run_syd()
+        else:
+            print(' - cannot find data for %s'%single.name)
 
     # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
     if count != 0:
