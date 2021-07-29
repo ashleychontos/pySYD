@@ -58,18 +58,6 @@ def main():
     # Main options 
     main_parser = argparse.ArgumentParser(add_help=False)
 
-    main_parser.add_argument('--bg', '--fitbg', '--background', '-b', 
-                             dest='background',
-                             help='Turn off background fitting routine',
-                             default=True, 
-                             action='store_false',
-    )
-    main_parser.add_argument('--ex', '--findex', '--excess', '-x', 
-                             dest='excess',
-                             help='Turn off the find excess module',
-                             default=True, 
-                             action='store_false',
-    )
     main_parser.add_argument('--kc', '--kepcorr', '-k', 
                              dest='kepcorr',
                              help='Turn on the Kepler short-cadence artefact correction routine',
@@ -211,6 +199,12 @@ def main():
                             help='Force number of red-noise component(s)',
                             default=None, 
                             type=int,
+    )
+    background.add_argument('--ab', '-ab', 
+                            dest='ab',
+                            help='Use the {a,b} parametrization for Harvey models',
+                            default=False, 
+                            action='store_true',
     )
     background.add_argument('--use', 
                             metavar='metric', 

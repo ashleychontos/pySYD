@@ -38,7 +38,7 @@ def get_info_all(args, parallel, CLI=True):
     # Get parameters for all modules
     args = get_pysyd_parameters(args, parallel, CLI)
     # Get invidual/specific star info from csv file (if it exists)
-    args = get_csv_info(args)
+    args = get_csv_info(args, CLI)
     if CLI:
         # Check the input variables
         check_input_args(args)
@@ -127,6 +127,10 @@ def get_main_params(args, CLI, stars=None, verbose=False, show=False, save=True,
     else:
         args.todo = os.path.join(os.path.abspath(os.getcwd()), 'info', 'todo.txt')
         args.info = os.path.join(os.path.abspath(os.getcwd()), 'info', 'star_info.csv')
+        args.inpdir = os.path.join(os.path.abspath(os.getcwd()), 'data')
+        args.of_actual = of_actual
+        args.of_new = of_new
+        args.kepcorr = kepcorr
         params = {
             'stars': stars,
             'inpdir': os.path.join(os.path.abspath(os.getcwd()), 'data'),
@@ -134,9 +138,6 @@ def get_main_params(args, CLI, stars=None, verbose=False, show=False, save=True,
             'info': args.info,
             'show': show,
             'save': save,
-            'of_actual': of_actual,
-            'of_new': of_new,
-            'kepcorr': kepcorr,
         }
 
     # Open star list
@@ -150,6 +151,7 @@ def get_main_params(args, CLI, stars=None, verbose=False, show=False, save=True,
         params[star]['path'] = os.path.join(params['outdir'], star)
         if params['save'] and not os.path.exists(params[star]['path']):
             os.makedirs(params[star]['path'])
+        params[star]['ech_mask'] = None
     args.params = params
 
     return args
@@ -196,7 +198,7 @@ def get_groups(args, parallel=False):
 
 
 def get_excess_params(args, CLI, n_trials=3, step=0.25, binning=0.005, smooth_width=50.0, 
-                      lower_ex=10.0, upper_ex=4000.0):
+                      mode='mean'):
     """
     Get the parameters for the find excess routine.
 
@@ -204,10 +206,6 @@ def get_excess_params(args, CLI, n_trials=3, step=0.25, binning=0.005, smooth_wi
     ----------
     args : argparse.Namespace
         the command line arguments
-    lower_ex : float, optional
-        the lower frequency bound (in muHz). Default value is `10.0` muHz.
-    upper_ex : float, optional
-        the upper frequency bound (in muHz). Default value is `4000.0` muHz.
     step : float, optional
         TODO: Write description. Default value is `0.25`.
     binning : float, optional
@@ -227,8 +225,6 @@ def get_excess_params(args, CLI, n_trials=3, step=0.25, binning=0.005, smooth_wi
     """
     if CLI:
         findex = {
-            'lower_ex': lower_ex,
-            'upper_ex': upper_ex,
             'step': args.step,
             'binning': args.binning,
             'mode': args.mode,
@@ -238,8 +234,6 @@ def get_excess_params(args, CLI, n_trials=3, step=0.25, binning=0.005, smooth_wi
         }
     else:
         findex = {
-            'lower_ex': lower_ex,
-            'upper_ex': upper_ex,
             'step': step,
             'binning': binning,
             'mode': mode,
@@ -252,9 +246,8 @@ def get_excess_params(args, CLI, n_trials=3, step=0.25, binning=0.005, smooth_wi
     return args
 
 
-def get_background_params(args, CLI, lower_bg=10.0, upper_bg=4000.0, ind_width=20.0,   
-                          box_filter=1.0, n_rms=20, mc_iter=1, samples=False, n_laws=None,
-                          use='bic',):
+def get_background_params(args, CLI, ind_width=20.0, box_filter=1.0, n_rms=20, mc_iter=1, 
+                          samples=False, n_laws=None, ab=False, use='bic',):
     """
     Get the parameters for the background-fitting routine.
 
@@ -262,10 +255,6 @@ def get_background_params(args, CLI, lower_bg=10.0, upper_bg=4000.0, ind_width=2
     ----------
     args : argparse.Namespace
         the command line arguments
-    lower_bg : float, optional
-        the lower frequency bound (in muHz). Default value is `10.0` muHz.
-    upper_bg : float, optional
-        the upper frequency bound (in muHz). Default value is `4000.0` muHz.
     box_filter : float
         the size of the 1D box smoothing filter (in muHz). Default value is `1.0`.
     ind_width : float
@@ -274,6 +263,8 @@ def get_background_params(args, CLI, lower_bg=10.0, upper_bg=4000.0, ind_width=2
         number of data points to estimate red noise contributions. Default value is `20`.
     use : str
         which metric to use (i.e. bic or aic) for model selection. Default is `'bic'`.
+    ab : bool
+        use {a,b} parametrization for Harvey models. Default is `False`.
     n_laws : int
         force number of Harvey-like components in background fit. Default value is `None`.
     mc_iter : int
@@ -311,12 +302,11 @@ def get_background_params(args, CLI, lower_bg=10.0, upper_bg=4000.0, ind_width=2
     """
     if CLI:
         fitbg = {
-            'lower_bg': lower_bg,
-            'upper_bg': upper_bg,
             'ind_width': args.ind_width,
             'box_filter': args.box_filter,
             'n_rms': args.n_rms,
             'n_laws': args.n_laws,
+            'ab': args.ab,
             'metric': args.use,
             'functions': {0: harvey_none, 1: harvey_one, 2: harvey_two, 3: harvey_three},
             'mc_iter': args.mc_iter,
@@ -325,12 +315,11 @@ def get_background_params(args, CLI, lower_bg=10.0, upper_bg=4000.0, ind_width=2
         }
     else:
         fitbg = {
-            'lower_bg': lower_bg,
-            'upper_bg': upper_bg,
             'ind_width': ind_width,
             'box_filter': box_filter,
             'n_rms': n_rms,
             'n_laws': n_laws,
+            'ab': args.ab,
             'metric': use,
             'functions': {0: harvey_none, 1: harvey_one, 2: harvey_two, 3: harvey_three},
             'mc_iter': mc_iter,
@@ -427,7 +416,7 @@ def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_p
     return args
 
 
-def get_csv_info(args):
+def get_csv_info(args, CLI=True, run_excess=True):
     """
     Reads in any star information provided via args.info and is 'info/star_info.csv' by default. 
     ** Please note that this is NOT required for pySYD to run successfully **
@@ -451,9 +440,8 @@ def get_csv_info(args):
     if os.path.exists(args.info):
         df = pd.read_csv(args.info)
         stars = [str(each) for each in df.stars.values.tolist()]
-        for i, star in enumerate(args.stars):
-            args.params[star]['excess'] = args.excess
-            args.params[star]['background'] = args.background
+        for i, star in enumerate(args.params['stars']):
+            args.params[star]['excess'] = run_excess
             args.params[star]['force'] = False
             if star in stars:
                 idx = stars.index(star)
@@ -479,8 +467,7 @@ def get_csv_info(args):
     # same if the file does not exist
     else:
         for star in args.stars:
-            args.params[star]['excess'] = args.excess
-            args.params[star]['background'] = args.background
+            args.params[star]['excess'] = run_excess
             args.params[star]['force'] = False
             for column in columns:
                 args.params[star][column] = None
@@ -562,7 +549,7 @@ def get_command_line(args, numax=None, dnu=None, lower_ps=None, upper_ps=None,
         'upper_ech': args.upper_ech,
     }
 
-    for i, star in enumerate(args.stars):
+    for i, star in enumerate(args.params['stars']):
         for each in override:
             if override[each] is not None:
                 # if numax is provided via CLI, findex is skipped
@@ -609,12 +596,13 @@ def load_data(star, args):
         will return `True` if the power spectrum file was successfully loaded otherwise `False`
 
     """
+    star.pickles=[]
     # Now done at beginning to make sure it only does this once per star
     if glob.glob(os.path.join(args.inpdir,'%s*'%str(star.name))) != []:
         if star.verbose:
-            print('\n\n----------------------------------------------------')
+            print('\n\n------------------------------------------------------')
             print('Target: %s'%str(star.name))
-            print('----------------------------------------------------')
+            print('------------------------------------------------------')
 
         # Load light curve
         args, star, note = load_time_series(args, star)
@@ -690,6 +678,7 @@ def load_time_series(args, star, note=''):
 
     """
     star.lc = False
+    star.nyquist = None
     # Try loading the light curve
     if os.path.exists(os.path.join(args.inpdir, '%s_LC.txt'%star.name)):
         star.lc = True
@@ -839,11 +828,11 @@ def get_findex(star):
     if star.params[star.name]['lower_ex'] is not None:
         lower = star.params[star.name]['lower_ex']
     else:
-        lower = star.findex['lower_ex']
+        lower = min(star.frequency)
     if star.params[star.name]['upper_ex'] is not None:
         upper = star.params[star.name]['upper_ex']
     else:
-        upper = star.findex['upper_ex']
+        upper = max(star.frequency)
     star.freq = star.frequency[(star.frequency >= lower)&(star.frequency <= upper)]
     star.pow = star.power[(star.frequency >= lower)&(star.frequency <= upper)]
     if (star.params[star.name]['numax'] is not None and star.params[star.name]['numax'] <= 500.) or (star.nyquist is not None and star.nyquist <= 300.):
@@ -907,11 +896,11 @@ def get_fitbg(star):
     if star.params[star.name]['lower_bg'] is not None:
         lower = star.params[star.name]['lower_bg']
     else:
-        lower = star.fitbg['lower_bg']
+        lower = min(star.frequency)
     if star.params[star.name]['upper_bg'] is not None:
         upper = star.params[star.name]['upper_bg']
     else:
-        upper = star.fitbg['upper_bg']
+        upper = max(star.frequency)
     star.params[star.name]['bg_mask']=[lower,upper]
 
     # Mask power spectrum for fitbg module
@@ -1095,33 +1084,32 @@ def scrape_output(args):
 
     path = '%s/**/'%args.params['outdir']
     # Findex outputs
-    output = '%s*excess.csv'%path
-    files = glob.glob(output)
-    df = pd.read_csv(files[0])
-    for i in range(1,len(files)):
-        df_new = pd.read_csv(files[i])
-        df = pd.concat([df, df_new])
-    df.to_csv(os.path.join(args.params['outdir'],'excess.csv'), index=False)
+    files = glob.glob('%s*excess.csv'%path)
+    if files != []:
+        df = pd.read_csv(files[0])
+        for i in range(1,len(files)):
+            df_new = pd.read_csv(files[i])
+            df = pd.concat([df, df_new])
+        df.to_csv(os.path.join(args.params['outdir'],'excess.csv'), index=False)
 
     # Fitbg outputs
-    output = '%s*background.csv'%path
-    files = glob.glob(output)
-    df = pd.DataFrame(columns=['star'])
+    files = glob.glob('%s*background.csv'%path)
+    if files != []:
+        df = pd.DataFrame(columns=['star'])
+        for i, file in enumerate(files):
+	           df_new = pd.read_csv(file)
+	           df_new.set_index('parameter',inplace=True,drop=False)
+	           df.loc[i,'star']=file.strip().split('/')[-2]
+	           new_header_names=[[i,i+'_err'] for i in df_new.index.values.tolist()]
+	           new_header_names=list(chain.from_iterable(new_header_names))          
+	           for col in new_header_names:
+		              if '_err' in col:
+			                 df.loc[i,col]=df_new.loc[col[:-4],'uncertainty']
+		              else:
+			                 df.loc[i,col]=df_new.loc[col,'value']
 
-    for i, file in enumerate(files):
-	       df_new = pd.read_csv(file)
-	       df_new.set_index('parameter',inplace=True,drop=False)
-	       df.loc[i,'star']=file.strip().split('/')[-2]
-	       new_header_names=[[i,i+'_err'] for i in df_new.index.values.tolist()]
-	       new_header_names=list(chain.from_iterable(new_header_names))          
-	       for col in new_header_names:
-		          if '_err' in col:
-			             df.loc[i,col]=df_new.loc[col[:-4],'uncertainty']
-		          else:
-			             df.loc[i,col]=df_new.loc[col,'value']
-
-    df.fillna('--', inplace=True)
-    df.to_csv(os.path.join(args.params['outdir'],'background.csv'), index=False)
+        df.fillna('--', inplace=True)
+        df.to_csv(os.path.join(args.params['outdir'],'background.csv'), index=False)
 
 
 def make_latex_table(path, lines='', header=True, columns=None, labels=None, formats=None, units=None, 

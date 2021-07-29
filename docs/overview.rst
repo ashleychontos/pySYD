@@ -3,6 +3,8 @@
 Software Overview
 ####################
 
+.. _modes:
+
 Modes
 ******
 
@@ -12,7 +14,7 @@ There are currently four main ``pySYD`` modes:
    inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below). Using this feature will
    set up the paths and files consistent with what is recommended and discussed in more detail below.
 
-#. ``load`` : Initializes ``pysyd.pipeline.load`` to load in data for a single target. Because this does handle data, this has 
+#. ``load`` : Loads in data for a single target through ``pysyd.pipeline.load``. Because this does handle data, this has 
    full access to both the :ref:`parent<parentparse>` and :ref:`main parser<mainparse>`.
 
 #. ``run`` : The main pySYD pipeline function is initialized through ``pysyd.pipeline.run`` and runs the two core modules 
@@ -83,9 +85,11 @@ will be concatenated into a single csv in the upper-level results directory, whi
 helpful when running many stars.
 
 A single star will yield one summary figure (png) and one data product (csv) for each of the two
-main modules, for a total of 4 output files. If the monte-carlo sampling is used to calculate uncertainties, an additional
-figure will show the posterior distributions for the estimated parameters. See :ref:`examples` 
-for a guide on what the output plots are showing.
+main modules. Additionally, the background-corrected (divided) power spectrum is saved as a basic
+text file, for a total of 5 output files. If the monte-carlo sampling is used to calculate 
+uncertainties, an additional figure will plot the posterior distributions for the estimated 
+parameters. An optional feature (i.e. ``--samples``) is available to save the samples if desired. 
+See :ref:`examples` for a guide on what the output plots are showing.
 
 ==========================
 
