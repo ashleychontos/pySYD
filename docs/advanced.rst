@@ -24,6 +24,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 |    :scale: 50 %                                 |    :scale: 50 %                                         |
 +-------------------------------------------------+---------------------------------------------------------+
 
+
 ``--ew``
 ++++++++
 
@@ -35,6 +36,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 | .. figure:: figures_advanced/9542776_before.png          | .. figure:: figures_advanced/9542776_after.png                   |
 |    :scale: 50 %                                          |    :scale: 50 %                                                  |
 +----------------------------------------------------------+------------------------------------------------------------------+
+
 
 ``--kc``
 ++++++++
@@ -49,6 +51,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 | useful when an artefact is present in *Kepler* data that prevents ``pysyd`` in finding numax            |
 +-------------------------------------------------+-------------------------------------------------------+
 
+
 ``--lp``
 ++++++++
 
@@ -60,6 +63,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 | .. figure:: figures_advanced/10731424_after.png        | .. figure:: figures_advanced/10731424_after.png                 |
 |    :scale: 50 %                                        |    :scale: 50 %                                                 |
 +--------------------------------------------------------+-----------------------------------------------------------------+
+
 
 ``--npeaks``
 ++++++++
@@ -75,6 +79,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 | useful when ``pysyd`` doesn't find the correct peak in the autocorrelation function 				    											 |
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
 
+
 ``--numax``
 ++++++++
 
@@ -87,6 +92,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 |    :scale: 50 %                                 |    :scale: 50 %                                       |
 +-------------------------------------------------+-------------------------------------------------------+
 
+
 ``--ux``
 ++++++++
 
@@ -98,3 +104,4 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 | .. figure:: figures_advanced/11769801_after.png | .. figure:: figures_advanced/11769801_after.png       |
 |    :scale: 50 %                                 |    :scale: 50 %                                       |
 +-------------------------------------------------+-------------------------------------------------------+
+
