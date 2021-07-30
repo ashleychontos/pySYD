@@ -9,8 +9,6 @@ Advanced Usage
 
 Below are examples of how to use specific ``pySYD`` features, as well as plots showing results before and after their usage.
 
-- `kc`
-- `npeaks`
 
 ``--dnu``
 ++++++++
@@ -44,7 +42,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +-------------------------------------------------+-------------------------------------------------------+
 | Before                                          | After                                                 |
 +=================================================+=======================================================+
-| :bash:`pysyd run --star 11769801`  			  | :bash:`pysyd run --star 11769801 --ux 3500`           |
+| :bash:`pysyd run --star 8045442 --numax 550`    | :bash:`pysyd run --star 8045442 --numax 550 --kc`     |
 +-------------------------------------------------+-------------------------------------------------------+
 | .. figure:: figures_advanced/8045442_before.png | .. figure:: figures_advanced/8045442_after.png        |
 |    :scale: 50 %                                 |    :scale: 50 %                                       |
