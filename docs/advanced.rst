@@ -1,7 +1,6 @@
 .. _advanced:
 
 Advanced Usage
-#################
 
 =======
 Below are examples of how to use specific ``pySYD`` features, as well as plots showing results before and after their usage.
