@@ -10,7 +10,6 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 
 ``--dnu``
 ++++++++
-.. tabularcolumns:: |c|c||
 
 +-------------------------------------------------+---------------------------------------------------------+
 | Before                                          | After                                                   |
@@ -23,7 +22,6 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 
 ``--ew``
 ++++++++
-.. tabularcolumns:: |c|c||
 
 +-------------------------------------------------+---------------------------------------------------------+
 | Before                                          | After                                                   |
@@ -36,7 +34,6 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 
 ``--kc``
 ++++++++
-.. tabularcolumns:: |c|c||
 +-------------------------------------------------+-------------------------------------------------------+
 | Before                                          | After                                                 |
 +=================================================+=======================================================+
@@ -48,7 +45,6 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 
 ``--lp``
 ++++++++
-.. tabularcolumns:: |c|c||
 
 +--------------------------------------------------------+-----------------------------------------------------------------+
 | Before                                                 | After                                                           |
@@ -61,7 +57,6 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 
 ``--npeaks``
 ++++++++
-.. tabularcolumns:: |c|c||
 
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
 | Before                                                             | After                                                                         |
@@ -74,7 +69,6 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 
 ``--numax``
 ++++++++
-.. tabularcolumns:: |c|c||
 
 +-------------------------------------------------+-------------------------------------------------------+
 | Before                                          | After                                                 |
@@ -87,7 +81,6 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 
 ``--ux``
 ++++++++
-.. tabularcolumns:: |c|c||
 
 +-------------------------------------------------+-------------------------------------------------------+
 | Before                                          | After                                                 |
