@@ -745,6 +745,8 @@ def load_power_spectrum(args, star, note='', long=10**6):
             note += '# **whitening the PS to remove mixed modes**\n'
             star = whiten_mixed(star)
         args, star, note = check_input(args, star, note)
+    if os.path.exists(os.path.join(args.inpdir, '%s_LC.txt'%star.name)) is False:
+        star.nyquist=max(star.frequency)
 
     return args, star, note
 
