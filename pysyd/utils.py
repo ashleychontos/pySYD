@@ -796,10 +796,10 @@ def check_input(args, star, note):
             if args.mc_iter > 1:
                 note += '# **uncertainties may not be reliable unless using a critically-sampled PS**'
         star.baseline = 1./((star.freq_cs[1]-star.freq_cs[0])*10**-6.)
-    if args.of_actual is not None:
+    if args.of_actual is not None and args.of_actual != 1:
         note += '# PS is oversampled by a factor of %d\n'%args.of_actual
     else:
-        note += '# Assuming PS is critically-sampled\n'
+        note += '# PS is critically-sampled\n'
     note += '# PS resolution: %.6f muHz'%(star.freq_cs[1]-star.freq_cs[0])
     return args, star, note
 
@@ -833,6 +833,9 @@ def get_findex(star):
         upper = star.params[star.name]['upper_ex']
     else:
         upper = max(star.frequency)
+        if hasattr(star, 'nyquist'):
+            if star.nyquist < upper:
+                upper = star.nyquist
     star.freq = star.frequency[(star.frequency >= lower)&(star.frequency <= upper)]
     star.pow = star.power[(star.frequency >= lower)&(star.frequency <= upper)]
     if (star.params[star.name]['numax'] is not None and star.params[star.name]['numax'] <= 500.) or (star.nyquist is not None and star.nyquist <= 300.):
@@ -901,6 +904,9 @@ def get_fitbg(star):
         upper = star.params[star.name]['upper_bg']
     else:
         upper = max(star.frequency)
+        if hasattr(star, 'nyquist'):
+            if star.nyquist < upper:
+                upper = star.nyquist
     star.params[star.name]['bg_mask']=[lower,upper]
 
     # Mask power spectrum for fitbg module

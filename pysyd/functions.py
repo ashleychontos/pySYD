@@ -330,7 +330,7 @@ def return_max(x_array, y_array, exp_dnu=None, index=False):
         return x_array[idx], y_array[idx]
 
 
-def bin_data(x, y, width, log=False, mode=['mean', 'median', 'gaussian']):
+def bin_data(x, y, width, log=False, mode='mean'):
     """
     Bins a series of data.
 

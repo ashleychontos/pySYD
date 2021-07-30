@@ -101,22 +101,17 @@ class Target:
         """
         # Make sure the binning is specified, otherwise it cannot run
         if self.findex['binning'] is not None:
-            self.bin_freq, self.bin_pow, _ = functions.bin_data(self.freq, self.pow, width=self.findex['binning'], log=True, mode=self.findex['mode'])
+            # Smooth the power in log-space
+            self.bin_freq, self.bin_pow, self.bin_pow_err = functions.bin_data(self.freq, self.pow, width=self.findex['binning'], log=True, mode=self.findex['mode'])
+            # Smooth the power in linear-space
+            self.smooth_freq, self.smooth_pow, self.smooth_pow_err = functions.bin_data(self.bin_freq, self.bin_pow, width=self.findex['smooth_width'])
             if self.verbose:
                 print('------------------------------------------------------')
                 print('Running find_excess module:')
-                print('PS binned to %d datapoints' % len(self.bin_freq))
-                print('Binned freq res: %.2f muHz'%(self.bin_freq[1]-self.bin_freq[0]))
-            # Smooth the binned power spectrum for a rough estimate of background
-            boxsize=int(np.ceil(self.findex['smooth_width']/(self.bin_freq[1]-self.bin_freq[0])))
-            if boxsize >= len(self.bin_freq):
-                boxsize=int(np.ceil(len(self.bin_freq)/10.))
-            sp = convolve(self.bin_pow, Box1DKernel(boxsize))
-            smooth_freq = self.bin_freq[int(boxsize/2):-int(boxsize/2)]
-            smooth_pow = sp[int(boxsize/2):-int(boxsize/2)]
+                print('PS binned to %d datapoints' % len(self.smooth_freq))
 
             # Interpolate and divide to get a crude background-corrected power spectrum
-            s = InterpolatedUnivariateSpline(smooth_freq, smooth_pow, k=1)
+            s = InterpolatedUnivariateSpline(self.smooth_freq, self.smooth_pow, k=1)
             self.interp_pow = s(self.freq)
             self.bgcorr_pow = self.pow/self.interp_pow
 
@@ -407,12 +402,10 @@ class Target:
                     self.aic.append(np.inf)
                 else:
                     self.paras.append(pp)
-                    mask = np.ma.getmask(np.ma.masked_outside(self.frequency, self.params[self.name]['ps_mask'][0], self.params[self.name]['ps_mask'][1]))
-                    observations=self.random_pow[mask]
-                    model = models.harvey(self.frequency[mask], pp, total=True)
-                    b = functions.compute_bic(observations, model, n_parameters=len(pp))
+                    model = models.harvey(self.bin_freq, pp, total=True)
+                    b = functions.compute_bic(self.bin_pow, model, n_parameters=len(pp))
                     self.bic.append(b)
-                    a = functions.compute_aic(observations, model, n_parameters=len(pp))
+                    a = functions.compute_aic(self.bin_pow, model, n_parameters=len(pp))
                     self.aic.append(a)
 #                note += '\n BIC = %.2f | AIC = %.2f'%(b, a)
                     if self.verbose:
