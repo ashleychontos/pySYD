@@ -49,8 +49,6 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 | .. figure:: figures_advanced/8045442_before.png | .. figure:: figures_advanced/8045442_after.png        |
 |    :scale: 50 %                                 |    :scale: 50 %                                       |
 +-------------------------------------------------+-------------------------------------------------------+
-| useful when an artefact is present in *Kepler* data that prevents ``pysyd`` in finding numax            |
-+-------------------------------------------------+-------------------------------------------------------+
 
 
 ``--lp``
