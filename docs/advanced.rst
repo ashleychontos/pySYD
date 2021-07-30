@@ -1,5 +1,6 @@
 .. _advanced:
-.. code-block:: bash
+.. role:: bash
+   :language: bash
 
 Advanced Usage
 #################
