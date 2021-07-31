@@ -19,7 +19,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 |:bash:`pysyd run --star 9512063 --numax 843`     |:bash:`pysyd run --star 9512063 --numax 843 --dnu 49.54` |
 +-------------------------------------------------+---------------------------------------------------------+
 | .. figure:: figures_advanced/9512063_before.png | .. figure:: figures_advanced/9512063_after.png          |
-|    :scale: 50 %                                 |    :scale: 50 %                                         |
+|    :width: 600                                  |    :width: 600                                          |
 +-------------------------------------------------+---------------------------------------------------------+
 
 
