@@ -272,7 +272,7 @@ def get_background_params(args, CLI, ind_width=20.0, box_filter=1.0, n_rms=20, m
     samples : bool
         if true, will save the monte carlo samples to a csv. Default value is `False`.
     args.n_peaks : int
-        the number of peaks to select. Default value is `10`.
+        the number of peaks to select. Default value is `5`.
     args.force : float
         if not false (i.e. non-zero) will force dnu to be the equal to this value. 
     args.clip : bool
@@ -745,6 +745,8 @@ def load_power_spectrum(args, star, note='', long=10**6):
             note += '# **whitening the PS to remove mixed modes**\n'
             star = whiten_mixed(star)
         args, star, note = check_input(args, star, note)
+    if os.path.exists(os.path.join(args.inpdir, '%s_LC.txt'%star.name)) is False:
+        star.nyquist=max(star.frequency)
 
     return args, star, note
 
