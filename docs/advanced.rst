@@ -10,15 +10,17 @@ Advanced Usage
 Below are examples of how to use specific ``pySYD`` features, as well as plots showing results before and after their usage.
 
 
-``--dnu``
+``--dnu``**: Force dnu**
 ++++++++
 
 +-------------------------------------------------+---------------------------------------------------------+
 | Before                                          | After                                                   |
 +=================================================+=========================================================+
+| Force the dnu value if the wrong dnu is automatically chosen by `pySYD`.                                  |
++-------------------------------------------------+---------------------------------------------------------+
 |:bash:`pysyd run --star 9512063 --numax 843`     |:bash:`pysyd run --star 9512063 --numax 843 --dnu 49.54` |
 +-------------------------------------------------+---------------------------------------------------------+
-| .. figure:: figures_advanced/9512063_before.png | .. figure:: figures_advanced/9512063_after.png          |
+| .. figure:: figures/advanced/9512063_before.png | .. figure:: figures/advanced/9512063_after.png          |
 |    :width: 600                                  |    :width: 600                                          |
 +-------------------------------------------------+---------------------------------------------------------+
 
@@ -31,8 +33,8 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +==========================================================+==================================================================+
 | :bash:`pysyd run --star 9542776 --numax 900 --dnu 39.62` | :bash:`pysyd run --star 9542776 --numax 900 --dnu 39.62 --ew 1.5`|
 +----------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: figures_advanced/9542776_before.png          | .. figure:: figures_advanced/9542776_after.png                   |
-|    :scale: 50 %                                          |    :scale: 50 %                                                  |
+| .. figure:: figures/advanced/9542776_before.png          | .. figure:: figures/advanced/9542776_after.png                   |
+|    :width: 600                                           |    :width: 600                                                   |
 +----------------------------------------------------------+------------------------------------------------------------------+
 
 
@@ -44,8 +46,8 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +==========================================================+==================================================================+
 | :bash:`pysyd run 3112889 --numax 871.52 --dnu 53.2`      | :bash:`pysyd run --star 3112889 --numax 871.52 --dnu 53.2 --ie`  |
 +----------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: figures_advanced/3112889_before.png          | .. figure:: figures_advanced/3112889_after.png                   |
-|    :scale: 50 %                                          |    :scale: 50 %                                                  |
+| .. figure:: figures/advanced/3112889_before.png          | .. figure:: figures/advanced/3112889_after.png                   |
+|    :width: 600                                           |    :width: 600                                                   |
 +----------------------------------------------------------+------------------------------------------------------------------+
 
 
@@ -57,8 +59,8 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +=================================================+=======================================================+
 | :bash:`pysyd run --star 8045442 --numax 550`    | :bash:`pysyd run --star 8045442 --numax 550 --kc`     |
 +-------------------------------------------------+-------------------------------------------------------+
-| .. figure:: figures_advanced/8045442_before.png | .. figure:: figures_advanced/8045442_after.png        |
-|    :scale: 50 %                                 |    :scale: 50 %                                       |
+| .. figure:: figures/advanced/8045442_before.png | .. figure:: figures/advanced/8045442_after.png        |
+|    :width: 600                                  |    :width: 600                                        |
 +-------------------------------------------------+-------------------------------------------------------+
 
 
@@ -70,8 +72,8 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +========================================================+=================================================================+
 | :bash:`pysyd run --star 10731424 --numax 750 --dnu 42` | :bash:`pysyd run --star 10731424 --numax 750 --dnu 42 --lp 480` |
 +--------------------------------------------------------+-----------------------------------------------------------------+
-| .. figure:: figures_advanced/10731424_before.png       | .. figure:: figures_advanced/10731424_after.png                 |
-|    :scale: 50 %                                        |    :scale: 50 %                                                 |
+| .. figure:: figures/advanced/10731424_before.png       | .. figure:: figures/advanced/10731424_after.png                 |
+|    :width: 600                                         |    :width: 600                                                  |
 +--------------------------------------------------------+-----------------------------------------------------------------+
 
 
@@ -83,8 +85,8 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +====================================================================+===============================================================================+
 | :bash:`pysyd run --star 9455860 --numax 1487 --ew 1.2  --dnu 70.9` | :bash:`pysyd run --star 9455860 --numax 1487 --ew 1.2 --npeaks 20 --dnu 70.9` |
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
-| .. figure:: figures_advanced/9455860_before.png                    | .. figure:: figures_advanced/9455860_after.png                                |
-|    :scale: 50 %                                                    |    :scale: 50 %                                                               |
+| .. figure:: figures/advanced/9455860_before.png                    | .. figure:: figures/advanced/9455860_after.png                                |
+|    :width: 600                                                     |    :width: 600                                                                |
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
 
 
@@ -96,8 +98,8 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +=================================================+=======================================================+
 | :bash:`pysyd run --star 5791521`                | :bash:`pysyd run --star 5791521  --numax 670`         |
 +-------------------------------------------------+-------------------------------------------------------+
-| .. figure:: figures_advanced/5791521_before.png | .. figure:: figures_advanced/5791521_after.png        |
-|    :scale: 50 %                                 |    :scale: 50 %                                       |
+| .. figure:: figures/advanced/5791521_before.png | .. figure:: figures/advanced/5791521_after.png        |
+|    :width: 600                                  |    :width: 600                                        |
 +-------------------------------------------------+-------------------------------------------------------+
 
 
@@ -109,7 +111,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +==================================================+=======================================================+
 | :bash:`pysyd run --star 11769801`                | :bash:`pysyd run --star 11769801 -ux 3500`            |
 +--------------------------------------------------+-------------------------------------------------------+
-| .. figure:: figures_advanced/11769801_before.png | .. figure:: figures_advanced/11769801_after.png       |
-|    :scale: 50 %                                  |    :scale: 50 %                                       |
+| .. figure:: figures/advanced/11769801_before.png | .. figure:: figures/advanced/11769801_after.png       |
+|    :width: 600                                   |    :width: 600                                        |
 +--------------------------------------------------+-------------------------------------------------------+
 

@@ -1,0 +1,11 @@
+python syd/cli.py -mc 200 -target 5771915 -numax 1500
+python syd/cli.py -mc 200 -target 5856836 -numax 1900
+python syd/cli.py -mc 200 -target 6062024 -numax 1229
+python syd/cli.py -mc 200 -target 7418476 -numax 1300
+python syd/cli.py -mc 200 -target  8737094 -numax 838 
+python syd/cli.py -mc 200 -target 9109988 -numax 2599
+python syd/cli.py -mc 200 -target 9898385 -numax 1370
+python syd/cli.py -mc 200 -target 10813660 -numax 1978
+python syd/cli.py -mc 200 -target 11137841 -numax 723
+python syd/cli.py -mc 200 -target 11230757 -numax 1022
+python syd/cli.py -mc 200 -target 11970698 -numax 1348
