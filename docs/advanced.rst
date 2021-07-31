@@ -10,7 +10,7 @@ Advanced Usage
 Below are examples of how to use specific ``pySYD`` features, as well as plots showing results before and after their usage.
 
 
-``--dnu``**: Force dnu**
+``--dnu: force dnu``
 ++++++++
 
 +-------------------------------------------------+---------------------------------------------------------+
