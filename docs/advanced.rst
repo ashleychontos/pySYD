@@ -106,7 +106,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +-------------------------------------------------+-------------------------------------------------------+
 | Before                                          | After                                                 |
 +=================================================+=======================================================+
-| Set the numax value if `pySYD` chooses the wrong excess in the power spectrum.  						  |
+| Set the numax value if pySYD chooses the wrong excess in the power spectrum.  						  |
 +-------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 5791521`                | :bash:`pysyd run --star 5791521  --numax 670`         |
 +-------------------------------------------------+-------------------------------------------------------+
