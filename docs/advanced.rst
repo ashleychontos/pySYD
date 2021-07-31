@@ -46,7 +46,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +----------------------------------------------------------+------------------------------------------------------------------+
 | Before                                                   | After                                                            |
 +==========================================================+==================================================================+
-| Smooth echelle diagram by turning on the interpolation, in order to distinguish the modes for low SNR cases                 |
+| Smooth echelle diagram by turning on the interpolation, in order to distinguish the modes for low SNR cases.                |
 +----------------------------------------------------------+------------------------------------------------------------------+
 | :bash:`pysyd run 3112889 --numax 871.52 --dnu 53.2`      | :bash:`pysyd run --star 3112889 --numax 871.52 --dnu 53.2 --ie`  |
 +----------------------------------------------------------+------------------------------------------------------------------+
@@ -55,13 +55,13 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +----------------------------------------------------------+------------------------------------------------------------------+
 
 
-``--kc: *Kepler* correction``
+``--kc: Kepler correction``
 ++++++++
 
 +-------------------------------------------------+-------------------------------------------------------+
 | Before                                          | After                                                 |
 +=================================================+=======================================================+
-| Remove *Kepler* artefacts from the power spectrum for an accurate numax estimate                        |
+| Remove *Kepler* artefacts from the power spectrum for an accurate numax estimate.                       |
 +-------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 8045442 --numax 550`    | :bash:`pysyd run --star 8045442 --numax 550 --kc`     |
 +-------------------------------------------------+-------------------------------------------------------+
@@ -76,7 +76,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
 | Before                                                             | After                                                                         |
 +====================================================================+===============================================================================+
-| Set the lower frequency limit in zoomed in power spectrum; useful when an artefact is present close to the excess and cannot be remove otherwise.  |
+| Set the lower frequency limit in zoomed in power spectrum; useful when an artefact is present close to the excess and cannot be removed otherwise. |
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
 | :bash:`pysyd run --star 10731424 --numax 750 --dnu 42`             | :bash:`pysyd run --star 10731424 --numax 750 --dnu 42 --lp 480`               |
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
@@ -91,7 +91,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
 | Before                                                             | After                                                                         |
 +====================================================================+===============================================================================+
-| Change the number of peaks chosen in ACF; useful in low SNR cases where the spectra is noisy and ACF has many peaks close to the expected dnu.     |
+| Change the number of peaks chosen in ACF; useful in low SNR cases where the spectrum is noisy and ACF has many peaks close to the expected dnu.    |
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
 | :bash:`pysyd run --star 9455860 --numax 1487 --ew 1.2  --dnu 70.9` | :bash:`pysyd run --star 9455860 --numax 1487 --ew 1.2 --npeaks 20 --dnu 70.9` |
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
@@ -106,7 +106,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +-------------------------------------------------+-------------------------------------------------------+
 | Before                                          | After                                                 |
 +=================================================+=======================================================+
-| Set the numax value if `pySYD` chooses the wrong excess in the power spectrum   						  |
+| Set the numax value if `pySYD` chooses the wrong excess in the power spectrum.  						  |
 +-------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 5791521`                | :bash:`pysyd run --star 5791521  --numax 670`         |
 +-------------------------------------------------+-------------------------------------------------------+
@@ -121,7 +121,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +--------------------------------------------------+-------------------------------------------------------+
 | Before                                           | After                                                 |
 +==================================================+=======================================================+
-| Set the upper frequency limit in power spectrum; useful when `pySYD` finds the wrong excess              |
+| Set the upper frequency limit in power spectrum; useful when `pySYD` finds the wrong excess.             |
 +--------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 11769801`                | :bash:`pysyd run --star 11769801 -ux 3500`            |
 +--------------------------------------------------+-------------------------------------------------------+
