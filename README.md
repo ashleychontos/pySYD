@@ -1,5 +1,5 @@
 <div align="center">
-<img src="docs/_static/latex.png" width="60%">
+<img src="docs/figures/latex.png" width="60%">
 
 ## **Automated Measurements of Global Asteroseismic Parameters**
 
