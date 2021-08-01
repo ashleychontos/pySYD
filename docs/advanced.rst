@@ -16,7 +16,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +-------------------------------------------------+---------------------------------------------------------+
 | Before                                          | After                                                   |
 +=================================================+=========================================================+
-| Force the dnu value if the wrong dnu is automatically chosen by `pySYD`.                                  |
+| Fix the dnu value if the desired dnu is not automatically selected by `pySYD`.                            |
 +-------------------------------------------------+---------------------------------------------------------+
 |:bash:`pysyd run --star 9512063 --numax 843`     |:bash:`pysyd run --star 9512063 --numax 843 --dnu 49.54` |
 +-------------------------------------------------+---------------------------------------------------------+
