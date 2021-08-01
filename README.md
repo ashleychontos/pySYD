@@ -1,5 +1,6 @@
 <div align="center">
 <img src="docs/figures/latex.png" width="60%">
+
 ## **Automated Measurements of Global Asteroseismic Parameters**
 
 [![PyPI](https://badge.fury.io/py/pysyd.svg)](https://badge.fury.io/py/pysyd)
