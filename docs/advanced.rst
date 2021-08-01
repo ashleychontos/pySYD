@@ -70,7 +70,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +-------------------------------------------------+-------------------------------------------------------+
 
 
-``--lp: lower frequency (zoomed PS)``
+``--lp: lower frequency of power excess``
 ++++++++
 
 +--------------------------------------------------------------------+-------------------------------------------------------------------------------+
@@ -115,13 +115,13 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +--------------------------------------------------+-------------------------------------------------------+
 
 
-``--ux: upper frequency (PS)``
+``--ux: upper frequency of PS used in the first module``
 ++++++++
 
 +--------------------------------------------------+-------------------------------------------------------+
 | Before                                           | After                                                 |
 +==================================================+=======================================================+
-| Set the upper frequency limit in power spectrum; useful when `pySYD` finds the wrong excess.             |
+| Set the upper frequency limit in power spectrum; useful when `pySYD` latches on to an artefact.          |
 +--------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 11769801`                | :bash:`pysyd run --star 11769801 -ux 3500`            |
 +--------------------------------------------------+-------------------------------------------------------+
