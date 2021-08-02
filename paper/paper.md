@@ -18,16 +18,18 @@ authors:
    affiliation: 1
  - name: Maryum Sayeed 
    orcid: 0000-0001-6180-8482
-   affiliation: 1
- - name: Pavadol Yamsiri
    affiliation: 3
+ - name: Pavadol Yamsiri
+   affiliation: 4
 affiliations:
  - name: Institute for Astronomy, University of Hawai'i, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
    index: 1
  - name: NSF Graduate Research Fellow
    index: 2
- - name: Sydney Institute for Astronomy, School of Physics, University of Sydney, NSW 2006, Australia
+ - name: Department of Astronomy, Columbia University, Pupin Physics Laboratories, New York, NY 10027, USA
    index: 3
+ - name: Sydney Institute for Astronomy, School of Physics, University of Sydney, NSW 2006, Australia
+   index: 4
 date: 1 Aug 2021
 bibliography: paper.bib
 ---
@@ -58,8 +60,8 @@ By detecting brightness variations due to stellar oscillations, these
 light curves allow the application of asteroseismology to large numbers
 of stars, which requires automated software tools to efficiently extract
 observables. Several tools have been developed for asteroseismic
-analyses[e.g., `A2Z`, @mathur2010; `COR`, @mosser2009; `OCT`, @hekker2010; 
-`SYD`, @huber2009], but many ofthem are closed-source and therefore 
+analyses [e.g., `A2Z`, @mathur2010; `COR`, @mosser2009; `OCT`, @hekker2010; 
+`SYD`, @huber2009], but many of them are closed-source and therefore 
 inaccessible to the general astronomy community. Some open-source tools 
 exist [e.g., `DIAMONDS` and `FAMED`, @corsaro2014; `PBjam`, @nielsen2021; 
 `lightkurve`, @lightkurve], but they are either optimized for smaller
@@ -69,7 +71,7 @@ closed-source tools.
 `pySYD` is adapted from the framework of the IDL-based
 `SYD` pipeline [@huber2009; hereafter referred to as `SYD`], 
 which has been used frequently to measure asteroseismic parameters 
-for *Kepler* stars and has been extensively tested against 
+for *Kepler* stars and has been extensively tested against other
 closed-source tools on *Kepler* data [@verner2011;@hekker2011]. 
 Papers based on asteroseismic parameters measured using the `SYD`
 pipeline include @huber2011, @bastien2013, @chaplin2014, @serenelli2017, 
@@ -90,8 +92,8 @@ forthcoming data from the NASA TESS mission [@ricker2015].
 The excitation mechanism for solar-like oscillations is stochastic and
 modes are observed over a range of frequencies. Oscillation modes are
 separated by the so-called large frequency spacing ($\Delta\nu$), with
-an approximately Gaussian-shaped power excess centered on $\rm \nu_{max}$, 
-the frequency of maximum power. The observables $\rm \nu_{max}$ and 
+an approximately Gaussian-shaped power excess centered on the frequency 
+of maximum power ($\rm \nu_{max}$). The observables $\rm \nu_{max}$ and 
 $\Delta\nu$ are directly related to fundamental properties such as 
 surface gravity, density, mass and radius [@kjeldsen1995].
 
