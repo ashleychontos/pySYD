@@ -117,7 +117,7 @@ A `pySYD` pipeline `Target` class object has two main methods:
   background-corrected PS is $\rm \nu_{max}$. An ACF is computed 
   using the region in the power spectrum centered on $\rm \nu_{max}$ and the 
   peak in the ACF closest to the expected value for the large frequency 
-  separation is $\Delta\nu\$.
+  separation is $\Delta\nu$.
 
 The `pySYD` software depends on a number of powerful libraries, including 
 Astropy [@astropy1;@astropy2], Matplotlib [@matplotlib], Numpy [@numpy], and 
@@ -125,10 +125,10 @@ SciPy [@scipy]. `pySYD` has been tested against `SYD` using results from the
 *Kepler* sample for $\sim100$ stars (\autoref{fig:comparison}). The comparisons 
 show no significant systematic differences, with a median offset and scatter 
 of $0.2\%$ and $0.4\%$ for $\rm \nu_{max}$ as well as $0.002\%$ and $0.09\%$
-for $\Delta\nu\$, which is smaller or comparable to the typical random
+for $\Delta\nu$, which is smaller or comparable to the typical random
 uncertainties [@huber2011].
 
-![Comparison of global parameters $\rm \nu_{max}$ (left) and $\Delta\nu\$ (right) 
+![Comparison of global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ (right) 
 measured by `pySYD` and IDL `SYD` for $\sim100$ *Kepler* stars. The bottom panels 
 show the fractional residuals.\label{fig:comparison}](comparison.png)
 
