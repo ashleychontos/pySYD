@@ -115,28 +115,33 @@ KIC 11618103 is an evolved RGB star, with numax of ~100 muHz.
 Low SNR Examples
 ****************
 
-KIC 6062024
+KIC 8801316
 +++++++++++
 
-KIC 6062024 is a subgiant, with numax ~1200 muHz.
+KIC 8801316 is a subgiant, with a numax ~1100 muHz. Although the data has low signal-to-noise ratio, this would be classified as a detection due to the following reasons:
+- there is a clear power excess as seen in panel 3
+- the power excess has a Gaussian shape as seen in panel 5 corresponding to the solar-like oscillations
+- the autocorrelation function (ACF) in panel 6 show periodic peaks
+- the echelle diagram in panel 8 shows the ridges, albeit faintly
+
 
 ``find_excess`` results:
 
-.. image:: figures/6062024_excess.png
+.. image:: figures/8801316_excess.png
   :width: 600
-  :alt: Find excess output plot for KIC 6062024.
+  :alt: Find excess output plot for KIC 8801316.
 
 ``fit_background`` results:
 
-.. image:: figures/6062024_background.png
+.. image:: figures/8801316_background.png
   :width: 600
-  :alt: Fit background output plot for KIC 6062024.
+  :alt: Fit background output plot for KIC 8801316.
 
 ``sampling`` results:
 
-.. image:: figures/6062024_samples.png
+.. image:: figures/8801316_samples.png
   :width: 600
-  :alt: Distributions of Monte-Carlo samples for KIC 6062024.
+  :alt: Distributions of Monte-Carlo samples for KIC 8801316.
 
 
 ====================
