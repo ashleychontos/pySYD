@@ -94,10 +94,15 @@ The ``fit_global`` results:
 .. image:: figures/1435467_background.png
   :width: 600
   :alt: Fit background output plot for KIC 1435467.
+
+
+.. note::
+
+    For a breakdown of what each panel in each figure means, please see ref for more details.
   
   
-Hopefully you noticed the output parameters printed at the end of the script. To quantify uncertainties in 
-these derived parameters, we need to activate the Monte Carlo sampling option (``--mc``) with:
+The derived parameters are saved to an output csv file but also printed at the end of the verbose output.
+To quantify uncertainties in these parameters, we need to turn on the Monte Carlo sampling option (``--mc``) with:
 
 .. code-block::
 
@@ -151,19 +156,17 @@ these derived parameters, we need to activate the Monte Carlo sampling option (`
     ------------------------------------------------------
 
 
-where ``--mc == 1`` by default (since you should always check your results first before running
-``pySYD`` for several iterations. The method used to derive the uncertainties is similar to a 
-bootstrapping technique, where typically n=200 is more than sufficient.
+where the first 2/3 of the output is (and should be) identical to the first example. By default, 
+``--mc == 1`` since you should always check your results first before running ``pySYD`` for
+several iterations! The method used to derive the uncertainties is similar to a 
+bootstrapping technique and typically n=200 is more than sufficient. You may also use ``--samples``
+with the sampling if you would like to store the posteriors for the parameters for later use.
 
 The Monte Carlo ``sampling`` results:
 
 .. image:: figures/1435467_samples.png
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 1435467.
-
-.. note::
-
-    For a breakdown of what each panel in each figure means, please see ref for more details.
 
 ====================
 
