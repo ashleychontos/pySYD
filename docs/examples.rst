@@ -159,8 +159,8 @@ To quantify uncertainties in these parameters, we need to turn on the Monte Carl
 where the first 2/3 of the output is (and should be) identical to the first example. By default, 
 ``--mc == 1`` since you should always check your results first before running ``pySYD`` for
 several iterations! The method used to derive the uncertainties is similar to a 
-bootstrapping technique and typically n=200 is more than sufficient. You may also use ``--samples``
-with the sampling if you would like to store the posteriors for the parameters for later use.
+bootstrapping technique and typically n=200 is more than sufficient. You may also use the ``--samples``
+option if you would like to save the posteriors of the parameters for later use.
 
 The Monte Carlo ``sampling`` results:
 
