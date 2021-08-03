@@ -7,7 +7,7 @@ FAQs
 
 #. I'm getting an error. What do I do?
 	
-	Please submit a pull request with the version of ``pySYD`` used, the command you ran, screenshot of the error and any other details you can provide. The GitHub page for ``pySYD`` can be found here: `https://github.com/ashleychontos/pySYD`.
+	Please submit a pull request and include the version of ``pySYD`` used, the command you ran, screenshot of the error and any other details you can provide. The GitHub page for ``pySYD`` can be found here: `https://github.com/ashleychontos/pySYD`.
 
 #. What is the difference between ``--lx/--ux``, ``--lb/--ub`` and ``--lp/--up``?
 	
@@ -26,8 +26,10 @@ FAQs
 #. I'm not happy with ``pySYD``'s measured dnu. How can I change the dnu value?
 	
 	The best way to change the dnu measurement is to specify a value of dnu using the `--dnu` flag. If the ACF contains many peaks around its higher amplitude peaks due to low signal-to-noise data, you can smooth the power spectrum that is used to calculate the ACF by changing the `--sp` flag. Alternatively, if the peak corresponding to the best dnu measurement is not within the five highest peaks, you can change the number of peaks found in the ACF by specifying `--npeaks`. 
+	
 	If the power spectrum contains mixed modes (common for evolved stars) that mask the dnu measurement, you can remove these mixed modes by specifying the lower and upper bound of where the mixed modes are found in the echelle diagram using the following flags: `--le` and `--ue`. Refer to the advanced usage section below for an example on how to use remove mixed modes. Coming soon!
-	Lastly, you can also use ``--xx`` flag to find the dnu manually. This uses the ECHELLE package (more info `here <https://github.com/danhey/echelle>`) to faciliate dnu measurement. Coming soon! 
+
+	Lastly, you can also use ``--xx`` flag to find the dnu manually. This uses the ECHELLE package (more info `here <https://github.com/danhey/echelle>`_) to faciliate dnu measurement. Coming soon! 
 
 #. There's an artefact in my data preventing an accurate numax measurement. What can I do?
 	
@@ -97,16 +99,16 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 ``--kc: Kepler correction``
 ++++++++
 
-+-------------------------------------------------------+-------------------------------------------------------+
-| Before                                                | After                                                 |
-+=======================================================+=======================================================+
-| Remove *Kepler* artefacts from the power spectrum for an accurate numax estimate.         	                |
-+-------------------------------------------------------+-------------------------------------------------------+
-| :bash:`pysyd run --star 8045442 --numax 550`   	    | :bash:`pysyd run --star 8045442 --numax 550 --kc`     |
-+-------------------------------------------------------+-------------------------------------------------------+
-| .. figure:: figures/advanced/8045442_before.png 		| .. figure:: figures/advanced/8045442_after.png        |
-|    :width: 600                                  		|    :width: 600                                        |
-+-------------------------------------------------------+-------------------------------------------------------+
++------------------------------------------------------------------+------------------------------------------------------------------+
+| Before                                                           | After                                                            |
++==================================================================+==================================================================+
+| Remove *Kepler* artefacts from the power spectrum for an accurate numax estimate.                                                   |
++------------------------------------------------------------------+------------------------------------------------------------------+
+| :bash:`pysyd run --star 8045442 --numax 550`                     | :bash:`pysyd run --star 8045442 --numax 550 --kc`                |
++------------------------------------------------------------------+------------------------------------------------------------------+
+| .. figure:: figures/advanced/8045442_before.png                  | .. figure:: figures/advanced/8045442_after.png                   |
+|    :width: 600                                                   |    :width: 600                                                   |
++------------------------------------------------------------------+------------------------------------------------------------------+
 
 
 ``--lp: lower frequency (zoomed PS)``
