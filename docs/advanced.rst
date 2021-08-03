@@ -5,35 +5,42 @@
 FAQs
 #################
 
-1. I'm getting an error. What do I do?
+#. I'm getting an error. What do I do?
+	
 	Please submit a pull request with the version of ``pySYD`` used, the command you ran, screenshot of the error and any other details you can provide. The GitHub page for ``pySYD`` can be found here: `https://github.com/ashleychontos/pySYD`.
 
-2. What is the difference between ``--lx/--ux``, ``--lb/--ub`` and ``--lp/--up``?
+#. What is the difference between ``--lx/--ux``, ``--lb/--ub`` and ``--lp/--up``?
+	
 	- ``--lx/--ux``: limits the region used to search for the power excess.
 	- ``--lb/--ub``: limits the region used to model the background. 
 	- ``--lp/--up``: limits the region around the power excess used to calculate the ACF.
 
-3. What's the difference between ``--bf``, ``--sw``, ``--sm``, ``--sp`` and ``--se``?
+#. What's the difference between ``--bf``, ``--sw``, ``--sm``, ``--sp`` and ``--se``?
+	
 	- ``--bf``: smooths the power spectrum to calculate red noise components *after* the power excess has been masked out.
 	- ``--sw``: smooths the power spectrum in the first module when ``pySYD`` searches for the power excess. This value does not affect the power spectrum in the second module. The default is 50 muHz.
 	- ``--sm``: smooths the power spectrum in the second module when ``pySYD`` measures numax as the center of the Gaussian around the power excess.
 	- ``--sp``: smooths the power spectrum in panel 5 that is used to calculate the ACF in panel 6. The default is 2.5 muHz.
 	- ``--se``: smooths the echelle diagram in panel 8. To use this argument, specify the smoothing box filter in muHz.
 
-4. I'm not happy with ``pySYD``'s measured dnu. How can I change the dnu value?
+#. I'm not happy with ``pySYD``'s measured dnu. How can I change the dnu value?
+	
 	The best way to change the dnu measurement is to specify a value of dnu using the `--dnu` flag. If the ACF contains many peaks around its higher amplitude peaks due to low signal-to-noise data, you can smooth the power spectrum that is used to calculate the ACF by changing the `--sp` flag. Alternatively, if the peak corresponding to the best dnu measurement is not within the five highest peaks, you can change the number of peaks found in the ACF by specifying `--npeaks`. 
 	If the power spectrum contains mixed modes (common for evolved stars) that mask the dnu measurement, you can remove these mixed modes by specifying the lower and upper bound of where the mixed modes are found in the echelle diagram using the following flags: `--le` and `--ue`. Refer to the advanced usage section below for an example on how to use remove mixed modes. Coming soon!
 	Lastly, you can also use ``--xx`` flag to find the dnu manually. This uses the ECHELLE package (more info `here <https://github.com/danhey/echelle>`) to faciliate dnu measurement. Coming soon! 
 
-5. There's an artefact in my data preventing an accurate numax measurement. What can I do?
+#. There's an artefact in my data preventing an accurate numax measurement. What can I do?
+	
 	- If you're using *Kepler* data, you can use the ``--kc`` flag to remove the artefact. If the artefact is preventing an accurate numax estimate and it is not near the power excess, you can use the ``--lx/--ux`` flags to limit the region that is used to search for the power excess. If the artefact is near the power excess envelope and is preventing an accurate dnu measurement, you can use the ``--lp/--up`` flags to limit how much of the region around the power excess should be used to calculate the ACF.
 
-6. What is the difference between ``--exwidth``, ``--indwidth`` and ``--threshold``?
+#. What is the difference between ``--exwidth``, ``--indwidth`` and ``--threshold``?
+	
 	- ``--exwidth``: specifies the fractional value of power excess used to calculate ACF. The default is 1. To include more of the spectrum around the power excess, increase this value. To limit the region around the power excess, decrease this value. 
 	- ``--indwith``: bins the power spectrum used for modeling the background.
 	- ``--threshold``: specifies the fractional value of FWHM of the peak corresponding the measured dnu. This region is used to in MC iterations when calculating the dnu uncertainties. To include more of the peak, increase this number. To limit how much of the peak is used, decrease this number.
 
-7. What can I do to change how the echelle plot looks?
+#. What can I do to change how the echelle plot looks?
+	
 	To smooth the echelle diagram via interpolation, specify ``--ie`` flag. You can also smooth the echelle diagram by specifying a box filter in muHz using ``--se``. Another option is to change the width (dnu modulus) and height (frequency) of the axes by specifying ``--xe`` and ``--ye``. Lastly, there's also an option to change the clip value with ``--ce``. 
 
 Advanced Usage
