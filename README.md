@@ -16,7 +16,8 @@
 
 Written & developed by Ashley Chontos, Daniel Huber, Maryum Sayeed and Pavadol Yamsiri.
 
-We thank Dennis Stello, Jie Yu, Marc Hon, and other users of the IDL `SYD` pipeline for discussion and suggestions which helped the development of this code.
+We thank Dennis Stello, Jie Yu, Marc Hon, Yifan Chen, Yaguang Li, and other `pySYD` users for 
+discussion and suggestions which helped with the development of this code.
 
 Please cite our [JOSS paper](https://arxiv.org/abs/2108.00582) if you make use of `pySYD` in your work.
 
