@@ -70,10 +70,10 @@ KIC 1435467 is our least evolved example star, with numax ~1400 muHz. The follow
 
 runs KIC 1435467 using the default method, which first runs ``find_excess`` followed by ``fit_global``.
 
-For the additional commands used:
+Additional commands used in this example (and what they each mean):
  - ``--ux 5000`` is the upper frequency bound of the power spectrum use during the first module 
-   (i.e. x, --lx would be the same but the lower bound). This is  strictly for computation purposes 
-   and does not alter or change the original power spectrum in any way.
+   (i.e. x for excess, --lx would be the same but the lower bound for this module). These bounds  
+   are used strictly for computation purposes and do not alter or change the power spectrum in any way.
  - ``--ie`` turns the bicubic interpolation on when plotting the echelle diagram. This is 
    particularly helpful for lower SNR examples like this. 
  - ``-sv`` == `-s` + `-v` -> single hashes are reserved for boolean arguments, which correspond to 
