@@ -792,7 +792,7 @@ def check_input(args, star, note):
         else:
             star.freq_cs, star.pow_cs = np.copy(star.frequency), np.copy(star.power)
             star.freq_os, star.pow_os = np.copy(star.frequency), np.copy(star.power)
-            note += '# WARNING: using input PS with no additional information'
+            note += '# WARNING: using input PS with no additional information\n'
             if args.mc_iter > 1:
                 note += '# **uncertainties may not be reliable unless using a critically-sampled PS**'
         star.baseline = 1./((star.freq_cs[1]-star.freq_cs[0])*10**-6.)
@@ -833,9 +833,8 @@ def get_findex(star):
         upper = star.params[star.name]['upper_ex']
     else:
         upper = max(star.frequency)
-        if hasattr(star, 'nyquist'):
-            if star.nyquist < upper:
-                upper = star.nyquist
+        if star.nyquist is not None and star.nyquist < upper:
+            upper = star.nyquist
     star.freq = star.frequency[(star.frequency >= lower)&(star.frequency <= upper)]
     star.pow = star.power[(star.frequency >= lower)&(star.frequency <= upper)]
     if (star.params[star.name]['numax'] is not None and star.params[star.name]['numax'] <= 500.) or (star.nyquist is not None and star.nyquist <= 300.):
@@ -904,9 +903,8 @@ def get_fitbg(star):
         upper = star.params[star.name]['upper_bg']
     else:
         upper = max(star.frequency)
-        if hasattr(star, 'nyquist'):
-            if star.nyquist < upper:
-                upper = star.nyquist
+        if star.nyquist is not None and star.nyquist < upper:
+            upper = star.nyquist
     star.params[star.name]['bg_mask']=[lower,upper]
 
     # Mask power spectrum for fitbg module

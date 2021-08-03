@@ -7,20 +7,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: TeX
+      - name: TeX and PDF
         uses: docker://openjournals/paperdraft:latest
         with:
-          args: paper/paper.md --to=latex --output=paper.tex
+          args: '-k paper/paper.md'
         env:
           GIT_SHA: $GITHUB_SHA
           JOURNAL: joss
-      - name: PDF
-        uses: docker://openjournals/paperdraft:latest
+      - name: Upload
+        uses: actions/upload-artifact@v1
         with:
-          args: paper/paper.md
-        env:
-          GIT_SHA: $GITHUB_SHA
-          JOURNAL: joss
-      - uses: actions/upload-artifact@v2
-        with:
-          path: paper
+          name: paper
+          path: paper/

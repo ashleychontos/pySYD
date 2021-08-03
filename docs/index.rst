@@ -7,7 +7,7 @@ pySYD: |br| Automated Measurements |br| of Global Asteroseismic Parameters
 
 ``pySYD`` is an open-source python package to detect solar-like oscillations and measure global asteroseismic parameters. ``pySYD`` provides best-fit values and uncertainties for the following parameters:
 
-- Granulation background, including timescales and amplitudes
+- Granulation background, including characteristic time scales and amplitudes
 - Frequency of maximum power
 - Large frequency separation
 - Mean oscillation amplitudes
@@ -19,11 +19,12 @@ For a basic introduction to these parameters and asteroseismic data analysis of 
 ``pySYD`` adapts the well-tested methodology from ``SYD`` while also improving these existing analyses and expanding upon numerous new
 (optional) features. Improvements include:
 
-- Statistical best-fit background model selection
-- Easily accessible + command-line friendly
+- Automated best-fit background model selection
+- Parallel processing
+- Easily accessible + command-line friendly interface
 - Ability to save samples for further analyses
 
-Please cite our recent JOSS paper `Chontos+2021 <https://joss.theoj.org/papers/6465a9dd3141c207175f200c7f891f1e>`_ as well as `Huber+2009 <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_ if you make use of ``pySYD`` in your work.
+Please cite our recent JOSS paper `Chontos+2021 <https://arxiv.org/abs/2108.00582>`_ if you make use of ``pySYD`` in your work.
 
 Code contributions are welcome and should be submitted as a pull request.
 
