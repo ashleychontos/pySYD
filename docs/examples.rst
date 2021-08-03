@@ -119,6 +119,7 @@ KIC 8801316
 +++++++++++
 
 KIC 8801316 is a subgiant, with a numax ~1100 muHz. Although the data has low signal-to-noise ratio, this would be classified as a detection due to the following reasons:
+
 - there is a clear power excess as seen in panel 3
 - the power excess has a Gaussian shape as seen in panel 5 corresponding to the solar-like oscillations
 - the autocorrelation function (ACF) in panel 6 show periodic peaks
