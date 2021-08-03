@@ -14,7 +14,7 @@
 
 ## Attribution
 
-Written & developed by Ashley Chontos, Daniel Huber, Maryum Sayeed and Pavadol Yamsiri.
+Written & developed by Ashley Chontos, Maryum Sayeed, Daniel Huber, and Pavadol Yamsiri.
 
 We thank Dennis Stello, Jie Yu, Marc Hon, Yifan Chen, Yaguang Li, and other `pySYD` users for 
 discussion and suggestions which helped with the development of this code.
