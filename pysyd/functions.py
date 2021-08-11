@@ -125,7 +125,10 @@ def whiten_mixed(star):
     if star.params[star.name]['seed'] is None:
         star = set_seed(star)
     # Estimate white noise
-    white = np.mean(star.power[(star.frequency >= star.nyquist-100.0)&(star.frequency <= star.nyquist-50.0)])
+    if not star.globe['notching']:
+        white = np.mean(star.power[(star.frequency >= star.nyquist-100.0)&(star.frequency <= star.nyquist-50.0)])
+    else:
+        white = min(star.power[(star.frequency >= star.nyquist-100.0)&(star.frequency <= star.nyquist-50.0)])
 
     # Take the provided dnu and "fold" the power spectrum
     folded_freq = np.copy(star.frequency)%star.params[star.name]['dnu']
@@ -133,7 +136,10 @@ def whiten_mixed(star):
     np.random.seed(int(star.params[star.name]['seed']))
     # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
     if np.sum(mask) != 0:
-        star.power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
+        if star.globe['notching']:
+            star.power[mask] = white
+        else:
+            star.power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
 
     return star
 

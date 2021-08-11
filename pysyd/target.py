@@ -436,8 +436,8 @@ class Target:
             bb[1][-1] = np.inf
             self.bounds = tuple(bb)
             if self.verbose:
-                if nlaws == 0:
-                    note += 'Using flat white-noise term only'%self.fitbg['n_laws']
+                if self.fitbg['n_laws'] == 0:
+                    note += 'Using flat white-noise term only'
                 else:
                     note += 'Using %d Harvey-like component(s) + flat white-noise term'%self.fitbg['n_laws']
             try:
@@ -583,7 +583,7 @@ class Target:
 
         """
         # Optional smoothing of PS to remove fine structure before computing ACF
-        if self.globe['smooth_ps'] is not None:
+        if int(self.globe['smooth_ps']) != 0:
             boxkernel = Box1DKernel(int(np.ceil(self.globe['smooth_ps']/self.resolution)))
             self.bg_corr_smooth = convolve(self.bg_corr, boxkernel)
         else:

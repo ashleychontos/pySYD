@@ -129,7 +129,7 @@ def main():
                         dest='lower_ex',
                         help='Lower frequency limit of PS',
                         nargs='*',
-                        default=None,
+                        default=1.0,
                         type=float,
     )
     excess.add_argument('--ux', '--upperx', 
@@ -161,7 +161,7 @@ def main():
                             dest='lower_bg',
                             help='Lower frequency limit of PS',
                             nargs='*',
-                            default=None,
+                            default=0.5,
                             type=float,
     )
     background.add_argument('--ub', '--upperb', 
@@ -268,8 +268,8 @@ def main():
                      metavar='value', 
                      dest='smooth_ps',
                      help='Box filter width [in muHz] of PS for ACF', 
-                     default=2.5,
                      type=float,
+                     default=1.0,
     )
     dnu.add_argument('--peak', '--peaks', '--npeaks',
                      metavar='n', 
@@ -315,6 +315,12 @@ def main():
                          nargs='*',
                          default=None,
                          type=float,
+    )
+    echelle.add_argument('--notch', '-n', 
+                         dest='notching',
+                         help='Use notching technique to reduce effects from mixed modes',
+                         default=False, 
+                         action='store_true',
     )
     echelle.add_argument('--hey',
                          dest='hey', 

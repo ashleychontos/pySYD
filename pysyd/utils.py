@@ -334,7 +334,7 @@ def get_background_params(args, CLI, ind_width=20.0, box_filter=1.0, n_rms=20, m
 def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_ps=None,
                       width=1.0, dnu=None, smooth_ps=2.5, threshold=1.0, n_peaks=5, 
                       clip_ech=True, clip_value=None, smooth_ech=None, interp_ech=False, 
-                      lower_ech=None, upper_ech=None, n_across=50, n_down=5,):
+                      lower_ech=None, upper_ech=None, n_across=50, n_down=5, notching=False):
     """
     Get the parameters relevant for finding global asteroseismic parameters numax and dnu.
 
@@ -396,6 +396,7 @@ def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_p
             'interp_ech': args.interp_ech,
             'n_across': args.n_across,
             'n_down': args.n_down,
+            'notching': args.notching,
         }
     else:
         globe = {
@@ -410,6 +411,7 @@ def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_p
             'interp_ech': interp_ech,
             'n_across': n_across,
             'n_down': n_down,
+            'notching': notching,
         }
     args.globe = globe
 
@@ -918,15 +920,6 @@ def get_fitbg(star):
 
     # Use scaling relations from sun to get starting points
     star = solar_scaling(star)
-
-    # if lower numax adjust default smoothing filter from 2.5->0.5muHz
-    # this needs to be fixed - it doesn't change for the rest
-    if star.params[star.name]['numax'] <= 500.:
-        star.fitbg['ind_width'] = 5.0
-        star.globe['smooth_ps'] = 0.5
-    else:
-        star.fitbg['ind_width'] = 20.0
-        star.globe['smooth_ps'] = 2.5
 
     return star
 
