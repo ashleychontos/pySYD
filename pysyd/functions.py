@@ -125,7 +125,7 @@ def whiten_mixed(star):
     if star.params[star.name]['seed'] is None:
         star = set_seed(star)
     # Estimate white noise
-    white = np.mean(star.power[(star.frequency >= star.nyquist-100.0)&(star.frequency <= star.nyquist-50.0)])
+    white = np.mean(star.power[(star.frequency >= max(star.frequency)-100.0)&(star.frequency <= max(star.frequency)-50.0)])
 
     # Take the provided dnu and "fold" the power spectrum
     folded_freq = np.copy(star.frequency)%star.params[star.name]['dnu']
