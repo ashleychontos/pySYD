@@ -651,7 +651,7 @@ class Target:
             right_lag = self.lag[-1]
             right_auto = self.auto[-1]
         # Lag limits to use for ACF mask or "cutout"
-        self.params[self.name]['acf_mask']=[self.best_lag-(self.globe['threshold']*((right_lag-left_lag)/2.)),self.best_lag+(self.globe['threshold']*((right_lag-left_lag)/2.))]
+        self.params[self.name]['acf_mask']=[self.best_lag-(self.best_lag-left_lag)*self.globe['threshold'],self.best_lag+(right_lag-self.best_lag)*self.globe['threshold']]
         self.zoom_lag = self.lag[(self.lag>=self.params[self.name]['acf_mask'][0])&(self.lag<=self.params[self.name]['acf_mask'][1])]
         self.zoom_auto = self.auto[(self.lag>=self.params[self.name]['acf_mask'][0])&(self.lag<=self.params[self.name]['acf_mask'][1])]
         # Boundary conditions and initial guesses stay the same for all iterations

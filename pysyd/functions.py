@@ -75,7 +75,7 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_
     # LC period in Msec -> 1/LC ~muHz
     artefact = (1.0+np.arange(14))*lcp
     # Estimate white noise
-    white = np.mean(star.power[(star.frequency >= star.nyquist-100.0)&(star.frequency <= star.nyquist-50.0)])
+    white = np.mean(star.power[(star.frequency >= max(star.frequency)-100.0)&(star.frequency <= max(star.frequency)-50.0)])
 
     np.random.seed(int(star.params[star.name]['seed']))
     # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
@@ -126,9 +126,9 @@ def whiten_mixed(star):
         star = set_seed(star)
     # Estimate white noise
     if not star.globe['notching']:
-        white = np.mean(star.power[(star.frequency >= star.nyquist-100.0)&(star.frequency <= star.nyquist-50.0)])
+        white = np.mean(star.power[(star.frequency >= max(star.frequency)-100.0)&(star.frequency <= max(star.frequency)-50.0)])
     else:
-        white = min(star.power[(star.frequency >= star.nyquist-100.0)&(star.frequency <= star.nyquist-50.0)])
+        white = min(star.power[(star.frequency >= max(star.frequency)-100.0)&(star.frequency <= max(star.frequency)-50.0)])
 
     # Take the provided dnu and "fold" the power spectrum
     folded_freq = np.copy(star.frequency)%star.params[star.name]['dnu']

@@ -8,7 +8,7 @@ Software Overview
 Modes
 ******
 
-There are currently four main ``pySYD`` modes: 
+There are currently four main ``pySYD`` operational modes: 
 
 #. ``setup`` : Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. This mode only
    inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below). Using this feature will
@@ -27,8 +27,10 @@ There are currently four main ``pySYD`` modes:
 
 =========================
 
-Recommended Structure
-***********************
+.. _structure:
+
+Structure
+******************
 
 We recommend using the following structure under three main directories, which is discussed 
 in more detail below:
@@ -91,13 +93,14 @@ uncertainties, an additional figure will plot the posterior distributions for th
 parameters. An optional feature (i.e. ``--samples``) is available to save the samples if desired. 
 See :ref:`examples` for a guide on what the output plots are showing.
 
+
 ==========================
 
 
-Main Pipeline
-++++++++++++++++
+How It Works
+****************
 
-Initialization of ``pySYD`` via command line will look in the following paths:
+When running the software, initialization of ``pySYD`` via command line will look in the following paths:
 
 - ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
 - ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
@@ -117,7 +120,7 @@ A ``pySYD`` pipeline ``Target`` class object has two main function calls:
       second module. The output from this routine provides a rough estimate for numax, which is translated 
       into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode
       oscillations
-#. The second routine : 
+#. The second module : 
     * **Summary:** performs a more rigorous analysis to determine both the stellar background contribution
       as well as the global asteroseismic parameters.
     * Given the frequency range determined by the first module, this region is masked out to model 

@@ -272,7 +272,7 @@ def get_background_params(args, CLI, ind_width=20.0, box_filter=1.0, n_rms=20, m
     samples : bool
         if true, will save the monte carlo samples to a csv. Default value is `False`.
     args.n_peaks : int
-        the number of peaks to select. Default value is `10`.
+        the number of peaks to select. Default value is `5`.
     args.force : float
         if not false (i.e. non-zero) will force dnu to be the equal to this value. 
     args.clip : bool
@@ -747,7 +747,7 @@ def load_power_spectrum(args, star, note='', long=10**6):
             note += '# **whitening the PS to remove mixed modes**\n'
             star = whiten_mixed(star)
         args, star, note = check_input(args, star, note)
-
+    
     return args, star, note
 
 
@@ -1078,8 +1078,7 @@ def scrape_output(args):
     at least one star.
 
     """
-
-    path = '%s/**/'%args.params['outdir']
+    path = os.path.join(args.params['outdir'],'**','')
     # Findex outputs
     files = glob.glob('%s*excess.csv'%path)
     if files != []:
@@ -1096,7 +1095,7 @@ def scrape_output(args):
         for i, file in enumerate(files):
 	           df_new = pd.read_csv(file)
 	           df_new.set_index('parameter',inplace=True,drop=False)
-	           df.loc[i,'star']=file.strip().split('/')[-2]
+	           df.loc[i,'star'] = os.path.split(os.path.split(file)[0])[1]
 	           new_header_names=[[i,i+'_err'] for i in df_new.index.values.tolist()]
 	           new_header_names=list(chain.from_iterable(new_header_names))          
 	           for col in new_header_names:
