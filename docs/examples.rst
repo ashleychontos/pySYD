@@ -85,13 +85,13 @@ based on the BIC statistic.
 
 The ``find_excess`` output figure:
 
-.. image:: figures/1435467_excess.png
+.. image:: figures/examples/1435467_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 1435467.
 
 The ``fit_global`` results:
 
-.. image:: figures/1435467_background.png
+.. image:: figures/examples/1435467_background.png
   :width: 600
   :alt: Fit background output plot for KIC 1435467.
 
@@ -164,7 +164,7 @@ option if you would like to save the posteriors of the parameters for later use.
 
 The Monte Carlo ``sampling`` results:
 
-.. image:: figures/1435467_samples.png
+.. image:: figures/examples/1435467_samples.png
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 1435467.
 
@@ -177,19 +177,19 @@ KIC 2309595 is a subgiant, with numax ~650 muHz.
 
 ``find_excess`` results:
 
-.. image:: figures/2309595_excess.png
+.. image:: figures/examples/2309595_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 2309595.
 
 ``fit_background`` results:
 
-.. image:: figures/2309595_background.png
+.. image:: figures/examples/2309595_background.png
   :width: 600
   :alt: Fit background output plot for KIC 2309595.
 
 ``sampling`` results:
 
-.. image:: figures/2309595_samples.png
+.. image:: figures/examples/2309595_samples.png
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 2309595.
 
@@ -202,19 +202,19 @@ KIC 11618103 is an evolved RGB star, with numax of ~100 muHz.
 
 ``find_excess`` results:
 
-.. image:: figures/11618103_excess.png
+.. image:: figures/examples/11618103_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 11618103.
 
 ``fit_background`` results:
 
-.. image:: figures/11618103_background.png
+.. image:: figures/examples/11618103_background.png
   :width: 600
   :alt: Fit background output plot for KIC 11618103.
 
 ``sampling`` results:
 
-.. image:: figures/11618103_samples.png
+.. image:: figures/examples/11618103_samples.png
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
@@ -237,19 +237,19 @@ KIC 8801316 is a subgiant, with a numax ~1100 muHz. Although the data has low si
 
 ``find_excess`` results:
 
-.. image:: figures/8801316_excess.png
+.. image:: figures/examples/8801316_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 8801316.
 
 ``fit_background`` results:
 
-.. image:: figures/8801316_background.png
+.. image:: figures/examples/8801316_background.png
   :width: 600
   :alt: Fit background output plot for KIC 8801316.
 
 ``sampling`` results:
 
-.. image:: figures/8801316_samples.png
+.. image:: figures/examples/8801316_samples.png
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 8801316.
 
@@ -266,19 +266,19 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 ``find_excess`` results:
 
-.. image:: figures/6278992_excess.png
+.. image:: figures/examples/6278992_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 6278992.
 
 ``fit_background`` results:
 
-.. image:: figures/6278992_background.png
+.. image:: figures/examples/6278992_background.png
   :width: 600
   :alt: Fit background output plot for KIC 6278992.
 
 ``sampling`` results:
 
-.. image:: figures/6278992_samples.png
+.. image:: figures/examples/6278992_samples.png
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 6278992.
 

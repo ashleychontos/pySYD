@@ -269,7 +269,7 @@ def main():
                      dest='smooth_ps',
                      help='Box filter width [in muHz] of PS for ACF', 
                      type=float,
-                     default=1.0,
+                     default=0.5,
     )
     dnu.add_argument('--peak', '--peaks', '--npeaks',
                      metavar='n', 

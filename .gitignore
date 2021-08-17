@@ -1,5 +1,5 @@
 .vscode
-docs
+#docs
 *.DS_store
 *.pyc
 .*
@@ -10,4 +10,4 @@ dist
 *background.csv
 *excess.csv
 *__pycache__/
-examples
+#examples
