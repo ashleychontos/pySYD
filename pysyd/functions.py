@@ -400,4 +400,3 @@ def delta_nu(numax):
     """
 
     return 0.22*(numax**0.797)
-
