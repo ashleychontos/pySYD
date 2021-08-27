@@ -1,0 +1,5 @@
+{
+   'csv':['stars','radius','radius_err','teff','teff_err','logg','logg_err','lower_ex','upper_ex','lower_bg','upper_bg','lower_ps','upper_ps','lower_ech','upper_ech','numax','dnu','seed'],
+   'required':['radius','logg','teff','numax','dnu','lower_ex','upper_ex','lower_bg','upper_bg','lower_ps','upper_ps','lower_ech','upper_ech','seed'],
+   'table':['numax_smooth', 'A_smooth', 'FWHM', 'dnu', 'white'],
+}

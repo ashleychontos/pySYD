@@ -1,6 +1,7 @@
 .vscode
 #docs
-*.DS_store
+.DS_store
+.ipynb_checkpoints
 *.pyc
 .*
 *~
@@ -9,5 +10,7 @@ dist
 *.egg-info
 *background.csv
 *excess.csv
-*__pycache__/
+__pycache__
+#*columns.dict
+#*params.dict
 #examples

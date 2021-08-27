@@ -15,11 +15,18 @@ def main():
     parser.add_argument('-version', '--version',
                         action='version',
                         version="%(prog)s {}".format(pysyd.__version__),
-                        help="Print version number and exit."
+                        help="Print version number and exit.",
     )
 
     # In the parent parser, we define arguments and options common to all subcommands
     parent_parser = argparse.ArgumentParser(add_help=False)
+
+    parent_parser.add_argument('--cli', 
+                               dest='cli',
+                               help='This option should not be adjusted for current users',
+                               default=True,
+                               action='store_false',
+    )
     parent_parser.add_argument('--file', '--list', '--todo',
                                metavar='path',
                                dest='todo',
@@ -58,8 +65,26 @@ def main():
     # Main options 
     main_parser = argparse.ArgumentParser(add_help=False)
 
-    main_parser.add_argument('--kc', '--kepcorr', '-k', 
-                             dest='kepcorr',
+    main_parser.add_argument('--bg', '--background', '-b', 
+                             dest='background',
+                             help='Turn off the automated background fitting routine',
+                             default=True, 
+                             action='store_false',
+    )
+    main_parser.add_argument('--globe', '--global', '-g', 
+                             dest='globe',
+                             help='Do not estimate global asteroseismic parameters (i.e. numax or dnu)',
+                             default=True, 
+                             action='store_false',
+    )
+    main_parser.add_argument('--par', '--parallel', '-p',
+                             dest='parallel',
+                             help='Use parallel processing for data analysis',
+                             default=False,
+                             action='store_true',
+    )
+    main_parser.add_argument('--kc', '--kep_corr', '-k', 
+                             dest='kep_corr',
                              help='Turn on the Kepler short-cadence artefact correction routine',
                              default=False, 
                              action='store_true',
@@ -78,15 +103,21 @@ def main():
                              type=int,
                              default=None,
     )
+    main_parser.add_argument('--over', '--overwrite', '-o',
+                             dest='overwrite',
+                             help='Overwrite existing files with the same name/path',
+                             default=False, 
+                             action='store_true',
+    )
     main_parser.add_argument('--save',
                              dest='save',
-                             help='Do not save output files/figures',
+                             help='Do not save output figures and results.',
                              default=True, 
                              action='store_false',
     )
     main_parser.add_argument('--show', '-s', 
                              dest='show',
-                             help='Display figures',
+                             help='Show output figures',
                              default=False, 
                              action='store_true',
     )
@@ -97,6 +128,18 @@ def main():
                              type=str,
                              nargs='*',
                              default=None,
+    )
+    main_parser.add_argument('--test', '-t', 
+                             dest='testing',
+                             help='Extra verbose output for testing functionality',
+                             default=False, 
+                             action='store_true',
+    )
+    main_parser.add_argument('--ex', '--excess', '-x', 
+                             dest='excess',
+                             help='Turn off the find excess routine',
+                             default=True, 
+                             action='store_false',
     )
 
     # CLI relevant for finding power excess
@@ -121,7 +164,7 @@ def main():
                         metavar='value', 
                         dest='smooth_width',
                         help='Box filter width (in muHz) for smoothing the PS',
-                        default=50.0,
+                        default=20.0,
                         type=float,
     )
     excess.add_argument('--lx', '--lowerx', 
@@ -161,7 +204,7 @@ def main():
                             dest='lower_bg',
                             help='Lower frequency limit of PS',
                             nargs='*',
-                            default=0.5,
+                            default=1.0,
                             type=float,
     )
     background.add_argument('--ub', '--upperb', 
@@ -200,22 +243,35 @@ def main():
                             default=None, 
                             type=int,
     )
-    background.add_argument('--ab', '-ab', 
-                            dest='ab',
-                            help='Use the {a,b} parametrization for Harvey models',
-                            default=False, 
+    background.add_argument('--fix', '--fixwn', '--wn', '-f',
+                            dest='fix_wn',
+                            help='Fix the white noise level',
+                            default=False,
                             action='store_true',
     )
-    background.add_argument('--use', 
+    background.add_argument('--basis', 
+                            dest='basis',
+                            help="Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***",
+                            default='tau_sigma', 
+                            type=str,
+    )
+    background.add_argument('--metric', 
                             metavar='metric', 
-                            dest='use', 
+                            dest='metric', 
                             help="Which model metric to use, choices=['bic','aic']",
                             default='bic', 
                             type=str,
     )
+    background.add_argument('--include', '-i', 
+                            dest='include', 
+                            help="Include metric values in verbose output, default is `False`.",
+                            default=False, 
+                            action='store_true',
+    )
 
     # CLI relevant for the global parameters
     numax = main_parser.add_argument_group('NUMAX-RELATED')
+
     numax.add_argument('--sm', '--smpar',
                        metavar='value', 
                        dest='sm_par',
@@ -256,6 +312,7 @@ def main():
     )
 
     dnu = main_parser.add_argument_group('DNU-RELATED')
+
     dnu.add_argument('--dnu',
                      metavar='value',
                      dest='dnu',
@@ -264,12 +321,19 @@ def main():
                      type=float,
                      default=None, 
     )
+    dnu.add_argument('--method',
+                     metavar='method',
+                     dest='method',
+                     help='Method to use to determine dnu, ~[M, A, D]',
+                     default='D',
+                     type=str,
+    )
     dnu.add_argument('--sp', '--smoothps',
                      metavar='value', 
                      dest='smooth_ps',
                      help='Box filter width [in muHz] of PS for ACF', 
                      type=float,
-                     default=0.5,
+                     default=1.5,
     )
     dnu.add_argument('--peak', '--peaks', '--npeaks',
                      metavar='n', 
@@ -287,18 +351,20 @@ def main():
     )
 
     echelle = main_parser.add_argument_group('ECHELLE-RELATED')
+
     echelle.add_argument('--cv', '--value',
                          metavar='value', 
                          dest='clip_value',
-                         help='Clip value to use for echelle diagram (ED)',
-                         default=None, 
+                         help='Clip value multiplier to use for echelle diagram (ED). Default is 3x the median, where clip_value == `3`.',
+                         default=3.0, 
                          type=float,
     )
-    echelle.add_argument('--ce', '--clipech', 
-                         dest='clip_ech',
-                         help='Disable the auto-clipping of high peaks in the ED',
-                         default=True, 
-                         action='store_false',
+    echelle.add_argument('--ce', '--color', 
+                         metavar='cmap',
+                         dest='cmap',
+                         help='Change colormap of ED, which is `binary` by default.',
+                         default='binary', 
+                         type=str,
     )
     echelle.add_argument('--le', '--lowere', 
                          metavar='freq', 
@@ -341,22 +407,23 @@ def main():
                          default=None,
                          type=float,
     )
-    echelle.add_argument('--xe', '--xech', '--nacross',
+    echelle.add_argument('--nox', '--nacross',
                          metavar='n', 
-                         dest='n_across',
+                         dest='nox',
                          help='Resolution for the x-axis of the ED',
                          default=50,
                          type=int, 
     )
-    echelle.add_argument('--ye', '--yech', '--ndown',
+    echelle.add_argument('--noy', '--ndown',
                          metavar='n', 
-                         dest='n_down',
+                         dest='noy',
                          help='The number of orders to plot on the ED y-axis',
-                         default=5,
+                         default=0,
                          type=int,
     )
 
     mcmc = main_parser.add_argument_group('MCMC PARAMETERS')
+
     mcmc.add_argument('--mc', '--iter', '--mciter', 
                       metavar='n', 
                       dest='mc_iter', 
@@ -371,29 +438,27 @@ def main():
                       action='store_true',
     )
 
-    sub_parser = parser.add_subparsers(title='pySYD modes', dest='modes')
-
-    # Setting up
-    parser_setup = sub_parser.add_parser('setup', help='Easy setup of relevant directories and files',
-                                         parents=[parent_parser], formatter_class=argparse.MetavarTypeHelpFormatter)
-    parser_setup.set_defaults(func=pipeline.setup)
+    sub_parser = parser.add_subparsers(title='pySYD modes', dest='command')
 
     # Load data in for a target
-    parser_load = sub_parser.add_parser('load', help='Load in data for a given target',
-                                       parents=[parent_parser, main_parser], formatter_class=argparse.MetavarTypeHelpFormatter)
+    parser_load = sub_parser.add_parser('load',
+                                        conflict_handler='resolve',
+                                        parents=[parent_parser], 
+                                        formatter_class=argparse.MetavarTypeHelpFormatter,
+                                        help='Load in data for a given target',  
+                                        )
 
-    parser_load.set_defaults(func=pipeline.load)
-
-    # Running pySYD in regular mode
-    parser_run = sub_parser.add_parser('run', help='Run the main pySYD pipeline',
-                                       parents=[parent_parser, main_parser], formatter_class=argparse.MetavarTypeHelpFormatter)
-
-    parser_run.set_defaults(func=pipeline.run)
+    parser_load.set_defaults(func=pipeline.main)
 
     # Run pySYD in parallel
-    parser_parallel = sub_parser.add_parser('parallel', help='Run pySYD in parallel',
-                                            parents=[parent_parser, main_parser], formatter_class=argparse.MetavarTypeHelpFormatter)
-    parser_parallel.add_argument('-nt', '--nt', '-nthread', '--nthread', '-nthreads', '--nthreads',
+    parser_parallel = sub_parser.add_parser('parallel', 
+                                            conflict_handler='resolve',
+                                            help='Run pySYD in parallel',
+                                            parents=[parent_parser, main_parser],
+                                            formatter_class=argparse.MetavarTypeHelpFormatter,
+                                            )
+
+    parser_parallel.add_argument('--nt', '--nthread', '--nthreads', '-n',
                                  metavar='n', 
                                  dest='n_threads',
                                  help='Number of processes to run in parallel',
@@ -401,7 +466,42 @@ def main():
                                  default=0,
     )
 
-    parser_parallel.set_defaults(func=pipeline.parallel)
+    parser_parallel.set_defaults(func=pipeline.main)
+
+    # Running pySYD in regular mode
+    parser_run = sub_parser.add_parser('run',
+                                       conflict_handler='resolve', 
+                                       help='Run the main pySYD pipeline',
+                                       parents=[parent_parser, main_parser], 
+                                       formatter_class=argparse.MetavarTypeHelpFormatter,
+                                       )
+
+    parser_run.set_defaults(func=pipeline.main)
+
+    # Setting up
+    parser_setup = sub_parser.add_parser('setup', 
+                                         parents=[parent_parser], 
+                                         formatter_class=argparse.MetavarTypeHelpFormatter,
+                                         help='Easy setup of relevant directories and files',
+                                         )
+    parser_setup.set_defaults(func=pipeline.setup)
+
+    # Testing
+    parser_test = sub_parser.add_parser('test',
+                                        conflict_handler='resolve',
+                                        parents=[parent_parser, main_parser], 
+                                        formatter_class=argparse.MetavarTypeHelpFormatter,
+                                        help='Test different utilities (currently under development)',  
+                                        )
+
+    parser_test.add_argument('--models', '-m',
+                             dest='models',
+                             help='Include different model fits',
+                             default=False,
+                             action='store_true',
+    )
+
+    parser_test.set_defaults(func=pipeline.main)
 
     args = parser.parse_args()
     args.func(args)

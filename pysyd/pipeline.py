@@ -8,11 +8,11 @@ import multiprocessing as mp
 
 import pysyd
 from pysyd import utils
+from pysyd import plots
 from pysyd.target import Target
 
 
-
-def run(args=None, star=None, CLI=True, verbose=False, count=0):
+def main(args=None):
     """
     Main script to run the pySYD pipeline
 
@@ -22,31 +22,24 @@ def run(args=None, star=None, CLI=True, verbose=False, count=0):
         the command line arguments
 
     """
-    if not CLI and star is not None:
-        args = utils.Constants()
-        args.verbose = verbose
-        args.stars = [star]
-
-    args = utils.get_info_all(args, parallel=False, CLI=CLI)
-    for star in args.params['stars']:
-        single = load(args=args, star=star, CLI=CLI)
-        if hasattr(single, 'ps'):
-            count+=1
-            single.run_syd()
+    if args.command == 'setup':
+        setup(args)
+    else:
+        # Load in relevant information and data
+        args = load(args)
+        if args.command == 'run':
+            run(args)
+        elif args.command == 'load':
+            pass
+        elif args.command == 'parallel':
+            parallel(args)
+        elif args.command == 'test':
+            test(args)
         else:
-            print(' - cannot find data for %s'%single.name)
-
-    # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
-    if count != 0:
-        if args.verbose:
-            print(' - combining results into single csv file')
-            print('------------------------------------------------------')
-            print()
-        # Concatenates output into two files
-        utils.scrape_output(args)
+            pass
 
 
-def load(args=None, star=None, CLI=True, verbose=False):
+def load(args, star=None, verbose=False, command='run'):
     """
     A Target class is initialized and processed for each star in the stargroup.
 
@@ -61,22 +54,23 @@ def load(args=None, star=None, CLI=True, verbose=False):
         current data available for the provided target
 
     """
-    if not CLI and star is not None:
+    if args is None:
         args = utils.Constants()
-        args.verbose = verbose
-        args.stars = [star]
-        args = utils.get_info_all(args, parallel=False, CLI=CLI)
+        args.cli = False
+        if star is None:
+            print("If using this method, please provide the 'star' keyword argument")
+            print("(i.e. the star to be processed) and try again.")
+            return
+        else:
+            args.stars = [star]
 
-    single = Target(star, args)
+    args = utils.get_info(args)
+    return args
+    
 
-    return single
-
-
-def parallel(args, CLI=True):
+def run(args):
     """
-    Uses multiprocessing to run the pySYD pipeline in parallel. Stars are assigned
-    evenly to `groups`, which is set by the number of threads or CPUs available.
-    Stars will then run one-by-one per group
+    Main script to run the pySYD pipeline
 
     Parameters
     ----------
@@ -84,20 +78,14 @@ def parallel(args, CLI=True):
         the command line arguments
 
     """
-    args = utils.get_info_all(args, parallel=True, CLI=CLI)
 
-    # create the separate, asyncrhonous (nthread) processes
-    pool = mp.Pool(args.n_threads)
-    result_objects = [pool.apply_async(pipe, args=(group, args)) for group in args.params['groups']]
-    results = [r.get() for r in result_objects]
-    pool.close()
-    pool.join()    # postpones execution of the next line until all processes finish
-    count = np.sum(results)
-      
-    # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
+    # Run single batch of stars
+    count = pipe(args.params['stars'], args)
+    # check to make sure that at least one star was successfully run (i.e. there are results)  
     if count != 0:
         if args.verbose:
-            print('Combining results into single csv file.')
+            print(' - combining results into single csv file')
+            print('------------------------------------------------------')
             print()
         # Concatenates output into two files
         utils.scrape_output(args)
@@ -120,14 +108,50 @@ def pipe(group, args, count=0):
         the number of successful stars processed by pySYD for a given group of stars
 
     """
-
     for star in group:
-        load(args, star=star, CLI=CLI)
         single = Target(star, args)
-        if single.ps:
+        if hasattr(single, 'ps'):
             count+=1
             single.run_syd()
+        else:
+            if args.command != 'parallel':
+                print(' - cannot find data for %s'%single.name)
+
     return count
+
+
+def parallel(args):
+    """
+    Uses multiprocessing to run the pySYD pipeline in parallel. Stars are assigned
+    evenly to `groups`, which is set by the number of threads or CPUs available.
+    Stars will then run one-by-one per group
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        the command line arguments
+
+    """
+    # Creates the separate, asyncrhonous (nthread) processes
+    pool = mp.Pool(args.n_threads)
+    result_objects = [pool.apply_async(pipe, args=(group, args)) for group in args.params['groups']]
+    results = [r.get() for r in result_objects]
+    pool.close()
+    pool.join()               # postpones execution of the next line until all processes finish
+    count = np.sum(results)
+      
+    # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
+    if count != 0:
+        if args.verbose:
+            print('Combining results into single csv file.')
+            print()
+        # Concatenates output into two files
+        utils.scrape_output(args)
+
+
+def test(args):
+
+    dnu_comparison(test=True)
 
 
 def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
@@ -169,7 +193,8 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
         f = open(args.todo, "w")
         f.close()
     if not os.path.exists(outfile2):
-        df = pd.DataFrame(columns=utils.get_data_columns(type='csv'))
+        df = pd.DataFrame(columns=utils.get_dict(type='columns')['csv'])
+#        df = pd.DataFrame(columns=['stars','radius','radius_err','teff','teff_err','logg','logg_err','lower_ex','upper_ex','lower_bg','upper_bg','lower_ps','upper_ps','lower_ech','upper_ech','numax','dnu','seed'])
         df.to_csv(args.info, index=False)
 
     # create data directory

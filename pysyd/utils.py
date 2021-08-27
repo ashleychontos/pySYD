@@ -1,4 +1,5 @@
 import os
+import ast
 import glob
 import numpy as np
 import pandas as pd
@@ -9,13 +10,14 @@ import multiprocessing as mp
 from astropy.stats import mad_std
 from astropy.timeseries import LombScargle as lomb
 
+from pysyd import __file__
 from pysyd.plots import set_plot_params
 from pysyd.functions import *
 from pysyd.models import *
 
 
 
-def get_info_all(args, parallel, CLI=True):
+def get_info(args):
     """
     Loads todo.txt, sets up file paths, loads in any available star information, saves the 
     relevant parameters for each of the two main routines and sets the plotting parameters.
@@ -36,10 +38,10 @@ def get_info_all(args, parallel, CLI=True):
 
     """
     # Get parameters for all modules
-    args = get_pysyd_parameters(args, parallel, CLI)
+    args = get_parameters(args)
     # Get invidual/specific star info from csv file (if it exists)
-    args = get_csv_info(args, CLI)
-    if CLI:
+    args = get_csv_info(args)
+    if args.cli:
         # Check the input variables
         check_input_args(args)
         args = get_command_line(args)
@@ -48,7 +50,7 @@ def get_info_all(args, parallel, CLI=True):
     return args
 
 
-def get_pysyd_parameters(args, parallel, CLI):
+def get_parameters(args):
     """
     Basic function to call the individual functions that load and
     save parameters for different modules.
@@ -57,8 +59,6 @@ def get_pysyd_parameters(args, parallel, CLI):
     ----------
     args : argparse.Namespace
         command-line arguments
-    CLI : bool
-        `True` if running pysyd via command line
 
     Returns
     -------
@@ -66,22 +66,21 @@ def get_pysyd_parameters(args, parallel, CLI):
         the updated command-line arguments
 
     """
-
     # Initialize main 'params' dictionary
-    args = get_main_params(args, CLI)
-    args = get_groups(args, parallel)
+    args = get_main_params(args)
+    args = get_groups(args)
     # Initialize parameters for the find excess routine
-    args = get_excess_params(args, CLI)
+    args = get_excess_params(args)
     # Initialize parameters for the fit background routine
-    args = get_background_params(args, CLI)
+    args = get_background_params(args)
     # Initialize parameters relevant for estimating global parameters
-    args = get_global_params(args, CLI)
-
+    args = get_global_params(args)
     return args
 
 
-def get_main_params(args, CLI, stars=None, verbose=False, show=False, save=True, 
-                    kepcorr=False, of_actual=None, of_new=None,):
+def get_main_params(args, cli=False, stars=None, excess=True, background=True, globe=True, 
+                    verbose=False, command='run', parallel=False, show=False, testing=False, 
+                    save=True, kep_corr=False, of_actual=None, of_new=None, overwrite=True):
     """
     Get the parameters for the find excess routine.
 
@@ -97,7 +96,7 @@ def get_main_params(args, CLI, stars=None, verbose=False, show=False, save=True,
         show output figures. Default is `False`.
     save : bool, optional
         save all data products. Default is `True`.
-    kepcorr : bool, optional
+    kep_corr : bool, optional
         use the module that corrects for known kepler artefacts. Default is `False`.
     of_actual : int, optional
         oversampling factor of input PS. Default value is `None`.
@@ -112,52 +111,35 @@ def get_main_params(args, CLI, stars=None, verbose=False, show=False, save=True,
         the parameters of higher-level functionality
 
     """
-    if CLI:
-        params = {
-            'stars': args.stars,
-            'inpdir': args.inpdir,
-            'outdir': args.outdir,
-            'info': args.info,
-            'show': args.show,
-            'save': args.save,
-            'of_actual': args.of_actual,
-            'of_new': args.of_new,
-            'kepcorr': args.kepcorr,
-        }
+    vars = ['stars', 'inpdir', 'outdir', 'cli', 'command', 'info', 'show', 'save', 'testing',
+            'overwrite', 'excess', 'background', 'global', 'verbose']
+    if args.cli:
+        vals = [args.stars, args.inpdir, args.outdir, args.cli, args.command, args.info,
+                args.show, args.save, args.testing, args.overwrite, args.excess, args.background,
+                args.globe, args.verbose]
     else:
         args.todo = os.path.join(os.path.abspath(os.getcwd()), 'info', 'todo.txt')
-        args.info = os.path.join(os.path.abspath(os.getcwd()), 'info', 'star_info.csv')
-        args.inpdir = os.path.join(os.path.abspath(os.getcwd()), 'data')
-        args.of_actual = of_actual
-        args.of_new = of_new
-        args.kepcorr = kepcorr
-        params = {
-            'stars': stars,
-            'inpdir': os.path.join(os.path.abspath(os.getcwd()), 'data'),
-            'outdir': os.path.join(os.path.abspath(os.getcwd()), 'results'),
-            'info': args.info,
-            'show': show,
-            'save': save,
-        }
-
+        info = os.path.join(os.path.abspath(os.getcwd()), 'info', 'star_info.csv')
+        inpdir = os.path.join(os.path.abspath(os.getcwd()), 'data')
+        args.command, args.parallel, args.of_actual, args.of_new, args.kep_corr = command, parallel, of_actual, of_new, kep_corr, verbose
+        vals = [stars, inpdir, os.path.join(os.path.abspath(os.getcwd()), 'results'), cli, command, 
+                info, show, save, testing, overwrite, excess, background, globe, verbose]
+    args.params = dict(zip(vars,vals))
     # Open star list
-    if params['stars'] is None or params['stars'] == []:
+    if args.params['stars'] is None or args.params['stars'] == []:
         with open(args.todo, "r") as f:
-            params['stars'] = [line.strip().split()[0] for line in f.readlines()]
-
+            args.params['stars'] = [line.strip().split()[0] for line in f.readlines()]
     # Set file paths and make directories if they don't yet exist
-    for star in params['stars']:
-        params[star] = {}
-        params[star]['path'] = os.path.join(params['outdir'], star)
-        if params['save'] and not os.path.exists(params[star]['path']):
-            os.makedirs(params[star]['path'])
-        params[star]['ech_mask'] = None
-    args.params = params
-
+    for star in args.params['stars']:
+        args.params[star] = {}
+        args.params[star]['path'] = os.path.join(args.params['outdir'], star)
+        if args.params['save'] and not os.path.exists(args.params[star]['path']):
+            os.makedirs(args.params[star]['path'])
+        args.params[star]['ech_mask'] = None
     return args
 
 
-def get_groups(args, parallel=False):
+def get_groups(args):
     """
     Sets up star groups to run in parallel based on the number of threads.
 
@@ -180,10 +162,8 @@ def get_groups(args, parallel=False):
     None
 
     """
-    if parallel:
+    if args.parallel:
         todo = np.array(args.params['stars'])
-        args.params['verbose'] = False
-        args.params['show'] = False
         if args.n_threads == 0:
             args.n_threads = mp.cpu_count()
         if len(todo) < args.n_threads:
@@ -192,13 +172,12 @@ def get_groups(args, parallel=False):
         digitized = np.digitize(np.arange(len(todo))%args.n_threads,np.arange(args.n_threads))
         args.params['groups'] = np.array([todo[digitized == i] for i in range(1, args.n_threads+1)], dtype=object)
     else:
-        args.params['groups'] = np.array([])
-
+        args.params['groups'] = np.array(args.params['stars'])
     return args
 
 
-def get_excess_params(args, CLI, n_trials=3, step=0.25, binning=0.005, smooth_width=50.0, 
-                      mode='mean'):
+def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=20.0, 
+                      mode='mean', lower_ex=1.0, upper_ex=8000.,):
     """
     Get the parameters for the find excess routine.
 
@@ -223,31 +202,18 @@ def get_excess_params(args, CLI, n_trials=3, step=0.25, binning=0.005, smooth_wi
         the parameters of the find excess routine
 
     """
-    if CLI:
-        findex = {
-            'step': args.step,
-            'binning': args.binning,
-            'mode': args.mode,
-            'smooth_width': args.smooth_width,
-            'n_trials': args.n_trials,
-            'results': {},
-        }
+    vars = ['step', 'binning', 'mode', 'smooth_width', 'n_trials', 'lower_ex', 'upper_ex', 'results']
+    if args.cli:
+        vals = [args.step, args.binning, args.mode, args.smooth_width, args.n_trials, args.lower_ex, args.upper_ex, {}]
     else:
-        findex = {
-            'step': step,
-            'binning': binning,
-            'mode': mode,
-            'smooth_width': smooth_width,
-            'n_trials': n_trials,
-            'results': {},
-        }
-    args.findex = findex
-
+        vals = [step, binning, mode, smooth_width, n_trials, lower_ex, upper_ex, {}]
+    args.excess = dict(zip(vars,vals))
     return args
 
 
-def get_background_params(args, CLI, ind_width=20.0, box_filter=1.0, n_rms=20, mc_iter=1, 
-                          samples=False, n_laws=None, ab=False, use='bic',):
+def get_background_params(args, ind_width=20.0, box_filter=1.0, n_rms=20, metric='bic', include=False,
+                          mc_iter=1, samples=False, n_laws=None, fix_wn=False, basis='tau_sigma',
+                          lower_bg=1.0, upper_bg=8000.,):
     """
     Get the parameters for the background-fitting routine.
 
@@ -261,36 +227,20 @@ def get_background_params(args, CLI, ind_width=20.0, box_filter=1.0, n_rms=20, m
         the independent average smoothing width (in muHz). Default value is `20.0`.
     n_rms : int
         number of data points to estimate red noise contributions. Default value is `20`.
-    use : str
+    metric : str
         which metric to use (i.e. bic or aic) for model selection. Default is `'bic'`.
-    ab : bool
-        use {a,b} parametrization for Harvey models. Default is `False`.
+    include : bool
+        include metric values in verbose output. Default is `False`.
+    basis : str
+        which basis to use for background fitting, e.g. {a,b} parametrization. Default is `tau_sigma`.
     n_laws : int
         force number of Harvey-like components in background fit. Default value is `None`.
+    fix_wn : bool
+        fix the white noise level in the background fit. Default is `False`.
     mc_iter : int
         number of samples used to estimate uncertainty. Default value is `1`.
     samples : bool
         if true, will save the monte carlo samples to a csv. Default value is `False`.
-    args.n_peaks : int
-        the number of peaks to select. Default value is `5`.
-    args.force : float
-        if not false (i.e. non-zero) will force dnu to be the equal to this value. 
-    args.clip : bool
-        if true will set the minimum frequency value of the echelle plot to `clip_value`. Default value is `True`.
-    args.clip_value : float
-        the minimum frequency of the echelle plot. Default value is `0.0`.
-    args.smooth_ech : float
-        option to smooth the output of the echelle plot
-    args.smooth_ps : float
-        frequency with which to smooth power spectrum. Default value is `1.0`.
-    args.slope : bool
-        if true will correct for edge effects and residual slope in Gaussian fit. Default value is `False`.
-    args.samples : bool
-        if true, will save the monte carlo samples to a csv. Default value is `True`.
-    args.convert : bool
-        converts Harvey parametrization to physical quantities {a_n,b_n} -> {tau_n,sigma_n}. Default value is `True`.
-    args.drop : bool
-        drops the extra columns after converting the samples. Default value is `True`.
 
     Returns
     -------
@@ -300,41 +250,23 @@ def get_background_params(args, CLI, ind_width=20.0, box_filter=1.0, n_rms=20, m
         the parameters relevant for the fit background routine
 
     """
-    if CLI:
-        fitbg = {
-            'ind_width': args.ind_width,
-            'box_filter': args.box_filter,
-            'n_rms': args.n_rms,
-            'n_laws': args.n_laws,
-            'ab': args.ab,
-            'metric': args.use,
-            'functions': {0: harvey_none, 1: harvey_one, 2: harvey_two, 3: harvey_three},
-            'mc_iter': args.mc_iter,
-            'samples': args.samples,
-            'results': {},
-        }
+    vars = ['ind_width', 'box_filter', 'n_rms', 'n_laws', 'fix_wn', 'basis', 'metric', 'include',
+            'functions', 'mc_iter', 'samples', 'lower_bg', 'upper_bg', 'results']
+    if args.cli:
+        vals = [args.ind_width, args.box_filter, args.n_rms, args.n_laws, args.fix_wn, args.basis,
+                args.metric, args.include, get_dict(type='functions'), args.mc_iter, args.samples,
+                args.lower_bg, args.upper_bg, {}]
     else:
-        fitbg = {
-            'ind_width': ind_width,
-            'box_filter': box_filter,
-            'n_rms': n_rms,
-            'n_laws': n_laws,
-            'ab': args.ab,
-            'metric': use,
-            'functions': {0: harvey_none, 1: harvey_one, 2: harvey_two, 3: harvey_three},
-            'mc_iter': mc_iter,
-            'samples': samples,
-            'results': {},
-        }
-    args.fitbg = fitbg
-
+        vals = [ind_width, box_filter, n_rms, n_laws, fix_wn, basis, metric, include, 
+                get_dict(type='functions'), mc_iter, samples, lower_bg, upper_bg, {}]
+    args.background = dict(zip(vars,vals))
     return args
 
 
-def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_ps=None,
-                      width=1.0, dnu=None, smooth_ps=2.5, threshold=1.0, n_peaks=5, 
-                      clip_ech=True, clip_value=None, smooth_ech=None, interp_ech=False, 
-                      lower_ech=None, upper_ech=None, n_across=50, n_down=5, notching=False):
+def get_global_params(args, sm_par=None, lower_ps=None, upper_ps=None, width=1.0, 
+                      method='D', smooth_ps=2.5, threshold=1.0, n_peaks=5, cmap='binary', 
+                      clip_value=3.0, smooth_ech=None, interp_ech=False, lower_ech=None, 
+                      upper_ech=None, nox=50, noy=0, notching=False):
     """
     Get the parameters relevant for finding global asteroseismic parameters numax and dnu.
 
@@ -344,8 +276,8 @@ def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_p
         the command line arguments
     sm_par : float
         Gaussian filter width for determining smoothed numax (values are typically between 1-4)
-    numax : float
-        guess for numax
+    method : str
+        method to determine dnu, choices are ~['M','A','D'] (default is `'D'`).
     lower_ps : float
         lower bound of power excess (in muHz). Default value is `None`.
     upper_ps : float
@@ -357,22 +289,20 @@ def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_p
     threshold : float
         fractional width of FWHM to use in ACF for later iterations. Default value is `1.0`.
     n_peaks : int
-        the number of peaks to select. Default value is `10`.
+        the number of peaks to select. Default value is `5`.
     lower_ech : float
         lower bound of folded PS (in muHz) to 'whiten' mixed modes. Default value is `None`.
     upper_ech : float
         upper bound of folded PS (in muHz) to 'whiten' mixed modes. Default value is `None`.
-    clip : bool
-        if true will set the minimum frequency value of the echelle plot to `clip_value`. Default value is `True`.
     clip_value : float
         the minimum frequency of the echelle plot. Default value is `0.0`.
     smooth_ech : float
         option to smooth the output of the echelle plot
     interp_ech : bool
         turns on the bilinear smoothing in echelle plot
-    n_across : int
+    nox : int
         x-axis resolution on the echelle diagram. Default value is `50`. (NOT CURRENTLY IMPLEMENTED YET)
-    n_down : int
+    noy : int
         how many radial orders to plot on the echelle diagram. Default value is `5`. (NOT CURRENTLY IMPLEMENTED YET)
 
     Returns
@@ -383,42 +313,19 @@ def get_global_params(args, CLI, sm_par=None, numax=None, lower_ps=None, upper_p
         the parameters relevant for determining the global parameters routine
 
     """
-    if CLI:
-        globe = {
-            'sm_par': args.sm_par,
-            'width': args.width,
-            'smooth_ps': args.smooth_ps,
-            'threshold': args.threshold,
-            'n_peaks': args.n_peaks,
-            'clip_ech': args.clip_ech,
-            'clip_value': args.clip_value,
-            'smooth_ech': args.smooth_ech,
-            'interp_ech': args.interp_ech,
-            'n_across': args.n_across,
-            'n_down': args.n_down,
-            'notching': args.notching,
-        }
+    vars = ['sm_par', 'width', 'smooth_ps', 'threshold', 'n_peaks', 'method', 'cmap', 'clip_value', 
+            'smooth_ech', 'interp_ech', 'nox', 'noy', 'notching', 'results']
+    if args.cli:
+        vals = [args.sm_par, args.width, args.smooth_ps, args.threshold, args.n_peaks, args.method, args.cmap,
+                args.clip_value, args.smooth_ech, args.interp_ech, args.nox, args.noy, args.notching, {}]
     else:
-        globe = {
-            'sm_par': sm_par,
-            'width': width,
-            'smooth_ps': smooth_ps,
-            'threshold': threshold,
-            'n_peaks': n_peaks,
-            'clip_ech': clip_ech,
-            'clip_value': clip_value,
-            'smooth_ech': smooth_ech,
-            'interp_ech': interp_ech,
-            'n_across': n_across,
-            'n_down': n_down,
-            'notching': notching,
-        }
-    args.globe = globe
-
+        vals = [sm_par, width, smooth_ps, threshold, n_peaks, method, clip_value, cmap, smooth_ech,
+                interp_ech, nox, noy, notching, {}]
+    args.globe = dict(zip(vars,vals))
     return args
 
 
-def get_csv_info(args, CLI=True, run_excess=True):
+def get_csv_info(args, force=False, guess=None):
     """
     Reads in any star information provided via args.info and is 'info/star_info.csv' by default. 
     ** Please note that this is NOT required for pySYD to run successfully **
@@ -427,8 +334,10 @@ def get_csv_info(args, CLI=True, run_excess=True):
     ----------
     args : argparse.Namespace
         the command line arguments
-    columns : list
-        the list of columns to provide stellar information for
+    force : float
+        if not false (i.e. non-zero) will force dnu to be the equal to this value. 
+    guess : float
+        estimate or guess for dnu 
 
     Returns
     -------
@@ -437,25 +346,30 @@ def get_csv_info(args, CLI=True, run_excess=True):
 
     """
     constants = Constants()
-    columns = get_data_columns(type='required')
+    columns = get_dict(type='columns')['required']
     # Open file if it exists
     if os.path.exists(args.info):
         df = pd.read_csv(args.info)
         stars = [str(each) for each in df.stars.values.tolist()]
         for i, star in enumerate(args.params['stars']):
-            args.params[star]['excess'] = run_excess
-            args.params[star]['force'] = False
+            args.params[star]['excess'] = args.params['excess']
+            args.params[star]['force'] = force
+            args.params[star]['guess'] = guess
             if star in stars:
                 idx = stars.index(star)
                 # Update information from columns
-                for column in columns:
+                for column in columns:   
                     if not np.isnan(float(df.loc[idx,column])):
                         args.params[star][column] = float(df.loc[idx, column])
                     else:
                         args.params[star][column] = None
                 # Add estimate of numax if the column exists
                 if args.params[star]['numax'] is not None:
+                    args.params[star]['excess'] = False
                     args.params[star]['dnu'] = 0.22*(args.params[star]['numax']**0.797)
+                elif args.params[star]['dnu'] is not None:
+                    args.params[star]['force'] = True
+                    args.params[star]['guess'] = args.params[star]['dnu']
                 # Otherwise estimate using other stellar parameters
                 else:
                     if args.params[star]['radius'] is not None and args.params[star]['logg'] is not None:
@@ -469,7 +383,7 @@ def get_csv_info(args, CLI=True, run_excess=True):
     # same if the file does not exist
     else:
         for star in args.stars:
-            args.params[star]['excess'] = run_excess
+            args.params[star]['excess'] = args.params['excess']
             args.params[star]['force'] = False
             for column in columns:
                 args.params[star][column] = None
@@ -493,9 +407,9 @@ def check_input_args(args, max_laws=3):
 
     """
 
-    checks={'lower_bg':args.lower_bg,'upper_bg':args.upper_bg,'lower_ex':args.lower_ex,
-            'upper_ex':args.upper_ex,'lower_ps':args.lower_ps,'upper_ps':args.upper_ps,
-            'lower_ech':args.lower_ech,'upper_ech':args.upper_ech,'dnu':args.dnu,'numax':args.numax}
+    checks={'lower_ps':args.lower_ps,'upper_ps':args.upper_ps,'lower_ech':args.lower_ech,
+            'upper_ech':args.upper_ech,'dnu':args.dnu,'numax':args.numax}
+#    checks={'numax':args.numax, 'dnu':args.dnu}
     for check in checks:
         if checks[check] is not None:
             assert len(args.stars) == len(checks[check]), "The number of values provided for %s does not equal the number of stars"%check
@@ -539,10 +453,10 @@ def get_command_line(args, numax=None, dnu=None, lower_ps=None, upper_ps=None,
     """
 
     override = {
-        'lower_bg': args.lower_bg,
-        'upper_bg': args.upper_bg,
-        'lower_ex': args.lower_ex,
-        'upper_ex': args.upper_ex,
+#        'lower_bg': args.lower_bg,
+#        'upper_bg': args.upper_bg,
+#        'lower_ex': args.lower_ex,
+#        'upper_ex': args.upper_ex,
         'lower_ps': args.lower_ps,
         'upper_ps': args.upper_ps,
         'numax': args.numax,
@@ -565,8 +479,6 @@ def get_command_line(args, numax=None, dnu=None, lower_ps=None, upper_ps=None,
                     args.params[star]['guess'] = override[each][i]
                 else:
                     args.params[star][each] = override[each][i]
-        if args.params[star]['force']:
-            args.params[star]['dnu'] = args.params[star]['guess']
         if args.params[star]['lower_ech'] is not None and args.params[star]['upper_ech'] is not None:
             args.params[star]['ech_mask'] = [args.params[star]['lower_ech'],args.params[star]['upper_ech']]
         else:
@@ -598,24 +510,22 @@ def load_data(star, args):
         will return `True` if the power spectrum file was successfully loaded otherwise `False`
 
     """
-    star.pickles=[]
+    if not star.params['cli']:
+        star.pickles=[]
     # Now done at beginning to make sure it only does this once per star
     if glob.glob(os.path.join(args.inpdir,'%s*'%str(star.name))) != []:
         if star.verbose:
             print('\n\n------------------------------------------------------')
             print('Target: %s'%str(star.name))
             print('------------------------------------------------------')
-
         # Load light curve
         args, star, note = load_time_series(args, star)
         if star.verbose:
             print(note)
-
         # Load power spectrum
         args, star, note = load_power_spectrum(args, star)
         if star.verbose:
             print(note)
-
     return star
 
 
@@ -689,6 +599,7 @@ def load_time_series(args, star, note=''):
         star.cadence = int(round(np.nanmedian(np.diff(star.time)*24.0*60.0*60.0),0))
         star.nyquist = 10**6./(2.0*star.cadence)
         star.baseline = (max(star.time)-min(star.time))*24.*60.*60.
+        star.tau_upper = star.baseline/2.
         note += '# LIGHT CURVE: %d lines of data read\n# Time series cadence: %d seconds'%(len(star.time),star.cadence)
 
     return args, star, note
@@ -706,7 +617,7 @@ def load_power_spectrum(args, star, note='', long=10**6):
         the pySYD pipeline object
     args : argparse.Namespace
         command line arguments
-    args.kepcorr : bool
+    args.kep_corr : bool
         if true, will run the module to mitigate the Kepler artefacts in the power spectrum. Default is `False`.
     args.of_actual : int
         the oversampling factor, if the power spectrum is already oversampled. Default is `1`, assuming a critically sampled PS.
@@ -740,18 +651,18 @@ def load_power_spectrum(args, star, note='', long=10**6):
         if len(star.frequency) >= long:
             note += '# WARNING: PS is large and will slow down the software'
         star.resolution = star.frequency[1]-star.frequency[0]
-        if args.kepcorr:
+        if args.kep_corr:
             note += '# **using Kepler artefact correction**\n'
             star = remove_artefact(star)
         if star.params[star.name]['ech_mask'] is not None:
             note += '# **whitening the PS to remove mixed modes**\n'
             star = whiten_mixed(star)
-        args, star, note = check_input(args, star, note)
+        args, star, note = check_input_data(args, star, note)
     
     return args, star, note
 
 
-def check_input(args, star, note):
+def check_input_data(args, star, note):
     """
     Checks the type(s) of input data and creates any additional, optional
     arrays as well as critically-sampled power spectra (when applicable).
@@ -798,6 +709,7 @@ def check_input(args, star, note):
             if args.mc_iter > 1:
                 note += '# **uncertainties may not be reliable unless using a critically-sampled PS**'
         star.baseline = 1./((star.freq_cs[1]-star.freq_cs[0])*10**-6.)
+        star.tau_upper = star.baseline/2.
     if args.of_actual is not None and args.of_actual != 1:
         note += '# PS is oversampled by a factor of %d\n'%args.of_actual
     else:
@@ -806,11 +718,10 @@ def check_input(args, star, note):
     return args, star, note
 
 
-def get_findex(star):
+def get_estimates(star):
     """
-    Before running the first module (find excess), this masks out any unwanted
-    frequency regions and also gets appropriate bin sizes for the collapsed ACF
-    function if some prior information on numax is provided.
+    Parameters used with the first module, which is automated method to identify
+    power excess due to solar-like oscillations.
 
     Parameters
     ----------
@@ -830,23 +741,29 @@ def get_findex(star):
     if star.params[star.name]['lower_ex'] is not None:
         lower = star.params[star.name]['lower_ex']
     else:
-        lower = min(star.frequency)
+        if star.excess['lower_ex'] is not None:
+            lower = star.excess['lower_ex']
+        else:
+            lower = min(star.frequency)
     if star.params[star.name]['upper_ex'] is not None:
         upper = star.params[star.name]['upper_ex']
     else:
-        upper = max(star.frequency)
+        if star.excess['upper_ex'] is not None:
+            upper = star.excess['upper_ex']
+        else:
+            upper = max(star.frequency)
         if star.nyquist is not None and star.nyquist < upper:
             upper = star.nyquist
     star.freq = star.frequency[(star.frequency >= lower)&(star.frequency <= upper)]
     star.pow = star.power[(star.frequency >= lower)&(star.frequency <= upper)]
     if (star.params[star.name]['numax'] is not None and star.params[star.name]['numax'] <= 500.) or (star.nyquist is not None and star.nyquist <= 300.):
-        star.boxes = np.logspace(np.log10(0.5), np.log10(25.), star.findex['n_trials'])*1.
+        star.boxes = np.logspace(np.log10(0.5), np.log10(25.), star.excess['n_trials'])*1.
     else:
-        star.boxes = np.logspace(np.log10(50.), np.log10(500.), star.findex['n_trials'])*1.
+        star.boxes = np.logspace(np.log10(50.), np.log10(500.), star.excess['n_trials'])*1.
     return star
 
 
-def check_fitbg(star):
+def check_numax(star):
     """
     Checks if there is a starting value for numax as pySYD needs this information to begin the 
     second module (whether be it from the first module, CLI or saved to info/star_info.csv).
@@ -857,21 +774,30 @@ def check_fitbg(star):
         will return `True` if there is prior value for numax otherwise `False`.
 
     """
+    # THIS MUST BE FIXED TOO
     # Check if numax was provided as input
     if star.params[star.name]['numax'] is None:
         # If not, checks if findex was run
-        if glob.glob(os.path.join(star.params[star.name]['path'],'excess.csv')) != []:
-            df = pd.read_csv(os.path.join(star.params[star.name]['path'],'excess.csv'))
+        if not star.params['overwrite']:
+            dir = os.path.join(star.params[star.name]['path'],'estimates*')
+        else:
+            dir = os.path.join(star.params[star.name]['path'],'estimates.csv')
+        if glob.glob(dir) != []:
+            if not star.params['overwrite']:
+                list_of_files = glob.glob(os.path.join(star.params[star.name]['path'],'estimates*'))
+                file = max(list_of_files, key=os.path.getctime)
+            else:
+                file = os.path.join(star.params[star.name]['path'],'estimates.csv')
+            df = pd.read_csv(file)
             for col in ['numax', 'dnu', 'snr']:
                 star.params[star.name][col] = df.loc[0, col]
-        # Break if no numax is provided in any scenario
+        # No estimate for numax provided and/or determined
         else:
-            print('# ERROR: the second module cannot run without any prior info for numax')
             return False
     return True
 
 
-def get_fitbg(star):
+def get_initial(star, lower_bg=1.0):
     """
     Gets initial guesses for granulation components (i.e. timescales and amplitudes) using
     solar scaling relations. This resets the power spectrum and has its own independent
@@ -900,7 +826,7 @@ def get_fitbg(star):
     if star.params[star.name]['lower_bg'] is not None:
         lower = star.params[star.name]['lower_bg']
     else:
-        lower = min(star.frequency)
+        lower = lower_bg
     if star.params[star.name]['upper_bg'] is not None:
         upper = star.params[star.name]['upper_bg']
     else:
@@ -915,16 +841,20 @@ def get_fitbg(star):
     star.random_pow = np.copy(star.power)
     # Get other relevant initial conditions
     star.i = 0
-    star.fitbg['results'][star.name] = {'numax_smooth':[],'A_smooth':[],'numax_gauss':[],'A_gauss':[],
-                                        'FWHM':[],'dnu':[],'white':[]}
-
+    if star.params['background']:
+        star.background['results'][star.name] = {}
+    if star.params['global']:
+        star.globe['results'][star.name] = {}
+        star.globe['results'][star.name] = {'numax_smooth':[],'A_smooth':[],'numax_gauss':[],'A_gauss':[],'FWHM':[],'dnu':[]}
+    if star.params['testing']:
+        star.test='----------------------------------------------------\n\nTESTING INFORMATION:\n'
     # Use scaling relations from sun to get starting points
     star = solar_scaling(star)
 
     return star
 
 
-def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5):
+def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=1.0):
     """
     Uses scaling relations from the Sun to:
     1) estimate the width of the region of oscillations using numax
@@ -937,18 +867,30 @@ def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5):
 
     """
     constants = Constants()
-    # Use scaling relations to estimate width of oscillation region to mask out of the background fit
-    width = constants.width_sun*(star.params[star.name]['numax']/constants.numax_sun)
-    maxpower = [star.params[star.name]['numax']-(width*star.globe['width']), 
-                star.params[star.name]['numax']+(width*star.globe['width'])]
-    if star.params[star.name]['lower_ps'] is not None:
-        maxpower[0] = star.params[star.name]['lower_ps']
-    if star.params[star.name]['upper_ps'] is not None:
-        maxpower[1] = star.params[star.name]['upper_ps']
-    star.params[star.name]['ps_mask'] = [maxpower[0],maxpower[1]]
-
-    # Use scaling relation for granulation timescales from the sun to get starting points
-    scale = constants.numax_sun/star.params[star.name]['numax']
+    # Checks if there's an estimate for numax
+    # Use "excess" for different meaning now - i.e. is there a power excess
+    # as in, if it's (True by default, it will search for it but if it's False, it's saying there isn't any)
+    if check_numax(star):
+        star.exp_numax = star.params[star.name]['numax']
+        # Use scaling relations to estimate width of oscillation region to mask out of the background fit
+        width = constants.width_sun*(star.exp_numax/constants.numax_sun)
+        maxpower = [star.exp_numax-(width*star.globe['width']), star.exp_numax+(width*star.globe['width'])]
+        if star.params[star.name]['lower_ps'] is not None:
+            maxpower[0] = star.params[star.name]['lower_ps']
+        if star.params[star.name]['upper_ps'] is not None:
+            maxpower[1] = star.params[star.name]['upper_ps']
+        star.params[star.name]['ps_mask'] = [maxpower[0],maxpower[1]]
+        # Use scaling relation for granulation timescales from the sun to get starting points
+        scale = constants.numax_sun/star.exp_numax
+    # If not, uses entire power spectrum
+    else:
+        maxpower = [np.median(star.frequency), np.median(star.frequency)]
+        if star.params[star.name]['lower_ps'] is not None:
+            maxpower[0] = star.params[star.name]['lower_ps']
+        if star.params[star.name]['upper_ps'] is not None:
+            maxpower[1] = star.params[star.name]['upper_ps']
+        star.params[star.name]['ps_mask'] = [maxpower[0],maxpower[1]]
+    # Estimate granulation time scales
     if scaling == 'tau_sun_single':
         taus = np.array(constants.tau_sun_single)*scale
     else:
@@ -971,7 +913,6 @@ def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5):
     star.nlaws_orig = len(star.mnu)
     star.mnu_orig = np.copy(star.mnu)
     star.b_orig = np.copy(star.b)
-
     return star
 
 
@@ -994,8 +935,9 @@ def save_file(star, formats=[">15.8f", ">18.10e"]):
         background-subtracted power spectrum
 
     """
-    
-    f_name=os.path.join(star.params[star.name]['path'],'bgcorr_ps.txt')
+    f_name = os.path.join(star.params[star.name]['path'],'bgcorr_ps.txt')
+    if not star.params['overwrite']:
+        f_name = get_next(star,'bgcorr_ps.txt')
     with open(f_name, "w") as f:
         for x, y in zip(star.frequency, star.bg_corr):
             values = [x, y]
@@ -1007,7 +949,7 @@ def save_file(star, formats=[">15.8f", ">18.10e"]):
         print(' **background-corrected PS saved**')
 
 
-def save_findex(star):
+def save_estimates(star):
     """
     Save the results of the find excess routine into the save folder of the current star.
 
@@ -1017,14 +959,16 @@ def save_findex(star):
         pipeline target with the results of the `find_excess` routine
 
     """
-    best = star.findex['results'][star.name]['best']
+    best = star.excess['results'][star.name]['best']
     variables = ['star', 'numax', 'dnu', 'snr']
-    results = [star.name, star.findex['results'][star.name][best]['numax'], star.findex['results'][star.name][best]['dnu'], star.findex['results'][star.name][best]['snr']]
-    save_path = os.path.join(star.params[star.name]['path'],'excess.csv')
+    results = [star.name, star.excess['results'][star.name][best]['numax'], star.excess['results'][star.name][best]['dnu'], star.excess['results'][star.name][best]['snr']]
+    save_path = os.path.join(star.params[star.name]['path'],'estimates.csv')
+    if not star.params['overwrite']:
+        save_path = get_next(star,'estimates.csv')
     ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
 
 
-def save_fitbg(star):
+def save_results(star):
     """
     Saves the results of the `fit_background` module.
 
@@ -1034,40 +978,53 @@ def save_fitbg(star):
         pipeline target with the results of the `fit_background` routine
 
     """
-    df = pd.DataFrame(star.fitbg['results'][star.name])
+    results={}
+    if star.params['background']:
+        results.update(star.background['results'][star.name])
+    if star.params['global']:
+        results.update(star.globe['results'][star.name])
+    df = pd.DataFrame(results)
     star.df = df.copy()
     new_df = pd.DataFrame(columns=['parameter', 'value', 'uncertainty'])
     for c, col in enumerate(df.columns.values.tolist()):
         new_df.loc[c, 'parameter'] = col
         new_df.loc[c, 'value'] = df.loc[0,col]
-        if star.fitbg['mc_iter'] > 1:
+        if star.background['mc_iter'] > 1:
             new_df.loc[c, 'uncertainty'] = mad_std(df[col].values)
         else:
             new_df.loc[c, 'uncertainty'] = '--'
-    new_df.to_csv(os.path.join(star.params[star.name]['path'],'background.csv'), index=False)
-    if star.fitbg['samples']:
+    if not star.params['overwrite']:
+        new_df.to_csv(get_next(star,'global.csv'), index=False)
+    else:
+        new_df.to_csv(os.path.join(star.params[star.name]['path'],'global.csv'), index=False)
+    if star.background['samples']:
         df.to_csv(os.path.join(star.params[star.name]['path'],'samples.csv'), index=False)
 
 
 def verbose_output(star):
     """
-    Print results of the `fit_background` routine if verbose is `True`.
+    If `True`, prints results from the global asteroseismic fit.
 
     """
     note=''
-    df = pd.read_csv(os.path.join(star.params[star.name]['path'],'background.csv'))
-    params = get_params_dict()
-    if star.fitbg['mc_iter'] > 1:
+    params = get_dict()
+    if not star.params['overwrite']:
+        list_of_files = glob.glob(os.path.join(star.params[star.name]['path'],'global*'))
+        file = max(list_of_files, key=os.path.getctime)
+    else:
+        file = os.path.join(star.params[star.name]['path'],'global.csv')
+    df = pd.read_csv(file)
+    if star.background['mc_iter'] > 1:
         note+='\nOutput parameters:'
         line='\n%s: %.2f +/- %.2f %s'
         for idx in df.index.values.tolist():
             note+=line%(df.loc[idx,'parameter'],df.loc[idx,'value'],df.loc[idx,'uncertainty'],params[df.loc[idx,'parameter']]['unit'])
     else:
-        note+='----------------------------------------------------\nOutput parameters:'
+        note+='------------------------------------------------------\nOutput parameters:'
         line='\n%s: %.2f %s'
         for idx in df.index.values.tolist():
             note+=line%(df.loc[idx,'parameter'],df.loc[idx,'value'],params[df.loc[idx,'parameter']]['unit'])
-    note+='\n----------------------------------------------------'
+    note+='\n------------------------------------------------------'
     print(note)
 
 
@@ -1080,16 +1037,16 @@ def scrape_output(args):
     """
     path = os.path.join(args.params['outdir'],'**','')
     # Findex outputs
-    files = glob.glob('%s*excess.csv'%path)
+    files = glob.glob('%s*estimates.csv'%path)
     if files != []:
         df = pd.read_csv(files[0])
         for i in range(1,len(files)):
             df_new = pd.read_csv(files[i])
             df = pd.concat([df, df_new])
-        df.to_csv(os.path.join(args.params['outdir'],'excess.csv'), index=False)
+        df.to_csv(os.path.join(args.params['outdir'],'estimates.csv'), index=False)
 
     # Fitbg outputs
-    files = glob.glob('%s*background.csv'%path)
+    files = glob.glob('%s*global.csv'%path)
     if files != []:
         df = pd.DataFrame(columns=['star'])
         for i, file in enumerate(files):
@@ -1105,202 +1062,70 @@ def scrape_output(args):
 			                 df.loc[i,col]=df_new.loc[col,'value']
 
         df.fillna('--', inplace=True)
-        df.to_csv(os.path.join(args.params['outdir'],'background.csv'), index=False)
+        df.to_csv(os.path.join(args.params['outdir'],'global.csv'), index=False)
 
 
-def make_latex_table(path, lines='', header=True, columns=None, labels=None, formats=None, units=None, 
-                     include_units=True, include_uncertainty=True, save=True, verbose=True):
-
-    # Get data
-    df = pd.read_csv(path)
-    if columns is None:
-        columns = get_data_columns(type='table')
-    # Get parameter information
-    params = get_params_dict()
-
-    # Make header row
-    if header:
-        line='Star & '
-        for column in columns:
-            if include_units:
-                line+='%s [%s] & '%(params[column]['latex']['label'],params[column]['latex']['unit'])
-            else:
-                line+='%s & '%params[column]['latex']['label']
-        line = line[:-3] + ' \\\ '
-        if verbose:
-            print(line)
-        lines+=line+'\n'
-
-    # Iterate through all targets
-    for i in df.index.values.tolist():
-        line='%d & '%df.loc[i,'star']
-        for column in columns:
-            if df.loc[i,column] != '--':
-                if include_uncertainty and '%s_err'%column in df.columns.values.tolist():
-                    par = '%s $\pm$ %s & '%(params[column]['latex']['format'], params[column]['latex']['format'])
-                    line += par%(df.loc[i,column],df.loc[i,'%s_err'%column])
-                else:
-                    par = '%s & '%params[column]['latex']['format']
-                    line += par%df.loc[i,column]
-            else:
-                line += '-- & '
-        line = line[:-3] + ' \\\ '
-        if verbose:
-            print(line)
-        lines+=line+'\n'
-
-    if save:
-        if len(path.split('/')) > 1:
-            new_fn='%s/%s.txt'%('/'.join(path.split('/')[:-1]),(path.split('/')[-1]).split('.')[0])
-        else:
-            new_fn='%s.txt'%(path.split('/')[-1]).split('.')[0]
-        f = open(new_fn, "w")
-        f.write(lines)
-        f.close()
-
-
-def get_params_dict():
-
-    params={
-            'numax_smooth':{'unit':'muHz','label':r'$\rm Smooth \,\, \nu_{max} \,\, [\mu Hz]$','latex':{'label':'$\\nu_{\\mathrm{max}}$', 'format':'%.2f', 'unit':'$\\rm \\mu Hz$'}}, 
-            'A_smooth':{'unit':'ppm^2/muHz','label':r'$\rm Smooth \,\, A_{max} \,\, [ppm^{2} \mu Hz^{-1}]$','latex':{'label':'$\\rm A_{osc}$', 'format':'%.2f', 'unit':'$\\rm ppm^{2} \\mu Hz^{-1}$'}}, 
-            'numax_gauss':{'unit':'muHz','label':r'$\rm Gauss \,\, \nu_{max} \,\, [\mu Hz]$','latex':{'label':'$\\nu_{\\mathrm{max}}$', 'format':'%.2f', 'unit':'$\\rm \\mu Hz$'}}, 
-            'A_gauss':{'unit':'ppm^2/muHz','label':r'$\rm Gauss \,\, A_{max} \,\, [ppm^{2} \mu Hz^{-1}]$','latex':{'label':'$\\rm A_{osc}$', 'format':'%.2f', 'unit':'$\\rm ppm^{2} \\mu Hz^{-1}$'}}, 
-            'FWHM':{'unit':'muHz','label':r'$\rm Gauss \,\, FWHM \,\, [\mu Hz]$','latex':{'label':'FWHM', 'format':'%.2f', 'unit':'$\\rm \\mu Hz$'}}, 
-            'dnu':{'unit':'muHz','label':r'$\rm \Delta\nu \,\, [\mu Hz]$','latex':{'label':'$\\Delta\\nu$', 'format':'%.2f', 'unit':'$\\rm \\mu Hz$'}},
-            'white':{'unit':'ppm^2/muHz','label':r'$\rm White \,\, [ppm^{2} \mu Hz^{-1}]$','latex':{'label':'White noise', 'format':'%.2f', 'unit':'$\\rm ppm^{2} \\mu Hz^{-1}$'}}, 
-            'a_1':{'unit':'ppm^2/muHz','label':r'$\rm a_{1} \,\, [ppm^{2} \mu Hz^{-1}]$','latex':{'label':'$\\rm a_{1}$', 'format':'%.2f', 'unit':'$\\rm ppm^{2} \\mu Hz^{-1}$'}},
-            'b_1':{'unit':'muHz^-1','label':r'$\rm b_{1} \,\, [\mu Hz^{-1}]$','latex':{'label':'$\rm b_{1}$', 'format':'%.2f', 'unit':'$\rm \mu Hz^{-1}$'}}, 
-            'tau_1':{'unit':'s','label':r'$\rm \tau_{1} \,\, [s]$','latex':{'label':'$\tau_{1}$', 'format':'%.2f', 'unit':'s'}},
-            'sigma_1':{'unit':'ppm','label':r'$\rm \sigma_{1} \,\, [ppm]$','latex':{'label':'$\sigma_{1}$', 'format':'%.2f', 'unit':'ppm'}}, 
-            'a_2':{'unit':'ppm^2/muHz','label':r'$\rm a_{2} \,\, [ppm^{2} \mu Hz^{-1}]$','latex':{'label':'$\rm a_{2}$', 'format':'%.2f', 'unit':'$\rm ppm^{2} \mu Hz^{-1}$'}},
-            'b_2':{'unit':'muHz^-1','label':r'$\rm b_{2} \,\, [\mu Hz^{-1}]$','latex':{'label':'$\rm b_{2}$', 'format':'%.2f', 'unit':'$\rm \mu Hz^{-1}$'}}, 
-            'tau_2':{'unit':'s','label':r'$\rm \tau_{2} \,\, [s]$','latex':{'label':'$\tau_{2}$', 'format':'%.2f', 'unit':'s'}}, 
-            'sigma_2':{'unit':'ppm','label':r'$\rm \sigma_{2} \,\, [ppm]$','latex':{'label':'$\sigma_{2}$', 'format':'%.2f', 'unit':'ppm'}},
-            'a_3':{'unit':'ppm^2/muHz','label':r'$\rm a_{3} \,\, [ppm^{2} \mu Hz^{-1}]$','latex':{'label':'$\rm a_{3}$', 'format':'%.2f', 'unit':'$\rm ppm^{2} \mu Hz^{-1}$'}},
-            'b_3':{'unit':'muHz^-1','label':r'$\rm b_{3} \,\, [\mu Hz^{-1}]$','latex':{'label':'$\rm b_{3}$', 'format':'%.2f', 'unit':'$\rm \mu Hz^{-1}$'}}, 
-            'tau_3':{'unit':'s','label':r'$\rm \tau_{3} \,\, [s]$','latex':{'label':'$\tau_{3}$', 'format':'%.2f', 'unit':'s'}}, 
-            'sigma_3':{'unit':'ppm','label':r'$\rm \sigma_{3} \,\, [ppm]$','latex':{'label':'$\sigma_{3}$', 'format':'%.2f', 'unit':'ppm'}}, 
-            'a_4':{'unit':'ppm^2/muHz','label':r'$\rm a_{4} \,\, [ppm^{2} \mu Hz^{-1}]$','latex':{'label':'$\rm a_{4}$', 'format':'%.2f', 'unit':'$\rm ppm^{2} \mu Hz^{-1}$'}},
-            'b_4':{'unit':'muHz^-1','label':r'$\rm b_{4} \,\, [\mu Hz^{-1}]$','latex':{'label':'$\rm b_{4}$', 'format':'%.2f', 'unit':'$\rm \mu Hz^{-1}$'}}, 
-            'tau_4':{'unit':'s','label':r'$\rm \tau_{4} \,\, [s]$','latex':{'label':'$\tau_{4}$', 'format':'%.2f', 'unit':'s'}},
-            'sigma_4':{'unit':'ppm','label':r'$\rm \sigma_{4} \,\, [ppm]$','latex':{'label':'$\sigma_{4}$', 'format':'%.2f', 'unit':'ppm'}}, 
-            'a_5':{'unit':'ppm^2/muHz','label':r'$\rm a_{5} \,\, [ppm^{2} \mu Hz^{-1}]$','latex':{'label':'$\rm a_{5}$', 'format':'%.2f', 'unit':'$\rm ppm^{2} \mu Hz^{-1}$'}},
-            'b_5':{'unit':'muHz^-1','label':r'$\rm b_{5} \,\, [\mu Hz^{-1}]$','latex':{'label':'$\rm b_{5}$', 'format':'%.2f', 'unit':'$\rm \mu Hz^{-1}$'}}, 
-            'tau_5':{'unit':'s','label':r'$\rm \tau_{5} \,\, [s]$','latex':{'label':'$\tau_{5}$', 'format':'%.2f', 'unit':'s'}}, 
-            'sigma_5':{'unit':'ppm','label':r'$\rm \sigma_{5} \,\, [ppm]$','latex':{'label':'$\sigma_{5}$', 'format':'%.2f', 'unit':'ppm'}}, 
-            'a_6':{'unit':'ppm^2/muHz','label':r'$\rm a_{6} \,\, [ppm^{2} \mu Hz^{-1}]$','latex':{'label':'$\rm a_{6}$', 'format':'%.2f', 'unit':'$\rm ppm^{2} \mu Hz^{-1}$'}},
-            'b_6':{'unit':'muHz^-1','label':r'$\rm b_{6} \,\, [\mu Hz^{-1}]$','latex':{'label':'$\rm b_{6}$', 'format':'%.2f', 'unit':'$\rm \mu Hz^{-1}$'}}, 
-            'tau_6':{'unit':'s','label':r'$\rm \tau_{6} \,\, [s]$','latex':{'label':'$\tau_{6}$', 'format':'%.2f', 'unit':'s'}}, 
-            'sigma_6':{'unit':'ppm','label':r'$\rm \sigma_{6} \,\, [ppm]$','latex':{'label':'$\sigma_{6}$', 'format':'%.2f', 'unit':'ppm'}},
-            }
-
-    return params
-
-
-def get_data_columns(type=['csv','required','table']):
-
-    if type == 'csv':
-        columns = ['stars','radius','radius_err','teff','teff_err','logg','logg_err','lower_ex','upper_ex','lower_bg','upper_bg','lower_ps','upper_ps','lower_ech','upper_ech','numax','dnu','seed']
-    elif type == 'required':
-        columns = ['radius','logg','teff','numax','lower_ex','upper_ex','lower_bg','upper_bg','lower_ps','upper_ps','lower_ech','upper_ech','seed']
-    elif type == 'table':
-        columns = ['numax_smooth', 'A_smooth', 'FWHM', 'dnu', 'white']
-    else:
-        print("Did not understand that input, please specify type. Choose from: ['full','required','table']")
-        columns = []
-
-    return columns
-
-
-def load_single(args, params={}):
+def get_dict(type='params'):
     """
-    Loads information for a single star.
+    Quick function to read in longer python dictionaries, which is primarily used in
+    the utils script (i.e. verbose_output, scrape_output) and in the pipeline script 
+    (i.e. setup)
 
     Parameters
     ----------
-    args : argparse.Namespace
-        command line arguments
+    type : str
+        which dictionary to read in, choices ~['params','columns']. Default is 'params'.
 
     Returns
     -------
-    args : argparse.Namespace
-        the updated command line arguments
+    Dict[str,Dict[,]]
+        the loaded, relevant dictionary
 
     """
-    assert len(args.stars) == 1, "You can only load in data for one star at a time."
+    if type == 'functions':
+        return {
+                0: lambda white_noise : (lambda frequency : harvey_none(frequency, white_noise)),
+                1: lambda frequency, white_noise : harvey_none(frequency, white_noise), 
+                2: lambda white_noise : (lambda frequency, tau_1, sigma_1 : harvey_one(frequency, tau_1, sigma_1, white_noise)), 
+                3: lambda frequency, tau_1, sigma_1, white_noise : harvey_one(frequency, tau_1, sigma_1, white_noise), 
+                4: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2 : harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise)), 
+                5: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise : harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise),
+                6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
+                7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
+               }
+    path = os.path.join(os.path.dirname(__file__), 'dicts', '%s.dict'%type)
+    with open(path, 'r') as f:
+        return ast.literal_eval(f.read())
 
-    args.star = args.stars[0]
-    print(args.stars, args.star)
-    check_input_args(args)
-    params.update({'inpdir':args.inpdir,'outdir':args.outdir,'of_new':args.of_new,'show':args.show,
-                   'of_actual':args.of_actual,'info':args.info,'save':args.save,'kepcorr':args.kepcorr,})
 
-    params['path'] = os.path.join(args.outdir, args.star)
-    args.params = params
-    # Get star info
-    args = get_single_info(args)
-    return args
-
-
-def get_single_info(args):
+def get_next(star, ext, count=1):
     """
-    Reads in any star information provided via args.info and is 'info/star_info.csv' by default. 
-    ** Please note that this is NOT required for pySYD to run successfully **
+    Determines the next path when disabling the overwriting of saved files
 
     Parameters
     ----------
-    args : argparse.Namespace
-        the command line arguments
-    columns : list
-        the list of columns to provide stellar information for
+    star : target.Target
+        root directory (i.e. star.params[star.name]['path']) pipeline target 
+    ext : str
+        name and type of file to be saved
+    count : int
+        starting count, which is incremented by 1 until new path is determined
 
     Returns
     -------
-    args : argparse.Namespace
-        the updated command line arguments
+    path : str
+        unused path name
 
     """
-    constants = Constants()
-    columns = get_data_columns(type='required')
-    # Open file if it exists
-    if os.path.exists(args.info):
-        df = pd.read_csv(args.info)
-        stars = [str(each) for each in df.stars.values.tolist()]
-        if args.star in stars:
-            idx = stars.index(args.star)
-            for column in columns:
-                if not np.isnan(float(df.loc[idx,column])):
-                    args.params[column] = float(df.loc[idx,column])
-                else:
-                    args.params[column] = None
-        else:
-            for column in columns:
-                args.params[column] = None
-        if args.params['numax'] is not None:
-            args.params['dnu'] = 0.22*(args.params['numax']**0.797)
-        else:
-            if args.params['radius'] is not None and args.params['logg'] is not None:
-                args.params['mass'] = ((((args.params['radius']*constants.r_sun)**(2.0))*10**(args.params['logg'])/constants.G)/constants.m_sun)
-                args.params['numax'] = constants.numax_sun*args.params['mass']*(args.params['radius']**(-2.0))*((args.params['teff']/constants.teff_sun)**(-0.5))
-                args.params['dnu'] = constants.dnu_sun*(args.params['mass']**(0.5))*(args.params['radius']**(-1.5))
-    override={'lower_bg':args.lower_bg,'upper_bg':args.upper_bg,'lower_ex':args.lower_ex,
-              'upper_ex':args.upper_ex,'lower_ps':args.lower_ps,'upper_ps':args.upper_ps,
-              'lower_ech':args.lower_ech,'upper_ech':args.upper_ech,'dnu':args.dnu,'numax':args.numax}
-    for each in override:
-        if override[each] is not None:
-            # if numax is provided via CLI, findex is skipped
-            if each == 'numax':
-                args.params['numax'] = override[each][0]
-                args.params['dnu'] = 0.22*(args.params['numax']**0.797)
-            # if dnu is provided via CLI, this value is used instead of the derived dnu
-            elif each == 'dnu':
-                args.params['force'] = True
-                args.params['guess'] = override[each][0]
-            else:
-                args.params[each] = override[each][0]
-                
-    return args
+    fn = '%s_%d.%s'%(ext.split('.')[0],count,ext.split('.')[-1])
+    path = os.path.join(star.params[star.name]['path'],fn)
+    if os.path.exists(path):
+        while os.path.exists(path):
+            count += 1
+            fn = '%s_%d.%s'%(ext.split('.')[0],count,ext.split('.')[-1])
+            path = os.path.join(star.params[star.name]['path'],fn)
+    return path
+    
 
 
 class Constants:

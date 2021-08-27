@@ -129,9 +129,8 @@ def whiten_mixed(star):
         white = np.mean(star.power[(star.frequency >= max(star.frequency)-100.0)&(star.frequency <= max(star.frequency)-50.0)])
     else:
         white = min(star.power[(star.frequency >= max(star.frequency)-100.0)&(star.frequency <= max(star.frequency)-50.0)])
-
     # Take the provided dnu and "fold" the power spectrum
-    folded_freq = np.copy(star.frequency)%star.params[star.name]['dnu']
+    folded_freq = np.copy(star.frequency)%star.params[star.name]['guess']
     mask = np.ma.getmask(np.ma.masked_inside(folded_freq, star.params[star.name]['ech_mask'][0], star.params[star.name]['ech_mask'][1]))
     np.random.seed(int(star.params[star.name]['seed']))
     # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
@@ -220,55 +219,10 @@ def compute_bic(observations, model, n_parameters):
     return bic
 
 
-def gaussian_bounds(x, y, guesses, best_x=None, sigma=None):
+def max_elements(x, y, npeaks, exp_dnu=None):
     """
-    Get the bounds for the parameters of a Gaussian fit to the data.
-
-    Parameters
-    ----------
-    x : np.ndarray
-        the x values of the data
-    y : np.ndarray
-        the y values of the data
-    guesses : List[float]
-        initial guesses for a gaussian fit
-    sigma : Optional[float]
-        sigma from a standard Normal distribution 
-
-    Returns
-    -------
-    bb : List[Tuple]
-        list of parameter bounds of a Gaussian fit to the data
-    """
-
-    offset, amp, center, width = guesses
-    if sigma is None:
-        sigma = (max(x)-min(x))/8.0/np.sqrt(8.0*np.log(2.0))
-    bb = []
-    b = np.zeros((2, 4)).tolist()
-    
-    # offset bound:
-    b[1][0] = np.inf            #upper bound
-    # amplitude bounds:
-    if amp > 0:
-        b[1][1] = 2.0*np.max(y) #upper bound
-    else:
-        b[0][1]=-np.inf         #lower bound
-        b[1][1]=0               #upper bound
-    # center bounds:
-    b[0][2] = np.min(x)
-    b[1][2] = np.max(x)
-    # width bounds
-    b[0][3] = sigma
-    b[1][3] = (np.max(x)-np.min(x))*2.
-    bb.append(tuple(b))
-    
-    return bb
-
-
-def max_elements(x, y, npeaks):
-    """
-    Get the first n peaks of the given data.
+    Get the x,y values for the n highest peaks in a power
+    spectrum. 
 
     Parameters
     ----------
@@ -278,6 +232,8 @@ def max_elements(x, y, npeaks):
         the y values of the data
     npeaks : int
         the first n peaks
+    exp_dnu : float
+        if not `None`, multiplies y array by Gaussian weighting centered on `exp_dnu`
 
     Returns
     -------
@@ -286,8 +242,13 @@ def max_elements(x, y, npeaks):
     peaks_y : np.ndarray
         the y co-ordinates of the first `npeaks`
     """
-
-    s = np.argsort(y)
+    xc, yc = np.copy(x), np.copy(y)
+    weights = np.ones_like(yc)
+    if exp_dnu is not None:
+        sig = 0.35*exp_dnu/2.35482 
+        weights *= np.exp(-(xc-exp_dnu)**2./(2.*sig**2))*((sig*np.sqrt(2.*np.pi))**-1.)
+    yc *= weights
+    s = np.argsort(yc)
     peaks_y = y[s][-int(npeaks):][::-1]
     peaks_x = x[s][-int(npeaks):][::-1]
 
@@ -321,18 +282,19 @@ def return_max(x_array, y_array, exp_dnu=None, index=False):
         value of the peak.
 
     """
-    if exp_dnu is None:
-        lst = list(y_array)
-        idx = lst.index(max(lst))
-        weights = None
-    else:
-        sig = 0.35*exp_dnu/2.35482 
-        weights = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(x_array-exp_dnu)**2./(2.*sig**2))
-        lst = list(weights*y_array)
-        idx = lst.index(max(lst))
+    idx = None
+    lst = list(y_array)
+    if lst != []:
+        if exp_dnu is not None:
+            lst = list(np.absolute(x_array-exp_dnu))
+            idx = lst.index(min(lst))
+        else:
+            idx = lst.index(max(lst))
     if index:
         return idx
     else:
+        if idx is None:
+            return [], []
         return x_array[idx], y_array[idx]
 
 

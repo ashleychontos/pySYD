@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def harvey(frequency, guesses, mode='regular', total=False, ab=False):
+def background(frequency, guesses, mode='regular', ab=False, noise=None):
     """
     The main model for the stellar background fitting
 
@@ -24,7 +24,7 @@ def harvey(frequency, guesses, mode='regular', total=False, ab=False):
         the stellar background model
 
     """
-    nlaws = int((len(guesses)-1)/2)
+    nlaws = int(len(guesses)//2)
     model = np.zeros_like(frequency)
 
     if mode == 'regular':
@@ -48,8 +48,11 @@ def harvey(frequency, guesses, mode='regular', total=False, ab=False):
     else:
         pass
 
-    if total:
-        model += guesses[2*nlaws]
+    if not int(len(guesses)%2):
+        if noise is not None:
+            model += noise
+    else:
+        model += guesses[-1]
 
     return model
 
@@ -79,14 +82,13 @@ def gaussian(frequency, offset, amplitude, center, width):
     """
 
     model = np.zeros_like(frequency)
-
     model += amplitude*np.exp(-(center-frequency)**2.0/(2.0*width**2))
     model += offset
 
     return model
 
 
-def harvey_none(frequency, white_noise, ab=False, fix=False):
+def harvey_none(frequency, white_noise, ab=False):
     """
     No Harvey model
 
@@ -105,13 +107,12 @@ def harvey_none(frequency, white_noise, ab=False, fix=False):
     """
 
     model = np.zeros_like(frequency)
-    if not fix:
-        model += white_noise
+    model += white_noise
 
     return model
 
 
-def harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False, fix=False):
+def harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
     """
     One Harvey model
 
@@ -138,13 +139,12 @@ def harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False, fix=False):
         model += (4.*(sigma_1**2.)*tau_1)/(1.0+(2.*np.pi*tau_1*frequency)**2.0+(2.*np.pi*tau_1*frequency)**4.0)
     else:
         model += tau_1/(1.0+(sigma_1*frequency)**2.0+(sigma_1*frequency)**4.0)
-    if not fix:
-        model += white_noise
+    model += white_noise
 
     return model
 
 
-def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False, fix=False):
+def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False):
     """
     Two Harvey model
 
@@ -177,13 +177,12 @@ def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False,
     else:
         model += tau_1/(1.0+(sigma_1*frequency)**2.0+(sigma_1*frequency)**4.0)
         model += tau_2/(1.0+(sigma_2*frequency)**2.0+(sigma_2*frequency)**4.0)
-    if not fix:
-        model += white_noise
+    model += white_noise
 
     return model
 
 
-def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise, ab=False, fix=False):
+def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise, ab=False):
     """
     Three Harvey model
 
@@ -221,7 +220,6 @@ def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, whit
         model += tau_1/(1.0+(sigma_1*frequency)**2.0+(sigma_1*frequency)**4.0)
         model += tau_2/(1.0+(sigma_2*frequency)**2.0+(sigma_2*frequency)**4.0)
         model += tau_3/(1.0+(sigma_3*frequency)**2.0+(sigma_3*frequency)**4.0)
-    if not fix:
-        model += white_noise
+    model += white_noise
 
     return model
