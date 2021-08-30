@@ -77,6 +77,12 @@ the data as well as which modules to use.
    * type = ``bool``
    * default = ``True``
    * action = ``store_false``
+- ``-d``, ``--show``, ``--display``
+   * dest = ``args.show``
+   * help = show output figures (note: this is not recommended if running many stars)
+   * type = ``bool``
+   * default = ``False``
+   * action = ``store_true``
 - ``-g``, ``--globe``, ``--global``
    * dest = ``args.globe``
    * help = Do not estimate global asteroseismic parameters numax and dnu
@@ -117,24 +123,18 @@ the data as well as which modules to use.
    * type = ``bool``
    * default = ``True``
    * action = ``store_false``
-- ``-d``, ``--show``, ``--display``
-   * dest = ``args.show``
-   * help = show output figures (note: this is not recommended if running many stars)
-   * type = ``bool``
-   * default = ``False``
-   * action = ``store_true``
 - ``--star``, ``--stars``
    * dest = ``args.star``
    * help = List of stars to process. Default is ``None``, which will read in the star list from ``args.file``.
    * nargs = '*'
    * default = ``None``
-- ``--test``, ``-t``
+- ``-t``, ``--test``
    * dest = ``args.test``
    * help = Extra verbose output for testing functionality (not currently implemented)
    * type = ``bool``
    * default = ``False``
    * action = ``store_true``
-- ``--ex``, ``--excess``, ``-x``
+- ``-x``, ``--ex``, ``--excess``
    * dest = ``args.background``
    * help = turn off find excess module
    * type = ``bool``
@@ -143,11 +143,17 @@ the data as well as which modules to use.
 
 
 Estimating numax
-++++++++++++++++++++
+******************
 
 The following options are relevant for the first, optional module that is designed
 to estimate numax if it is not known: 
 
+- ``-a``, ``--ask``
+   * dest = ``args.ask``
+   * help = Ask which trial (or estimate) to use
+   * type = ``bool``
+   * default = ``False``
+   * action = ``store_true``
 - ``--bin``, ``--binning``
    * dest = ``args.binning``
    * help = Interval for binning of spectrum in log(muHz) (bins equally in logspace).
@@ -202,6 +208,39 @@ Granulation background
 
 Below is a complete list of parameters relevant to the background-fitting routine:
 
+- ``--basis``
+   * dest = ``args.basis``
+   * help = Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***
+   * type = str
+   * default = `'tau_sigma'`
+- ``--bf``, ``--box``, ``--boxfilter``
+   * dest = ``args.box_filter``
+   * help = Box filter width (in muHz) for plotting the power spectrum
+   * type = ``float``
+   * default = `1.0`
+   * unit = muHz
+- ``-f``, ``--fix``, ``--fixwn``
+   * dest = ``args.fix``
+   * help = Fix the white noise level
+   * type = ``bool``
+   * default = ``False``
+   * action = ``store_true``
+- ``-i``, ``--include``
+   * dest = ``args.include``
+   * help = Include metric values in verbose output, default is `False`.
+   * type = ``bool``
+   * default = ``False``
+   * action = ``store_true``
+- ``--iw``, ``--indwidth``
+   * dest = ``args.ind_width``
+   * help = Width of binning for power spectrum (in muHz)
+   * type = ``float``
+   * default = `20.0`
+- ``--laws``, ``--nlaws``
+   * dest = ``args.n_laws``
+   * help = Force the number of red-noise component(s)
+   * type = int
+   * default = `None`
 - ``--lb``, ``--lowerb``
    * dest = ``args.lower_bg``
    * help = Lower limit of power spectrum to use in fitbg module. Please note: unless numax is known, it is not suggested to fix this beforehand.
@@ -209,6 +248,16 @@ Below is a complete list of parameters relevant to the background-fitting routin
    * type = ``float``
    * default = ``1.0``
    * unit = muHz
+- ``--metric``
+   * dest = ``args.metric``
+   * help = Which model metric to use for the best-fit background model, choices~['bic','aic']
+   * type = str
+   * default = `'bic'`
+- ``--rms``, ``--nrms``
+   * dest = ``args.n_rms``
+   * help = Number of points used to estimate amplitudes of individual background components (this should rarely need to be touched)
+   * type = int
+   * default = `20`
 - ``--ub``,  ``--upperb``
    * dest = ``args.upper_bg``
    * help = Upper limit of power spectrum to use in fitbg module. Please note: unless numax is known, it is not suggested to fix this beforehand.
@@ -216,68 +265,20 @@ Below is a complete list of parameters relevant to the background-fitting routin
    * type = ``float``
    * default = ``6000.0``
    * unit = muHz
-- ``--iw``, ``--indwidth``
-   * dest = ``args.ind_width``
-   * help = Width of binning for power spectrum (in muHz)
-   * type = ``float``
-   * default = `20.0`
-- ``--bf``, ``--box``, ``--boxfilter``
-   * dest = ``args.box_filter``
-   * help = Box filter width (in muHz) for plotting the power spectrum
-   * type = ``float``
-   * default = `1.0`
-   * unit = muHz
-- ``--rms``, ``--nrms``
-   * dest = ``args.n_rms``
-   * help = Number of points used to estimate amplitudes of individual background components (this should rarely need to be touched)
-   * type = int
-   * default = `20`
-- ``--laws``, ``--nlaws``
-   * dest = ``args.n_laws``
-   * help = Force the number of red-noise component(s)
-   * type = int
-   * default = `None`
-- ``--fix``, ``--fixwn``, ``--wn``, ``-f``
-   * dest = ``args.fix``
-   * help = Fix the white noise level
-   * type = ``bool``
-   * default = ``False``
-   * action = ``store_true``
-- ``--basis``
-   * dest = ``args.basis``
-   * help = Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***
-   * type = str
-   * default = `'tau_sigma'`
-- ``--metric``
-   * dest = ``args.metric``
-   * help = Which model metric to use for the best-fit background model, choices~['bic','aic']
-   * type = str
-   * default = `'bic'`
-- ``--include``, ``-i``
-   * dest = ``args.include``
-   * help = Include metric values in verbose output, default is `False`.
-   * type = ``bool``
-   * default = ``False``
-   * action = ``store_true``
 
 
    
-Numax-related
-++++++++++++++++++
+Deriving numax
+*****************
 
-All CLI options relevant to estimating numax:
+All of the following parameters are related to deriving numax, or the frequency
+corresponding to maximum power:
 
-- ``--sm``, ``--smpar``
-   * dest = ``args.sm_par``
-   * help = Value of smoothing parameter to estimate the smoothed numax (typical values range from `1`-`4`)
+- ``--ew``, ``--exwidth``
+   * dest = ``args.width``
+   * help = Fractional value of width to use for power excess, where width is computed using a solar scaling relation and then centered on the estimated numax.
    * type = ``float``
-   * default = `None`
-- ``--numax``
-   * dest = ``args.numax``
-   * help = Brute force method to bypass findex and provide value for numax. Please note: len(args.numax) == len(args.targets) for this to work! This is mostly intended for single star runs.
-   * nargs = '*'
-   * type = ``float``
-   * default = ``None``
+   * default = `1.0`
 - ``--lp``, ``--lowerp``
    * dest = ``args.lower_ps``
    * help = Lower frequency limit for zoomed in power spectrum (around power excess)
@@ -285,6 +286,17 @@ All CLI options relevant to estimating numax:
    * type = ``float``
    * default = ``None``
    * unit = muHz
+- ``--numax``
+   * dest = ``args.numax``
+   * help = Brute force method to bypass findex and provide value for numax. Please note: len(args.numax) == len(args.targets) for this to work! This is mostly intended for single star runs.
+   * nargs = '*'
+   * type = ``float``
+   * default = ``None``
+- ``--sm``, ``--smpar``
+   * dest = ``args.sm_par``
+   * help = Value of smoothing parameter to estimate the smoothed numax (typical values range from `1`-`4`)
+   * type = ``float``
+   * default = `None`
 - ``--up``,  ``--upperp``
    * dest = ``args.upper_ps``
    * help = Upper frequency limit for zoomed in power spectrum (around power excess)
@@ -292,17 +304,12 @@ All CLI options relevant to estimating numax:
    * type = ``float``
    * default = ``None``
    * unit = muHz
-- ``--ew``, ``--exwidth``
-   * dest = ``args.width``
-   * help = Fractional value of width to use for power excess, where width is computed using a solar scaling relation and then centered on the estimated numax.
-   * type = ``float``
-   * default = `1.0`
 
 
-Dnu-related
-++++++++++++++++++
+Deriving dnu
+***************
 
-All CLI options relevant to determining dnu:
+Below are all options related to the characteristic frequency spacing (dnu):
 
 - ``--dnu``
    * dest = ``args.dnu``
@@ -315,39 +322,46 @@ All CLI options relevant to determining dnu:
    * help = Method to use to determine dnu, choices ~['M', 'A', 'D']
    * type = ``str``
    * default = ``D``
+- ``--peak``, ``--peaks``, ``--npeaks``
+   * dest = ``args.n_peaks``
+   * help = Number of peaks to fit in the ACF
+   * type = ``int``
+   * default = `5`
 - ``--sp``, ``--smoothps``
    * dest = ``args.smooth_ps``
    * help = Box filter width for smoothing of the power spectrum. The default is 2.5, but will switch to 0.5 for more evolved stars (numax < 500 muHz).
    * type = ``float``
    * default = `2.5`
    * unit = muHz
-- ``--peak``, ``--peaks``, ``--npeaks``
-   * dest = ``args.n_peaks``
-   * help = Number of peaks to fit in the ACF
-   * type = ``int``
-   * default = `5`
 - ``--thresh``, ``--threshold``
    * dest = ``args.threshold``
    * help = Fractional value of the ACF FWHM to use for determining dnu
    * type = ``float``
    * default = ``1.0``
    
-Echelle-related
-++++++++++++++++++
+Echelle diagram
+******************
 
 All customizable options relevant for the echelle diagram output:
 
+
+- ``--ce``, ``--cm``, ``--color``
+   * dest = ``args.cmap``
+   * help = Change colormap of ED, which is `binary` by default.
+   * type = ``str``
+   * default = ``binary``
 - ``--cv``, ``--value``
    * dest = ``args.clip_value``
    * help = Clip value for echelle diagram (i.e. if ``args.clip_ech`` is ``True``). If none is provided, it will cut at 3x the median value of the folded power spectrum.
    * type = ``float``
    * default = ``3.0``
    * unit = fractional psd
-- ``--ce``, ``--cm``, ``--color``
-   * dest = ``args.cmap``
-   * help = Change colormap of ED, which is `binary` by default.
-   * type = ``str``
-   * default = ``binary``
+- ``-e``, ``--ie``, ``--interpech``
+   * dest = ``args.interp_ech``
+   * help = Turn on the bilinear interpolation for the echelle diagram
+   * type = ``bool``
+   * default = ``False``
+   * action = ``store_true``
 - ``--le``, ``--uppere``
    * dest = ``args.lower_ech``
    * help = Lower frequency limit of the folded PS to whiten mixed modes before determining the correct dnu
@@ -355,37 +369,12 @@ All customizable options relevant for the echelle diagram output:
    * type = ``float``
    * default = ``None``
    * unit = muHz
-- ``--ue``,  ``--uppere``
-   * dest = ``args.upper_ech``
-   * help = Upper frequency limit of the folded PS to whiten mixed modes before determining the correct dnu
-   * nargs = '*'
-   * type = ``float``
-   * default = ``None``
-   * unit = muHz
-- ``--notch``, ``-n``
+- ``-n``, ``--notch``
    * dest = ``args.notching``
    * help = Use notching technique to reduce effects from mixed modes (not fully functional, creates weirds effects for higher SNR cases)
    * type = ``bool``
    * default = ``False``
    * action = ``store_true``
-- ``--hey``, ``-h``
-   * dest = ``args.hey``
-   * help = Plugin for Daniel Hey's echelle package (not currently implemented yet)
-   * type = ``bool``
-   * default = ``False``
-   * action = ``store_true``
-- ``--ie``, ``--interpech``, ``-e``
-   * dest = ``args.interp_ech``
-   * help = Turn on the bilinear interpolation for the echelle diagram
-   * type = ``bool``
-   * default = ``False``
-   * action = ``store_true``
-- ``--se``, ``--smoothech``
-   * dest = ``args.smooth_ech``
-   * help = Option to smooth the echelle diagram output using a box filter
-   * type = ``float``
-   * default = ``None``
-   * unit = muHz
 - ``--nox``, ``--nacross``
    * dest = ``args.nox``
    * help = Resolution for the x-axis of the ED
@@ -396,10 +385,29 @@ All customizable options relevant for the echelle diagram output:
    * help = The number of orders to plot on the ED y-axis
    * type = ``int``
    * default = `0`
+- ``--se``, ``--smoothech``
+   * dest = ``args.smooth_ech``
+   * help = Option to smooth the echelle diagram output using a box filter
+   * type = ``float``
+   * default = ``None``
+   * unit = muHz
+- ``--ue``,  ``--uppere``
+   * dest = ``args.upper_ech``
+   * help = Upper frequency limit of the folded PS to whiten mixed modes before determining the correct dnu
+   * nargs = '*'
+   * type = ``float``
+   * default = ``None``
+   * unit = muHz
+- ``-y``, ``--hey``
+   * dest = ``args.hey``
+   * help = Plugin for Daniel Hey's echelle package (not currently implemented yet)
+   * type = ``bool``
+   * default = ``False``
+   * action = ``store_true``
    
    
-Sampling-related
-++++++++++++++++++
+Estimating uncertainties
+**************************
 
 All CLI options relevant for the Monte-Carlo sampling:
 
@@ -416,12 +424,12 @@ All CLI options relevant for the Monte-Carlo sampling:
    * action = ``store_true``
   
 
-Parallel Parser
-================
+Parallel processing
+************************
 
 Additional option for the number of threads to use when running stars in parallel.
 
-- ``-nt``, ``--nt``, ``-nthread``, ``--nthread``, ``-nthreads``, ``--nthreads`` 
+- ``--nt``, ``--nthread``, ``--nthreads`` 
    * dest = ``args.n_threads``
    * help = Number of processes to run in parallel. If nothing is provided, the software will use the ``multiprocessing`` package to determine the number of CPUs on the operating system and then adjust accordingly.
    * type = int
@@ -437,11 +445,16 @@ Input Type
 =============
 
 Booleans
-++++++++++++++++++
+**********
 
 Our boolean flags are sorted alphabetically by the single hash flag, where we have almost enough options
 to span the entire English alphabet.
 
+- ``-a``, ``--ask``
+   * dest = ``args.ask``
+   * help = Ask which trial (or estimate) of numax to use
+   * default = ``False``
+   * action = ``store_true``
 - ``-b``, ``--bg``, ``--background``, 
    * dest = ``args.background``
    * help = Turn off the background fitting procedure
@@ -472,11 +485,6 @@ to span the entire English alphabet.
    * help = Do not estimate global asteroseismic parameters numax and dnu
    * default = ``True``
    * action = ``store_false``
-- ``-h``, ``--hey``
-   * dest = ``args.hey``
-   * help = Plugin for Daniel Hey's echelle package (not currently implemented yet)
-   * default = ``False``
-   * action = ``store_true``
 - ``-i``, ``--include``
    * dest = ``args.include``
    * help = Include metric values in verbose output, default is `False`.
@@ -527,10 +535,15 @@ to span the entire English alphabet.
    * help = turn off find excess module
    * default = ``True``
    * action = ``store_false``
+- ``-y``, ``--hey``
+   * dest = ``args.hey``
+   * help = Plugin for Daniel Hey's echelle package (not currently implemented yet)
+   * default = ``False``
+   * action = ``store_true``
 
 
 Integers
-++++++++++++++++++
+************
 
 - ``--laws``, ``--nlaws``
    * dest = ``args.n_laws``
@@ -575,7 +588,7 @@ Integers
 
 
 Floats
-++++++++++++++++++
+*********
 
 
 - ``--bf``, ``--box``, ``--boxfilter``
@@ -687,7 +700,7 @@ Floats
 
 
 Strings
-++++++++++++++++++
+**********
 
 
 - ``--basis``
@@ -736,7 +749,7 @@ Strings
 ===============================
 
 Tutorial
-++++++++++++++++++
+===========
 
 
 Below is a quick, crash course demonstrating the easy accessibility of
