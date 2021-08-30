@@ -707,3 +707,10 @@ Strings
    * help = List of stars to process. Default is ``None``, which will read in the star list from ``args.file``.
    * nargs = '*'
    * default = ``None``
+
+
+.. raw:: html
+
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/c1do_BKtHXk" 
+   title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; 
+   clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
