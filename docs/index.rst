@@ -12,13 +12,29 @@ pySYD: |br| Automated Measurements |br| of Global Asteroseismic Parameters
 - Large frequency separation
 - Mean oscillation amplitudes
 
-For a basic introduction to these parameters and asteroseismic data analysis of solar-like oscillators see  `Bedding et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014aste.book...60B/abstract>`_.
+For a basic introduction to these parameters and asteroseismic data analysis of 
+solar-like oscillators see  `Bedding et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014aste.book...60B/abstract>`_.
 
-Please cite our recent JOSS paper `Chontos+2021 <https://arxiv.org/abs/2108.00582>`_ if you make use of ``pySYD`` in your work. The recommended BibTeX entry for this citation is:
+Please cite our recent JOSS paper `Chontos+2021 <https://arxiv.org/abs/2108.00582>`_ if you 
+make use of ``pySYD`` in your work. The recommended BibTeX entry for this citation is:
 
 .. code-block::
 
-    {@ARTICLE{2021arXiv210800582C,  author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},    title = "{$\texttt{pySYD}$: Automated measurements of global asteroseismic parameters}",  journal = {arXiv e-prints}, keywords = {Astrophysics - Solar and Stellar Astrophysics, Astrophysics - Instrumentation and Methods for Astrophysics},     year = 2021,    month = aug,      eid = {arXiv:2108.00582},    pages = {arXiv:2108.00582},archivePrefix = {arXiv},   eprint = {2108.00582}, primaryClass = {astro-ph.SR},   adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},  adsnote = {Provided by the SAO/NASA Astrophysics Data System}}
+    {@ARTICLE{2021arXiv210800582C,
+           author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
+            title = "{$\texttt{pySYD}$: Automated measurements of global asteroseismic parameters}",
+          journal = {arXiv e-prints},
+         keywords = {Astrophysics - Solar and Stellar Astrophysics, Astrophysics - Instrumentation and Methods for Astrophysics},
+             year = 2021,
+            month = aug,
+              eid = {arXiv:2108.00582},
+            pages = {arXiv:2108.00582},
+    archivePrefix = {arXiv},
+           eprint = {2108.00582},
+     primaryClass = {astro-ph.SR}, 
+           adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},
+          adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+    }
 
 
 Code contributions are welcome and should be submitted as a pull request.
@@ -32,11 +48,12 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
    quickstart
    overview
    examples
-   cli
    performance
+   cli
    advanced
    api
    
+
 Indices and tables for the source code
 ======================================
 
