@@ -7,7 +7,11 @@ from pysyd import TODODIR, INFODIR, INPDIR, OUTDIR
 
 
 def main():
-    # Properties inherent to both modules
+
+#####################################################################
+# Initiate parser
+#
+
     parser = argparse.ArgumentParser(
                                      description="pySYD: Automated Extraction of Global Asteroseismic Parameters", 
                                      prog='pySYD',
@@ -18,10 +22,13 @@ def main():
                         help="Print version number and exit.",
     )
 
-    # In the parent parser, we define arguments and options common to all subcommands
+#####################################################################
+# Parent parser contains arguments and options common to all modes
+#
+
     parent_parser = argparse.ArgumentParser(add_help=False)
 
-    parent_parser.add_argument('--cli', 
+    parent_parser.add_argument('--cli', '-c',
                                dest='cli',
                                help='This option should not be adjusted for current users',
                                default=True,
@@ -62,7 +69,10 @@ def main():
                                action='store_true',
     )
 
-    # Main options 
+#####################################################################
+# Higher-level functionality relevant to any fitting routine
+#
+
     main_parser = argparse.ArgumentParser(add_help=False)
 
     main_parser.add_argument('--bg', '--background', '-b', 
@@ -109,7 +119,7 @@ def main():
                              default=False, 
                              action='store_true',
     )
-    main_parser.add_argument('--save',
+    main_parser.add_argument('--save', '-d',
                              dest='save',
                              help='Do not save output figures and results.',
                              default=True, 
@@ -142,7 +152,11 @@ def main():
                              action='store_false',
     )
 
-    # CLI relevant for finding power excess
+#####################################################################
+# CLI options relevant for estimating an approximate numax
+# (optional routine)
+#
+
     excess = main_parser.add_argument_group('(CRUDE) EXCESS FIT')
 
     excess.add_argument('--bin', '--binning',
@@ -171,7 +185,6 @@ def main():
                         metavar='freq', 
                         dest='lower_ex',
                         help='Lower frequency limit of PS',
-                        nargs='*',
                         default=1.0,
                         type=float,
     )
@@ -179,8 +192,7 @@ def main():
                         metavar='freq', 
                         dest='upper_ex',
                         help='Upper frequency limit of PS',
-                        nargs='*',
-                        default=None,
+                        default=6000.0,
                         type=float,
     )
     excess.add_argument('--step', '--steps', 
@@ -196,14 +208,16 @@ def main():
                         type=int,
     )
 
-    # CLI relevant for background fitting
+#####################################################################
+# CLI options relevant to the background-fitting
+#
+
     background = main_parser.add_argument_group('BACKGROUND-RELATED')
 
     background.add_argument('--lb', '--lowerb', 
                             metavar='freq', 
                             dest='lower_bg',
                             help='Lower frequency limit of PS',
-                            nargs='*',
                             default=1.0,
                             type=float,
     )
@@ -211,8 +225,7 @@ def main():
                             metavar='freq', 
                             dest='upper_bg',
                             help='Upper frequency limit of PS',
-                            nargs='*',
-                            default=None,
+                            default=6000.0,
                             type=float,
     )
     background.add_argument('--iw', '--indwidth',
@@ -269,7 +282,10 @@ def main():
                             action='store_true',
     )
 
-    # CLI relevant for the global parameters
+#####################################################################
+# CLI options related to estimating numax
+#
+
     numax = main_parser.add_argument_group('NUMAX-RELATED')
 
     numax.add_argument('--sm', '--smpar',
@@ -311,6 +327,10 @@ def main():
                        type=float,
     )
 
+#####################################################################
+# CLI options relevant to characteristic frequency spacing (dnu)
+#
+
     dnu = main_parser.add_argument_group('DNU-RELATED')
 
     dnu.add_argument('--dnu',
@@ -350,6 +370,10 @@ def main():
                      type=float,
     )
 
+#####################################################################
+# CLI options relevant to the echelle diagram (ED)
+#
+
     echelle = main_parser.add_argument_group('ECHELLE-RELATED')
 
     echelle.add_argument('--cv', '--value',
@@ -359,7 +383,7 @@ def main():
                          default=3.0, 
                          type=float,
     )
-    echelle.add_argument('--ce', '--color', 
+    echelle.add_argument('--ce', '--cm', '--color', 
                          metavar='cmap',
                          dest='cmap',
                          help='Change colormap of ED, which is `binary` by default.',
@@ -384,11 +408,11 @@ def main():
     )
     echelle.add_argument('--notch', '-n', 
                          dest='notching',
-                         help='Use notching technique to reduce effects from mixed modes',
+                         help='Use notching technique to reduce effects from mixed modes (not fully functional, creates weirds effects for higher SNR cases)',
                          default=False, 
                          action='store_true',
     )
-    echelle.add_argument('--hey',
+    echelle.add_argument('--hey', '-h',
                          dest='hey', 
                          help="Use Daniel Hey's plugin for echelle",
                          default=False, 
@@ -414,13 +438,17 @@ def main():
                          default=50,
                          type=int, 
     )
-    echelle.add_argument('--noy', '--ndown',
+    echelle.add_argument('--noy', '--ndown', '--norders',
                          metavar='n', 
                          dest='noy',
                          help='The number of orders to plot on the ED y-axis',
                          default=0,
                          type=int,
     )
+
+#####################################################################
+# CLI options relevant to the sampling routine
+#
 
     mcmc = main_parser.add_argument_group('MCMC PARAMETERS')
 
@@ -431,7 +459,7 @@ def main():
                       default=1, 
                       type=int,
     )
-    mcmc.add_argument('--samples', 
+    mcmc.add_argument('--samples', '-m',
                       dest='samples',
                       help='Save samples from the Monte-Carlo sampling',
                       default=False, 
@@ -440,7 +468,12 @@ def main():
 
     sub_parser = parser.add_subparsers(title='pySYD modes', dest='command')
 
-    # Load data in for a target
+#####################################################################
+# pySYD mode loads in data for a single target but does not run
+# -> still under development 
+# idea is to have options to plot data, etc.
+#
+
     parser_load = sub_parser.add_parser('load',
                                         conflict_handler='resolve',
                                         parents=[parent_parser], 
@@ -450,7 +483,11 @@ def main():
 
     parser_load.set_defaults(func=pipeline.main)
 
-    # Run pySYD in parallel
+
+#####################################################################
+# Run pySYD in parallel
+#
+
     parser_parallel = sub_parser.add_parser('parallel', 
                                             conflict_handler='resolve',
                                             help='Run pySYD in parallel',
@@ -468,7 +505,12 @@ def main():
 
     parser_parallel.set_defaults(func=pipeline.main)
 
-    # Running pySYD in regular mode
+
+#####################################################################
+# Run the main pySYD pipeline on 1 or more targets
+#
+
+
     parser_run = sub_parser.add_parser('run',
                                        conflict_handler='resolve', 
                                        help='Run the main pySYD pipeline',
@@ -478,7 +520,12 @@ def main():
 
     parser_run.set_defaults(func=pipeline.main)
 
-    # Setting up
+
+#####################################################################
+# Download examples and save local files for an easy execution
+# of the software
+#
+
     parser_setup = sub_parser.add_parser('setup', 
                                          parents=[parent_parser], 
                                          formatter_class=argparse.MetavarTypeHelpFormatter,
@@ -486,7 +533,13 @@ def main():
                                          )
     parser_setup.set_defaults(func=pipeline.setup)
 
-    # Testing
+
+#####################################################################
+# Test new pySYD functionality
+# BRAND NEW: CURRENTLY UNDER DEVELOPMENT
+# (do not use, zero functionality)
+#
+
     parser_test = sub_parser.add_parser('test',
                                         conflict_handler='resolve',
                                         parents=[parent_parser, main_parser], 

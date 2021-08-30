@@ -235,10 +235,10 @@ def plot_parameters(star, n_peaks=10):
     # Smoothed power excess w/ gaussian
     ax4 = fig.add_subplot(x, y, 4)
     ax4.plot(star.region_freq, star.region_pow, 'w-', zorder=0)
-    idx = functions.return_max(star.region_freq, star.region_pow, index=True)
+    idx = utils.return_max(star.region_freq, star.region_pow, index=True)
     ax4.plot([star.region_freq[idx]], [star.region_pow[idx]], color='red', marker='s', markersize=7.5, zorder=0)
     ax4.axvline([star.region_freq[idx]], color='white', linestyle='--', linewidth=1.5, zorder=0)
-    xx, yy = functions.return_max(star.new_freq, star.numax_fit)
+    xx, yy = utils.return_max(star.new_freq, star.numax_fit)
     ax4.plot(star.new_freq, star.numax_fit, 'b-', zorder=3)
     ax4.axvline(xx, color='blue', linestyle=':', linewidth=1.5, zorder=2)
     ax4.plot([xx], [yy], color='b', marker='D', markersize=7.5, zorder=1)
@@ -251,7 +251,7 @@ def plot_parameters(star, n_peaks=10):
     mask = np.ma.getmask(np.ma.masked_inside(star.frequency, star.params[star.name]['ps_mask'][0], star.params[star.name]['ps_mask'][1]))
     star.freq = star.frequency[mask]
     star.psd = star.bg_corr_smooth[mask]
-    peaks_f, peaks_p = functions.max_elements(star.freq, star.psd, n_peaks)
+    peaks_f, peaks_p = utils.max_elements(star.freq, star.psd, n_peaks)
     ax5 = fig.add_subplot(x, y, 5)
     ax5.plot(star.freq, star.psd, 'w-', zorder=0, linewidth=1.0)
     ax5.scatter(peaks_f, peaks_p, s=25.0, edgecolor='r', marker='s', facecolor='none', linewidths=1.0)
@@ -264,7 +264,7 @@ def plot_parameters(star, n_peaks=10):
     sig = 0.35*star.exp_dnu/2.35482 
     weights = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(star.lag-star.exp_dnu)**2./(2.*sig**2))
     new_weights = weights/max(weights)
-    diff = list(np.absolute(np.diff(star.lag-star.obs_dnu)))
+    diff = list(np.absolute(star.lag-star.obs_dnu))
     idx = diff.index(min(diff))
     # ACF for determining dnu
     ax6 = fig.add_subplot(x, y, 6)

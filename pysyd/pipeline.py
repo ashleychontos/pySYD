@@ -1,16 +1,13 @@
-import os
-import shutil
-import unittest
-import subprocess
-import numpy as np
-import pandas as pd
-import multiprocessing as mp
-
+# Import relevant, local pySYD modules
 import pysyd
 from pysyd import utils
 from pysyd import plots
 from pysyd.target import Target
 
+
+#####################################################################
+# Main function that assigns functions for different pySYD modes 
+#
 
 def main(args=None):
     """
@@ -22,6 +19,7 @@ def main(args=None):
         the command line arguments
 
     """
+    # Setup operates quite differently from the other pySYD modes
     if args.command == 'setup':
         setup(args)
     else:
@@ -37,6 +35,14 @@ def main(args=None):
             test(args)
         else:
             pass
+
+
+#####################################################################
+# Loads in information and parameters relevant to all pySYD modes
+# (except for setup)
+# NOTE: this does not load in a target or target data, this is
+#       purely information for running any star successfully
+#
 
 
 def load(args, star=None, verbose=False, command='run'):
@@ -63,9 +69,14 @@ def load(args, star=None, verbose=False, command='run'):
             return
         else:
             args.stars = [star]
-
+    # Load relevant pySYD parameters
     args = utils.get_info(args)
     return args
+
+
+#####################################################################
+# Run main pySYD pipeline (consecutively, not in parallel)
+#
     
 
 def run(args):
@@ -78,7 +89,6 @@ def run(args):
         the command line arguments
 
     """
-
     # Run single batch of stars
     count = pipe(args.params['stars'], args)
     # check to make sure that at least one star was successfully run (i.e. there are results)  
@@ -89,6 +99,14 @@ def run(args):
             print()
         # Concatenates output into two files
         utils.scrape_output(args)
+
+
+#####################################################################
+# Pipe is called by both 'run' and 'parallel' modes to initiate the
+# pySYD pipeline for a group of stars
+# i.e. consecutively for the 'run' command
+#      and multiprocessing in 'parallel' mode
+#
 
 
 def pipe(group, args, count=0):
@@ -108,16 +126,24 @@ def pipe(group, args, count=0):
         the number of successful stars processed by pySYD for a given group of stars
 
     """
+    # Iterate through and run stars in a given star 'group'
     for star in group:
         single = Target(star, args)
+        # Makes sure a target has a power spectrum before processing
         if hasattr(single, 'ps'):
             count+=1
             single.run_syd()
         else:
+            # Only print data warnings when running pySYD in regular mode (i.e. not in parallel)
             if args.command != 'parallel':
                 print(' - cannot find data for %s'%single.name)
-
+    # Number of successfully processed stars
     return count
+
+
+#####################################################################
+# Run pySYD pipeline in parallel for a large number of stars
+#
 
 
 def parallel(args):
@@ -132,6 +158,9 @@ def parallel(args):
         the command line arguments
 
     """
+    # Import relevant (external) python modules
+    import numpy as np
+    import multiprocessing as mp
     # Creates the separate, asyncrhonous (nthread) processes
     pool = mp.Pool(args.n_threads)
     result_objects = [pool.apply_async(pipe, args=(group, args)) for group in args.params['groups']]
@@ -149,9 +178,21 @@ def parallel(args):
         utils.scrape_output(args)
 
 
+#####################################################################
+# Testing new pySYD functionalities
+# GOAL: unittest +/- testing developments 
+# NOT CURRENTLY IMPLEMENTED 
+# -> use the hacky, boolean flag -t or --test instead (for now)
+
+
 def test(args):
 
-    dnu_comparison(test=True)
+    dnu_comparison()
+
+
+#####################################################################
+# Downloads examples and sets up local directories for a quickstart
+#
 
 
 def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
@@ -171,7 +212,10 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
         path to download package data and examples from (source directory)
 
     """
-
+    # Import relevant (external) python modules
+    import pandas as pd
+    import os, subprocess
+    # downloading data will generate output in terminal, so include this statement regardless
     print('\n\nDownloading relevant data from source directory:\n')
     # create info directory
     if len(os.path.split(args.todo)) != 1:
@@ -187,21 +231,17 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
     infile2='%sinfo/star_info.csv'%raw
     outfile2=os.path.join(path_info,os.path.split(args.info)[-1])
     subprocess.call(['curl %s > %s'%(infile2, outfile2)], shell=True)
-
     # if not successful, make empty input files for reference
     if not os.path.exists(outfile1):
         f = open(args.todo, "w")
         f.close()
     if not os.path.exists(outfile2):
         df = pd.DataFrame(columns=utils.get_dict(type='columns')['csv'])
-#        df = pd.DataFrame(columns=['stars','radius','radius_err','teff','teff_err','logg','logg_err','lower_ex','upper_ex','lower_bg','upper_bg','lower_ps','upper_ps','lower_ech','upper_ech','numax','dnu','seed'])
         df.to_csv(args.info, index=False)
-
     # create data directory
     if not os.path.exists(args.inpdir):
         os.mkdir(args.inpdir)
         note+=' - created data directory at %s \n'%args.inpdir
-
     # get example data
     for target in ['1435467', '2309595', '11618103']:
         for ext in ['LC', 'PS']:
@@ -210,11 +250,9 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
             subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
     print('\n')
     note+=' - example data saved\n'
-
     # create results directory
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
     note+=' - results will be saved to %s \n\n'%args.outdir
-    
     if args.verbose:
         print(note)

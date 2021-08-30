@@ -16,6 +16,9 @@ from pysyd.functions import *
 from pysyd.models import *
 
 
+#####################################################################
+# HIGHER-LEVEL FUNCTIONALITY OF THE SOFTWARE
+#
 
 def get_info(args):
     """
@@ -139,6 +142,10 @@ def get_main_params(args, cli=False, stars=None, excess=True, background=True, g
     return args
 
 
+#####################################################################
+# Sets up star "groups" -> mostly for parallel processing
+#
+
 def get_groups(args):
     """
     Sets up star groups to run in parallel based on the number of threads.
@@ -176,6 +183,10 @@ def get_groups(args):
     return args
 
 
+#####################################################################
+# Parameters relevant to (optionally) estimate numax 
+#
+
 def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=20.0, 
                       mode='mean', lower_ex=1.0, upper_ex=8000.,):
     """
@@ -210,6 +221,10 @@ def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=2
     args.excess = dict(zip(vars,vals))
     return args
 
+
+#####################################################################
+# Parameters relevant to background-fitting
+#
 
 def get_background_params(args, ind_width=20.0, box_filter=1.0, n_rms=20, metric='bic', include=False,
                           mc_iter=1, samples=False, n_laws=None, fix_wn=False, basis='tau_sigma',
@@ -262,6 +277,10 @@ def get_background_params(args, ind_width=20.0, box_filter=1.0, n_rms=20, metric
     args.background = dict(zip(vars,vals))
     return args
 
+
+#####################################################################
+# Features related to determining numax and dnu
+#
 
 def get_global_params(args, sm_par=None, lower_ps=None, upper_ps=None, width=1.0, 
                       method='D', smooth_ps=2.5, threshold=1.0, n_peaks=5, cmap='binary', 
@@ -324,6 +343,10 @@ def get_global_params(args, sm_par=None, lower_ps=None, upper_ps=None, width=1.0
     args.globe = dict(zip(vars,vals))
     return args
 
+
+#####################################################################
+# Can store different settings for individual stars
+#
 
 def get_csv_info(args, force=False, guess=None):
     """
@@ -390,6 +413,10 @@ def get_csv_info(args, force=False, guess=None):
     return args
 
 
+#####################################################################
+# If running from command line, checks input types and array lengths
+#
+
 def check_input_args(args, max_laws=3):
     """ 
     Make sure that any command-line inputs are the proper lengths, types, etc.
@@ -409,7 +436,6 @@ def check_input_args(args, max_laws=3):
 
     checks={'lower_ps':args.lower_ps,'upper_ps':args.upper_ps,'lower_ech':args.lower_ech,
             'upper_ech':args.upper_ech,'dnu':args.dnu,'numax':args.numax}
-#    checks={'numax':args.numax, 'dnu':args.dnu}
     for check in checks:
         if checks[check] is not None:
             assert len(args.stars) == len(checks[check]), "The number of values provided for %s does not equal the number of stars"%check
@@ -453,10 +479,6 @@ def get_command_line(args, numax=None, dnu=None, lower_ps=None, upper_ps=None,
     """
 
     override = {
-#        'lower_bg': args.lower_bg,
-#        'upper_bg': args.upper_bg,
-#        'lower_ex': args.lower_ex,
-#        'upper_ex': args.upper_ex,
         'lower_ps': args.lower_ps,
         'upper_ps': args.upper_ps,
         'numax': args.numax,
@@ -485,6 +507,11 @@ def get_command_line(args, numax=None, dnu=None, lower_ps=None, upper_ps=None,
             args.params[star]['ech_mask'] = None
 
     return args
+
+
+#####################################################################
+# Data and information related to a processed star
+#
 
 
 def load_data(star, args):
@@ -662,6 +689,164 @@ def load_power_spectrum(args, star, note='', long=10**6):
     return args, star, note
 
 
+#####################################################################
+# Relevant for Kepler (artefact) correction function
+# -> this will save the seed for reproducibiity purposes
+#
+
+def set_seed(star, lower=1, upper=10**7, size=1):
+    """
+    For Kepler targets that require a correction via CLI (--kc), a random seed is generated
+    from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
+
+    Parameters
+    ----------
+    star : target.Target
+        the pySYD pipeline object
+    lower : int 
+        lower limit for random seed value. Default value is `1`.
+    upper : int
+        upper limit for random seed value. Default value is `10**7`.
+    size : int
+        number of seed values returned. Default value is `1`.
+
+    Returns
+    -------
+    star : target.Target
+        the pySYD pipeline object
+        
+    """
+
+    seed = list(np.random.randint(lower,high=upper,size=size))
+    df = pd.read_csv(star.params['info'])
+    stars = [str(each) for each in df.stars.values.tolist()]
+    idx = stars.index(star.name)
+    df.loc[idx,'seed'] = int(seed[0])
+    star.params[star.name]['seed'] = seed[0]
+    df.to_csv(star.params['info'],index=False)
+    return star
+
+
+#####################################################################
+# Routine to correct for 1/LC Kepler harmonics, as well as
+# known high frequency artefacts and the low frequency artefacts
+# (primarily in Q0-Q3 data)
+#
+
+def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_upper =[380.0,530.0], 
+                    hf_lower = [4530.0,5011.0,5097.0,5575.0,7020.0,7440.0,7864.0],
+                    hf_upper = [4534.0,5020.0,5099.0,5585.0,7030.0,7450.0,7867.0],):
+    """
+    Removes SC artefacts in Kepler power spectra by replacing them with noise (using linear interpolation)
+    following a chi-squared distribution. 
+
+    Known artefacts are:
+    1) 1./LC harmonics
+    2) high frequency artefacts (>5000 muHz)
+    3) low frequency artefacts 250-400 muHz (mostly present in Q0 and Q3 data)
+
+    Parameters
+    ----------
+    star : target.Target
+        the pySYD pipeline object
+    lcp : float
+        long cadence period in Msec
+    lf_lower : List[float]
+        lower limit of low frequency artefact
+    lf_upper : List[float]
+        upper limit of low frequency artefact
+    hf_lower : List[float]
+        lower limit of high frequency artefact
+    hf_upper : List[float]
+        upper limit of high frequency artefact
+    Returns
+    -------
+    star : target.Target
+        the pySYD pipeline object
+    """
+
+    if star.params[star.name]['seed'] is None:
+        star = set_seed(star)
+    # LC period in Msec -> 1/LC ~muHz
+    artefact = (1.0+np.arange(14))*lcp
+    # Estimate white noise
+    white = np.mean(star.power[(star.frequency >= max(star.frequency)-100.0)&(star.frequency <= max(star.frequency)-50.0)])
+
+    np.random.seed(int(star.params[star.name]['seed']))
+    # Routine 1: remove 1/LC artefacts by subtracting +/- 5 muHz given each artefact
+    for i in range(len(artefact)):
+        if artefact[i] < np.max(star.frequency):
+            mask = np.ma.getmask(np.ma.masked_inside(star.frequency, artefact[i]-5.0*star.resolution, artefact[i]+5.0*star.resolution))
+            if np.sum(mask) != 0:
+                star.power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
+
+    np.random.seed(int(star.params[star.name]['seed']))
+    # Routine 2: fix high frequency artefacts
+    for lower, upper in zip(hf_lower, hf_upper):
+        if lower < np.max(star.frequency):
+            mask = np.ma.getmask(np.ma.masked_inside(star.frequency, lower, upper))
+            if np.sum(mask) != 0:
+                star.power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
+
+    np.random.seed(int(star.params[star.name]['seed']))
+    # Routine 3: remove wider, low frequency artefacts 
+    for lower, upper in zip(lf_lower, lf_upper):
+        low = np.ma.getmask(np.ma.masked_outside(star.frequency, lower-20., lower))
+        upp = np.ma.getmask(np.ma.masked_outside(star.frequency, upper, upper+20.))
+        # Coeffs for linear fit
+        m, b = np.polyfit(star.frequency[~(low*upp)], star.power[~(low*upp)], 1)
+        mask = np.ma.getmask(np.ma.masked_inside(star.frequency, lower, upper))
+        # Fill artefact frequencies with noise
+        star.power[mask] = ((star.frequency[mask]*m)+b)*(np.random.chisquare(2, np.sum(mask))/2.0)
+
+    return star
+
+
+#####################################################################
+# For subgiants with mixed modes, this will "whiten" these modes
+# by adding noise (by drawing from a chi-squared distribution with 2 
+# dof) to properly estimate dnu.
+#
+
+def whiten_mixed(star):
+    """
+    Generates random white noise in place of ell=1 for subgiants with mixed modes to better
+    constrain the characteristic frequency spacing.
+
+    Parameters
+    ----------
+    star : target.Target
+        pySYD pipeline target
+    star.frequency : np.ndarray
+        the frequency of the power spectrum
+    star.power : np.ndarray
+        the power spectrum
+
+    """
+    if star.params[star.name]['seed'] is None:
+        star = set_seed(star)
+    # Estimate white noise
+    if not star.globe['notching']:
+        white = np.mean(star.power[(star.frequency >= max(star.frequency)-100.0)&(star.frequency <= max(star.frequency)-50.0)])
+    else:
+        white = min(star.power[(star.frequency >= max(star.frequency)-100.0)&(star.frequency <= max(star.frequency)-50.0)])
+    # Take the provided dnu and "fold" the power spectrum
+    folded_freq = np.copy(star.frequency)%star.params[star.name]['guess']
+    mask = np.ma.getmask(np.ma.masked_inside(folded_freq, star.params[star.name]['ech_mask'][0], star.params[star.name]['ech_mask'][1]))
+    np.random.seed(int(star.params[star.name]['seed']))
+    # Makes sure the mask is not empty
+    if np.sum(mask) != 0:
+        if star.globe['notching']:
+            star.power[mask] = white
+        else:
+            star.power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
+    # Typically if dnu is provided, it will assume you want to "force" that value
+    # so we need to adjust this back
+    star.params[star.name]['force'] = False
+    star.params[star.name]['guess'] = None
+    return star
+
+
 def check_input_data(args, star, note):
     """
     Checks the type(s) of input data and creates any additional, optional
@@ -718,6 +903,10 @@ def check_input_data(args, star, note):
     return args, star, note
 
 
+#####################################################################
+# Sets data up for first optional module
+#
+
 def get_estimates(star):
     """
     Parameters used with the first module, which is automated method to identify
@@ -762,6 +951,10 @@ def get_estimates(star):
         star.boxes = np.logspace(np.log10(50.), np.log10(500.), star.excess['n_trials'])*1.
     return star
 
+#####################################################################
+# Checks if there's an estimate for numax (but no longer requires it)
+# Still needs to be tested: no estimate of numax but global fit
+#
 
 def check_numax(star):
     """
@@ -796,6 +989,10 @@ def check_numax(star):
             return False
     return True
 
+
+#####################################################################
+# Sets data up for the derivation of asteroseismic parameters
+#
 
 def get_initial(star, lower_bg=1.0):
     """
@@ -850,9 +1047,13 @@ def get_initial(star, lower_bg=1.0):
         star.test='----------------------------------------------------\n\nTESTING INFORMATION:\n'
     # Use scaling relations from sun to get starting points
     star = solar_scaling(star)
-
     return star
 
+
+#####################################################################
+# We use scaling relations to estimate initial guesses for 
+# several parameters
+#
 
 def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=1.0):
     """
@@ -915,6 +1116,10 @@ def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=1
     star.b_orig = np.copy(star.b)
     return star
 
+
+#####################################################################
+# Save information
+#
 
 def save_file(star, formats=[">15.8f", ">18.10e"]):
     """
@@ -1001,6 +1206,10 @@ def save_results(star):
         df.to_csv(os.path.join(star.params[star.name]['path'],'samples.csv'), index=False)
 
 
+#####################################################################
+# Optional verbose output function
+#
+
 def verbose_output(star):
     """
     If `True`, prints results from the global asteroseismic fit.
@@ -1027,6 +1236,10 @@ def verbose_output(star):
     note+='\n------------------------------------------------------'
     print(note)
 
+
+#####################################################################
+# Concatenates data for individual stars into a single csv
+#
 
 def scrape_output(args):
     """
@@ -1065,6 +1278,10 @@ def scrape_output(args):
         df.to_csv(os.path.join(args.params['outdir'],'global.csv'), index=False)
 
 
+#####################################################################
+# Read in large python containers (dictionaries) 
+#
+
 def get_dict(type='params'):
     """
     Quick function to read in longer python dictionaries, which is primarily used in
@@ -1098,6 +1315,11 @@ def get_dict(type='params'):
         return ast.literal_eval(f.read())
 
 
+#####################################################################
+# When not overwriting, this will determine the next file that can be
+# written without compromising previous results
+#
+
 def get_next(star, ext, count=1):
     """
     Determines the next path when disabling the overwriting of saved files
@@ -1125,7 +1347,166 @@ def get_next(star, ext, count=1):
             fn = '%s_%d.%s'%(ext.split('.')[0],count,ext.split('.')[-1])
             path = os.path.join(star.params[star.name]['path'],fn)
     return path
-    
+
+
+#####################################################################
+# DATA MANIPULATION TOOLS 
+#
+# Function to get the highest peaks in an array
+#
+
+def max_elements(x, y, npeaks, exp_dnu=None):
+    """
+    Get the x,y values for the n highest peaks in a power
+    spectrum. 
+
+    Parameters
+    ----------
+    x : np.ndarray
+        the x values of the data
+    y : np.ndarray
+        the y values of the data
+    npeaks : int
+        the first n peaks
+    exp_dnu : float
+        if not `None`, multiplies y array by Gaussian weighting centered on `exp_dnu`
+
+    Returns
+    -------
+    peaks_x : np.ndarray
+        the x co-ordinates of the first `npeaks`
+    peaks_y : np.ndarray
+        the y co-ordinates of the first `npeaks`
+    """
+    xc, yc = np.copy(x), np.copy(y)
+    weights = np.ones_like(yc)
+    if exp_dnu is not None:
+        sig = 0.35*exp_dnu/2.35482 
+        weights *= np.exp(-(xc-exp_dnu)**2./(2.*sig**2))*((sig*np.sqrt(2.*np.pi))**-1.)
+    yc *= weights
+    s = np.argsort(yc)
+    peaks_y = y[s][-int(npeaks):][::-1]
+    peaks_x = x[s][-int(npeaks):][::-1]
+
+    return peaks_x, peaks_y
+
+
+#####################################################################
+# Function to get the singular maximum in an array
+#
+
+def return_max(x_array, y_array, exp_dnu=None, index=False):
+    """
+    Return the either the value of peak or the index of the peak corresponding to the most likely dnu given a prior estimate,
+    otherwise just the maximum value.
+
+    Parameters
+    ----------
+    x_array : np.ndarray
+        the independent axis (i.e. time, frequency)
+    y_array : np.ndarray
+        the dependent axis
+    method : str
+        which method to use for determing the max elements in an array
+    index : bool
+        if true will return the index of the peak instead otherwise it will return the value. Default value is `False`.
+    dnu : bool
+        if true will choose the peak closest to the expected dnu `exp_dnu`. Default value is `False`.
+    exp_dnu : Required[float]
+        the expected dnu. Default value is `None`.
+
+    Returns
+    -------
+    result : Union[int, float]
+        if `index` is `True`, result will be the index of the peak otherwise if `index` is `False` it will instead return the
+        value of the peak.
+
+    """
+    idx = None
+    lst = list(y_array)
+    if lst != []:
+        if exp_dnu is not None:
+            lst = list(np.absolute(x_array-exp_dnu))
+            idx = lst.index(min(lst))
+        else:
+            idx = lst.index(max(lst))
+    if index:
+        return idx
+    else:
+        if idx is None:
+            return [], []
+        return x_array[idx], y_array[idx]
+
+
+def bin_data(x, y, width, log=False, mode='mean'):
+    """
+    Bins a series of data.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        the x values of the data
+    y : np.ndarray
+        the y values of the data
+    width : float
+        bin width in muHz
+    log : bool
+        creates bins by using the log of the min/max values (i.e. not equally spaced in log if `True`)
+
+    Returns
+    -------
+    bin_x : np.ndarray
+        binned frequencies
+    bin_y : np.ndarray
+        binned power
+    bin_yerr : numpy.ndarray
+        standard deviation of the binned y data
+
+    """
+    if log:
+        mi = np.log10(min(x))
+        ma = np.log10(max(x))
+        no = np.int(np.ceil((ma-mi)/width))
+        bins = np.logspace(mi, mi+(no+1)*width, no)
+    else:
+        bins = np.arange(min(x), max(x)+width, width)
+
+    digitized = np.digitize(x, bins)
+    if mode == 'mean':
+        bin_x = np.array([x[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+        bin_y = np.array([y[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+    elif mode == 'median':
+        bin_x = np.array([np.median(x[digitized == i]) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+        bin_y = np.array([np.median(y[digitized == i]) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+    else:
+        pass
+    bin_yerr = np.array([y[digitized == i].std()/np.sqrt(len(y[digitized == i])) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+
+    return bin_x, bin_y, bin_yerr
+
+
+#####################################################################
+# Other random tools, including a container class of known (mostly
+# solar) physical values in cgs.
+#
+
+def delta_nu(numax):
+    """
+    Estimates dnu using numax scaling relation.
+
+    Parameters
+    ----------
+    numax : float
+        the estimated numax
+
+    Returns
+    -------
+    dnu : float
+        the estimated dnu
+
+    """
+
+    return 0.22*(numax**0.797)
 
 
 class Constants:

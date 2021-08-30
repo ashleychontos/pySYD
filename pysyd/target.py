@@ -1,6 +1,5 @@
 import pickle
 import numpy as np
-from tqdm import tqdm
 import matplotlib.pyplot as plt
 from scipy.signal import find_peaks
 from scipy.optimize import curve_fit
@@ -13,6 +12,12 @@ from pysyd import utils
 from pysyd import plots
 
 
+#####################################################################
+# Each star or "target" that is processed with pySYD
+# -> initialization loads in data for a single star
+#    but will not execute the main module unless it
+#    is in the proper pySYD mode
+#
 
 class Target:
 
@@ -109,9 +114,9 @@ class Target:
         # Make sure the binning is specified, otherwise it cannot run
         if self.excess['binning'] is not None:
             # Smooth the power in log-space
-            self.bin_freq, self.bin_pow, self.bin_pow_err = functions.bin_data(self.freq, self.pow, width=self.excess['binning'], log=True, mode=self.excess['mode'])
+            self.bin_freq, self.bin_pow, self.bin_pow_err = utils.bin_data(self.freq, self.pow, width=self.excess['binning'], log=True, mode=self.excess['mode'])
             # Smooth the power in linear-space
-            self.smooth_freq, self.smooth_pow, self.smooth_pow_err = functions.bin_data(self.bin_freq, self.bin_pow, width=self.excess['smooth_width'])
+            self.smooth_freq, self.smooth_pow, self.smooth_pow_err = utils.bin_data(self.bin_freq, self.bin_pow, width=self.excess['smooth_width'])
             if self.verbose:
                 print('------------------------------------------------------')
                 print('Estimating numax:')
@@ -247,6 +252,7 @@ class Target:
                         self.resolution = self.frequency[1]-self.frequency[0]
                         self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
                         if self.verbose:
+                            from tqdm import tqdm 
                             print('------------------------------------------------------\nRunning sampling routine:')
                             self.pbar = tqdm(total=self.background['mc_iter'])
                             self.pbar.update(1)
@@ -281,7 +287,7 @@ class Target:
 
         """
         # Bin power spectrum to model stellar background/correlated red noise components
-        bin_freq, bin_pow, bin_err = functions.bin_data(self.frequency, self.random_pow, width=self.background['ind_width'], mode=self.excess['mode'])
+        bin_freq, bin_pow, bin_err = utils.bin_data(self.frequency, self.random_pow, width=self.background['ind_width'], mode=self.excess['mode'])
         # Mask out region with power excess
         mask = np.ma.getmask(np.ma.masked_outside(bin_freq, self.params[self.name]['ps_mask'][0], self.params[self.name]['ps_mask'][1]))
         self.bin_freq, self.bin_pow, self.bin_err = bin_freq[mask], bin_pow[mask], bin_err[mask]
@@ -415,7 +421,7 @@ class Target:
             if n_free == 0:
                 self.paras.append([])
                 model = np.ones_like(self.bin_pow)*self.noise
-                b, a = functions.compute_bic(self.bin_pow, model, n_parameters=n_free), functions.compute_aic(self.bin_pow, model, n_parameters=n_free)
+                b, a = models.compute_bic(self.bin_pow, model, n_parameters=n_free), models.compute_aic(self.bin_pow, model, n_parameters=n_free)
                 self.bic.append(b)
                 self.aic.append(a)
             else:
@@ -433,7 +439,7 @@ class Target:
                 else:
                     self.paras.append(pars)
                     model = models.background(self.bin_freq, pars, noise=self.noise)
-                    b, a = functions.compute_bic(self.bin_pow, model, n_parameters=n_free), functions.compute_aic(self.bin_pow, model, n_parameters=n_free)
+                    b, a = models.compute_bic(self.bin_pow, model, n_parameters=n_free), models.compute_aic(self.bin_pow, model, n_parameters=n_free)
                     self.bic.append(b)
                     self.aic.append(a)
             if self.verbose:
@@ -582,7 +588,7 @@ class Target:
 
 
 #####################################################################
-# Functions related to determining numax
+# Functions related to estimating numax
 #
 
     def get_numax_smooth(self, divide=True):
@@ -612,7 +618,7 @@ class Target:
             self.region_freq, self.region_pow = self.frequency[mask], self.pssm_bgcorr[mask]
         if self.params['testing'] and self.i == 0:
             self.test+='\n------------------------------------------------------ \nThe power spectrum mask includes %d data points \n i.e. the power excess region ~[%.2f,%.2f]'%(np.sum(mask), min(self.region_freq), max(self.region_freq))
-        idx = functions.return_max(self.region_freq, self.region_pow, index=True)
+        idx = utils.return_max(self.region_freq, self.region_pow, index=True)
         self.globe['results'][self.name]['numax_smooth'].append(self.region_freq[idx])
         self.globe['results'][self.name]['A_smooth'].append(self.region_pow[idx])
         # Initial guesses for the parameters of the Gaussian fit to the power envelope
@@ -714,17 +720,17 @@ class Target:
             peak_idx, _ = find_peaks(self.auto)
             peaks_l0, peaks_a0 = self.lag[peak_idx], self.auto[peak_idx]
             # Pick n highest peaks
-            self.peaks_l, self.peaks_a = functions.max_elements(peaks_l0, peaks_a0, npeaks=self.globe['n_peaks'])
+            self.peaks_l, self.peaks_a = utils.max_elements(peaks_l0, peaks_a0, npeaks=self.globe['n_peaks'])
         elif self.globe['method'] == 'A':
             # Get peaks from ACF using Ashley's module 
-            self.peaks_l, self.peaks_a = functions.max_elements(self.lag, self.auto, npeaks=self.globe['n_peaks'])
+            self.peaks_l, self.peaks_a = utils.max_elements(self.lag, self.auto, npeaks=self.globe['n_peaks'])
         elif self.globe['method'] == 'D':
             # Get peaks from ACF by providing dnu to weight the array (aka Dennis' routine)
-            self.peaks_l, self.peaks_a = functions.max_elements(self.lag, self.auto, npeaks=self.globe['n_peaks'], exp_dnu=guess)
+            self.peaks_l, self.peaks_a = utils.max_elements(self.lag, self.auto, npeaks=self.globe['n_peaks'], exp_dnu=guess)
         else:
             pass
         # Pick "best" peak in ACF (i.e. closest to expected dnu)
-        idx = functions.return_max(self.peaks_l, self.peaks_a, index=True, exp_dnu=guess)
+        idx = utils.return_max(self.peaks_l, self.peaks_a, index=True, exp_dnu=guess)
         self.best_lag, self.best_auto = self.peaks_l[idx], self.peaks_a[idx]
         if self.params['testing'] and self.i == 0:
             self.test+='\n %s method to estimate dnu ~= %.2f'%(self.globe['method'], self.best_lag)
@@ -799,11 +805,11 @@ class Target:
         self.obs_acf = max(self.dnu_fit)
 
 
-
 #####################################################################
 # Functions related to making the echelle diagram
+#
 
-    def get_ridges(self, clip_value=3.0):
+    def get_ridges(self):
         """
         Create echelle diagram.
 
@@ -842,7 +848,7 @@ class Target:
         self.z = copy.reshape((self.z.shape[0], self.z.shape[1]))
 
 
-    def echelle(self, nox=50, noy=0):
+    def echelle(self):
         """
         Creates an echelle diagram.
 
@@ -876,11 +882,6 @@ class Target:
         # If the number of desired orders is not provided
         if self.globe['noy'] == 0:
             self.globe['noy'] = int(self.obs_numax/self.obs_dnu//2)
-            if not self.globe['noy']%2:
-                self.globe['noy']+=1
-        else:
-            if not self.globe['noy']%2:
-                self.globe['noy']+=1
         # Make sure n_across isn't finer than the actual resolution grid
         if self.globe['nox'] >= int(np.ceil(self.obs_dnu/self.resolution)):
             self.globe['nox'] = int(np.ceil(self.obs_dnu/self.resolution/3.))

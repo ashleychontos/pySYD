@@ -223,3 +223,79 @@ def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, whit
     model += white_noise
 
     return model
+
+
+def log_likelihood(observations, model):
+    """
+    Until we figure out a better method, we are computing the likelhood using
+    the mean squared error.
+
+    Parameters
+    ----------
+    observations : ndarray
+        the observed power spectrum
+    model : ndarray
+        model generated at the observed frequencies
+
+    Returns
+    -------
+    LL : float
+        the natural logarithm of the likelihood (or the MSE)
+
+    """
+
+    return -0.5*(np.sum((observations-model)**2.))
+
+
+def compute_aic(observations, model, n_parameters):
+    """
+    Computes the Akaike Information Criterion (AIC) given the modeled
+    power spectrum.
+
+    Parameters
+    ----------
+    observations : ndarray
+        the observed power spectrum
+    model : ndarray
+        model generated at the observed frequencies
+    n_parameters : int
+        number of free parameters in the given model
+
+    Returns
+    -------
+    aic : float
+        AIC value
+
+    """
+    N = len(observations)
+    LL = log_likelihood(observations, model)
+    aic = (-2.*LL)/N + (2.*n_parameters)/N
+
+    return aic
+
+
+def compute_bic(observations, model, n_parameters):
+    """
+    Computes the Bayesian Information Criterion (BIC) given the modeled 
+    power spectrum.
+
+    Parameters
+    ----------
+    observations : ndarray
+        the observed power spectrum
+    model : ndarray
+        model generated at the observed frequencies
+    n_parameters : int
+        number of free parameters in the given model
+
+    Returns
+    -------
+    aic : float
+        AIC value
+
+    """
+    N = len(observations)
+    LL = log_likelihood(observations, model)
+    bic = -2.*LL + np.log(N)*n_parameters
+
+    return bic
