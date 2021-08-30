@@ -713,12 +713,16 @@ Strings
 
 ===============================
 
+Tutorial
+++++++++++++++++++
 
-Below is a quick, crash course about accessing ``pySYD`` via command line.
+
+Below is a quick, crash course demonstrating the easy accessibility of
+``pySYD`` via command line.
 
 .. raw:: html
 
-   <iframe width="800" height="450" src="https://www.youtube.com/embed/c1do_BKtHXk" 
+   <iframe width="680" height="382.5" src="https://www.youtube.com/embed/c1do_BKtHXk" 
    title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; 
    clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
