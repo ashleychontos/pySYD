@@ -59,8 +59,8 @@ used very sparingly.
 
 .. note::
 
-    <b>Fun fact:</b> Our features were developed using principles from Unix-like operating
-    systems, where a single hyphen can be followed by multiple single-character flags (i.e.
+    Our features were developed using principles from Unix-like operating systems, 
+    where a single hyphen can be followed by multiple single-character flags (i.e.
     mostly boolean flags that do not require additional output).
 
 
@@ -199,8 +199,7 @@ to estimate numax if it is not known:
     All parameters are optimized for most star types but some may need adjusting. 
     An example is the smoothing width (``--sw``), which is 20 muHz by default, but 
     may need to be adjusted based on the nyquist frequency and frequency resolution 
-    of the power spectrum.
-
+    of the input power spectrum.
 
 
 Granulation background

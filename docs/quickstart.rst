@@ -37,12 +37,13 @@ You may test your installation by using ``pysyd --help`` to see available comman
       -h, --help            show this help message and exit
       -version, --version   Print version number and exit.
 
-    pySYD :ref:`modes`:
-      {setup,load,run,parallel}
-        setup               Easy setup of relevant directories and files
-	load                Load in data for a given target
-        run                 Run the main pySYD pipeline
+    pySYD modes:
+      {load,parallel,run,setup,test}
+        load                Load in data for a given target
         parallel            Run pySYD in parallel
+        run                 Run the main pySYD pipeline
+        setup               Easy setup of relevant directories and files
+        test                Test different utilities (currently under development)
 
 
 Setting Up
@@ -76,18 +77,78 @@ Example Fit
 If you ran the setup feature, there are data for three example stars provided: 1435467 (the least evolved), 
 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
-.. code-block:: bash
-
-    $ pysyd run -star 1435467 -show -verbose
-    add output and figures
-
-``pySYD`` is optimized for running multiple stars and therefore by default, both the ``-verbose`` and ``-show`` 
-(i.e. the output plots) options are set to ``False``. We recommend using them for the example, since they are helpful to see how 
-the pipeline processes targets. The above command should yield the following output:
 
 .. code-block:: bash
 
-    get it.
+    $ pysyd run --star 1435467 -dv
+    
+    
+    ------------------------------------------------------
+    Target: 1435467
+    ------------------------------------------------------
+    # LIGHT CURVE: 37919 lines of data read
+    # Time series cadence: 59 seconds
+    # POWER SPECTRUM: 99518 lines of data read
+    # PS is oversampled by a factor of 5
+    # PS resolution: 0.426868 muHz
+    ------------------------------------------------------
+    Estimating numax:
+    PS binned to 189 datapoints
+    Numax estimate 1: 1430.02 +/- 72.61
+    S/N: 2.43
+    Numax estimate 2: 1479.46 +/- 60.64
+    S/N: 4.87
+    Numax estimate 3: 1447.42 +/- 93.31
+    S/N: 13.72
+    Selecting model 3
+    ------------------------------------------------------
+    Determining background model:
+    PS binned to 419 data points
+    Comparing 6 different models:
+    Model 0: 0 Harvey-like component(s) + white noise fixed
+    Model 1: 0 Harvey-like component(s) + white noise term
+    Model 2: 1 Harvey-like component(s) + white noise fixed
+    Model 3: 1 Harvey-like component(s) + white noise term
+    Model 4: 2 Harvey-like component(s) + white noise fixed
+    Model 5: 2 Harvey-like component(s) + white noise term
+    Based on BIC statistic: model 2
+     **background-corrected PS saved**
+    ------------------------------------------------------
+    Output parameters:
+    tau_1: 233.71 s
+    sigma_1: 87.45 ppm
+    numax_smooth: 1299.56 muHz
+    A_smooth: 1.75 ppm^2/muHz
+    numax_gauss: 1345.03 muHz
+    A_gauss: 1.49 ppm^2/muHz
+    FWHM: 291.32 muHz
+    dnu: 70.63 muHz
+    ------------------------------------------------------
+     - displaying figures
+     - press RETURN to exit
+     - combining results into single csv file
+    ------------------------------------------------------
+    
+    
+
+Here, ``-dv`` means ``-d`` and ``-v`` which stand for display (figures) and verbose output, 
+respectively. Since ``pySYD`` is optimized for running multiple stars, both of these are 
+typically ``False`` by default. We recommend using them for the example, since they are 
+helpful to see how the pipeline processes targets. 
+
+The above command should have yielded the following output figures:
+
+.. image:: figures/quickstart/1435467_numax.png
+  :width: 680
+  :alt: Estimate of numax for KIC 1435467
+
+from the first optional module that estimates numax (using 3 different trials).
+All parameter derivations are done in the global fit, which are encapsulated in
+this figure:
+
+.. image:: figures/quickstart/1435467_global.png
+  :width: 680
+  :alt: Global fit for KIC 1435467
 
 To estimate uncertainties in the derived parameters, set ``-mc`` to a number sufficient for bootstrap sampling. In the previous 
 example, ``-mc`` was not specified and is 1 by default (for 1 iteration). Below shows the same example with the
