@@ -43,7 +43,7 @@ def set_plot_params():
 
 
 
-def plot_estimates(star):
+def plot_estimates(star, block=False):
     """
     Creates a plot summarizing the results of the find excess routine.
 
@@ -57,11 +57,13 @@ def plot_estimates(star):
     None
     
     """
-
-    fig = plt.figure("Estimate numax results for %s"%star.name, figsize=(12,8))
+    d = utils.get_dict(type='plots')
+    npanels = 3+star.excess['n_trials']
+    x, y = d[npanels]['x'], d[npanels]['y']
+    fig = plt.figure("Estimate numax results for %s"%star.name, figsize=d[npanels]['size'])
 
     # Time series data
-    ax1 = plt.subplot(2, 3, 1)
+    ax1 = plt.subplot(y, x, 1)
     if star.lc:
         ax1.plot(star.time, star.flux, 'w-')
         ax1.set_xlim([min(star.time), max(star.time)])
@@ -70,7 +72,7 @@ def plot_estimates(star):
     ax1.set_ylabel(r'$\rm Flux$')
 
     # log-log power spectrum with crude background fit
-    ax2 = plt.subplot(2, 3, 2)
+    ax2 = plt.subplot(y, x, 2)
     ax2.loglog(star.freq, star.pow, 'w-')
     ax2.set_xlim([min(star.freq), max(star.freq)])
     ax2.set_ylim([min(star.pow), max(star.pow)*1.25])
@@ -82,7 +84,7 @@ def plot_estimates(star):
     ax2.loglog(star.freq, star.interp_pow, color='lime', linestyle='-', lw=2.0)
 
     # Crude background-corrected power spectrum
-    ax3 = plt.subplot(2, 3, 3)
+    ax3 = plt.subplot(y, x, 3)
     ax3.plot(star.freq, star.bgcorr_pow, 'w-')
     ax3.set_xlim([min(star.freq), max(star.freq)])
     ax3.set_ylim([0.0, max(star.bgcorr_pow)*1.25])
@@ -92,7 +94,7 @@ def plot_estimates(star):
 
     # ACF trials to determine numax
     for i in range(star.excess['n_trials']):
-        ax = plt.subplot(2, 3, 4+i)
+        ax = plt.subplot(y, x, 4+i)
         ax.plot(star.excess['results'][star.name][i+1]['x'], star.excess['results'][star.name][i+1]['y'], 'w-')
         xran = max(star.excess['results'][star.name][i+1]['fitx'])-min(star.excess['results'][star.name][i+1]['fitx'])
         ymax = star.excess['results'][star.name][i+1]['maxy']
@@ -122,6 +124,8 @@ def plot_estimates(star):
         star.pickles.append('find_numax.pickle')
     if not star.params['show']:
         plt.close()
+    if block:
+        plt.show(block=False)
 
 
 def plot_parameters(star, n_peaks=10):

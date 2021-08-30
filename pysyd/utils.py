@@ -188,7 +188,7 @@ def get_groups(args):
 #
 
 def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=20.0, 
-                      mode='mean', lower_ex=1.0, upper_ex=8000.,):
+                      mode='mean', lower_ex=1.0, upper_ex=8000., ask=False,):
     """
     Get the parameters for the find excess routine.
 
@@ -196,14 +196,16 @@ def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=2
     ----------
     args : argparse.Namespace
         the command line arguments
+    ask : bool, optional
+        If `True`, it will ask which trial to use as the estimate for numax.
+    n_trials : int, optional
+        the number of trials. Default value is `3`.
     step : float, optional
         TODO: Write description. Default value is `0.25`.
     binning : float, optional
         logarithmic binning width. Default value is `0.005`.
     mode : {'mean', 'median', 'gaussian'}
         mode to use when binning
-    n_trials : int, optional
-        the number of trials. Default value is `3`.
 
     Returns
     -------
@@ -213,11 +215,11 @@ def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=2
         the parameters of the find excess routine
 
     """
-    vars = ['step', 'binning', 'mode', 'smooth_width', 'n_trials', 'lower_ex', 'upper_ex', 'results']
+    vars = ['step', 'binning', 'mode', 'smooth_width', 'ask', 'n_trials', 'lower_ex', 'upper_ex', 'results']
     if args.cli:
-        vals = [args.step, args.binning, args.mode, args.smooth_width, args.n_trials, args.lower_ex, args.upper_ex, {}]
+        vals = [args.step, args.binning, args.mode, args.smooth_width, args.ask, args.n_trials, args.lower_ex, args.upper_ex, {}]
     else:
-        vals = [step, binning, mode, smooth_width, n_trials, lower_ex, upper_ex, {}]
+        vals = [step, binning, mode, smooth_width, ask, n_trials, lower_ex, upper_ex, {}]
     args.excess = dict(zip(vars,vals))
     return args
 
@@ -907,7 +909,7 @@ def check_input_data(args, star, note):
 # Sets data up for first optional module
 #
 
-def get_estimates(star):
+def get_estimates(star, max_trials=6):
     """
     Parameters used with the first module, which is automated method to identify
     power excess due to solar-like oscillations.
@@ -945,10 +947,12 @@ def get_estimates(star):
             upper = star.nyquist
     star.freq = star.frequency[(star.frequency >= lower)&(star.frequency <= upper)]
     star.pow = star.power[(star.frequency >= lower)&(star.frequency <= upper)]
+    if star.excess['n_trials'] > max_trials:
+        star.excess['n_trials'] = max_trials
     if (star.params[star.name]['numax'] is not None and star.params[star.name]['numax'] <= 500.) or (star.nyquist is not None and star.nyquist <= 300.):
-        star.boxes = np.logspace(np.log10(0.5), np.log10(25.), star.excess['n_trials'])*1.
+        star.boxes = np.logspace(np.log10(0.5), np.log10(25.), star.excess['n_trials'])
     else:
-        star.boxes = np.logspace(np.log10(50.), np.log10(500.), star.excess['n_trials'])*1.
+        star.boxes = np.logspace(np.log10(50.), np.log10(500.), star.excess['n_trials'])
     return star
 
 #####################################################################
@@ -1489,6 +1493,53 @@ def bin_data(x, y, width, log=False, mode='mean'):
 # Other random tools, including a container class of known (mostly
 # solar) physical values in cgs.
 #
+
+def ask_int(question, n_trials, max_attempts=10, count=1, special=False):    
+    """
+    Ask for an integer user input.
+
+    Parameters
+    ----------
+    question : str
+        the statement and/or question that needs to be answered
+    range : List[float]
+        if not `None`, provides a lower and/or upper bound for the selected integer
+    max_attempts : int
+        the maximum number of tries a user has before breaking
+    count : int
+        the user attempt number
+
+    Returns
+    -------
+    answer : int
+        the user's integer answer or `None` if the number of attempts exceeds the allowed number
+
+    """
+    while count < max_attempts:
+        answer = input(question)
+        try:
+            if special:
+                try:
+                    value = float(answer)
+                except ValueError:
+                    print('ERROR: please try again ')
+                else:
+                    return value
+            elif float(answer).is_integer() and not special:
+                if int(answer) == 0:
+                    special = True
+                    question = 'What is your value for numax? '
+                elif int(answer) >= 1 and int(answer) <= n_trials:
+                    return int(answer)
+                else:
+                    print('ERROR: please select an integer between 1 and %d \n       or 0 to provide a different value\n'%n_trials)
+            else:
+                print("ERROR: the selection must match one of the integer values \n")
+        except ValueError:
+            print("ERROR: not a valid response \n")
+        count += 1
+    return None
+
 
 def delta_nu(numax):
     """

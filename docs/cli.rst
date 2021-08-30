@@ -1,23 +1,29 @@
 .. _cli:
 
 Command Line Interface
-************************
+########################
 
 In order to maximize the performance of the software, we have included many optional commands to help identify the
-best possible asteroseismic parameters in even the lower signal cases. Examples of the optional features are shown 
+best possible asteroseismic parameters in even the lowest signal cases. Examples of the optional features are shown 
 in :ref:`advanced usage<advanced>`. 
 
-The options are sorted both into :ref:`groups<parentparse>` by relevant science outputs 
+The options are sorted into :ref:`groups<groups>` by relevant science outputs 
 and listed by :ref:`input type<inputtype>`. 
 
-.. _parentparse:
+.. _groups:
 
-Parent Parser
-===============
+Groups
+=========
 
-Higher level functionality of the software. All four modes inherent the parent parser.
+High-level Functionality
+**************************
 
-- ``--cli``, 
+All ``pySYD`` modes inherent the parent parser, which includes the properties 
+enumerated below. With the exception of the ``verbose`` command, most of these
+features are related to the initial (setup) paths and directories and should be
+used very sparingly. 
+
+- ``--cli``, ``-c``
    * dest = ``args.cli``
    * help = This option should not be adjusted for current users
    * type = ``bool``
@@ -51,39 +57,45 @@ Higher level functionality of the software. All four modes inherent the parent p
    * action = ``store_true``
 
 
-.. _mainparse:
+.. note::
+
+    <b>Fun fact:</b> Our features were developed using principles from Unix-like operating
+    systems, where a single hyphen can be followed by multiple single-character flags (i.e.
+    mostly boolean flags that do not require additional output).
 
 
-Main Parser
-=============
+Data Analyses
+***************
 
-Accesses data and all science-related functions and is therefore relevant for the ``load``, ``run``, ``parallel`` and ``test`` modes.
+The following features are primarily related to the initial and final treatment of
+data products, including information about the input data, how to process and save
+the data as well as which modules to use.
 
-- ``--bg``, ``--background``, ``-b``
+- ``-b``, ``--bg``, ``--background`` 
    * dest = ``args.background``
-   * help = Turn off the background fitting procedure
+   * help = Turn off the background fitting procedure and run ``pySYD`` on raw power spectrum
    * type = ``bool``
    * default = ``True``
    * action = ``store_false``
-- ``--globe``, ``--global``, ``-g``
+- ``-g``, ``--globe``, ``--global``
    * dest = ``args.globe``
    * help = Do not estimate global asteroseismic parameters numax and dnu
    * type = ``bool``
    * default = ``True``
    * action = ``store_false``
-- ``--par``, ``--parallel``, ``-p``
+- ``-p``, ``--par``, ``--parallel``
    * dest = ``args.parallel``
    * help = Run pySYD in parallel mode
    * type = ``bool``
    * default = ``False``
    * action = ``store_true``
-- ``--over``, ``--overwrite``, ``-o``
+- ``-o``, ``--over``, ``--overwrite``
    * dest = ``args.overwrite``
    * help = Overwrite existing files with the same name/path
    * type = ``bool``
    * default = ``False``
    * action = ``store_true``
-- ``--kc``, ``--kepcorr``, ``-k``
+- ``-k``, ``--kc``, ``--kepcorr``
    * dest = ``args.kepcorr``
    * help = turn on the *Kepler* short-cadence artefact correction module
    * type = ``bool``
@@ -99,13 +111,13 @@ Accesses data and all science-related functions and is therefore relevant for th
    * help = The new oversampling factor to use in the first iterations of both modules. Default is `5` (see performance for more details).
    * type = int
    * default = `5`
-- ``--save``, ``-d``
+- ``-s``, ``--save``
    * dest = ``args.save``
-   * help = save output files and figures
+   * help = Save output files and figures to disk
    * type = ``bool``
    * default = ``True``
    * action = ``store_false``
-- ``--show``, ``-s`` 
+- ``-d``, ``--show``, ``--display``
    * dest = ``args.show``
    * help = show output figures (note: this is not recommended if running many stars)
    * type = ``bool``
@@ -133,7 +145,8 @@ Accesses data and all science-related functions and is therefore relevant for th
 Estimating numax
 ++++++++++++++++++++
 
-All options relevant for the first (optional) module to estimate numax:
+The following options are relevant for the first, optional module that is designed
+to estimate numax if it is not known: 
 
 - ``--bin``, ``--binning``
    * dest = ``args.binning``
@@ -175,10 +188,19 @@ All options relevant for the first (optional) module to estimate numax:
    * unit = muHz
 
 
-Background-related
-+++++++++++++++++++++
+.. warning::
 
-All options relevant to the background-fitting process:
+    All parameters are optimized for most star types but some may need adjusting. 
+    An example is the smoothing width (``--sw``), which is 20 muHz by default, but 
+    may need to be adjusted based on the nyquist frequency and frequency resolution 
+    of the power spectrum.
+
+
+
+Granulation background
+**************************
+
+Below is a complete list of parameters relevant to the background-fitting routine:
 
 - ``--lb``, ``--lowerb``
    * dest = ``args.lower_bg``

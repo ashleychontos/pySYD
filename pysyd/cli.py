@@ -28,7 +28,7 @@ def main():
 
     parent_parser = argparse.ArgumentParser(add_help=False)
 
-    parent_parser.add_argument('--cli', '-c',
+    parent_parser.add_argument('-c', '--cli', 
                                dest='cli',
                                help='This option should not be adjusted for current users',
                                default=True,
@@ -62,7 +62,7 @@ def main():
                                type=str,
                                default=OUTDIR,
     )
-    parent_parser.add_argument('--verbose', '-v', 
+    parent_parser.add_argument('-v', '--verbose', 
                                dest='verbose',
                                help='Turn on verbose output',
                                default=False, 
@@ -70,30 +70,30 @@ def main():
     )
 
 #####################################################################
-# Higher-level functionality relevant to any fitting routine
+# Initial and/or final data treatment + related processes
 #
 
     main_parser = argparse.ArgumentParser(add_help=False)
 
-    main_parser.add_argument('--bg', '--background', '-b', 
+    main_parser.add_argument( '-b', '--bg', '--background',
                              dest='background',
                              help='Turn off the automated background fitting routine',
                              default=True, 
                              action='store_false',
     )
-    main_parser.add_argument('--globe', '--global', '-g', 
+    main_parser.add_argument('-d', '--show', '--display',
+                             dest='show',
+                             help='Show output figures',
+                             default=False, 
+                             action='store_true',
+    )
+    main_parser.add_argument('-g', '--globe', '--global', 
                              dest='globe',
                              help='Do not estimate global asteroseismic parameters (i.e. numax or dnu)',
                              default=True, 
                              action='store_false',
     )
-    main_parser.add_argument('--par', '--parallel', '-p',
-                             dest='parallel',
-                             help='Use parallel processing for data analysis',
-                             default=False,
-                             action='store_true',
-    )
-    main_parser.add_argument('--kc', '--kep_corr', '-k', 
+    main_parser.add_argument('-k', '--kc', '--kep_corr', 
                              dest='kep_corr',
                              help='Turn on the Kepler short-cadence artefact correction routine',
                              default=False, 
@@ -113,23 +113,23 @@ def main():
                              type=int,
                              default=None,
     )
-    main_parser.add_argument('--over', '--overwrite', '-o',
+    main_parser.add_argument('-o', '--over', '--overwrite',
                              dest='overwrite',
                              help='Overwrite existing files with the same name/path',
                              default=False, 
                              action='store_true',
     )
-    main_parser.add_argument('--save', '-d',
+    main_parser.add_argument('-p', '--par', '--parallel', 
+                             dest='parallel',
+                             help='Use parallel processing for data analysis',
+                             default=False,
+                             action='store_true',
+    )
+    main_parser.add_argument('-s', '--save',
                              dest='save',
                              help='Do not save output figures and results.',
                              default=True, 
                              action='store_false',
-    )
-    main_parser.add_argument('--show', '-s', 
-                             dest='show',
-                             help='Show output figures',
-                             default=False, 
-                             action='store_true',
     )
     main_parser.add_argument('--star', '--stars',
                              metavar='star',
@@ -139,13 +139,13 @@ def main():
                              nargs='*',
                              default=None,
     )
-    main_parser.add_argument('--test', '-t', 
+    main_parser.add_argument('-t', '--test', 
                              dest='testing',
                              help='Extra verbose output for testing functionality',
                              default=False, 
                              action='store_true',
     )
-    main_parser.add_argument('--ex', '--excess', '-x', 
+    main_parser.add_argument('-x', '--ex', '--excess',
                              dest='excess',
                              help='Turn off the find excess routine',
                              default=True, 
@@ -157,8 +157,14 @@ def main():
 # (optional routine)
 #
 
-    excess = main_parser.add_argument_group('(CRUDE) EXCESS FIT')
+    excess = main_parser.add_argument_group('Estimate numax')
 
+    excess.add_argument('-a', '--ask',
+                        dest='ask',
+                        help='Ask which trial to use',
+                        default=False, 
+                        action='store_true',
+    )
     excess.add_argument('--bin', '--binning',
                         metavar='value',  
                         dest='binning', 
@@ -174,25 +180,11 @@ def main():
                         default='mean',
                         type=str,
     )
-    excess.add_argument('--sw', '--smoothwidth',
-                        metavar='value', 
-                        dest='smooth_width',
-                        help='Box filter width (in muHz) for smoothing the PS',
-                        default=20.0,
-                        type=float,
-    )
     excess.add_argument('--lx', '--lowerx', 
                         metavar='freq', 
                         dest='lower_ex',
                         help='Lower frequency limit of PS',
                         default=1.0,
-                        type=float,
-    )
-    excess.add_argument('--ux', '--upperx', 
-                        metavar='freq', 
-                        dest='upper_ex',
-                        help='Upper frequency limit of PS',
-                        default=6000.0,
                         type=float,
     )
     excess.add_argument('--step', '--steps', 
@@ -207,33 +199,33 @@ def main():
                         default=3, 
                         type=int,
     )
+    excess.add_argument('--sw', '--smoothwidth',
+                        metavar='value', 
+                        dest='smooth_width',
+                        help='Box filter width (in muHz) for smoothing the PS',
+                        default=20.0,
+                        type=float,
+    )
+    excess.add_argument('--ux', '--upperx', 
+                        metavar='freq', 
+                        dest='upper_ex',
+                        help='Upper frequency limit of PS',
+                        default=6000.0,
+                        type=float,
+    )
+
 
 #####################################################################
 # CLI options relevant to the background-fitting
 #
 
-    background = main_parser.add_argument_group('BACKGROUND-RELATED')
+    background = main_parser.add_argument_group('Background Fit')
 
-    background.add_argument('--lb', '--lowerb', 
-                            metavar='freq', 
-                            dest='lower_bg',
-                            help='Lower frequency limit of PS',
-                            default=1.0,
-                            type=float,
-    )
-    background.add_argument('--ub', '--upperb', 
-                            metavar='freq', 
-                            dest='upper_bg',
-                            help='Upper frequency limit of PS',
-                            default=6000.0,
-                            type=float,
-    )
-    background.add_argument('--iw', '--indwidth',
-                            metavar='value', 
-                            dest='ind_width', 
-                            help='Width of binning for PS [in muHz]',
-                            default=20., 
-                            type=float,
+    background.add_argument('--basis', 
+                            dest='basis',
+                            help="Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***",
+                            default='tau_sigma', 
+                            type=str,
     )
     background.add_argument('--bf', '--box', '--boxfilter',
                             metavar='value', 
@@ -242,12 +234,24 @@ def main():
                             default=1.0,
                             type=float,
     )
-    background.add_argument('--rms', '--nrms', 
-                            metavar='n', 
-                            dest='n_rms', 
-                            help='Number of points to estimate the amplitude of red-noise component(s)',
-                            default=20, 
-                            type=int,
+    background.add_argument('-f', '--fix', '--fixwn',
+                            dest='fix_wn',
+                            help='Fix the white noise level',
+                            default=False,
+                            action='store_true',
+    )
+    background.add_argument('-i', '--include', 
+                            dest='include', 
+                            help="Include metric values in verbose output, default is `False`.",
+                            default=False, 
+                            action='store_true',
+    )
+    background.add_argument('--iw', '--indwidth',
+                            metavar='value', 
+                            dest='ind_width', 
+                            help='Width of binning for PS [in muHz]',
+                            default=20., 
+                            type=float,
     )
     background.add_argument('--laws', '--nlaws', 
                             metavar='n', 
@@ -256,17 +260,12 @@ def main():
                             default=None, 
                             type=int,
     )
-    background.add_argument('--fix', '--fixwn', '--wn', '-f',
-                            dest='fix_wn',
-                            help='Fix the white noise level',
-                            default=False,
-                            action='store_true',
-    )
-    background.add_argument('--basis', 
-                            dest='basis',
-                            help="Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***",
-                            default='tau_sigma', 
-                            type=str,
+    background.add_argument('--lb', '--lowerb', 
+                            metavar='freq', 
+                            dest='lower_bg',
+                            help='Lower frequency limit of PS',
+                            default=1.0,
+                            type=float,
     )
     background.add_argument('--metric', 
                             metavar='metric', 
@@ -275,32 +274,32 @@ def main():
                             default='bic', 
                             type=str,
     )
-    background.add_argument('--include', '-i', 
-                            dest='include', 
-                            help="Include metric values in verbose output, default is `False`.",
-                            default=False, 
-                            action='store_true',
+    background.add_argument('--rms', '--nrms', 
+                            metavar='n', 
+                            dest='n_rms', 
+                            help='Number of points to estimate the amplitude of red-noise component(s)',
+                            default=20, 
+                            type=int,
+    )
+    background.add_argument('--ub', '--upperb', 
+                            metavar='freq', 
+                            dest='upper_bg',
+                            help='Upper frequency limit of PS',
+                            default=6000.0,
+                            type=float,
     )
 
 #####################################################################
 # CLI options related to estimating numax
 #
 
-    numax = main_parser.add_argument_group('NUMAX-RELATED')
+    numax = main_parser.add_argument_group('Deriving numax')
 
-    numax.add_argument('--sm', '--smpar',
+    numax.add_argument('--ew', '--exwidth',
                        metavar='value', 
-                       dest='sm_par',
-                       help='Value of smoothing parameter to estimate smoothed numax (typically between 1-4).',
-                       default=None, 
-                       type=float,
-    )
-    numax.add_argument('--numax',
-                       metavar='value',
-                       dest='numax',
-                       help='Skip find excess module and force numax',
-                       nargs='*',
-                       default=None,
+                       dest='width',
+                       help='Fractional value of width to use for power excess, where width is computed using a solar scaling relation.',
+                       default=1.0,
                        type=float,
     )
     numax.add_argument('--lp', '--lowerp', 
@@ -311,6 +310,21 @@ def main():
                        default=None,
                        type=float,
     )
+    numax.add_argument('--numax',
+                       metavar='value',
+                       dest='numax',
+                       help='Skip find excess module and force numax',
+                       nargs='*',
+                       default=None,
+                       type=float,
+    )
+    numax.add_argument('--sm', '--smpar',
+                       metavar='value', 
+                       dest='sm_par',
+                       help='Value of smoothing parameter to estimate smoothed numax (typically between 1-4).',
+                       default=None, 
+                       type=float,
+    )
     numax.add_argument('--up', '--upperp', 
                        metavar='freq', 
                        dest='upper_ps',
@@ -319,19 +333,12 @@ def main():
                        default=None,
                        type=float,
     )
-    numax.add_argument('--ew', '--exwidth',
-                       metavar='value', 
-                       dest='width',
-                       help='Fractional value of width to use for power excess, where width is computed using a solar scaling relation.',
-                       default=1.0,
-                       type=float,
-    )
 
 #####################################################################
 # CLI options relevant to characteristic frequency spacing (dnu)
 #
 
-    dnu = main_parser.add_argument_group('DNU-RELATED')
+    dnu = main_parser.add_argument_group('Deriving dnu')
 
     dnu.add_argument('--dnu',
                      metavar='value',
@@ -348,19 +355,19 @@ def main():
                      default='D',
                      type=str,
     )
-    dnu.add_argument('--sp', '--smoothps',
-                     metavar='value', 
-                     dest='smooth_ps',
-                     help='Box filter width [in muHz] of PS for ACF', 
-                     type=float,
-                     default=1.5,
-    )
     dnu.add_argument('--peak', '--peaks', '--npeaks',
                      metavar='n', 
                      dest='n_peaks', 
                      help='Number of peaks to fit in the ACF',
                      default=5, 
                      type=int,
+    )
+    dnu.add_argument('--sp', '--smoothps',
+                     metavar='value', 
+                     dest='smooth_ps',
+                     help='Box filter width [in muHz] of PS for ACF', 
+                     type=float,
+                     default=1.5,
     )
     dnu.add_argument('--thresh', '--threshold',
                      metavar='value', 
@@ -374,8 +381,15 @@ def main():
 # CLI options relevant to the echelle diagram (ED)
 #
 
-    echelle = main_parser.add_argument_group('ECHELLE-RELATED')
+    echelle = main_parser.add_argument_group('Echelle diagram')
 
+    echelle.add_argument('--ce', '--cm', '--color', 
+                         metavar='cmap',
+                         dest='cmap',
+                         help='Change colormap of ED, which is `binary` by default.',
+                         default='binary', 
+                         type=str,
+    )
     echelle.add_argument('--cv', '--value',
                          metavar='value', 
                          dest='clip_value',
@@ -383,12 +397,17 @@ def main():
                          default=3.0, 
                          type=float,
     )
-    echelle.add_argument('--ce', '--cm', '--color', 
-                         metavar='cmap',
-                         dest='cmap',
-                         help='Change colormap of ED, which is `binary` by default.',
-                         default='binary', 
-                         type=str,
+    echelle.add_argument('-y', '--hey',
+                         dest='hey', 
+                         help="Use Daniel Hey's plugin for echelle",
+                         default=False, 
+                         action='store_true',
+    )
+    echelle.add_argument('-e', '--ie', '-interpech', '--interpech',
+                         dest='interp_ech',
+                         help='Turn on the interpolation of the output ED',
+                         default=False,
+                         action='store_true',
     )
     echelle.add_argument('--le', '--lowere', 
                          metavar='freq', 
@@ -398,38 +417,11 @@ def main():
                          default=None,
                          type=float,
     )
-    echelle.add_argument('--ue', '--uppere', 
-                         metavar='freq', 
-                         dest='upper_ech',
-                         help='Upper frequency limit of folded PS to whiten mixed modes',
-                         nargs='*',
-                         default=None,
-                         type=float,
-    )
-    echelle.add_argument('--notch', '-n', 
+    echelle.add_argument('-n', '--notch', 
                          dest='notching',
                          help='Use notching technique to reduce effects from mixed modes (not fully functional, creates weirds effects for higher SNR cases)',
                          default=False, 
                          action='store_true',
-    )
-    echelle.add_argument('--hey', '-h',
-                         dest='hey', 
-                         help="Use Daniel Hey's plugin for echelle",
-                         default=False, 
-                         action='store_true',
-    )
-    echelle.add_argument('--ie', '-interpech', '--interpech',
-                         dest='interp_ech',
-                         help='Turn on the interpolation of the output ED',
-                         default=False,
-                         action='store_true',
-    )
-    echelle.add_argument('--se', '--smoothech',
-                         metavar='value', 
-                         dest='smooth_ech',
-                         help='Smooth ED using a box filter [in muHz]',
-                         default=None,
-                         type=float,
     )
     echelle.add_argument('--nox', '--nacross',
                          metavar='n', 
@@ -445,12 +437,27 @@ def main():
                          default=0,
                          type=int,
     )
+    echelle.add_argument('--se', '--smoothech',
+                         metavar='value', 
+                         dest='smooth_ech',
+                         help='Smooth ED using a box filter [in muHz]',
+                         default=None,
+                         type=float,
+    )
+    echelle.add_argument('--ue', '--uppere', 
+                         metavar='freq', 
+                         dest='upper_ech',
+                         help='Upper frequency limit of folded PS to whiten mixed modes',
+                         nargs='*',
+                         default=None,
+                         type=float,
+    )
 
 #####################################################################
 # CLI options relevant to the sampling routine
 #
 
-    mcmc = main_parser.add_argument_group('MCMC PARAMETERS')
+    mcmc = main_parser.add_argument_group('Sampling')
 
     mcmc.add_argument('--mc', '--iter', '--mciter', 
                       metavar='n', 
@@ -459,7 +466,7 @@ def main():
                       default=1, 
                       type=int,
     )
-    mcmc.add_argument('--samples', '-m',
+    mcmc.add_argument('-m', '--samples', 
                       dest='samples',
                       help='Save samples from the Monte-Carlo sampling',
                       default=False, 
@@ -495,7 +502,7 @@ def main():
                                             formatter_class=argparse.MetavarTypeHelpFormatter,
                                             )
 
-    parser_parallel.add_argument('--nt', '--nthread', '--nthreads', '-n',
+    parser_parallel.add_argument('-n', '--nt', '--nthread', '--nthreads',
                                  metavar='n', 
                                  dest='n_threads',
                                  help='Number of processes to run in parallel',
@@ -547,7 +554,13 @@ def main():
                                         help='Test different utilities (currently under development)',  
                                         )
 
-    parser_test.add_argument('--models', '-m',
+    parser_test.add_argument('--methods', 
+                             dest='methods',
+                             help='Compare different dnu methods',
+                             default=False,
+                             action='store_true',
+    )
+    parser_test.add_argument('--models', 
                              dest='models',
                              help='Include different model fits',
                              default=False,

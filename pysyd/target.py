@@ -76,10 +76,10 @@ class Target:
         None
 
         """
-        # Run the find excess routine
-        # (optional)
+        # Run the (optional) estimate numax module
         if self.params[self.name]['excess']:
-            self.get_estimate()
+            if not self.get_estimate():
+                return
         # Run the global fitting routine
         self.derive_parameters()
         if self.params['show']:
@@ -131,11 +131,32 @@ class Target:
             for b in range(self.excess['n_trials']):
                 self.collapsed_acf(b)
             # Select trial that resulted with the highest SNR detection
-            self.excess['results'][self.name]['best'] = self.compare.index(max(self.compare))+1
-            if self.verbose:
-                print('selecting model %d'%self.excess['results'][self.name]['best'])
-            utils.save_estimates(self)
-            plots.plot_estimates(self)
+            if not self.excess['ask']:
+                self.excess['results'][self.name]['best'] = self.compare.index(max(self.compare))+1
+                if self.verbose:
+                    print('Selecting model %d'%self.excess['results'][self.name]['best'])
+                plots.plot_estimates(self)
+                utils.save_estimates(self)
+                return True
+            # Or ask which estimate to use
+            else:
+                plots.plot_estimates(self, block=True)
+                value = utils.ask_int('Which estimate would you like to use? ', self.excess['n_trials'])
+                if value is None:
+                    print('Please try again with a valid selection.')
+                    print('------------------------------------------------------\n\n')
+                    return False
+                else:
+                    if isinstance(value, int):
+                        self.excess['results'][self.name]['best'] = value
+                        print('Selecting model %d'%value)
+                        utils.save_estimates(self)
+                    else:
+                        self.params[self.name]['numax'] = value
+                        self.params[self.name]['dnu'] = utils.delta_nu(self.params[self.name]['numax'])
+                        print('Using numax of %.2f muHz as intial guess'%value)
+                    return True
+        return False
 
 
 #####################################################################
@@ -208,7 +229,7 @@ class Target:
                 snr = max_snr
             self.excess['results'][self.name][b+1].update({'numax':best_vars[2],'dnu':functions.delta_nu(best_vars[2]),'snr':snr})
             if self.verbose:
-                  print('power excess trial %d: numax = %.2f +/- %.2f'%(b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
+                  print('Numax estimate %d: %.2f +/- %.2f'%(b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
                   print('S/N: %.2f' % snr)
         self.compare.append(snr)
 

@@ -14,26 +14,20 @@ pySYD: |br| Automated Measurements |br| of Global Asteroseismic Parameters
 
 For a basic introduction to these parameters and asteroseismic data analysis of solar-like oscillators see  `Bedding et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014aste.book...60B/abstract>`_.
 
-``pySYD`` is a python-based implementation of the IDL-based SYD pipeline `(Huber et al. 2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_, which was extensively used to measure asteroseismic parameters for Kepler stars. Papers based on asteroseismic parameters measured using the ``SYD`` pipeline include `Huber et al. 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H/abstract>`_, `Chaplin et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C/abstract>`_, `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_ and `Yu et al. 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y/abstract>`_.
+Please cite our recent JOSS paper `Chontos+2021 <https://arxiv.org/abs/2108.00582>`_ if you make use of ``pySYD`` in your work. The recommended BibTeX entry for this citation is:
 
-``pySYD`` adapts the well-tested methodology from ``SYD`` while also improving these existing analyses and expanding upon numerous new
-(optional) features. Improvements include:
+.. code-block::
 
-- Automated best-fit background model selection
-- Parallel processing
-- Easily accessible + command-line friendly interface
-- Ability to save samples for further analyses
+    {@ARTICLE{2021arXiv210800582C,  author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},    title = "{$\texttt{pySYD}$: Automated measurements of global asteroseismic parameters}",  journal = {arXiv e-prints}, keywords = {Astrophysics - Solar and Stellar Astrophysics, Astrophysics - Instrumentation and Methods for Astrophysics},     year = 2021,    month = aug,      eid = {arXiv:2108.00582},    pages = {arXiv:2108.00582},archivePrefix = {arXiv},   eprint = {2108.00582}, primaryClass = {astro-ph.SR},   adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},  adsnote = {Provided by the SAO/NASA Astrophysics Data System}}
 
-Please cite our recent JOSS paper `Chontos+2021 <https://arxiv.org/abs/2108.00582>`_ if you make use of ``pySYD`` in your work.
 
 Code contributions are welcome and should be submitted as a pull request.
 
 Bug reports and feature requests should be posted to the `GitHub issue tracker <https://github.com/ashleychontos/pySYD/issues>`_.
 
-**Contents:**
-
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
    quickstart
    overview
