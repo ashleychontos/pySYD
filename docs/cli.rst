@@ -406,6 +406,8 @@ Additional option for the number of threads to use when running stars in paralle
    * default = `0`
 
 
+===============================
+
 .. _inputtype:
 
 
@@ -709,8 +711,16 @@ Strings
    * default = ``None``
 
 
+===============================
+
+
+Below is a quick, crash course about accessing ``pySYD`` via command line.
+
 .. raw:: html
 
-   <iframe width="560" height="315" src="https://www.youtube.com/embed/c1do_BKtHXk" 
+   <iframe width="800" height="450" src="https://www.youtube.com/embed/c1do_BKtHXk" 
    title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; 
    clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+===============================
