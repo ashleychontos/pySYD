@@ -1,22 +1,27 @@
 .. _cli:
 
+############################
 Command Line Interface
-########################
+############################
+
 
 In order to maximize the performance of the software, we have included many optional commands to help identify the
 best possible asteroseismic parameters in even the lowest signal cases. Examples of the optional features are shown 
-in :ref:`advanced usage<advanced>`. 
+in :ref:`advanced usage<advanced>` and explained in a brief :ref:<tutorial>.
 
 The options are sorted into :ref:`groups<groups>` by relevant science outputs 
 and listed by :ref:`input type<inputtype>`. 
 
+Commands
+===========
+
 .. _groups:
 
 Groups
-=========
+********
 
 High-level Functionality
-**************************
+```````````````````````````
 
 All ``pySYD`` modes inherent the parent parser, which includes the properties 
 enumerated below. With the exception of the ``verbose`` command, most of these
@@ -61,11 +66,18 @@ used very sparingly.
 
     Our features were developed using principles from Unix-like operating systems, 
     where a single hyphen can be followed by multiple single-character flags (i.e.
-    mostly boolean flags that do not require additional output).
+    mostly boolean flags that do not require additional output). 
+    
+    An example is ``-dvoi``, which is far more convenient than writing ``--display --verbose 
+    --overwrite --include``. Together, these commands tell ``pySYD`` to:
+     1. Display the output figures (``-d``, ``--show``, ``--display``),
+     2. Turn on the verbose output (``-v``, ``--verbose``),
+     3. Overwrite existing files with the same name (``-o``, ``--overwrite``), and
+     4. Include the model metrics and values with the verbose output (``-i``, ``--include``).
 
 
 Data Analyses
-***************
+```````````````````````````
 
 The following features are primarily related to the initial and final treatment of
 data products, including information about the input data, how to process and save
@@ -143,7 +155,7 @@ the data as well as which modules to use.
 
 
 Estimating numax
-******************
+```````````````````````````
 
 The following options are relevant for the first, optional module that is designed
 to estimate numax if it is not known: 
@@ -203,7 +215,7 @@ to estimate numax if it is not known:
 
 
 Granulation background
-**************************
+```````````````````````````
 
 Below is a complete list of parameters relevant to the background-fitting routine:
 
@@ -268,7 +280,7 @@ Below is a complete list of parameters relevant to the background-fitting routin
 
    
 Deriving numax
-*****************
+```````````````````````````
 
 All of the following parameters are related to deriving numax, or the frequency
 corresponding to maximum power:
@@ -306,7 +318,7 @@ corresponding to maximum power:
 
 
 Deriving dnu
-***************
+```````````````````````````
 
 Below are all options related to the characteristic frequency spacing (dnu):
 
@@ -339,7 +351,7 @@ Below are all options related to the characteristic frequency spacing (dnu):
    * default = ``1.0``
    
 Echelle diagram
-******************
+```````````````````````````
 
 All customizable options relevant for the echelle diagram output:
 
@@ -406,7 +418,7 @@ All customizable options relevant for the echelle diagram output:
    
    
 Estimating uncertainties
-**************************
+```````````````````````````
 
 All CLI options relevant for the Monte-Carlo sampling:
 
@@ -424,7 +436,7 @@ All CLI options relevant for the Monte-Carlo sampling:
   
 
 Parallel processing
-************************
+```````````````````````````
 
 Additional option for the number of threads to use when running stars in parallel.
 
@@ -435,16 +447,14 @@ Additional option for the number of threads to use when running stars in paralle
    * default = `0`
 
 
-===============================
-
 .. _inputtype:
 
 
-Input Type
-=============
+Types
+*********
 
-Booleans
-**********
+Boolean
+````````````
 
 Our boolean flags are sorted alphabetically by the single hash flag, where we have almost enough options
 to span the entire English alphabet.
@@ -541,8 +551,8 @@ to span the entire English alphabet.
    * action = ``store_true``
 
 
-Integers
-************
+Integer
+````````````
 
 - ``--laws``, ``--nlaws``
    * dest = ``args.n_laws``
@@ -586,8 +596,8 @@ Integers
    * default = `3`
 
 
-Floats
-*********
+Float
+````````````
 
 
 - ``--bf``, ``--box``, ``--boxfilter``
@@ -698,8 +708,8 @@ Floats
 
 
 
-Strings
-**********
+String
+````````````
 
 
 - ``--basis``
@@ -746,6 +756,10 @@ Strings
 
 
 ===============================
+
+
+.. _tutorial::
+
 
 Tutorial
 ===========
