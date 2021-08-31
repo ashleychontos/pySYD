@@ -6,31 +6,9 @@ Command Line Interface
 
 
 In order to maximize the performance of the software, we have included many optional commands to help identify the
-best possible asteroseismic parameters in even the lowest signal cases. Examples of the optional features are shown 
-in :ref:`advanced usage<advanced>` and explained in a brief :ref:`<tutorial>` below.
+best possible asteroseismic parameters in even the lowest signal cases. Running the pysyd help command for the main
+pipeline execution will display:
 
-.. note::
-
-    Our features were developed using principles from Unix-like operating systems, 
-    where a single hyphen can be followed by multiple single-character flags (i.e.
-    mostly boolean flags that do not require additional output). 
-    
-    An example is ``-dvoi``, which is far more convenient than writing ``--display --verbose 
-    --overwrite --include``. Together, these commands tell ``pySYD`` to:
-     1. Display the output figures (``-d``, ``--show``, ``--display``),
-     2. Turn on the verbose output (``-v``, ``--verbose``),
-     3. Overwrite existing files with the same name (``-o``, ``--overwrite``), and
-     4. Include the model metrics and values with the verbose output (``-i``, ``--include``).
-
-Due to the large number of options, we have them sorted into :ref:`groups<groups>` by relevant science outputs 
-and also listed by :ref:`input type<inputtype>`. 
-
-
-CLI Help
-===========
-
-A majority of the data analyses and subsequent tools are used in the most common mode, which is when the pipeline is run. 
-To see what options and parameters are available, we can run the help command:
 
 .. code-block::
 
@@ -175,12 +153,34 @@ To see what options and parameters are available, we can run the help command:
 
 which shows a very long but very healthy list of available options. We tried to make this
 easier on the eyes by separating the commands into related groups, but do not fret! We realize
-this is a lot of information, which is why we have an entire page dedicated to breaking these
-features down.
+this is a lot of information, which is why we have dedicated an entire page to describing these
+features.
+
+Additionally, we have examples of some put to use in :ref:`advanced usage<advanced>` 
+and also have included a brief :ref:`<tutorial>` below that describes some of these commands.
+
 
 
 Commands
 ===========
+
+Due to the large number of options, we have them sorted into :ref:`groups<groups>` by relevant science outputs 
+and also listed by :ref:`input type<inputtype>`. 
+
+
+.. note::
+
+    Our features were developed using principles from Unix-like operating systems, 
+    where a single hyphen can be followed by multiple single-character flags (i.e.
+    mostly boolean flags that do not require additional output). 
+    
+    An example is ``-dvoi``, which is far more convenient than writing ``--display --verbose 
+    --overwrite --include``. Together, these commands tell ``pySYD`` to:
+     1. Display the output figures (``-d``, ``--show``, ``--display``),
+     2. Turn on the verbose output (``-v``, ``--verbose``),
+     3. Overwrite existing files with the same name (``-o``, ``--overwrite``), and
+     4. Include the model metrics and values with the verbose output (``-i``, ``--include``).
+     
 
 .. _groups:
 
@@ -495,6 +495,7 @@ Below are all options related to the characteristic frequency spacing (dnu):
    * type = ``float``
    * default = ``1.0``
    
+
 Echelle diagram
 ```````````````````````````
 
