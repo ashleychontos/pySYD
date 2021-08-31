@@ -47,8 +47,8 @@ You may test your installation by using ``pysyd --help`` to see the available co
         test                Test different utilities (currently under development)
 	
 	
-A majority of the data analyses and subsequent tools are used in the most common mode, ``run``,
-and therefore, using the following command:
+A majority of the data analyses and subsequent tools are used in the most common mode, ``run``. To see what
+options and parameters are available for the main pipeline execution, we'll use the following command:
 
 .. code-block::
 
@@ -191,13 +191,17 @@ and therefore, using the following command:
       -m, --samples         Save samples from the Monte-Carlo sampling
 
 
-will display a very long but very healthy list of available options.
+which will display a very long but very healthy list of available options. 
+
+Don't fret! We have a :ref:`special page<cli>` designated to describing all of these in more detail, 
+including (but not limited to) the object type, default value and their functionality within the 
+software. We also have a brief :ref:<tutorial> that shows some of these features in action.
 
 
 Setting Up
 **********
 
-The easiest way to start using the ``pySYD`` software is by running our setup feature
+The easiest way to start using the ``pySYD`` package is by running our ``setup`` feature
 from a convenient directory:
 
 .. code-block::
@@ -222,7 +226,7 @@ This will print the absolute paths of all directories that are created during se
 Example Fit
 ***********
 
-If you ran the setup feature, there are data for three example stars provided: 1435467 (the least evolved), 
+The ``setup`` feature downloads data for three example stars (to data/) provided: 1435467 (the least evolved), 
 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
 
