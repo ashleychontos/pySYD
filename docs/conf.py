@@ -74,7 +74,7 @@ extensions = [
     'matplotlib.sphinxext.plot_directive',
  ]
 
-extensions.append('sphinx.ext.pngmath')
+#extensions.append('sphinx.ext.pngmath')
 
 # The suffix(es) of source filesnames.
 # You can specify multiple suffix as a list of string:
