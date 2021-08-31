@@ -9,6 +9,19 @@ In order to maximize the performance of the software, we have included many opti
 best possible asteroseismic parameters in even the lowest signal cases. Examples of the optional features are shown 
 in :ref:`advanced usage<advanced>` and explained in a brief :ref:`<tutorial>` below.
 
+.. note::
+
+    Our features were developed using principles from Unix-like operating systems, 
+    where a single hyphen can be followed by multiple single-character flags (i.e.
+    mostly boolean flags that do not require additional output). 
+    
+    An example is ``-dvoi``, which is far more convenient than writing ``--display --verbose 
+    --overwrite --include``. Together, these commands tell ``pySYD`` to:
+     1. Display the output figures (``-d``, ``--show``, ``--display``),
+     2. Turn on the verbose output (``-v``, ``--verbose``),
+     3. Overwrite existing files with the same name (``-o``, ``--overwrite``), and
+     4. Include the model metrics and values with the verbose output (``-i``, ``--include``).
+
 Due to the large number of options, we have them sorted into :ref:`groups<groups>` by relevant science outputs 
 and also listed by :ref:`input type<inputtype>`. 
 
@@ -174,7 +187,7 @@ Commands
 Groups
 ********
 
-High-level Functionality
+High-level functionality
 ```````````````````````````
 
 All ``pySYD`` modes inherent the parent parser, which includes the properties 
@@ -216,21 +229,7 @@ used very sparingly.
    * action = ``store_true``
 
 
-.. note::
-
-    Our features were developed using principles from Unix-like operating systems, 
-    where a single hyphen can be followed by multiple single-character flags (i.e.
-    mostly boolean flags that do not require additional output). 
-    
-    An example is ``-dvoi``, which is far more convenient than writing ``--display --verbose 
-    --overwrite --include``. Together, these commands tell ``pySYD`` to:
-     1. Display the output figures (``-d``, ``--show``, ``--display``),
-     2. Turn on the verbose output (``-v``, ``--verbose``),
-     3. Overwrite existing files with the same name (``-o``, ``--overwrite``), and
-     4. Include the model metrics and values with the verbose output (``-i``, ``--include``).
-
-
-Data Analyses
+Data analyses
 ```````````````````````````
 
 The following features are primarily related to the initial and final treatment of
@@ -358,14 +357,6 @@ to estimate numax if it is not known:
    * type = ``float``
    * default = `6000.0`
    * unit = muHz
-
-
-.. warning::
-
-    All parameters are optimized for most star types but some may need adjusting. 
-    An example is the smoothing width (``--sw``), which is 20 muHz by default, but 
-    may need to be adjusted based on the nyquist frequency and frequency resolution 
-    of the input power spectrum.
 
 
 Granulation background
@@ -599,6 +590,14 @@ Additional option for the number of threads to use when running stars in paralle
    * help = Number of processes to run in parallel. If nothing is provided, the software will use the ``multiprocessing`` package to determine the number of CPUs on the operating system and then adjust accordingly.
    * type = int
    * default = `0`
+   
+   
+.. warning::
+
+    All parameters are optimized for most star types but some may need adjusting. 
+    An example is the smoothing width (``--sw``), which is 20 muHz by default, but 
+    may need to be adjusted based on the nyquist frequency and frequency resolution 
+    of the input power spectrum.
 
 
 .. _inputtype:
