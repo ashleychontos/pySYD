@@ -107,10 +107,10 @@ which will print the absolute paths of all directories that are created during s
     100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k
     
     
-     - created input file directory: /Users/ashleychontos/Desktop/info 
-     - created data directory at /Users/ashleychontos/Desktop/data 
+     - created input file directory: /Users/ashleychontos/Desktop/pysyd/info 
+     - created data directory at /Users/ashleychontos/Desktop/pysyd/data 
      - example data saved
-     - results will be saved to /Users/ashleychontos/Desktop/results 
+     - results will be saved to /Users/ashleychontos/Desktop/pysyd/results 
     
     
 
