@@ -1,9 +1,10 @@
 .. _quickstart:
 
+##################
 Getting Started
 ##################
 
-Jump down to :ref:`summary` to get asteroseismic parameters for a star in less than a minute!
+Jump down to :ref:`summary` to get asteroseismic parameters for a star in less than one minute!
 
 .. _installation:
 
@@ -47,7 +48,9 @@ You may test your installation by using ``pysyd --help`` to see the available co
 	
 	
 A majority of the data analyses and subsequent tools are used in the most common mode, ``run``,
-and therefore, using the following command::
+and therefore, using the following command:
+
+.. code-block::
 
     $ pysyd run --help                     
     usage: pySYD run [-h] [-c] [--file path] [--in path] [--info path]
@@ -276,30 +279,36 @@ If you ran the setup feature, there are data for three example stars provided: 1
     
     
 
-Here, ``-dv`` means ``-d`` and ``-v`` which stand for display (figures) and verbose output, 
-respectively. Since ``pySYD`` is optimized for running multiple stars, both of these are 
-typically ``False`` by default. We recommend using them for the example, since they are 
+Here ``-dv`` means options ``-d`` and ``-v``, which stand for display (figures) and verbose output, 
+respectively. Since ``pySYD`` is optimized for running multiple stars, both of these are ``False`` 
+by default. We recommend using them for the example, since they are 
 helpful to see how the pipeline processes targets. 
 
+
 The above command should have yielded the following output figures:
+
 
 .. image:: figures/quickstart/1435467_numax.png
   :width: 680
   :alt: Estimate of numax for KIC 1435467
 
+
 from the first optional module that estimates numax (using 3 different trials).
 All parameter derivations are done in the global fit, the results which are 
 encapsulated in this figure:
+
 
 .. image:: figures/quickstart/1435467_global.png
   :width: 680
   :alt: Global fit for KIC 1435467
 
+
 To estimate uncertainties in the derived parameters, set ``--mc`` to a number sufficient for bootstrap sampling. In the previous 
 example, ``--mc`` was not specified and is 1 by default (for 1 iteration). Below shows the same example with the
 sampling enabled, including the verbose output you should see if your software was installed successfully.
 
-.. code-block:: bash
+
+.. code-block::
 
     $ pysyd run -star 1435467 -dv --mc 200
         
@@ -363,21 +372,21 @@ displaying the posteriors for the fitted parameters:
   :alt: Posteriors for KIC 1435467
 
 
-Please visit :ref:`this page<examples>` for more examples and more 
-details about what these results mean.
-
+Please visit :ref:`this page<examples>` for additional examples, including how to interpret the results
+as well as descriptions about what the plots are showing.
 
 
 .. _summary:
 
-
 Quickstart
-**********
+************
 
-.. compound::
+.. _compound::
 
 To determine asteroseismic parameters for a single star in roughly sixty seconds, execute 
-the following commands:: 
+the following commands:
+
+.. code-block::
 
     $ mkdir ~/path_to_put_pysyd_stuff
     $ cd ~/path_to_put_pysyd_stuff
