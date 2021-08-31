@@ -614,8 +614,8 @@ Types
 Boolean
 ````````````
 
-Our boolean flags are sorted alphabetically by the single hash flag, where we have almost enough options
-to span the entire English alphabet.
+Our boolean flags are sorted alphabetically by the single hash flag (and span almost the
+entire English alphabet):
 
 - ``-a``, ``--ask``
    * dest = ``args.ask``
