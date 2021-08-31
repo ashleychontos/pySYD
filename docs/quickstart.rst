@@ -4,7 +4,7 @@
 Quickstart
 ##################
 
-Jump down to :ref:`summary` to get asteroseismic parameters for a star in less than one minute!
+Jump down to :ref:`summary<summary>` to get asteroseismic parameters for a star in less than one minute!
 
 .. _installation:
 
@@ -48,7 +48,7 @@ You may test your installation by using ``pysyd --help`` to see the available co
 
 
 
-Setting up
+Setup
 ************
 
 The easiest way to start using the ``pySYD`` package is by running our ``setup`` feature
