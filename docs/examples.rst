@@ -2,7 +2,7 @@
 
 
 Examples
-########
+############
 
 If ``pysyd setup`` was successfully executed, there should now be light curves and power spectra 
 for three KIC stars in the **data/** directory. If so, then you are ready to test out the software!
@@ -12,7 +12,8 @@ for three KIC stars in the **data/** directory. If so, then you are ready to tes
 High SNR Examples
 ===================
 
-Below are examples of medium to high signal-to-noise (SNR) detections in three stars of different evolutionary states. The first example includes a brief description of the output plots.
+Below are three examples of medium to high signal-to-noise (SNR) detections for stars of different evolutionary states. See the 
+:ref:`description<description>` for more details about the output figures.
 
 KIC 1435467
 *************
@@ -70,15 +71,18 @@ KIC 1435467 is our least evolved example star, with numax ~1400 muHz. The follow
     ------------------------------------------------------
 
 
-runs KIC 1435467 using the default method, which first runs ``find_excess`` followed by ``fit_global``.
+runs KIC 1435467 using the default method, which first estimates numax before deriving any parameters. 
+The reason for this is that the frequency region with power excess is masked out to better estimate 
+background parameters.
 
 Additional commands used in this example (and what they each mean):
+
  - ``--ux 5000`` is the upper frequency bound of the power spectrum used during the first module 
    (i.e. 'x' for excess, ``--lx`` would be the same but the lower bound for this module). These bounds  
    are used strictly for computational purposes and do not alter or change the power spectrum in any way.
  - ``--ie`` turns the bicubic interpolation on when plotting the \'echelle diagram. This is 
    particularly helpful for lower SNR examples like this. 
- - ``-dv`` == `-d` + `-v` -> single hashes are reserved for boolean arguments, which correspond to 
+ - ``-dv`` == ``-d`` + ``-v`` -> single hashes are reserved for boolean arguments, which correspond to 
    ``display`` and ``verbose``, respectively. Since ``pySYD`` is optimized for many stars, both of these
    options are ``False`` by default.
    
@@ -98,9 +102,7 @@ The derived parameters from the global fit are summarized below:
   :alt: Global fit of KIC 1435467
 
 
-.. note::
-
-    For a breakdown of what each panel in each figure means, please see ref for more details.
+**For a breakdown of what each panel in each figure means, please see :ref:<description> for more details.**
   
   
 The derived parameters are saved to an output csv file but also printed at the end of the verbose output.
@@ -160,18 +162,23 @@ To quantify uncertainties in these parameters, we need to turn on the Monte Carl
     ------------------------------------------------------
     
  
-
 where the first 2/3 of the output is (and should be) identical to the first example. By default, 
 ``--mc == 1`` since you should always check your results first before running ``pySYD`` for
 several iterations! The method used to derive the uncertainties is similar to a 
-bootstrapping technique and typically n=200 is more than sufficient. You may also use the ``--samples``
-option if you would like to save the posteriors of the parameters for later use.
+bootstrapping technique and typically n=200 is more than sufficient. 
 
-The Monte Carlo ``sampling`` results:
+Parameter posteriors:
 
 .. image:: figures/examples/1435467_samples.png
   :width: 680
-  :alt: Parameter posteriors for KIC 1435467.
+  :alt: Parameter posteriors for KIC 1435467
+  
+  
+.. note::
+
+    The sampling results can be saved by using the boolean flag ``-m`` or ``--samples``,
+    which will save the posteriors of the fitted parameters for later use. 
+   
 
 ====================
 
@@ -180,19 +187,19 @@ KIC 2309595
 
 KIC 2309595 is a subgiant, with numax ~650 muHz.
 
-``find_excess`` results:
+Estimating numax:
 
 .. image:: figures/examples/2309595_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 2309595.
 
-``fit_background`` results:
+The global fit:
 
 .. image:: figures/examples/2309595_background.png
   :width: 600
   :alt: Fit background output plot for KIC 2309595.
 
-``sampling`` results:
+Sampling results:
 
 .. image:: figures/examples/2309595_samples.png
   :width: 600
@@ -200,24 +207,25 @@ KIC 2309595 is a subgiant, with numax ~650 muHz.
 
 ====================
 
+
 KIC 11618103
 ***************
 
-KIC 11618103 is an evolved RGB star, with numax of ~100 muHz.
+KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
-``find_excess`` results:
+Estimate for numax:
 
 .. image:: figures/examples/11618103_excess.png
   :width: 600
   :alt: Find excess output plot for KIC 11618103.
 
-``fit_background`` results:
+Global fit:
 
 .. image:: figures/examples/11618103_background.png
   :width: 600
   :alt: Fit background output plot for KIC 11618103.
 
-``sampling`` results:
+Sampling results:
 
 .. image:: figures/examples/11618103_samples.png
   :width: 600
@@ -232,31 +240,26 @@ Low SNR Examples
 KIC 8801316
 **************
 
-KIC 8801316 is a subgiant, with a numax ~1100 muHz. Although the data has low signal-to-noise ratio, this would be classified as a detection due to the following reasons:
+KIC 8801316 is a subgiant with a numax ~1100 muHz, shown in the figures below. 
+
+Numax estimate:
+
+.. image:: figures/examples/8801316_excess.png
+  :width: 680
+  :alt: Numax estimate KIC 8801316.
+
+Derived parameters:
+
+.. image:: figures/examples/8801316_background.png
+  :width: 680
+  :alt: Global fit for KIC 8801316.
+
+This would be classified as a detection despite the low SNR due to the following reasons:
 
 - there is a clear power excess as seen in panel 3
 - the power excess has a Gaussian shape as seen in panel 5 corresponding to the solar-like oscillations
 - the autocorrelation function (ACF) in panel 6 show periodic peaks
 - the echelle diagram in panel 8 shows the ridges, albeit faintly
-
-
-``find_excess`` results:
-
-.. image:: figures/examples/8801316_excess.png
-  :width: 600
-  :alt: Find excess output plot for KIC 8801316.
-
-``fit_background`` results:
-
-.. image:: figures/examples/8801316_background.png
-  :width: 600
-  :alt: Fit background output plot for KIC 8801316.
-
-``sampling`` results:
-
-.. image:: figures/examples/8801316_samples.png
-  :width: 600
-  :alt: Distributions of Monte-Carlo samples for KIC 8801316.
 
 
 ====================
@@ -290,8 +293,12 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 ====================
 
+.. _description::
+
+
 Figure Descriptions
 ====================
+
 
 Estimating numax:
 ******************
