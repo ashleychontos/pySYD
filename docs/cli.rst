@@ -6,9 +6,13 @@ Command Line Interface
 
 
 In order to maximize the performance of the software, we have included many optional commands to help identify the
-best possible asteroseismic parameters in even the lowest signal cases. Running the pysyd help command for the main
-pipeline execution will display:
+best possible asteroseismic parameters in even the lowest signal cases. 
 
+
+Help
+=======
+
+Running the pysyd help command for the main pipeline execution will display:
 
 .. code-block::
 
@@ -161,7 +165,7 @@ and also have included a brief :ref:`<tutorial>` below that describes some of th
 
 
 
-Commands
+Features
 ===========
 
 Due to the large number of options, we have them sorted into :ref:`groups<groups>` by relevant science outputs 
