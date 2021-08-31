@@ -12,7 +12,6 @@ from astropy.timeseries import LombScargle as lomb
 
 from pysyd import __file__
 from pysyd.plots import set_plot_params
-from pysyd.functions import *
 from pysyd.models import *
 
 

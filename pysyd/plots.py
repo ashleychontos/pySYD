@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from astropy.convolution import convolve, Box1DKernel
 
-from pysyd import functions
 from pysyd import models
 from pysyd import utils
 

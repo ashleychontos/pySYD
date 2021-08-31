@@ -1,13 +1,12 @@
 import os
 
-from .functions import *
-from .pipeline import *
 from .models import *
-from .target import *
+from .pipeline import *
 from .plots import *
+from .target import *
 from .utils import *
 
-__all__ = ['cli', 'functions', 'pipeline', 'models', 'target', 'plots', 'utils']
+__all__ = ['cli', 'pipeline', 'models', 'target', 'plots', 'utils']
 
 __version__ = '4.1.0'
 

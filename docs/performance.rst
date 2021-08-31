@@ -1,14 +1,15 @@
 .. _performance:
 
-Performance
-#############
 
+==============
+Performance
+==============
 
 .. _comparison:
 
 
 ``pySYD`` vs IDL ``SYD``
-==========================
+***************************
 
 We ran pySYD on ~100 Kepler legacy stars observed in short-cadence and compared the output to IDL SYD results from `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_. The same time series and power spectra were used for both analyses.
 The resulting values are compared for the two methods below for the frequency of maximum power 
@@ -29,4 +30,4 @@ IDL version that has been used extensively in the literature.
 .. _speed:
 
 Speed
-============
+*******
