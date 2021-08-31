@@ -41,13 +41,23 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
 
 .. toctree::
    :maxdepth: 1
-   :hidden:
+   :hidden: 
+   :caption: Getting Started
 
    quickstart
    overview
    examples
    performance
+   
+   
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+   :caption: Advanced
+   
+   
    cli
+   faq
    advanced
    api
    
