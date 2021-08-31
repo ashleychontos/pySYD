@@ -12,7 +12,7 @@ best possible asteroseismic parameters in even the lowest signal cases.
 Help
 =======
 
-Running the pysyd help command for the main pipeline execution will display:
+Running the ``pySYD`` help command for the main pipeline execution will display:
 
 .. code-block::
 
@@ -161,7 +161,7 @@ this is a lot of information, which is why we have dedicated an entire page to d
 features.
 
 Additionally, we have examples of some put to use in :ref:`advanced usage<advanced>` 
-and also have included a brief :ref:`<tutorial>` below that describes some of these commands.
+and also have included a brief :ref:`tutorial` below that describes some of these commands.
 
 
 
