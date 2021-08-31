@@ -1,6 +1,7 @@
 .. _overview:
 
-Software Overview
+####################
+Overview
 ####################
 
 
@@ -21,12 +22,13 @@ existing analyses and expanding upon numerous new (optional) features. Improveme
 - Easily accessible + command-line friendly interface
 - Ability to save samples for further analyses
 
+
 .. _modes:
 
 Modes
-******
+========
 
-There are currently four main ``pySYD`` operational modes: 
+There are currently five operational ``pySYD`` modes: 
 
 #. ``setup`` : Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. This mode only
    inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below). Using this feature will
@@ -50,7 +52,7 @@ There are currently four main ``pySYD`` operational modes:
 .. _structure:
 
 Structure
-******************
+=============
 
 We recommend using the following structure under three main directories, which is discussed 
 in more detail below:
@@ -118,7 +120,7 @@ See :ref:`examples` for a guide on what the output plots are showing.
 
 
 How It Works
-****************
+===============
 
 When running the software, initialization of ``pySYD`` via command line will look in the following paths:
 
