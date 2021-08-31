@@ -1,7 +1,7 @@
 .. _quickstart:
 
 ##################
-Getting Started
+Quickstart
 ##################
 
 Jump down to :ref:`summary` to get asteroseismic parameters for a star in less than one minute!
@@ -48,8 +48,8 @@ You may test your installation by using ``pysyd --help`` to see the available co
 
 
 
-Setting Up
-**********
+Setting up
+************
 
 The easiest way to start using the ``pySYD`` package is by running our ``setup`` feature
 from a convenient directory:
@@ -73,8 +73,8 @@ The optional verbose command can be called with the setup feature:
 This will print the absolute paths of all directories that are created during setup.
 
 
-Example Fit
-***********
+Example fit
+*************
 
 The ``setup`` feature downloads data for three example stars (to data/) provided: 1435467 (the least evolved), 
 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
@@ -232,10 +232,8 @@ as well as descriptions about what the plots are showing.
 
 .. _summary:
 
-Quickstart
+Summary
 ************
-
-.. _compound::
 
 To determine asteroseismic parameters for a single star in roughly sixty seconds, execute 
 the following commands:
