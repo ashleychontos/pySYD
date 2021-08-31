@@ -150,79 +150,96 @@ this figure:
   :width: 680
   :alt: Global fit for KIC 1435467
 
-To estimate uncertainties in the derived parameters, set ``-mc`` to a number sufficient for bootstrap sampling. In the previous 
-example, ``-mc`` was not specified and is 1 by default (for 1 iteration). Below shows the same example with the
+To estimate uncertainties in the derived parameters, set ``--mc`` to a number sufficient for bootstrap sampling. In the previous 
+example, ``--mc`` was not specified and is 1 by default (for 1 iteration). Below shows the same example with the
 sampling enabled, including the verbose output you should see if your software was installed successfully.
 
 .. code-block:: bash
 
-    $ pysyd run -star 1435467 -show -verbose -mc 200
+    $ pysyd run -star 1435467 -dv --mc 200
+        
     
-    ----------------------------------------------------
+    ------------------------------------------------------
     Target: 1435467
-    ----------------------------------------------------
+    ------------------------------------------------------
     # LIGHT CURVE: 37919 lines of data read
     # Time series cadence: 59 seconds
     # POWER SPECTRUM: 99518 lines of data read
     # PS is oversampled by a factor of 5
     # PS resolution: 0.426868 muHz
-    # For first iteration: using oversampled PS [of 5]
-    ----------------------------------------------------
-    Running find_excess module:
-    PS binned to 319 datapoints
-    power excess trial 1: numax = 1438.23 +/- 71.21
-    S/N: 2.95
-    power excess trial 2: numax = 1473.82 +/- 64.02
-    S/N: 5.79
-    power excess trial 3: numax = 1449.98 +/- 97.23
-    S/N: 23.96
-    selecting model 3
-    ----------------------------------------------------
-    Running fit_background module:
-    PS binned to 1709 data points
-    Comparing 4 different models:
-    1: one harvey model w/ white noise free parameter
-    2: one harvey model w/ white noise fixed
-    3: two harvey model w/ white noise free parameter
-    4: two harvey model w/ white noise fixed
-    Based on reduced chi-squared statistic: model 4
-    ----------------------------------------------------
+    ------------------------------------------------------
+    Estimating numax:
+    PS binned to 189 datapoints
+    Numax estimate 1: 1430.02 +/- 72.61
+    S/N: 2.43
+    Numax estimate 2: 1479.46 +/- 60.64
+    S/N: 4.87
+    Numax estimate 3: 1447.42 +/- 93.31
+    S/N: 13.72
+    Selecting model 3
+    ------------------------------------------------------
+    Determining background model:
+    PS binned to 419 data points
+    Comparing 6 different models:
+    Model 0: 0 Harvey-like component(s) + white noise fixed
+    Model 1: 0 Harvey-like component(s) + white noise term
+    Model 2: 1 Harvey-like component(s) + white noise fixed
+    Model 3: 1 Harvey-like component(s) + white noise term
+    Model 4: 2 Harvey-like component(s) + white noise fixed
+    Model 5: 2 Harvey-like component(s) + white noise term
+    Based on BIC statistic: model 2
+     **background-corrected PS saved**
+    ------------------------------------------------------
     Running sampling routine:
-    100%|████████████████████████████████████████████████████████████████████████████████| 200/200 [00:16<00:00, 11.83it/s]
-
+    100%|█████████████████████████████████████████████████████████████████| 200/200 [00:17<00:00, 11.13it/s]
+    
     Output parameters:
-    numax_smooth: 1298.79 +/- 68.35 muHz
-    A_smooth: 1.74 +/- 0.30 ppm^2/muHz
-    numax_gauss: 1333.77 +/- 48.10 muHz
-    A_gauss: 1.32 +/- 0.26 ppm^2/muHz
-    FWHM: 299.98 +/- 58.80 muHz
-    dnu: 70.60 +/- 0.77 muHz
-    white: 1.19 +/- 0.03 ppm^2/muHz
-    sigma_1: 71.20 +/- 15.84 ppm
-    tau_1: 307.18 +/- 193.28 s
-    sigma_2: 56.65 +/- 14.30 ppm
-    tau_2: 94.69 +/- 41.69 s
-    ----------------------------------------------------
-    Combining results into single csv file.
+    tau_1: 233.71 +/- 20.50 s
+    sigma_1: 87.45 +/- 3.18 ppm
+    numax_smooth: 1299.56 +/- 56.64 muHz
+    A_smooth: 1.75 +/- 0.24 ppm^2/muHz
+    numax_gauss: 1345.03 +/- 40.66 muHz
+    A_gauss: 1.49 +/- 0.28 ppm^2/muHz
+    FWHM: 291.32 +/- 63.62 muHz
+    dnu: 70.63 +/- 0.74 muHz
+    ------------------------------------------------------
+     - displaying figures
+     - press RETURN to exit
+     - combining results into single csv file
+    ------------------------------------------------------
+    
+    
+An additional output figure is created with the sampling routine:
 
 
-Please visit :ref:`this page<examples>` for more examples and details about what these results mean.
+.. image:: figures/quickstart/1435467_samples.png
+  :width: 680
+  :alt: Posteriors for KIC 1435467
+
+
+Please visit :ref:`this page<examples>` for more examples and more 
+details about what these results mean.
+
+
 
 .. _summary:
+
 
 Quickstart
 **********
 
 .. compound::
 
-    To determine asteroseismic parameters for a single star in roughly sixty seconds, execute 
-    the following commands: :: 
+To determine asteroseismic parameters for a single star in roughly sixty seconds, execute 
+the following commands: 
     
-	$ mkdir ~/path_to_put_pysyd_stuff
-	$ cd ~/path_to_put_pysyd_stuff
-        $ pip install pysyd
-	$ pysyd setup
-	$ pysyd run -star 1435467 -show -verbose -mc 200
+.. code-block:: bash
+
+	   $ mkdir ~/path_to_put_pysyd_stuff
+	   $ cd ~/path_to_put_pysyd_stuff
+    $ pip install pysyd
+	   $ pysyd setup
+	   $ pysyd run --star 1435467 -dv --mc 200
         
-    ... and if you weren't one already, you are now an asteroseismologist!
+... and if you weren't one already, you are now an asteroseismologist!
     
