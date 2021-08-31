@@ -12,7 +12,7 @@ Installation
 
 Install ``pysyd`` using pip:
 
-.. code-block:: bash
+.. code-block::
 
     $ pip install pysyd
 
@@ -20,13 +20,13 @@ The ``pysyd`` binary should have been automatically placed in your system's path
 ``pip`` command. If your system can not find the ``pysyd`` executable, ``cd`` into the 
 top-level ``pysyd`` directory and try running the following command:
 
-.. code-block:: bash
+.. code-block::
 
     $ python setup.py install
 
 You may test your installation by using ``pysyd --help`` to see available command-line options:
 
-.. code-block:: bash
+.. code-block::
 		
     $ pysyd --help
     usage: pySYD [-h] [-version] {setup,load,run,parallel} ...
@@ -52,7 +52,7 @@ Setting Up
 The easiest way to start using the ``pySYD`` software is by running our setup feature
 from a convenient directory:
 
-.. code-block:: bash
+.. code-block::
 
     $ pysyd setup
 
@@ -64,9 +64,9 @@ from the `source code <https://github.com/ashleychontos/pySYD>`_ are included (s
 
 The optional verbose command can be called with the setup feature:
 
-.. code-block:: bash
+.. code-block::
 
-    $ pysyd setup -verbose
+    $ pysyd setup --verbose
 
 This will print the absolute paths of all directories that are created during setup.
 
@@ -78,7 +78,7 @@ If you ran the setup feature, there are data for three example stars provided: 1
 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
 
-.. code-block:: bash
+.. code-block::
 
     $ pysyd run --star 1435467 -dv
     
