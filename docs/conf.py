@@ -60,7 +60,6 @@ release = pysyd.__version__
 #]
 
 extensions = [
-    'easydev.copybutton',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
