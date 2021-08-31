@@ -17,10 +17,8 @@ Below are examples of medium to high signal-to-noise (SNR) detections in three s
 KIC 1435467
 *************
 
-KIC 1435467 is our least evolved example star, with numax ~1400 muHz. The following command:
+KIC 1435467 is our least evolved example star, with numax ~1400 muHz. The following command::
 
-
-.. code-block:: bash
 
     $ pysyd run --star 1435467 -dv
     
@@ -106,9 +104,8 @@ The derived parameters from the global fit are summarized below:
   
   
 The derived parameters are saved to an output csv file but also printed at the end of the verbose output.
-To quantify uncertainties in these parameters, we need to turn on the Monte Carlo sampling option (``--mc``) with:
+To quantify uncertainties in these parameters, we need to turn on the Monte Carlo sampling option (``--mc``) with::
 
-.. code-block:: bash
 
     $ pysyd run -star 1435467 -dv --mc 200
         
