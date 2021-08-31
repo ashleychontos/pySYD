@@ -70,8 +70,8 @@ extensions = [
     'sphinx.ext.coverage',
 #    'sphinx.ext.pngmath',
     'sphinx.ext.ifconfig',
-    'matplotlib.sphinxext.only_directives',
-    'matplotlib.sphinxext.plot_directive',
+#    'matplotlib.sphinxext.only_directives',
+#    'matplotlib.sphinxext.plot_directive',
  ]
 
 #extensions.append('sphinx.ext.pngmath')
