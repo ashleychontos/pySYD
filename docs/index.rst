@@ -16,9 +16,7 @@ For a basic introduction to these parameters and asteroseismic data analysis of
 solar-like oscillators see  `Bedding et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014aste.book...60B/abstract>`_.
 
 Please cite our recent JOSS paper `Chontos+2021 <https://arxiv.org/abs/2108.00582>`_ if you 
-make use of ``pySYD`` in your work. The recommended BibTeX entry for this citation is:
-
-.. code-block::
+make use of ``pySYD`` in your work. The recommended BibTeX entry for this citation is::
 
     {@ARTICLE{2021arXiv210800582C,
            author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
@@ -55,7 +53,7 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
    
 
 Indices and tables for the source code
-======================================
+****************************************
 
 * :ref:`genindex`
 * :ref:`modindex`
