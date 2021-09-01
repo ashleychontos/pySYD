@@ -177,7 +177,7 @@ and also listed them by their :ref:`object type<inputtype>`.
 
     Our features were developed using principles from Unix-like operating systems, 
     where a single hyphen can be followed by multiple single-character flags (i.e.
-    mostly boolean flags that do not require additional output). 
+    mostly boolean flags that do not require additional input). 
     
     An example is ``-dvoi``, which is far more convenient than writing ``--display --verbose 
     --overwrite --include``. Together, these commands tell ``pySYD`` to:
