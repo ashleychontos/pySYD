@@ -1,17 +1,29 @@
 .. _faq:
 
-Frequently Asked Questions
-#############################
+############
+FAQs
+############
+
+
 
 #. I'm getting an error. What do I do?
 	
-	Please submit a pull request `here <https://github.com/ashleychontos/pySYD/pulls>`_. Be sure to include the version of ``pySYD`` used, the command you ran, screenshot of the error and any other details you can provide. The GitHub page for ``pySYD`` can be found here: `https://github.com/ashleychontos/pySYD`.
+	Please submit a pull request `here <https://github.com/ashleychontos/pySYD/pulls>`_. Be sure to include:
+	  1. the version of ``pySYD`` used, 
+	  2. the full command that was used, 
+	  3. a screenshot of the error,
+	  4. the times series and/or power spectrum that was used,
+	  5. and any other relevant details you can provide. 
+	The GitHub page for ``pySYD`` is: _`https://github.com/ashleychontos/pySYD`_.
 
-#. What is the difference between ``--lx/--ux``, ``--lb/--ub`` and ``--lp/--up``?
+#. There are a lot of lower/upper bound options. What is the difference between ``--lb``/``--ub``, 
+``--le``/``--ue``, ``--lp``/``--up`` and ``--lx``/``--ux``?
 	
-	- ``--lx/--ux``: limits the region used to search for the power excess.
-	- ``--lb/--ub``: limits the region used to model the background. 
-	- ``--lp/--up``: limits the region around the power excess used to calculate the ACF.
+	- ``--lb/--ub``: frequency range limits the region used to derive the global parameters and granulation background
+	- ``--le/--ue``: limits the region used to whiten mixed modes (requires an estimate for dnu as well)
+	- ``--lp/--up``: limits the region around the power excess that is used to calculate the autocorrelation function (ACF)
+	- ``--lx/--ux``: limits the region used to search for the power excess and estimate numax
+
 
 #. What's the difference between ``--bf``, ``--sw``, ``--sm``, ``--sp`` and ``--se``?
 	
