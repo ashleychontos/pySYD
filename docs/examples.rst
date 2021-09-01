@@ -1,19 +1,20 @@
 .. _examples:
 
-
+############
 Examples
 ############
 
 If ``pysyd setup`` was successfully executed, there should now be light curves and power spectra 
 for three KIC stars in the **data/** directory. If so, then you are ready to test out the software!
 
-====================
-
 High SNR Examples
 ===================
 
+We will start with some of the easiest examples, which have very high signal-to-noise (SNR) detections and then ease into
+the more difficult detections and/or situations. 
+
 Below are three examples of medium to high signal-to-noise (SNR) detections for stars of different evolutionary states. See the 
-:ref:`description<description>` for more details about the output figures.
+:ref:`description` for more details about each panel in the output figures.
 
 KIC 1435467
 *************
