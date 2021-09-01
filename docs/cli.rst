@@ -1,7 +1,7 @@
 .. _cli:
 
 ############################
-CLI
+Optional Features
 ############################
 
 
@@ -9,10 +9,11 @@ In order to maximize the performance of the software, we have included many opti
 best possible asteroseismic parameters in even the lowest signal cases. 
 
 
-Help
-=======
+CLI
+==========
 
-Running the ``pySYD`` help command for the main pipeline execution will display:
+From a terminal window, running the ``pySYD`` help command for the main pipeline execution (i.e. ``pysyd.run``)
+will display the following output:
 
 .. code-block::
 
@@ -165,11 +166,11 @@ and also have included a brief :ref:`tutorial` below that describes some of thes
 
 
 
-Features
+Commands
 ===========
 
-Due to the large number of options, we have them sorted into :ref:`groups<groups>` by relevant science outputs 
-and also listed by :ref:`input type<inputtype>`. 
+Due to the large number of options, we have sorted parameters both into relevant science :ref:`groups<groups>`
+and also listed them by their :ref:`object type<inputtype>`. 
 
 
 .. note::
@@ -238,7 +239,7 @@ Data analyses
 
 The following features are primarily related to the initial and final treatment of
 data products, including information about the input data, how to process and save
-the data as well as which modules to use.
+the data as well as which modules to run.
 
 - ``-b``, ``--bg``, ``--background`` 
    * dest = ``args.background``
@@ -611,8 +612,8 @@ Additional option for the number of threads to use when running stars in paralle
 Types
 *********
 
-Boolean
-````````````
+``boolean``
+``````````````
 
 Our boolean flags are sorted alphabetically by the single hash flag (and span almost the
 entire English alphabet):
@@ -709,8 +710,8 @@ entire English alphabet):
    * action = ``store_true``
 
 
-Integer
-````````````
+``integer``
+```````````````
 
 - ``--laws``, ``--nlaws``
    * dest = ``args.n_laws``
@@ -754,7 +755,7 @@ Integer
    * default = `3`
 
 
-Float
+``float``
 ````````````
 
 
@@ -866,7 +867,7 @@ Float
 
 
 
-String
+``string``
 ````````````
 
 
