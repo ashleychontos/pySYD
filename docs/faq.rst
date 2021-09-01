@@ -19,8 +19,8 @@ FAQs
 
 #. There are a lot of upper and lower bound options, what do they all mean? 
 	
-	- ``--lb``/``--ub``: frequency range limits the region used to derive the global parameters and granulation background
-	- ``--le``/``--ue``: limits the region used to whiten mixed modes (requires an estimate for dnu as well)
+	- ``--lb``/``--ub``: limits the frequency range of the power spectrum that is used to derive the granulation background and global parameters 
+	- ``--le``/``--ue``: the folded frequency range containing mixed modes to "whiten" and thus better estimate dnu (requires an estimate for dnu as well)
 	- ``--lp``/``--up``: limits the region around the power excess that is used to calculate the autocorrelation function (ACF)
 	- ``--lx``/``--ux``: limits the region used to search for the power excess and estimate numax
 
