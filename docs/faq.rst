@@ -17,13 +17,12 @@ FAQs
 	The GitHub page for ``pySYD`` is: _`https://github.com/ashleychontos/pySYD`_.
 
 
-#. There are a lot of lower/upper bound options. What is the difference between ``--lb``/``--ub``, 
-   ``--le``/``--ue``, ``--lp``/``--up`` and ``--lx``/``--ux``?
+#. There are a lot of upper and lower bound options, what do they all mean? 
 	
-	- ``--lb/--ub``: frequency range limits the region used to derive the global parameters and granulation background
-	- ``--le/--ue``: limits the region used to whiten mixed modes (requires an estimate for dnu as well)
-	- ``--lp/--up``: limits the region around the power excess that is used to calculate the autocorrelation function (ACF)
-	- ``--lx/--ux``: limits the region used to search for the power excess and estimate numax
+	- ``--lb``/``--ub``: frequency range limits the region used to derive the global parameters and granulation background
+	- ``--le``/``--ue``: limits the region used to whiten mixed modes (requires an estimate for dnu as well)
+	- ``--lp``/``--up``: limits the region around the power excess that is used to calculate the autocorrelation function (ACF)
+	- ``--lx``/``--ux``: limits the region used to search for the power excess and estimate numax
 
 
 #. What's the difference between ``--bf``, ``--sw``, ``--sm``, ``--sp`` and ``--se``?
