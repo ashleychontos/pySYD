@@ -16,8 +16,9 @@ FAQs
 	  5. and any other relevant details you can provide. 
 	The GitHub page for ``pySYD`` is: _`https://github.com/ashleychontos/pySYD`_.
 
+
 #. There are a lot of lower/upper bound options. What is the difference between ``--lb``/``--ub``, 
-``--le``/``--ue``, ``--lp``/``--up`` and ``--lx``/``--ux``?
+   ``--le``/``--ue``, ``--lp``/``--up`` and ``--lx``/``--ux``?
 	
 	- ``--lb/--ub``: frequency range limits the region used to derive the global parameters and granulation background
 	- ``--le/--ue``: limits the region used to whiten mixed modes (requires an estimate for dnu as well)
