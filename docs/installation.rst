@@ -1,15 +1,10 @@
-.. _quickstart:
-
-##################
-Quickstart
-##################
-
-Jump down to :ref:`summary<summary>` to get asteroseismic parameters for a star in less than one minute!
-
 .. _installation:
 
-Installation
-***************
+###################
+Installing `pySYD`
+###################
+
+Jump down to :ref:`<quickstart>` for a summary!
 
 Install ``pysyd`` using pip:
 
@@ -273,13 +268,12 @@ Please visit :ref:`this page<examples>` for additional examples, including how t
 as well as descriptions about what the plots are showing.
 
 
-.. _summary:
+.. _quickstart:
 
-Summary
+Quickstart
 ************
 
-To determine asteroseismic parameters for a single star in roughly sixty seconds, execute 
-the following commands:
+To get up and running:
 
 .. code-block::
 
@@ -288,6 +282,6 @@ the following commands:
     $ pip install pysyd
     $ pysyd setup
     $ pysyd run --star 1435467 -dv --mc 200
-        
-... and if you weren't one already, you are now an asteroseismologist!
+  
+
     
