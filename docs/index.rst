@@ -44,7 +44,7 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
    :hidden: 
    :caption: Intro
 
-   quickstart
+   installation
    overview
    examples
    performance
