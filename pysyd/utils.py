@@ -123,7 +123,7 @@ def get_main_params(args, cli=False, stars=None, excess=True, background=True, g
         args.todo = os.path.join(os.path.abspath(os.getcwd()), 'info', 'todo.txt')
         info = os.path.join(os.path.abspath(os.getcwd()), 'info', 'star_info.csv')
         inpdir = os.path.join(os.path.abspath(os.getcwd()), 'data')
-        args.command, args.parallel, args.of_actual, args.of_new, args.kep_corr = command, parallel, of_actual, of_new, kep_corr, verbose
+        args.command, args.parallel, args.of_actual, args.of_new, args.kep_corr, args.verbose = command, parallel, of_actual, of_new, kep_corr, verbose
         vals = [stars, inpdir, os.path.join(os.path.abspath(os.getcwd()), 'results'), cli, command, 
                 info, show, save, testing, overwrite, excess, background, globe, verbose]
     args.params = dict(zip(vars,vals))

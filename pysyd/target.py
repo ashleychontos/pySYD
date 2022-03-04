@@ -226,7 +226,7 @@ class Target:
             snr = max(fity)/np.absolute(best_vars[0])
             if snr > max_snr:
                 snr = max_snr
-            self.excess['results'][self.name][b+1].update({'numax':best_vars[2],'dnu':functions.delta_nu(best_vars[2]),'snr':snr})
+            self.excess['results'][self.name][b+1].update({'numax':best_vars[2],'dnu':utils.delta_nu(best_vars[2]),'snr':snr})
             if self.verbose:
                   print('Numax estimate %d: %.2f +/- %.2f'%(b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
                   print('S/N: %.2f' % snr)
