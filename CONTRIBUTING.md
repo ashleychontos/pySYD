@@ -1,9 +1,13 @@
-# Contributing to `pySYD`
+-----
 
-We would love for you to contribute to `pySYD` and help make asteroseismology even more accessible than it is today! 
-For any general support questions or help solving a problem, feel free to stop by our [Discussion Page](). If you 
-have ideas or suggestions for improvements, we welcome any and all pull requests! As a contributor, here are the 
-guidelines we ask you to follow:
+### \*\*\*\*\*\*\*\*\*\*\* We are continuously working towards our primary goal of accessible asteroseismology \*\*\*\*\*\*\*\*\*\*\*\*
+ 
+-----
+
+We would love for you to contribute to `pySYD` and make it even better than it is today! <br/>
+For most (if not all) questions/concerns, peeping our [discussions](https://github.com/ashleychontos/pySYD/discussions) forum is an excellent place to start in order to look for solutions. If something is confusing, there is a good chance that someone else also found it confusing and hence already asked. 
+
+As a contributor, here are the guidelines we ask you to follow:
 
 - [Question or problem?](#question)
 - [Issues & bugs](#issue)
@@ -12,27 +16,34 @@ guidelines we ask you to follow:
 - [Style guide](#style)
 - [Testing](#test)
 
+-----
 
-## <a name="question"></a> Have a general question or problem?
+### <a name="question"></a> &rightarrow; Do you have a general question that is not directly related to software functionality?
 
-We may already have the answer for you! Please visit our [discussion forum]() to see if your question has already been answered in one of the threads. You can also help us keep this up-to-date and the most helpful for the community by adding relevant tags wherever possible.
+**Please do *not* open 'issues' for general support questions as we want to preserve them for bug reports and new feature requests ONLY.** Therefore to save everyone time, we will be systematically closing all issues that do not follow these guidelines. Besides, you've got a much better chance of getting your question answered in our [discussion forum](stackoverflow.com/questions/tagged/angular-devtools). PLUS... we may already have the answer for you! 
 
-Please do *not* open issues for general support questions as we want to preserve GitHub issues for bug reports and feature requests. You've got a much better chance of getting your question(s) answered in our [discussion forum](stackoverflow.com/questions/tagged/angular-devtools), with a chance that it may have already been answered before! 
+Please visit our relevant [thread](https://github.com/ashleychontos/pySYD/discussions/37#discussion-3918112) first to see if your question has already been asked. You can also help us keep this space up-to-date, linking topics/issues to relevant threads and adding appropriate tags whenever/wherever possible. This is not only helpful to us but also helpful for the community! Once we have enough data points, we will establish a forum for frequently asked questions (FAQ).
 
-To save everyone some time, we will be systematically closing all issues that are general support questions and redirecting people to the discussion board.
+If this still does not work for you and you would like to chat with someone in real-time, please contact [Ashley](achontos@hawaii.edu) to set up a call or zoom meeting.
 
-If you would like to chat about the question in real-time, please contact Ashley via email to set up a zoom call.
+-----
 
+### <a name="issue"></a> &rightarrow; Are you reporting a bug?
 
-## <a name="issue"></a> Did you find a bug?
+**If the code crashes or you find a bug, please search the issue tracker first to make sure the problem (i.e. issue) does not already exist.** If and only if you do this but still don't find anything, feel free to [submit an issue](#submit-issue). And, if you're *really* brave, you can submit an issue along with a [pull request](#submit-pr) fix.
 
-If you find a bug in the source code, you can help us by
-[submitting an issue](#submit-issue) to our [GitHub Repository][github]. Even better, you can
-[submit a Pull Request](#submit-pr) with a fix.
+Ideally we would love to fix all issues Keep in mind that we would like to fix all issues as soon as possible, but before fixing a bug we need to reproduce and confirm it. In order to reproduce bugs we will systematically ask you to provide a minimal reproduction scenario by providing a project which breaks Angular DevTools. Also make sure that you list:
 
+- version of Angular DevTools used
+- version of Angular used
+- 3rd-party libraries and their versions
+- and most importantly - a use-case that fails
 
+You can file new issues by filling out our [new issue form](https://github.com/rangle/angular-devtools/issues/new).
 
-## <a name="feature"></a> Want a new feature?
+-----
+
+### <a name="feature"></a> &rightarrow; Have an idea for a new feature or functionality?
 
 You can _request_ a new feature by [submitting an issue](#submit-issue) to our GitHub
 Repository. If you would like to _implement_ a new feature, please submit an issue with
@@ -43,6 +54,12 @@ Please consider what kind of change it is:
   discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
   and help you to craft the change so that it is successfully accepted into the project.
 - **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
+
+-----
+
+### <a name="feature"></a> &rightarrow; Do you want to contribute code?
+
+-----
 
 ## <a name="submit"></a> Submission Guidelines
 
@@ -61,7 +78,7 @@ You can file new issues by filling out our [new issue form](https://github.com/r
 
 ### <a name="submit-pr"></a> Submitting a Pull Request (PR)
 
-#### General Guidelines
+#### Community Guidelines
 
 Before you submit your Pull Request (PR), please consider the following guidelines:
 
@@ -142,7 +159,7 @@ from the main (upstream) repository:
  - commits should be squashed before merging
  - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
 
-## Testing
+## <a name="test"></a> Testing
 
 Local testing can be done by running the webpack-dev-server using configuration
 `webpack.dev.js`. Run `yarn` to install dependencies, and then `yarn start`
