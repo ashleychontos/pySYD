@@ -1,32 +1,22 @@
----
-name: Bug Report
-about: Create a report to help us improve the software!
-title: ''
-labels: ''
-assignees: ''
+## Title (directly edit this to your relevant issue)
 
----
+### Description
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+A clear and concise description of what the issue/ bug is.
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+### Screenshots
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+### Reproducibility
 
-**Additional context**
+In order to replicate the issue from our end, please provide *both* the light curve and power spectrum for the relevant target.
+
+### Information (please complete the following):
+
+ - **OS:** [e.g. Linux, macOS, Microsoft Windows,]
+ - **Browser:** [e.g. Chrome, Safari]
+ - **Version:** [e.g. v2.1.2]
+
+### Any additional context/information
 Add any other context about the problem here.
