@@ -9,18 +9,22 @@
 [![JOSS](https://joss.theoj.org/papers/6465a9dd3141c207175f200c7f891f1e/status.svg)](https://joss.theoj.org/papers/6465a9dd3141c207175f200c7f891f1e)
 <a href="https://ascl.net/2111.017"><img src="https://img.shields.io/badge/ascl-2111.017-blue.svg?colorB=262255" alt="ascl:2111.017" /></a>
 
+<a href="https://github.com/ashleychontos/pySYD/graphs/contributors"><img src="https://contrib.rocks/image?repo=ashleychontos/pySYD" /></a>
 </div>
 
 --------------------------------------------------------------------------------
+                                                                  
+## Contribution
 
-## Attribution
+This project exists thanks to all the people who have contributed in various ways. If you'd like to be a part of that, see [our guide to contributing code](CONTRIBUTING.md).
 
-Written & developed by Ashley Chontos, Maryum Sayeed, Daniel Huber, and Pavadol Yamsiri.
+## Documentation
 
-We thank Dennis Stello, Jie Yu, Marc Hon, Yifan Chen, Yaguang Li, and other `pySYD` users for 
-discussion and suggestions which helped with the development of this code.
+Read the documentation [here](https://pysyd.readthedocs.io)
 
-Please cite our [JOSS paper](https://arxiv.org/abs/2108.00582) if you make use of `pySYD` in your work. The recommended BibTeX entry for this citation is:
+## Citation
+
+If you make use of `pySYD` in your work, please cite our [JOSS paper](https://arxiv.org/abs/2108.00582). The recommended BibTeX entry for this citation is:
 
     {@ARTICLE{2021arXiv210800582C,
            author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
@@ -37,7 +41,3 @@ Please cite our [JOSS paper](https://arxiv.org/abs/2108.00582) if you make use o
            adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
-
-## Documentation
-
-Read the documentation at [pysyd.readthedocs.io](https://pysyd.readthedocs.io)
