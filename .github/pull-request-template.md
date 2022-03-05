@@ -1,11 +1,15 @@
-### Describe your changes
+### Pull request summary
 
+**Some talking points as a guide:**
+- brief description of what was done 
+  - is this a modification to existing software 
+  - does it include any new features or functions
+- why or what prompted the change
+- if changes are substantial or include any new functions, are they properly commented throughout the code and documentation? please see (here)[CONTRIBUTE.md] for more details.
+- reference or link if the pull request directly addresses an existing issue
 
-### Checklist
+#### Checklist
 
-* [ ] Did you add tests?
-* [ ] Did you add documentation for your changes?
-* [ ] Did you reference any relevant issues?
-* [ ] Did you test all example stars?
-* [ ] Are the CLI tests passing?
-* [ ] Is the milestone set?
+* [ ] Did you test your changes? (please do ***NOT*** submit the pull request until you have)
+* [ ] Did you add other relevant materials (e.g., docstrings, documentation)?
+* [ ] Did you provide links for any address issues?
