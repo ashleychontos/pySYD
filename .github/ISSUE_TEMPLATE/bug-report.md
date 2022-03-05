@@ -1,22 +1,27 @@
-## Title (directly edit this to your relevant issue)
+## Title (aka "Issue")
 
 ### Description
 
-A clear and concise description of what the issue/ bug is.
-
-### Screenshots
-
-If applicable, add screenshots to help explain your problem.
+A clear and concise description of what the issue/bug is
 
 ### Reproducibility
 
-In order to replicate the issue from our end, please provide *both* the light curve and power spectrum for the relevant target.
+In order to reproduce the issue from our end, please provide *both* the light curve and power spectrum for the relevant target
 
-### Information (please complete the following):
+### Computer (please complete the following):
 
  - **OS:** [e.g. Linux, macOS, Microsoft Windows,]
- - **Browser:** [e.g. Chrome, Safari]
  - **Version:** [e.g. v2.1.2]
 
-### Any additional context/information
-Add any other context about the problem here.
+### Screenshots
+
+If applicable, add screenshots to help explain your problem
+
+### Additional notes
+Add any other information here 
+
+### Checklist -
+
+**Required Materials** | <br/> <ul> <li>- [ ] Description</li> <li>- [ ] Power spectrum</li> <li>- [ ] Light curve</li> <li>- [ ] Computer OS</li> <li>- [ ] Software version</li> </ul> 
+:--------------- | :--------------------------------------------------------------------------------
+**Extra Information** | <ul><li>- [ ] Screenshots</li><li>- [ ] Notes</li></ul>     
