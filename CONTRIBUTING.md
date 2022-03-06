@@ -1,8 +1,11 @@
+<div align="center">
+
 -----
 
-### \*\*\*\*\*\*\*\*\*\*\* We are continuously working towards our primary goal of accessible asteroseismology \*\*\*\*\*\*\*\*\*\*\*\*
+### We are continuously working towards our primary goal of accessible asteroseismology 
  
 -----
+</div>
 
 For most (if not all) questions/concerns, peeping our [discussions](https://github.com/ashleychontos/pySYD/discussions) forum is an excellent place to start in case things have already been brought up or addressed.
 
