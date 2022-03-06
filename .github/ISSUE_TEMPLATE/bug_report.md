@@ -7,13 +7,13 @@ assignees: ''
 
 ---
 
-## Checklist
+## Bug Checklist
 
 **Required**<br/>**Materials** | <br/> <ul> <li>- [ ] Description</li> <li>- [ ] Power spectrum</li> <li>- [ ] Light curve</li> <li>- [ ] Computer OS</li> <li>- [ ] Software version</li> </ul> 
 :--------------- | :--------------------------------------------------------------------------------
 **Extra**<br/>**Information** | <br/> <ul><li>- [ ] Screenshots</li><li>- [ ] Notes</li></ul>
 
-## Information
+## Information & supporting files
 
 ### Description
 
@@ -31,10 +31,10 @@ Please complete by editing the following:
  - **OS:** [e.g. Linux, macOS, Microsoft Windows,]
  - **Version:** [e.g. v2.1.2]
 
-### Relevant files
+### Attachments
 
 **In order to reproduce the issue from our end, please provide *both* the light curve and power spectrum for the relevant target!**<br/>
 Attach the required data files here and if applicable, any figures or screenshots to help explain your problem.
 
-### Notes
+### Other
 Add any other relevant information here (e.g., links to issues or solutions)
