@@ -1,22 +1,40 @@
-## Request Checklist
+---
+name: Pull request
+about: Contribute to this project!
+title: ''
+labels: ''
+assignees: ''
 
-* [ ] Did you test your changes? (please do ***NOT*** submit the pull request until you have)
-* [ ] Is your code compliant with our recommended style guide?
-* [ ] Is the code complete with docstrings and other relevant documentation?
-* [ ] Will it require any changes from our end? If so, please explain.
-* [ ] Did you add other relevant materials or files?
-* [ ] Did you provide links for any address issues?
+---
 
-## Information & Supporting Files
+------
+
+### Request Checklist:
+
+- Is this a major request? <ul><li>- [ ] Yes <br/> &rightarrow; Have you already submitted an issue outlining the request?<ul><li>- [ ] Yes</li><li>- [ ] No</li></ul></li><li>- [ ] No</li><li>- [ ] IDK</li></ul>
+- What type of request is this? <ul><li>- [ ] New feature</li><li>- [ ] Modification</li><li>- [ ] Suggested update</li><li>- [ ] Other*</li></ul>
+- Why is the change needed? <ul><li>- [ ] General improvement</li><li>- [ ] Solves a problem </li><li>- [ ] Relevant to an open issue <br/> &rightarrow; Did you provide the link?<ul><li>- [ ] Yes</li><li>- [ ] No</li></ul></li><li>- [ ] Increased efficiency and/or speed</li><li>- [ ] Other?*</li></ul>
+- Did you test your changes? <ul><li>- [ ] Yes</li><li>- [ ] No (please do ***not*** submit a request until you have)</li><li>- [ ] N/A</li></ul>
+- Does the code comply with our [style guide](https://github.com/ashleychontos/pySYD/blob/master/CONTRIBUTING.md) and is it complete with docstrings and other relevant documentation? <ul><li>- [ ] Yes</li><li>- [ ] No</li></ul>
+- Will this request require any changes from our end? <ul><li>- [ ] Yes**</li><li>- [ ] No</li></ul>
+<br/>
+* If 'Other' was selected at any point, please expand on each of these points in more detail below. <br/>** If 'Yes' was selected for the last bullet, please elaborate below. 
+
+------
+
+## Information
 
 ### Description
 
-Brief summary of the pull request content i.e. is this a modification to existing software or does it include any new features or functions? Why or what prompted the change? Are changes substantial or include any new functions? If so, are they properly commented throughout the code and documentation? Please see [here](https://github.com/ashleychontos/pySYD/blob/master/CONTRIBUTING.md) for more details.
+Using the checklist as a guide, please provide more details about the nature of the pull request. 
 
-### Attachments
+### Attachments & Supporting Files
 
 Please provide any relevant files i.e. data if adding a new target to a test or as an example
 
 ### Other
 
 Any other relevant points i.e. reference/link if directly addressing an existing issue
+
+
+------
