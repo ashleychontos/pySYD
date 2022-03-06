@@ -31,4 +31,4 @@ Add any other information here
 
 **Required Materials** | <br/> <ul> <li>- [ ] Description</li> <li>- [ ] Power spectrum</li> <li>- [ ] Light curve</li> <li>- [ ] Computer OS</li> <li>- [ ] Software version</li> </ul> 
 :--------------- | :--------------------------------------------------------------------------------
-**Extra Information** | <ul><li>- [ ] Screenshots</li><li>- [ ] Notes</li></ul>
+**Extra Information** | <br/> <ul><li>- [ ] Screenshots</li><li>- [ ] Notes</li></ul>
