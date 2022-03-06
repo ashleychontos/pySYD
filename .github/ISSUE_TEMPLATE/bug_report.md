@@ -7,13 +7,13 @@ assignees: ''
 
 ---
 
-## Bug Checklist
+## Report Checklist
 
 **Required**<br/>**Materials** | <br/> <ul> <li>- [ ] Description</li> <li>- [ ] Power spectrum</li> <li>- [ ] Light curve</li> <li>- [ ] Computer OS</li> <li>- [ ] Software version</li> </ul> 
 :--------------- | :--------------------------------------------------------------------------------
 **Extra**<br/>**Information** | <br/> <ul><li>- [ ] Screenshots</li><li>- [ ] Notes</li></ul>
 
-## Information & supporting files
+## Information & Supporting Files
 
 ### Description
 
