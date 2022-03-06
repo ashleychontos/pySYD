@@ -16,7 +16,7 @@
 
 ## Documentation
 
-The documentation for `pySYD` can be found [here](https://pysyd.readthedocs.io).
+The documentation for `pySYD` can be found on [readthedocs](https://pysyd.readthedocs.io).
 
 ## Attribution
 
