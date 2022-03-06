@@ -39,14 +39,16 @@ If you make use of `pySYD` in your work, please cite our [JOSS paper](https://ar
     }
     
 Please also cite blank as a software citation.
-    
-## Contribution
-
-This project exists thanks to all the people who have contributed in various ways. If you'd like to be a part of that, see [our guide to contributing code](CONTRIBUTING.md).
 
 ## License
 
 &copy; 2022 Ashley Chontos and contributors.
 
 `pySYD` is free software made available under the [MIT license](LICENSE.md).
+
+## Contribution
+
+See [this file](AUTHORS.md) a full list of contributors. 
+
+If you'd like to be a part of that, see [our guide for contributing](CONTRIBUTING.md).
 
