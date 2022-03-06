@@ -42,12 +42,11 @@ Please also cite blank as a software citation.
 
 ## License
 
-&copy; 2022 Ashley Chontos and contributors.
-
+&copy; 2022 Ashley Chontos and contributors. <br/>
 `pySYD` is free software made available under the [MIT license](LICENSE.md).
 
 ## Contribution
 
 Our [list](AUTHORS.md) of contributors continues to grow! <br/> 
-If you'd like to be a part of that, see [our guide for contributing](CONTRIBUTING.md).
+If you'd like to be a part of that, please see [our guide](CONTRIBUTING.md) for contributing.
 
