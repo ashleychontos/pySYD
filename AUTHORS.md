@@ -3,5 +3,5 @@
 **All contributors:** (sorted alphabetically)
 - Huber, Daniel ([@danxhuber](https://github.com/danxhuber))
 - Sayeed, Maryum ([@MaryumSayeed](https://github.com/MaryumSayeed))
-- Yamsiri, Pavadol ([]())
+- Yamsiri, Pavadol ([@pavyamsiri](https://github.com/pavyamsiri))
 - 
