@@ -214,7 +214,3 @@ The new method of defining functions combines methods that were previously
 spread out over three different files [functions.js](src/functions.js),
 [buildHTML.js](src/buildHTML.js), [buildMathML.js](src/buildMathML.js) into a
 single file.  The goal is to have all functions use this new system.
-
-## License
-
-`pySYD` is licenced under the [MIT License](http://opensource.org/licenses/MIT).
