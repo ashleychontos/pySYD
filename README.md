@@ -13,16 +13,12 @@
 </div>
 
 --------------------------------------------------------------------------------
-                                                                  
-## Contribution
-
-This project exists thanks to all the people who have contributed in various ways. If you'd like to be a part of that, see [our guide to contributing code](CONTRIBUTING.md).
 
 ## Documentation
 
-Read the documentation [here](https://pysyd.readthedocs.io)
+The documentation for `pySYD` can be found [here](https://pysyd.readthedocs.io).
 
-## Citation
+## Attribution
 
 If you make use of `pySYD` in your work, please cite our [JOSS paper](https://arxiv.org/abs/2108.00582). The recommended BibTeX entry for this citation is:
 
@@ -41,3 +37,16 @@ If you make use of `pySYD` in your work, please cite our [JOSS paper](https://ar
            adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
+    
+Please also cite blank as a software citation.
+    
+## Contribution
+
+This project exists thanks to all the people who have contributed in various ways. If you'd like to be a part of that, see [our guide to contributing code](CONTRIBUTING.md).
+
+## License
+
+&copy; 2022 Ashley Chontos and contributors.
+
+`pySYD` is free software made available under the [MIT license](LICENSE.md).
+
