@@ -1,7 +1,7 @@
 .. _cli:
 
 ############################
-Optional Features
+Command Line Interface
 ############################
 
 
