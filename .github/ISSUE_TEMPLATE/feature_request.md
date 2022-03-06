@@ -7,16 +7,9 @@ assignees: ''
 
 ---
 
-## Request Checklist
+-----
 
-Is this a major request? | <br/><ul><li>- [ ] Yes </li><li>- [ ] No</li></ul>
-:---- | :----
-Do you have a proposed <br/> solution? | <br/><ul><li>- [ ] Yes </li><li>- [ ] No</li></ul>
-If so, will you be submitting <br/> a pull request? | <br/><ul><li>- [ ] Yes </li><li>- [ ] No</li><li>- [ ] N/A</li></ul>
-What type of request is it? | <br/><ul><li>- [ ] New feature </li><li>- [ ] Modification </li><li>- [ ] Suggested update</li><li>- [ ] Other? (fill answer here)</li></ul>
-Why is it needed? | <br/><ul><li>- [ ] General improvement</li><li>- [ ] Solves a problem </li><li>- [ ] Relevant to an open issue </li><li>- [ ] Increased efficiency and/or speed</li><li>- [ ] Other? (fill answer here)</li></ul>
-
-## Information & Supporting Files
+## Relevant Materials
 
 ### Description
 
@@ -25,4 +18,17 @@ Provide a clear and concise explanation for what you would like changed, includi
 ### Other
 
 Please add other context or any relevant files to support the request.
+
+-----
+
+## Summary Checklist
+
+Is this a major request? | <br/><ul><li>- [ ] Yes </li><li>- [ ] No</li></ul>
+:---- | :----
+Do you have a proposed <br/> solution? | <br/><ul><li>- [ ] Yes </li><li>- [ ] No</li></ul>
+If so, will you be submitting <br/> a pull request? | <br/><ul><li>- [ ] Yes </li><li>- [ ] No</li><li>- [ ] N/A</li></ul>
+What type of request is it? | <br/><ul><li>- [ ] New feature </li><li>- [ ] Modification </li><li>- [ ] Suggested update</li><li>- [ ] Other? (fill answer here)</li></ul>
+Why is it needed? | <br/><ul><li>- [ ] General improvement</li><li>- [ ] Solves a problem </li><li>- [ ] Relevant to an open issue </li><li>- [ ] Increased efficiency and/or speed</li><li>- [ ] Other? (fill answer here)</li></ul>
+
+-----
 
