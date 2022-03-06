@@ -6,7 +6,7 @@ User Guide
 .. toctree::
    :maxdepth: 1
 
-   CLI
+   cli
    pipeline
    target
    models
