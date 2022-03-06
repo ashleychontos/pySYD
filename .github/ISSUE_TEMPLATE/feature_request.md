@@ -16,7 +16,7 @@ If so, will you be submitting <br/> a pull request? | <br/><ul><li>- [ ] Yes </l
 What type of request is it? | <br/><ul><li>- [ ] New feature </li><li>- [ ] Modification </li><li>- [ ] Suggested update</li><li>- [ ] Other? (fill answer here)</li></ul>
 Why is it needed? | <br/><ul><li>- [ ] General improvement</li><li>- [ ] Solves a problem </li><li>- [ ] Relevant to an open issue </li><li>- [ ] Increased efficiency and/or speed</li><li>- [ ] Other? (fill answer here)</li></ul>
 
-## Information & supporting files
+## Information & Supporting Files
 
 ### Description
 
