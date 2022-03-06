@@ -17,7 +17,7 @@ Provide a clear and concise explanation for what you would like changed, includi
 
 ### Other
 
-Please add other context or any relevant files to support the request.
+Please add other context or any relevant files that will assist in the request.
 
 -----
 
