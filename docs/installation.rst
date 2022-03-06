@@ -1,7 +1,7 @@
 .. _installation:
 
 ###################
-Installing `pySYD`
+Installation
 ###################
 
 Jump down to :ref:`<quickstart>` for a summary!
