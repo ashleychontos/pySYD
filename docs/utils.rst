@@ -9,4 +9,4 @@ binning data, etc.).
 .. module:: pysyd
 
 .. automodule:: pysyd.utils
-   :members:
+   :no-inheritance-diagram:
