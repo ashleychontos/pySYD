@@ -48,7 +48,6 @@ Please also cite blank as a software citation.
 
 ## Contribution
 
-See [this file](AUTHORS.md) a full list of contributors. 
-
+Our [list](AUTHORS.md) of contributors continues to grow! <br/> 
 If you'd like to be a part of that, see [our guide for contributing](CONTRIBUTING.md).
 
