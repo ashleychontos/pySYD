@@ -4,10 +4,9 @@
  
 -----
 
-We would love for you to contribute to `pySYD` and make it even better than it is today! <br/>
-For most (if not all) questions/concerns, peeping our [discussions](https://github.com/ashleychontos/pySYD/discussions) forum is an excellent place to start in order to look for solutions. If something is confusing, there is a good chance that someone else also found it confusing and hence already asked. 
+For most (if not all) questions/concerns, peeping our [discussions](https://github.com/ashleychontos/pySYD/discussions) forum is an excellent place to start in case things have already been brought up or addressed.
 
-As a contributor, here are the guidelines we ask you to follow:
+As a user and/or contributor, here are the guidelines we ask you to follow:
 
 - [Question or problem?](#question)
 - [Issues & bugs](#issue)
@@ -32,12 +31,11 @@ If this still does not work for you and you would like to chat with someone in r
 
 **If the code crashes or you find a bug, please search the issue tracker first to make sure the problem (i.e. issue) does not already exist.** If and only if you do this but still don't find anything, feel free to [submit an issue](#submit-issue). And, if you're *really* brave, you can submit an issue along with a [pull request](#submit-pr) fix.
 
-Ideally we would love to fix all issues Keep in mind that we would like to fix all issues as soon as possible, but before fixing a bug we need to reproduce and confirm it. In order to reproduce bugs we will systematically ask you to provide a minimal reproduction scenario by providing a project which breaks Angular DevTools. Also make sure that you list:
+Ideally we would love to resolve all issues immediately but before fixing a bug, we first to need reproduce and confirm it. There is a template of the required information when you submit an issue, but generally we ask that:
 
-- version of Angular DevTools used
-- version of Angular used
-- 3rd-party libraries and their versions
-- and most importantly - a use-case that fails
+- clearly and concisely explain the issue or bug
+- provide the light curve and power spectrum data so that we can reproduce it from our end
+- what operating system you ran the software on and what version of the software you're using
 
 You can file new issues by filling out our [new issue form](https://github.com/rangle/angular-devtools/issues/new).
 
@@ -58,6 +56,8 @@ Please consider what kind of change it is:
 -----
 
 ### <a name="feature"></a> &rightarrow; Do you want to contribute code?
+
+We would love for you to contribute to `pySYD` and make it even better than it is today! 
 
 -----
 
