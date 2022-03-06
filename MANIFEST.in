@@ -1,1 +1,2 @@
-try
+include requirements.txt
+include examples/*
