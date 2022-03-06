@@ -25,7 +25,7 @@ Any other relevant context i.e. reference/link if directly addressing an existin
 
 ------
 
-### Summary Checklist:
+## Summary Checklist:
 
 - Is this a major request? <ul><li>- [ ] Yes <br/> &rightarrow; Have you already submitted an issue outlining the request?<ul><li>- [ ] Yes</li><li>- [ ] No</li></ul></li><li>- [ ] No</li><li>- [ ] IDK</li></ul>
 - What type of request is this? <ul><li>- [ ] New feature</li><li>- [ ] Modification</li><li>- [ ] Suggested update</li><li>- [ ] Other*</li></ul>
