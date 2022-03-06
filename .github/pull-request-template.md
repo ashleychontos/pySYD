@@ -5,7 +5,7 @@
   - is this a modification to existing software 
   - does it include any new features or functions
 - why or what prompted the change
-- if changes are substantial or include any new functions, are they properly commented throughout the code and documentation? please see (here)[CONTRIBUTE.md] for more details.
+- if changes are substantial or include any new functions, are they properly commented throughout the code and documentation? please see [here](CONTRIBUTING.md) for more details.
 - reference or link if the pull request directly addresses an existing issue
 
 #### Checklist
