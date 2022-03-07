@@ -9,7 +9,9 @@
 Installation
 ###################
 
-For scientific users:
+
+For scientific purposes:
+**************************
 
 Install ``pysyd`` using pip:
 
@@ -45,10 +47,12 @@ You may test your installation by using ``pysyd --help`` to see the available co
         setup               Easy setup of relevant directories and files
         test                Test different utilities (currently under development)
 
-For developers:
+
+For development purposes:
+**************************
 
 Setup
-************
+#######
 
 The easiest way to start using the ``pySYD`` package is by running our ``setup`` feature
 from a convenient directory:
@@ -65,15 +69,7 @@ from the `source code <https://github.com/ashleychontos/pySYD>`_ are included (s
 
 The optional verbose command can be called with the setup feature:
 
-.. code-block::
-
-    pysyd setup --verbose
-
-
-which will print the absolute paths of all directories that are created during setup.
-
-
-.. dropdown:: pysyd ``setup`` verbose output
+.. dropdown:: pysyd setup --verbose
     
     Downloading relevant data from source directory:
 
@@ -109,11 +105,12 @@ which will print the absolute paths of all directories that are created during s
      - example data saved
      - results will be saved to /Users/ashleychontos/Desktop/pysyd/results 
 
+which will print the absolute paths of all directories that are created during setup.
 
 .. _installation/example:
 
 Example 
-*************
+#########
 
 The ``setup`` feature downloads data for three example stars (to data/) provided: 1435467 (the least evolved), 
 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
