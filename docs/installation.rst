@@ -1,13 +1,13 @@
 .. _installation/top:
 
-###################
-Installation
-###################
-
 .. link-button:: installation/quickstart
     :type: ref
     :text: Jump down to quickstart to get started right away!
     :classes: btn-outline-primary btn-block
+
+###################
+Installation
+###################
 
 For scientific users:
 
