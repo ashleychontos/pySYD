@@ -41,17 +41,20 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
 
 .. toctree::
    :maxdepth: 1
+   :titlesonly:
    :hidden: 
    :caption: Getting Started
 
    installation
-   overview
    examples
+   glossary
+   overview
    performance
    
    
 .. toctree::
    :maxdepth: 1
+   :titlesonly:
    :hidden:
    :caption: Advanced Usage
    
@@ -60,5 +63,6 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
    faq
    advanced
    api
+   user_guide
    contributing
    
