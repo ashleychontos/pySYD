@@ -13,8 +13,8 @@
 #
 
 #import os
-#import sys
-#sys.path.append(os.path.abspath('sphinx_panels'))
+import sys
+sys.path.append('/usr/local/lib/python3.7/site-packages/sphinx_panels')
 #print(sys.path.append(os.path.abspath('sphinx_panels')))
 
 import pysyd
@@ -42,6 +42,7 @@ release = pysyd.__version__
 # ones.
 
 extensions = [
+    'sphinx_panels',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
@@ -49,7 +50,6 @@ extensions = [
     'sphinx.ext.graphviz',
     'sphinx.ext.ifconfig',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.panels',
     'sphinx.ext.todo',
  ]
 
