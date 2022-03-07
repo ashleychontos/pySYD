@@ -27,7 +27,27 @@ top-level ``pysyd`` directory and try running the following command:
 
     python setup.py install
 
-You may test your installation by using ``pysyd --help`` to see the available commands or modes:
+From Source
+###############
+
+The latest development version can be cloned from GitHub using git:
+
+.. code-block::
+
+    git clone git://github.com/ashleychontos/pySYD.git
+
+Then to build and install the project use:
+
+.. code-block::
+
+    python -m pip install .
+
+from inside the cloned ``pySYD`` directory.
+
+Testing
+#########
+
+You can test your installation by using the help command: 
     
 .. dropdown:: pysyd --help
     
@@ -47,23 +67,6 @@ You may test your installation by using ``pysyd --help`` to see the available co
         setup               Easy setup of relevant directories and files
         test                Test different utilities (currently under development)
 
-
-From Source
-###############
-
-The latest development version can be cloned from GitHub using git:
-
-.. code-block::
-
-    git clone git://github.com/ashleychontos/pySYD.git
-
-Then to build and install the project use:
-
-.. code-block::
-
-    python -m pip install .
-
-from inside the cloned ``pySYD`` directory.
 
 Setup
 ******
@@ -120,6 +123,13 @@ The optional verbose command can be called with the setup feature:
      - results will be saved to /Users/ashleychontos/Desktop/pysyd/results 
 
 which will print the absolute paths of all directories that are created during setup.
+
+.. _installation/dependencies:
+
+Python Dependencies
+*********************
+
+List of dependencies.
 
 .. _installation/example:
 
@@ -207,12 +217,7 @@ To estimate uncertainties in the derived parameters, set ``--mc`` to a number su
 example, ``--mc`` was not specified and is 1 by default (for 1 iteration). Below shows the same example with the
 sampling enabled, including the verbose output you should see if your software was installed successfully.
 
-
-.. code-block::
-
-    pysyd run -star 1435467 -dv --mc 200
-
-.. dropdown:: verbose output using ``--mc``
+.. dropdown:: pysyd run -star 1435467 -dv --mc 200
     
     ------------------------------------------------------
     Target: 1435467
