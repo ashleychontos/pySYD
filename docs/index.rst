@@ -60,11 +60,5 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
    faq
    advanced
    api
+   contributing
    
-
-Indices and tables for the source code
-****************************************
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
