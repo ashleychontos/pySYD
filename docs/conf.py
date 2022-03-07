@@ -15,14 +15,15 @@
 import os
 import sys
 import mock
-sys.path.insert(0, os.path.abspath('.'))
+import sphinx_panels
+import sphinx_rt_theme
+#sys.path.insert(0, os.path.abspath('.'))
 
-autodoc_mock_imports = ['scipy', 'pandas', 'numpy', 'sphinx_panels']
-for mod_name in autodoc_mock_imports:
-    sys.modules[mod_name] = mock.Mock()
+#autodoc_mock_imports = ['sphinx_panels']
+#for mod_name in autodoc_mock_imports:
+#    sys.modules[mod_name] = mock.Mock()
 
 import pysyd
-import sphinx_rtd_theme
 
 nbsphinx_allow_errors = True
 
