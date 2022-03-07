@@ -55,8 +55,8 @@ extensions = [
     'sphinx.ext.graphviz',
     'sphinx.ext.ifconfig',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.panels',
     'sphinx.ext.todo',
+    'sphinx_panels',
  ]
 
 # The suffix(es) of source filesnames.
