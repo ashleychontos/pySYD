@@ -11,7 +11,7 @@ Installation
 
 
 With pip [recommended]
-**************************
+########################
 
 Install the latest stable version using pip:
 
@@ -49,7 +49,7 @@ You may test your installation by using ``pysyd --help`` to see the available co
 
 
 From Source
-**************
+###############
 
 The latest development version can be cloned from GitHub using git:
 
@@ -66,7 +66,7 @@ Then to build and install the project use:
 from inside the cloned ``pySYD`` directory.
 
 Setup
-#######
+******
 
 The easiest way to start using the ``pySYD`` package is by running our ``setup`` feature
 from a convenient directory:
@@ -124,7 +124,7 @@ which will print the absolute paths of all directories that are created during s
 .. _installation/example:
 
 Example 
-#########
+*********
 
 The ``setup`` feature downloads data for three example stars (to data/) provided: 1435467 (the least evolved), 
 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
@@ -280,7 +280,7 @@ as well as descriptions about what the plots are showing.
 .. _installation/quickstart:
 
 Quickstart
-############
+************
 
 To get started right away, use the following commands:
 
