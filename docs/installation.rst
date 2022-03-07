@@ -6,10 +6,10 @@ Installation
 
 .. link-button:: installation/quickstart
     :type: ref
-    :text: some other text
+    :text: To get started right away!
     :classes: btn-outline-primary btn-block
 
-Jump down to :ref:`<quickstart>` for a summary!
+For scientific users:
 
 Install ``pysyd`` using pip:
 
@@ -50,7 +50,7 @@ You may test your installation by using ``pysyd --help`` to see the available co
         setup               Easy setup of relevant directories and files
         test                Test different utilities (currently under development)
 
-
+For developers:
 
 Setup
 ************
