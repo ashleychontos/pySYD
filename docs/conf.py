@@ -12,10 +12,10 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 
-import os
-import sys
-sys.path.append(os.path.abspath('sphinx_panels'))
-print(sys.path.append(os.path.abspath('sphinx_panels')))
+#import os
+#import sys
+#sys.path.append(os.path.abspath('sphinx_panels'))
+#print(sys.path.append(os.path.abspath('sphinx_panels')))
 
 import pysyd
 
@@ -42,7 +42,6 @@ release = pysyd.__version__
 # ones.
 
 extensions = [
-    'sphinx_panels',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
@@ -50,6 +49,7 @@ extensions = [
     'sphinx.ext.graphviz',
     'sphinx.ext.ifconfig',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.panels',
     'sphinx.ext.todo',
  ]
 
