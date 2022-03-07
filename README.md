@@ -24,7 +24,7 @@ The documentation for `pySYD` can be found on [Read the Docs](https://pysyd.read
 
 If you make use of `pySYD` in your work, please cite our [JOSS paper](https://arxiv.org/abs/2108.00582):
 
-    {@ARTICLE{2021arXiv210800582C,
+    @ARTICLE{2021arXiv210800582C,
            author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
             title = "{$\texttt{pySYD}$: Automated measurements of global asteroseismic parameters}",
           journal = {arXiv e-prints},
