@@ -60,16 +60,15 @@ release = pysyd.__version__
 #]
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.coverage',
-    'sphinx.ext.graphviz',
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.panels',
-    'sphinx.ext.ifconfig',
+    'sphinx_autodoc',
+    'sphinx_autosummary',
+    'sphinx_coverage',
+    'sphinx_doctest',
+    'sphinx_graphviz',
+    'sphinx_ifconfig',
+    'sphinx_intersphinx',
+    'sphinx_panels',
+    'sphinx_todo',
  ]
 
 #extensions.append('sphinx.ext.pngmath')
