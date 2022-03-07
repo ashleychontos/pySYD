@@ -6,7 +6,7 @@ Installation
 
 .. link-button:: installation/quickstart
     :type: ref
-    :text: To get started right away!
+    :text: Jump down to quickstart to get started right away!
     :classes: btn-outline-primary btn-block
 
 For scientific users:
@@ -31,8 +31,7 @@ You may test your installation by using ``pysyd --help`` to see the available co
 		
     pysyd --help
     
-.. dropdown::
-    :open:
+.. dropdown:: pysyd --help output
     
     usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
 
@@ -78,7 +77,7 @@ The optional verbose command can be called with the setup feature:
 which will print the absolute paths of all directories that are created during setup.
 
 
-.. dropdown:: see setup output
+.. dropdown:: pysyd ``setup`` verbose output
     
     Downloading relevant data from source directory:
 
