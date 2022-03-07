@@ -1,43 +1,49 @@
 .. |br| raw:: html
 
    <br />
+   
+.. module:: pysyd
 
+**************************************************************************
 pySYD: |br| Automated Measurements |br| of Global Asteroseismic Parameters
-==========================================================================
+**************************************************************************
 
-``pySYD`` is an open-source python package to detect solar-like oscillations and measure global asteroseismic parameters. ``pySYD`` provides best-fit values and uncertainties for the following parameters:
+Asteroseismology, or the study of stellar oscillations, is a powerful tool
+for studying the internal structure of stars and determining their fundamental 
+properties. Specifically for stars similar to the Sun, turbulent near-surface 
+convection excites sound waves that propagate within the stellar cavity, hence
+providing powerful constraints on stellar interiors that are inaccessible by 
+any other means. While it is well-established and widely-accepted as the gold 
+standard for characterizing fundamental stellar properties (e.g., masses, radii,
+ages, etc.), asteroseismology is still mostly a niche field and closed-door science. 
 
-- Granulation background, including characteristic time scales and amplitudes
-- Frequency of maximum power
-- Large frequency separation
-- Mean oscillation amplitudes
+In an effort to make asteroseismology more accessible to the broader astronomy
+community, ``pySYD`` was established as a Python package to automatically detect
+solar-like oscillations and measure their global asteroseismic parameters. Therefore, 
+these ``pySYD`` outputs can be used to determine precise and accurate stellar 
+properties without the need for substantial background knowledge. In other words, 
+``pySYD`` has been extensively tested and developed to be as hands-off as possible.
 
-For a basic introduction to these parameters and asteroseismic data analysis of 
-solar-like oscillators see  `Bedding et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014aste.book...60B/abstract>`_.
-
-Please cite our recent JOSS paper `Chontos+2021 <https://arxiv.org/abs/2108.00582>`_ if you 
-make use of ``pySYD`` in your work. The recommended BibTeX entry for this citation is::
-
-    {@ARTICLE{2021arXiv210800582C,
-           author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
-            title = "{$\texttt{pySYD}$: Automated measurements of global asteroseismic parameters}",
-          journal = {arXiv e-prints},
-         keywords = {Astrophysics - Solar and Stellar Astrophysics, Astrophysics - Instrumentation and Methods for Astrophysics},
-             year = 2021,
-            month = aug,
-              eid = {arXiv:2108.00582},
-            pages = {arXiv:2108.00582},
-    archivePrefix = {arXiv},
-           eprint = {2108.00582},
-     primaryClass = {astro-ph.SR}, 
-           adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},
-          adsnote = {Provided by the SAO/NASA Astrophysics Data System}
-    }
+This package is being actively developed in 
+`a public repository on GitHub<https://github.com/ashleychontos/pySYD>`_ -- we especially 
+welcome and *encourage* any new contributions to help make ``pySYD`` better! Please see 
+our `community guidelines<https://github.com/ashleychontos/pySYD/CONTRIBUTING.md>`_ 
+to find out how you can help.
 
 
-Code contributions are welcome and should be submitted as a pull request.
+Contributors
+============
 
-Bug reports and feature requests should be posted to the `GitHub issue tracker <https://github.com/ashleychontos/pySYD/issues>`_.
+Our list of contributors continues to grow! 
+
+.. include:: ../AUTHORS.md
+
+Citations
+=========
+
+Check out what ``pySYD`` has been used for already! 
+
+Please see this page for information on how to properly cite the relevant sources and software.
 
 .. toctree::
    :maxdepth: 1
@@ -49,6 +55,8 @@ Bug reports and feature requests should be posted to the `GitHub issue tracker <
    examples
    glossary
    overview
+   attribution
+   contibution
    performance
    
    
