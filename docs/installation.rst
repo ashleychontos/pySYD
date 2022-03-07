@@ -25,6 +25,10 @@ You may test your installation by using ``pysyd --help`` to see the available co
 .. code-block::
 		
     $ pysyd --help
+    
+.. dropdown::
+    :open:
+    
     usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
 
     pySYD: Automated Extraction of Global Asteroseismic Parameters
