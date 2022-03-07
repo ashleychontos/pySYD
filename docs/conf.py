@@ -23,7 +23,6 @@ sys.path.insert(0, os.path.abspath('.'))
 
 import pysyd
 import sphinx_rtd_theme
-import sphinx_panels
 
 nbsphinx_allow_errors = True
 
@@ -49,6 +48,7 @@ release = pysyd.__version__
 # ones.
 
 extensions = [
+    'sphinx_panels',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
@@ -56,9 +56,7 @@ extensions = [
     'sphinx.ext.graphviz',
     'sphinx.ext.ifconfig',
     'sphinx.ext.intersphinx',
-#    'sphinx.ext.panels',
     'sphinx.ext.todo',
-#    'sphinx_panels',
  ]
 
 # The suffix(es) of source filesnames.
