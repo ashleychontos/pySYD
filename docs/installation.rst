@@ -70,9 +70,6 @@ which will print the absolute paths of all directories that are created during s
 
 
 .. dropdown:: pysyd setup output
-    :container: 
-    :title: bg-primary text-white text-center font-weight-bold
-    :body: 
     
     Downloading relevant data from source directory:
 
