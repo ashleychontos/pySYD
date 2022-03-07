@@ -14,7 +14,7 @@
 
 import os
 import sys
-sys.path.append(os.path.abspath('sphinx_panels'))
+sys.path.insert(0,os.path.abspath('sphinx_panels'))
 
 import pysyd
 
@@ -36,7 +36,6 @@ release = pysyd.__version__
 
 # -- General configuration ---------------------------------------------------
 
-
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
@@ -50,7 +49,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
-    'sphinx_panels',
+#    'sphinx_panels',
  ]
 
 # The suffix(es) of source filesnames.
