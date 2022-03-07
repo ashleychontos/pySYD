@@ -28,7 +28,7 @@ This package is being actively developed in
 `a public repository on GitHub<https://github.com/ashleychontos/pySYD>`_ -- we especially 
 welcome and *encourage* any new contributions to help make ``pySYD`` better! Please see 
 our `community guidelines<https://github.com/ashleychontos/pySYD/CONTRIBUTING.md>`_ 
-to find out how you can help.
+to find out how you can help. No contribution is too small!
 
 
 Contributors
@@ -37,6 +37,7 @@ Contributors
 Our list of contributors continues to grow! 
 
 .. include:: ../AUTHORS.md
+
 
 Citations
 =========
