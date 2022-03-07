@@ -16,7 +16,7 @@ import os
 import sys
 import mock
 import sphinx_panels
-import sphinx_rt_theme
+import sphinx_rtd_theme
 #sys.path.insert(0, os.path.abspath('.'))
 
 #autodoc_mock_imports = ['sphinx_panels']
