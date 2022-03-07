@@ -5,5 +5,6 @@ pandas>=1.0.5
 scipy
 tqdm
 nbsphinx
+sphinx_panels
 sphinx_rtd_theme
 asteroid_sphinx_theme
