@@ -14,14 +14,7 @@
 
 import os
 import sys
-import mock
-import sphinx_panels
-import sphinx_rtd_theme
-#sys.path.insert(0, os.path.abspath('.'))
-
-#autodoc_mock_imports = ['sphinx_panels']
-#for mod_name in autodoc_mock_imports:
-#    sys.modules[mod_name] = mock.Mock()
+sys.path.append(os.path.abspath('sphinx_panels'))
 
 import pysyd
 
@@ -57,6 +50,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
+    'sphinx_panels',
  ]
 
 # The suffix(es) of source filesnames.
