@@ -69,9 +69,10 @@ The optional verbose command can be called with the setup feature:
 which will print the absolute paths of all directories that are created during setup (see below).
 
 
-.. code-block::
-
-
+.. dropdown:: pysyd setup output
+    :container: 
+    :title: bg-primary text-white text-center font-weight-bold
+    :body: 
     
     Downloading relevant data from source directory:
 
