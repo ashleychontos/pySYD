@@ -14,7 +14,8 @@
 
 import os
 import sys
-sys.path.insert(0,os.path.abspath('sphinx_panels'))
+sys.path.append(os.path.abspath('sphinx_panels'))
+print(sys.path.append(os.path.abspath('sphinx_panels')))
 
 import pysyd
 
@@ -41,6 +42,7 @@ release = pysyd.__version__
 # ones.
 
 extensions = [
+    'sphinx_panels',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
@@ -49,7 +51,6 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
-#    'sphinx_panels',
  ]
 
 # The suffix(es) of source filesnames.
