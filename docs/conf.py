@@ -23,6 +23,7 @@ sys.path.insert(0, os.path.abspath('.'))
 
 import pysyd
 import sphinx_rtd_theme
+import sphinx_panels
 
 nbsphinx_allow_errors = True
 
@@ -55,7 +56,7 @@ extensions = [
     'sphinx.ext.graphviz',
     'sphinx.ext.ifconfig',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.panels',
+#    'sphinx.ext.panels',
     'sphinx.ext.todo',
 #    'sphinx_panels',
  ]
