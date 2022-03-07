@@ -266,9 +266,9 @@ as well as descriptions about what the plots are showing.
 .. _installation/quickstart:
 
 Quickstart
-************
+############
 
-To get up and running:
+To get started right away, use the following commands:
 
 .. code-block::
 
@@ -276,7 +276,6 @@ To get up and running:
     cd ~/path_to_put_pysyd_stuff
     pip install pysyd
     pysyd setup
-    pysyd run --star 1435467 -dv --mc 200
-  
+    pysyd run --star 1435467 -dv
 
-    
+
