@@ -26,12 +26,8 @@ top-level ``pysyd`` directory and try running the following command:
     python setup.py install
 
 You may test your installation by using ``pysyd --help`` to see the available commands or modes:
-
-.. code-block::
-		
-    pysyd --help
     
-.. dropdown:: pysyd --help output
+.. dropdown:: pysyd --help
     
     usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
 
@@ -122,19 +118,7 @@ Example
 The ``setup`` feature downloads data for three example stars (to data/) provided: 1435467 (the least evolved), 
 2309595 (~SG), and 11618103 (RGB). To run a single star, execute the main script with the following command:
 
-
-.. code-block::
-
-    pysyd run --star 1435467 -dv
-    
-.. note::  
-
-    Here ``-dv`` means options ``-d`` and ``-v``, which stand for display (figures) and verbose output, 
-    respectively. Since ``pySYD`` is optimized for running multiple stars, both of these are ``False`` 
-    by default. We recommend using them for the example, since they are 
-    helpful to see how the pipeline processes targets.
-
-.. dropdown:: verbose output for example star
+.. dropdown:: pysyd run --star 1435467 -dv
     
     ------------------------------------------------------
     Target: 1435467
@@ -181,6 +165,13 @@ The ``setup`` feature downloads data for three example stars (to data/) provided
      - press RETURN to exit
      - combining results into single csv file
     ------------------------------------------------------
+
+.. note::  
+
+    Here ``-dv`` means options ``-d`` and ``-v``, which stand for display (figures) and verbose output, 
+    respectively. Since ``pySYD`` is optimized for running multiple stars, both of these are ``False`` 
+    by default. We recommend using them for the example, since they are 
+    helpful to see how the pipeline processes targets.
 
 
 The above command should have yielded the following output figures:
