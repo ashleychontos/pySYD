@@ -15,7 +15,7 @@ Install ``pysyd`` using pip:
 
 .. code-block::
 
-    $ pip install pysyd
+    pip install pysyd
 
 The ``pysyd`` binary should have been automatically placed in your system's path by the
 ``pip`` command. If your system can not find the ``pysyd`` executable, ``cd`` into the 
@@ -23,13 +23,13 @@ top-level ``pysyd`` directory and try running the following command:
 
 .. code-block::
 
-    $ python setup.py install
+    python setup.py install
 
 You may test your installation by using ``pysyd --help`` to see the available commands or modes:
 
 .. code-block::
 		
-    $ pysyd --help
+    pysyd --help
     
 .. dropdown::
     :open:
@@ -60,7 +60,7 @@ from a convenient directory:
 
 .. code-block::
 
-    $ pysyd setup
+    pysyd setup
 
 This command will create `data`, `info`, and `results` directories in the current working 
 directory, if they don't already exist. Setup will also download two information files: 
@@ -72,7 +72,7 @@ The optional verbose command can be called with the setup feature:
 
 .. code-block::
 
-    $ pysyd setup --verbose
+    pysyd setup --verbose
 
 
 which will print the absolute paths of all directories that are created during setup.
@@ -126,7 +126,7 @@ The ``setup`` feature downloads data for three example stars (to data/) provided
 
 .. code-block::
 
-    $ pysyd run --star 1435467 -dv
+    pysyd run --star 1435467 -dv
     
 .. note::  
 
@@ -209,7 +209,7 @@ sampling enabled, including the verbose output you should see if your software w
 
 .. code-block::
 
-    $ pysyd run -star 1435467 -dv --mc 200
+    pysyd run -star 1435467 -dv --mc 200
 
 .. dropdown:: verbose output using ``--mc``
     
@@ -272,7 +272,7 @@ displaying the posteriors for the fitted parameters:
   :alt: Posteriors for KIC 1435467
 
 
-Please visit :ref:`this page<examples>` for additional examples, including how to interpret the results
+Please visit BLANK for additional examples, including how to interpret the results
 as well as descriptions about what the plots are showing.
 
 
@@ -285,11 +285,11 @@ To get up and running:
 
 .. code-block::
 
-    $ mkdir ~/path_to_put_pysyd_stuff
-    $ cd ~/path_to_put_pysyd_stuff
-    $ pip install pysyd
-    $ pysyd setup
-    $ pysyd run --star 1435467 -dv --mc 200
+    mkdir ~/path_to_put_pysyd_stuff
+    cd ~/path_to_put_pysyd_stuff
+    pip install pysyd
+    pysyd setup
+    pysyd run --star 1435467 -dv --mc 200
   
 
     
