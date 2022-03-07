@@ -1,8 +1,13 @@
-.. _installation:
+.. _installation/top:
 
 ###################
 Installation
 ###################
+
+.. link-button:: installation/quickstart
+    :type: ref
+    :text: some other text
+    :classes: btn-outline-primary btn-block
 
 Jump down to :ref:`<quickstart>` for a summary!
 
@@ -70,10 +75,10 @@ The optional verbose command can be called with the setup feature:
     $ pysyd setup --verbose
 
 
-which will print the absolute paths of all directories that are created during setup (see below).
+which will print the absolute paths of all directories that are created during setup.
 
 
-.. dropdown:: pysyd setup output
+.. dropdown:: see setup output
     
     Downloading relevant data from source directory:
 
@@ -108,10 +113,9 @@ which will print the absolute paths of all directories that are created during s
      - created data directory at /Users/ashleychontos/Desktop/pysyd/data 
      - example data saved
      - results will be saved to /Users/ashleychontos/Desktop/pysyd/results 
-    
-    
 
 
+.. _installation/example:
 
 Example 
 *************
@@ -124,6 +128,14 @@ The ``setup`` feature downloads data for three example stars (to data/) provided
 
     $ pysyd run --star 1435467 -dv
     
+.. note::  
+
+    Here ``-dv`` means options ``-d`` and ``-v``, which stand for display (figures) and verbose output, 
+    respectively. Since ``pySYD`` is optimized for running multiple stars, both of these are ``False`` 
+    by default. We recommend using them for the example, since they are 
+    helpful to see how the pipeline processes targets.
+
+.. dropdown:: verbose output for example star
     
     ------------------------------------------------------
     Target: 1435467
@@ -170,13 +182,6 @@ The ``setup`` feature downloads data for three example stars (to data/) provided
      - press RETURN to exit
      - combining results into single csv file
     ------------------------------------------------------
-    
-    
-
-Here ``-dv`` means options ``-d`` and ``-v``, which stand for display (figures) and verbose output, 
-respectively. Since ``pySYD`` is optimized for running multiple stars, both of these are ``False`` 
-by default. We recommend using them for the example, since they are 
-helpful to see how the pipeline processes targets. 
 
 
 The above command should have yielded the following output figures:
@@ -205,7 +210,8 @@ sampling enabled, including the verbose output you should see if your software w
 .. code-block::
 
     $ pysyd run -star 1435467 -dv --mc 200
-        
+
+.. dropdown:: verbose output using ``--mc``
     
     ------------------------------------------------------
     Target: 1435467
@@ -270,7 +276,7 @@ Please visit :ref:`this page<examples>` for additional examples, including how t
 as well as descriptions about what the plots are showing.
 
 
-.. _quickstart:
+.. _installation/quickstart:
 
 Quickstart
 ************
