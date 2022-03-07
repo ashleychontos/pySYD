@@ -22,7 +22,7 @@ The documentation for `pySYD` can be found on [Read the Docs](https://pysyd.read
 
 ## Attribution
 
-If you make use of `pySYD` in your work, please cite our [JOSS paper](https://arxiv.org/abs/2108.00582). The recommended BibTeX entry for this citation is:
+If you make use of `pySYD` in your work, please cite our [JOSS paper](https://arxiv.org/abs/2108.00582):
 
     {@ARTICLE{2021arXiv210800582C,
            author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
@@ -40,7 +40,21 @@ If you make use of `pySYD` in your work, please cite our [JOSS paper](https://ar
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
     
-Please also cite blank as a software citation.
+Please also cite our [ASCL listing](https://ui.adsabs.harvard.edu/abs/2021ascl.soft11017C/abstract) as a software citation:
+
+    @MISC{2021ascl.soft11017C,
+           author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
+            title = "{pySYD: Measuring global asteroseismic parameters}",
+         keywords = {Software},
+             year = 2021,
+            month = nov,
+              eid = {ascl:2111.017},
+            pages = {ascl:2111.017},
+    archivePrefix = {ascl},
+           eprint = {2111.017},
+           adsurl = {https://ui.adsabs.harvard.edu/abs/2021ascl.soft11017C},
+          adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+    }
 
 ## License
 
