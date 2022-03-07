@@ -49,29 +49,17 @@ release = pysyd.__version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 
-#extensions = [
-#    'sphinx.ext.autodoc',
-#    'sphinx_rtd_theme',
-#    'sphinx.ext.doctest',
-#    'sphinx.ext.mathjax',
-#    'sphinx.ext.napoleon',
-#    'sphinx.ext.viewcode',
-#    'nbsphinx'
-#]
-
 extensions = [
-    'sphinx_autodoc',
-    'sphinx_autosummary',
-    'sphinx_coverage',
-    'sphinx_doctest',
-    'sphinx_graphviz',
-    'sphinx_ifconfig',
-    'sphinx_intersphinx',
-    'sphinx_panels',
-    'sphinx_todo',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.coverage',
+    'sphinx.ext.doctest',
+    'sphinx.ext.graphviz',
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.panels',
+    'sphinx.ext.todo',
  ]
-
-#extensions.append('sphinx.ext.pngmath')
 
 # The suffix(es) of source filesnames.
 # You can specify multiple suffix as a list of string:
