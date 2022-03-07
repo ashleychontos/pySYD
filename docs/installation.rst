@@ -10,16 +10,16 @@ Installation
 ###################
 
 
-For scientific purposes:
+With pip [recommended]
 **************************
 
-Install ``pysyd`` using pip:
+Install the latest stable version using pip:
 
 .. code-block::
 
     pip install pysyd
 
-The ``pysyd`` binary should have been automatically placed in your system's path by the
+This is the recommended way to install ``pysyd``. The ``pysyd`` binary should have been automatically placed in your system's path by the
 ``pip`` command. If your system can not find the ``pysyd`` executable, ``cd`` into the 
 top-level ``pysyd`` directory and try running the following command:
 
@@ -48,8 +48,22 @@ You may test your installation by using ``pysyd --help`` to see the available co
         test                Test different utilities (currently under development)
 
 
-For development purposes:
-**************************
+From Source
+**************
+
+The latest development version can be cloned from GitHub using git:
+
+.. code-block::
+
+    git clone git://github.com/ashleychontos/pySYD.git
+
+Then to build and install the project use:
+
+.. code-block::
+
+    python -m pip install .
+
+from inside the cloned ``pySYD`` directory.
 
 Setup
 #######
