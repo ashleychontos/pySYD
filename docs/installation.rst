@@ -1,17 +1,17 @@
-.. _installation/top:
+.. _installation-index:
 
-.. link-button:: installation/quickstart
+.. link-button:: installation-quickstart
     :type: ref
     :text: Jump down to quickstart to get started right away!
     :classes: btn-outline-primary btn-block
 
-###################
+************
 Installation
-###################
+************
 
 
 With pip [recommended]
-***********************
+++++++++++++++++++++++
 
 Install the latest stable version using pip:
 
@@ -19,16 +19,16 @@ Install the latest stable version using pip:
 
     pip install pysyd
 
-This is the recommended way to install ``pysyd``. The ``pysyd`` binary should have been automatically placed in your system's path by the
-``pip`` command. If your system can not find the ``pysyd`` executable, ``cd`` into the 
-top-level ``pysyd`` directory and try running the following command:
+This is the recommended way to install the package. The ``pysyd`` binary should have been automatically 
+placed in your system's path via the ``pip`` command. If your system can not find the ``pysyd`` executable, 
+change into the top-level ``pysyd`` directory and try running the following command:
 
 .. code-block::
 
     python setup.py install
 
 From Source
-************
++++++++++++
 
 The latest development version can be cloned from GitHub using git:
 
@@ -45,7 +45,7 @@ Then to build and install the project use:
 from inside the cloned ``pySYD`` directory.
 
 Testing
-********
++++++++
 
 You can test your installation by using the help command: 
     
@@ -67,6 +67,9 @@ You can test your installation by using the help command:
         setup               Easy setup of relevant directories and files
         test                Test different utilities (currently under development)
 
+-----
+
+.. _installation-setup:
 
 Setup
 ########
@@ -124,15 +127,18 @@ The optional verbose command can be called with the setup feature:
 
 which will print the absolute paths of all directories that are created during setup.
 
-.. _installation/dependencies:
+-----
+
+.. _installation-dependencies:
 
 Python Dependencies
 ####################
 
 This package has the following dependencies:
 
+-----
 
-.. _installation/quickstart:
+.. _installation-quickstart:
 
 Quickstart
 ############
@@ -147,4 +153,4 @@ To get started right away, use the following commands:
     pysyd setup
     pysyd run --star 1435467 -dv
 
-
+-----
