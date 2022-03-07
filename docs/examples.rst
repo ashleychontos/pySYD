@@ -1,10 +1,8 @@
-.. _examples:
-
-############
+********
 Examples
-############
+********
 
-If ``pysyd setup`` was successfully executed, there should now be light curves and power spectra 
+If you ran the ``pysyd setup`` was successfully executed, there should now be light curves and power spectra 
 for three KIC stars in the **data/** directory. If so, then you are ready to test out the software!
 
 High SNR Examples
@@ -14,15 +12,15 @@ We will start with some of the easiest examples, which have very high signal-to-
 the more difficult detections and/or situations. 
 
 Below are three examples of medium to high signal-to-noise (SNR) detections for stars of different evolutionary states. See the 
-:ref:`description` for more details about each panel in the output figures.
+:ref:`examples/description` for more details about each panel in the output figures.
 
 KIC 1435467
 *************
 
-KIC 1435467 is our least evolved example star, with numax ~1400 muHz. The following command::
+KIC 1435467 is our least evolved example star, with numax ~1400 muHz. The following command:
 
 
-    $ pysyd run --star 1435467 -dv
+    pysyd run --star 1435467 -dv
     
     
     ------------------------------------------------------
@@ -103,14 +101,14 @@ The derived parameters from the global fit are summarized below:
   :alt: Global fit of KIC 1435467
 
 
-**For a breakdown of what each panel in each figure means, please see :ref:<description> for more details.**
+**For a breakdown of what each panel in each figure means, please see :ref:<examples/description> for more details.**
   
   
 The derived parameters are saved to an output csv file but also printed at the end of the verbose output.
 To quantify uncertainties in these parameters, we need to turn on the Monte Carlo sampling option (``--mc``) with::
 
 
-    $ pysyd run -star 1435467 -dv --mc 200
+    pysyd run -star 1435467 -dv --mc 200
         
     
     ------------------------------------------------------
@@ -232,8 +230,10 @@ Sampling results:
   :width: 600
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
-
 ====================
+
+.. _examples/medium:
+
 
 Low SNR Examples
 =================
@@ -265,6 +265,8 @@ This would be classified as a detection despite the low SNR due to the following
 
 ====================
 
+.. _examples/hard:
+
 Non-detections
 ================
 
@@ -293,8 +295,7 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 
 ====================
-
-.. _description::
+.. _examples/description:
 
 
 Figure Descriptions
