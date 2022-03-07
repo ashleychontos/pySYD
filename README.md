@@ -6,9 +6,10 @@
 [![PyPI](https://img.shields.io/pypi/v/pysyd)](https://pypi.org/project/pysyd/)
 [![Documentation](https://readthedocs.org/projects/pysyd/badge/?version=latest)](https://pysyd.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://github.com/ashleychontos/pySYD/blob/master/LICENSE)
+[![arXiv](https://img.shields.io/badge/arXiv-2108.00582-b31b1b.svg)](https://arxiv.org/abs/2108.00582)
 [![JOSS](https://joss.theoj.org/papers/6465a9dd3141c207175f200c7f891f1e/status.svg)](https://joss.theoj.org/papers/6465a9dd3141c207175f200c7f891f1e)
+[![PyPI downloads](https://img.shields.io/pypi/dm/pysyd?color=purple)](https://pypistats.org/packages/pysyd)
 <a href="https://ascl.net/2111.017"><img src="https://img.shields.io/badge/ascl-2111.017-blue.svg?colorB=262255" alt="ascl:2111.017" /></a>
-[![PyPI downloads](https://img.shields.io/pypi/dm/pysyd.svg)](https://pypistats.org/packages/pysyd)
 
 <a href="https://github.com/ashleychontos/pySYD/graphs/contributors"><img src="https://contrib.rocks/image?repo=ashleychontos/pySYD" /></a>
 </div>
