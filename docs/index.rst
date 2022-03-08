@@ -25,9 +25,9 @@ properties without the need for substantial background knowledge. In other words
 ``pySYD`` has been extensively tested and developed to be as hands-off as possible.
 
 This package is being actively developed in 
-`a public repository on GitHub<https://github.com/ashleychontos/pySYD>`_ -- we especially 
+`a public repository on GitHub <https://github.com/ashleychontos/pySYD>`_ -- we especially 
 welcome and *encourage* any new contributions to help make ``pySYD`` better! Please see 
-our `community guidelines<https://github.com/ashleychontos/pySYD/CONTRIBUTING.md>`_ 
+our `community guidelines <https://github.com/ashleychontos/pySYD/CONTRIBUTING.md>`_ 
 to find out how you can help. No contribution is too small!
 
 
@@ -36,7 +36,7 @@ Contributors
 
 Our list of contributors continues to grow! 
 
-.. include:: ../AUTHORS.md
+.. include:: ../AUTHORS.rst
 
 
 Citations
@@ -67,8 +67,6 @@ Please see this page for information on how to properly cite the relevant source
    :hidden:
    :caption: Advanced Usage
    
-   
-   cli
    faq
    advanced
    api
