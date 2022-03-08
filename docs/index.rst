@@ -54,10 +54,8 @@ Please see this page for information on how to properly cite the relevant source
 
    introduction/installation
    introduction/examples
-   introduction/glossary
-   introduction/overview
    introduction/attribution
-   introduction/contibution
+   introduction/contribution
    introduction/performance
    
    
@@ -67,6 +65,8 @@ Please see this page for information on how to properly cite the relevant source
    :hidden:
    :caption: Advanced
    
+   advanced/glossary
+   advanced/overview
    advanced/faq
    advanced/advanced
    advanced/guide/index
