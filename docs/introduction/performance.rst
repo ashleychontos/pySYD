@@ -1,9 +1,8 @@
-.. _performance:
+.. _performance/index:
 
-
-==============
+***********
 Performance
-==============
+***********
 
 .. _comparison:
 
