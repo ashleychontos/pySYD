@@ -1,8 +1,23 @@
+.. _citing/main:
+
 ******
 Citing
 ******
 
-.. _citing/main:
+.. _citing/current:
+
+#################
+Current Citations
+#################
+
+.. link-button:: https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C/citations
+    :type: url
+    :text: Click here to see the projects that have already used ``pySYD``!
+    :classes: btn-outline-secondary btn-block
+
+################
+Future Citations
+################
 
 If you found ``pySYD`` useful and make use of it in your work, please cite our `JOSS paper <https://arxiv.org/abs/2108.00582>`_:
 
@@ -42,7 +57,7 @@ If applicable, please also use our `ASCL listing <https://ui.adsabs.harvard.edu/
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
 
-.. note::
+.. warning::
 
     ``pySYD`` is only possible thanks to many powerful Python libraries -- therefore
     we strongly encourage you to also cite :ref:`its dependencies <installation-dependencies>`.
