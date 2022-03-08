@@ -12,8 +12,8 @@ Current Citations
 
 .. link-button:: https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C/citations
     :type: url
-    :text: Click here to see the projects that have already used ``pySYD``!
-    :classes: btn-outline-secondary btn-block
+    :text: Click here to see projects that have already used pySYD!
+    :classes: btn-outline-secondary
 
 ################
 Future Citations
