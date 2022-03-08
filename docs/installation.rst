@@ -9,9 +9,13 @@
 Installation
 ************
 
+.. #############
+   Miscellaneous
+   #############
+
 
 With ``pip``
-++++++++++++
+************
 
 Install the latest stable version using pip:
 
@@ -28,7 +32,7 @@ change into the top-level ``pysyd`` directory and try running the following comm
     python setup.py install
     
 With ``conda``
-++++++++++++++
+**************
 
 Use conda to create an environment. For this example, I'll call it 'astero'.
 
@@ -46,7 +50,7 @@ Then activate the environment and install ``pySYD``:
 
 
 With ``git``
-++++++++++++
+************
 
 The latest development version can be cloned from GitHub using git:
 
@@ -84,7 +88,7 @@ and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, us
 ``conda`` should install and enforce these versions automatically. 
 
 Optional
-++++++++
+********
 
 If using the sampling feature and you want a progress bar, you'll need to install:
 
