@@ -1,39 +1,41 @@
-<div align="center">
-
 -----
 
-We are continuously working towards our primary goal of accessible asteroseismology
-===================================================================================
+.. class:: center
+
+**We are continuously working towards our primary goal of accessible asteroseismology**
  
 -----
-</div>
 
 For most (if not all) questions/concerns, peeping our [discussions](https://github.com/ashleychontos/pySYD/discussions) forum is an excellent place to start in case things have already been brought up or addressed.
 
 As a user and/or contributor, here are the guidelines we ask you to follow:
 
-- [Question or problem?](#question)
-- [Issues & bugs](#issue)
-- [New ideas](#feature)
-- [Guidelines](#submit)
-- [Style guide](#style)
-- [Testing](#test)
+- :ref:`Question or problem? <guideslines/question>`
+- :ref:`Issues & bugs <guidelines/issue>`
+- :ref:`New ideas <guidelines/feature>`
+- :ref:`Contributing? <guidelines/contribute>`
+- :ref:`Style guide <guidelines/style>`
+- :ref:`Testing <guidelines/testing>`
 
 -----
 
-<a name="question"></a> &rightarrow; Do you have a general question that is not directly related to software functionality?
+.. _guidelines/question:
+
+&rightarrow; Do you have a general question that is not directly related to software functionality?
 
 **Please do *not* open 'issues' for general support questions as we want to preserve them for bug reports and new feature requests ONLY.** Therefore to save everyone time, we will be systematically closing all issues that do not follow these guidelines. Besides, you've got a much better chance of getting your question answered in our [discussion forum](stackoverflow.com/questions/tagged/angular-devtools). PLUS... we may already have the answer for you! 
 
-Please visit our relevant [thread](https://github.com/ashleychontos/pySYD/discussions/37#discussion-3918112) first to see if your question has already been asked. You can also help us keep this space up-to-date, linking topics/issues to relevant threads and adding appropriate tags whenever/wherever possible. This is not only helpful to us but also helpful for the community! Once we have enough data points, we will establish a forum for frequently asked questions (FAQ).
+Please visit our relevant `thread <https://github.com/ashleychontos/pySYD/discussions/37#discussion-3918112>`_ first to see if your question has already been asked. You can also help us keep this space up-to-date, linking topics/issues to relevant threads and adding appropriate tags whenever/wherever possible. This is not only helpful to us but also helpful for the community! Once we have enough data points, we will establish a forum for frequently asked questions (FAQ).
 
-If this still does not work for you and you would like to chat with someone in real-time, please contact [Ashley](achontos@hawaii.edu) to set up a call or zoom meeting.
+If this still does not work for you and you would like to chat with someone in real-time, please contact `Ashley <achontos@hawaii.edu>`_ to set up a call or zoom meeting.
 
 -----
 
-<a name="issue"></a> &rightarrow; Are you reporting a bug?
+.. _guidelines/issue:
 
-**If the code crashes or you find a bug, please search the issue tracker first to make sure the problem (i.e. issue) does not already exist.** If and only if you do this but still don't find anything, feel free to [submit an issue](#submit-issue). And, if you're *really* brave, you can submit an issue along with a [pull request](#submit-pr) fix.
+&rightarrow; Are you reporting a bug?
+
+**If the code crashes or you find a bug, please search the issue tracker first to make sure the problem (i.e. issue) does not already exist.** If and only if you do this but still don't find anything, feel free to submit an issue. And, if you're *really* brave, you can submit an issue along with a pull request fix.
 
 Ideally we would love to resolve all issues immediately but before fixing a bug, we first to need reproduce and confirm it. There is a template of the required information when you submit an issue, but generally we ask that:
 
@@ -45,9 +47,11 @@ You can file new issues by filling out our blank.
 
 -----
 
-<a name="feature"></a> &rightarrow; Have an idea for a new feature or functionality?
+.. _guidelines/feature:
 
-You can _request_ a new feature by [submitting an issue](#submit-issue) to our GitHub
+&rightarrow; Have an idea for a new feature or functionality?
+
+You can _request_ a new feature by submit an issue to our GitHub
 Repository. If you would like to _implement_ a new feature, please submit an issue with
 a proposal for your work first, to be sure that we can use it.
 Please consider what kind of change it is:
@@ -59,7 +63,9 @@ Please consider what kind of change it is:
 
 -----
 
-<a name="feature"></a> &rightarrow; Do you want to contribute code?
+.. _guidelines/contribute:
+
+&rightarrow; Do you want to contribute code?
 
 We would love for you to contribute to `pySYD` and make it even better than it is today! 
 
@@ -78,7 +84,7 @@ We want to fix all the issues as soon as possible, but before fixing a bug we ne
 - 3rd-party libraries and their versions
 - and most importantly - a use-case that fails
 
-You can file new issues by filling out our [new issue form](https://github.com/rangle/angular-devtools/issues/new).
+You can file new issues by filling out our new issue form.
 
 **Submitting a Pull Request (PR)**
 
@@ -164,6 +170,8 @@ Pull Requests
  - new commands should be added to `docs/support_table.md` and `docs/supported.md`
  - commits should be squashed before merging
  - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
+ 
+.. _guidelines/testing:
 
 Testing
 +++++++
@@ -177,6 +185,8 @@ This will host an interactive editor at
 changes.
 
 ----------
+
+.. _guidelines/style:
 
 Style guide
 -----------
