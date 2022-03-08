@@ -6,7 +6,7 @@
  
 -----
 
-For most (if not all) questions/concerns, peeping our [discussions](https://github.com/ashleychontos/pySYD/discussions) forum is an excellent place to start in case things have already been brought up or addressed.
+For most (if not all) questions/concerns, peeping our `discussions <https://github.com/ashleychontos/pySYD/discussions>`_ forum is an excellent place to start in case things have already been brought up or addressed.
 
 As a user and/or contributor, here are the guidelines we ask you to follow:
 
