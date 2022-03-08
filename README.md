@@ -40,7 +40,7 @@ If you make use of `pySYD` in your work, please cite our [JOSS paper](https://ar
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
     
-If applicable, please also use our [ASCL listing](https://ui.adsabs.harvard.edu/abs/2021ascl.soft11017C/abstract) as a software citation:
+If applicable, please also use our [ASCL listing](https://ui.adsabs.harvard.edu/abs/2021ascl.soft11017C) as a software citation:
 
     @MISC{2021ascl.soft11017C,
            author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
@@ -63,6 +63,6 @@ If applicable, please also use our [ASCL listing](https://ui.adsabs.harvard.edu/
 
 ## Contribution
 
-Our [list](AUTHORS.rst) of contributors continues to grow! <br/> 
+Our [list](docs/AUTHORS.rst) of contributors continues to grow! <br/> 
 If you'd like to be a part of that, please see [our guide](CONTRIBUTING.md) for contributing.
 
