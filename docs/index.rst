@@ -36,7 +36,7 @@ Contributors
 
 Our list of contributors continues to grow! 
 
-.. include:: AUTHORS.rst
+.. include:: CONTRIBUTORS.rst
 
 .. link-button:: https://pysyd.readthedocs.io/en/latest/introduction/installation.html
    :type: url
@@ -52,7 +52,7 @@ Our list of contributors continues to grow!
 
    introduction/installation
    introduction/examples
-   introduction/attribution
+   introduction/citing
    introduction/contributing
    introduction/performance
    
