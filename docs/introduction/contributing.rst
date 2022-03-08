@@ -1,3 +1,3 @@
 ************
-Contribution
+Contributing
 ************
