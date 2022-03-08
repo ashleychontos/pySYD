@@ -48,6 +48,11 @@ If applicable, please also use our `ASCL listing <https://ui.adsabs.harvard.edu/
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
 
+.. note::
+
+    ``pySYD`` is only possible thanks to the many powerful Python libraries.
+    Please also consider citing :ref:`these packages <installation-dependencies>`.
+
 .. _attribution-projects:
 
 Projects w/ ``pySYD``
