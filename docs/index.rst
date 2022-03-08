@@ -63,8 +63,9 @@ Our list of contributors continues to grow!
    :hidden:
    :caption: User Guide
    
-   advanced/overview
-   advanced/faq
-   advanced/advanced
-   advanced/guide/index
+   overview
+   performance
+   questions
+   advanced
+   guide/index
    
