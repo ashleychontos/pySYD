@@ -50,12 +50,12 @@ Please see this page for information on how to properly cite the relevant source
    :maxdepth: 1
    :titlesonly:
    :hidden: 
-   :caption: Introduction
+   :caption: Intro
 
    introduction/installation
    introduction/examples
    introduction/attribution
-   introduction/contribution
+   introduction/contributing
    introduction/performance
    
    
