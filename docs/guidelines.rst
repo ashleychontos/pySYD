@@ -3,6 +3,7 @@
 .. class:: center
 
 **We are continuously working towards our primary goal of accessible asteroseismology**
+
  
 -----
 
@@ -10,12 +11,12 @@ For most (if not all) questions/concerns, peeping our `discussions <https://gith
 
 As a user and/or contributor, here are the guidelines we ask you to follow:
 
-- :ref:`Question or problem? <guideslines/question>`
-- :ref:`Issues & bugs <guidelines/issue>`
-- :ref:`New ideas <guidelines/feature>`
-- :ref:`Contributing? <guidelines/contribute>`
-- :ref:`Style guide <guidelines/style>`
-- :ref:`Testing <guidelines/testing>`
+* :ref:`Question or problem? <guideslines/question>`
+* :ref:`Issues & bugs <guidelines/issue>`
+* :ref:`New ideas <guidelines/feature>`
+* :ref:`Contributing? <guidelines/contribute>`
+* :ref:`Style guide <guidelines/style>`
+* :ref:`Testing <guidelines/testing>`
 
 -----
 
