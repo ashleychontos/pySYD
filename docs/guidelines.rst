@@ -30,7 +30,7 @@ As a user and/or contributor, here are the guidelines we ask you to follow:
 
 Please visit our relevant `thread <https://github.com/ashleychontos/pySYD/discussions/37#discussion-3918112>`_ first to see if your question has already been asked. You can also help us keep this space up-to-date, linking topics/issues to relevant threads and adding appropriate tags whenever/wherever possible. This is not only helpful to us but also helpful for the community! Once we have enough data points, we will establish a forum for frequently asked questions (FAQ).
 
-If this still does not work for you and you would like to chat with someone in real-time, please contact `Ashley <achontos@hawaii.edu>`_ to set up a call or zoom meeting.
+If this still does not work for you and you would like to chat with someone in real-time, please contact `Ashley <mailto:achontos@hawaii.edu>`_ to set up a call or zoom meeting.
 
 -----
 
