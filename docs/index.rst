@@ -36,7 +36,7 @@ Contributors
 
 Our list of contributors continues to grow! 
 
-.. include:: ../AUTHORS.rst
+.. include:: AUTHORS.rst
 
 
 Citations
