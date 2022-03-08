@@ -2,7 +2,8 @@
 
 -----
 
-### We are continuously working towards our primary goal of accessible asteroseismology 
+We are continuously working towards our primary goal of accessible asteroseismology
+===================================================================================
  
 -----
 </div>
@@ -20,7 +21,7 @@ As a user and/or contributor, here are the guidelines we ask you to follow:
 
 -----
 
-### <a name="question"></a> &rightarrow; Do you have a general question that is not directly related to software functionality?
+<a name="question"></a> &rightarrow; Do you have a general question that is not directly related to software functionality?
 
 **Please do *not* open 'issues' for general support questions as we want to preserve them for bug reports and new feature requests ONLY.** Therefore to save everyone time, we will be systematically closing all issues that do not follow these guidelines. Besides, you've got a much better chance of getting your question answered in our [discussion forum](stackoverflow.com/questions/tagged/angular-devtools). PLUS... we may already have the answer for you! 
 
@@ -30,7 +31,7 @@ If this still does not work for you and you would like to chat with someone in r
 
 -----
 
-### <a name="issue"></a> &rightarrow; Are you reporting a bug?
+<a name="issue"></a> &rightarrow; Are you reporting a bug?
 
 **If the code crashes or you find a bug, please search the issue tracker first to make sure the problem (i.e. issue) does not already exist.** If and only if you do this but still don't find anything, feel free to [submit an issue](#submit-issue). And, if you're *really* brave, you can submit an issue along with a [pull request](#submit-pr) fix.
 
@@ -40,11 +41,11 @@ Ideally we would love to resolve all issues immediately but before fixing a bug,
 - provide the light curve and power spectrum data so that we can reproduce it from our end
 - what operating system you ran the software on and what version of the software you're using
 
-You can file new issues by filling out our [new issue form](https://github.com/rangle/angular-devtools/issues/new).
+You can file new issues by filling out our blank.
 
 -----
 
-### <a name="feature"></a> &rightarrow; Have an idea for a new feature or functionality?
+<a name="feature"></a> &rightarrow; Have an idea for a new feature or functionality?
 
 You can _request_ a new feature by [submitting an issue](#submit-issue) to our GitHub
 Repository. If you would like to _implement_ a new feature, please submit an issue with
@@ -58,15 +59,15 @@ Please consider what kind of change it is:
 
 -----
 
-### <a name="feature"></a> &rightarrow; Do you want to contribute code?
+<a name="feature"></a> &rightarrow; Do you want to contribute code?
 
 We would love for you to contribute to `pySYD` and make it even better than it is today! 
 
 -----
 
-## <a name="submit"></a> Submission Guidelines
+Submission Guidelines
 
-### <a name="submit-issue"></a> Issues & Bugs
+Issues & Bugs
 
 Before you submit an issue, please search the issue tracker, maybe an issue for your problem already exists and the discussion might inform you of workarounds readily available.
 
@@ -79,9 +80,10 @@ We want to fix all the issues as soon as possible, but before fixing a bug we ne
 
 You can file new issues by filling out our [new issue form](https://github.com/rangle/angular-devtools/issues/new).
 
-### <a name="submit-pr"></a> Submitting a Pull Request (PR)
+**Submitting a Pull Request (PR)**
 
-#### Community Guidelines
+Community Guidelines
+====================
 
 Before you submit your Pull Request (PR), please consider the following guidelines:
 
@@ -125,7 +127,7 @@ Before you submit your Pull Request (PR), please consider the following guidelin
 
 That's it! Thank you for your contribution!
 
-#### After your pull request is merged
+**After your pull request is merged**
 
 After your pull request is merged, you can safely delete your branch and pull the changes
 from the main (upstream) repository:
@@ -154,7 +156,8 @@ from the main (upstream) repository:
   git pull --ff upstream main
   ```
 
-## Pull Requests
+Pull Requests
++++++++++++++
 
  - PR title and description should follow [Angular Commit Message Conventions](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
  - link back to the original issue(s) whenever possible
@@ -162,7 +165,8 @@ from the main (upstream) repository:
  - commits should be squashed before merging
  - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
 
-## <a name="test"></a> Testing
+Testing
++++++++
 
 Local testing can be done by running the webpack-dev-server using configuration
 `webpack.dev.js`. Run `yarn` to install dependencies, and then `yarn start`
@@ -174,9 +178,11 @@ changes.
 
 ----------
 
-### <a name="style"></a> Style guide
+Style guide
+-----------
 
-#### Code
+Code
+++++
  - 4 spaces for indentation
  - 80 character line length
  - commas last
@@ -186,21 +192,15 @@ changes.
 
 ** A good rule of thumb is to try to make your code blend in with the surrounding code.
 
-The code can be linted by running `yarn test:lint`, which lints JavaScript
-files using ESLint and stylesheets using stylelint. They must pass to commit
-the changes.
-
-Some files have flowtype annotations and can be checked for type errors using
-Flow by running `yarn test:flow`. See [Flow](https://flow.org/) for more details.
-
-## <a name="rules"></a> Coding Rules
+Coding Rules
+++++++++++++
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
 - All features or bug fixes **must be tested** by one or more specs (unit-tests).
 - We follow [Google's JavaScript Style Guide][js-style-guide].
 
-## Adding new functions
+Adding new functions
 
 New functions should be added in [src/functions](src/functions) using
 `defineFunction` from [defineFunction.js](src/defineFunction.js).  Read the
