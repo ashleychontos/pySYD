@@ -49,25 +49,22 @@ Our list of contributors continues to grow!
    :maxdepth: 1
    :titlesonly:
    :hidden: 
-   :caption: About
+   :caption: Getting Started
 
    installation
-   introduction/examples
-   introduction/citing
-   introduction/contributing
-   introduction/performance
+   glossary
+   citing
+   guidelines
    
    
 .. toctree::
    :maxdepth: 1
    :titlesonly:
    :hidden:
-   :caption: Advanced
+   :caption: User Guide
    
-   advanced/glossary
    advanced/overview
    advanced/faq
    advanced/advanced
    advanced/guide/index
-   advanced/contributing
    
