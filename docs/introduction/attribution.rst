@@ -1,6 +1,9 @@
-*********
+***********
+Attribution
+***********
+
 Citations
-*********
+=========
 
 If you found `pySYD` useful and make use of it in your work, please cite our `JOSS paper <https://arxiv.org/abs/2108.00582>`_:
 
