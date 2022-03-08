@@ -50,7 +50,7 @@ Please see this page for information on how to properly cite the relevant source
    :maxdepth: 1
    :titlesonly:
    :hidden: 
-   :caption: Getting Started
+   :caption: Introduction
 
    installation
    examples
@@ -65,7 +65,7 @@ Please see this page for information on how to properly cite the relevant source
    :maxdepth: 1
    :titlesonly:
    :hidden:
-   :caption: Advanced Usage
+   :caption: Advanced
    
    faq
    advanced
