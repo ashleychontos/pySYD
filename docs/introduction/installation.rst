@@ -45,8 +45,8 @@ Then activate the environment and install ``pySYD``:
     pip install git+https://github.com/ashleychontos/pySYD
 
 
-From Source
-+++++++++++
+With ``git``
+++++++++++++
 
 The latest development version can be cloned from GitHub using git:
 
@@ -62,8 +62,12 @@ Then to build and install the project use:
 
 from inside the cloned ``pySYD`` directory.
 
+-----
+
+.. _installation-test:
+
 Testing
-+++++++
+=======
 
 You can test your installation by using the help command: 
     
@@ -90,7 +94,7 @@ You can test your installation by using the help command:
 .. _installation-setup:
 
 Setup
-########
+=====
 
 The easiest way to start using the ``pySYD`` package is by running our ``setup`` feature
 from a convenient directory:
@@ -150,16 +154,26 @@ which will print the absolute paths of all directories that are created during s
 .. _installation-dependencies:
 
 Dependencies
-############
+============
 
-This package has the following Python dependencies:
+This package has the following dependencies:
 
-* astropy (>=4.0.0)
-* matplotlib (>=1.5.3)
-* numpy
-* pandas (>=1.0.5)
-* scipy
-* tqdm
+* `Python <https://www.python.org>`_ (>=3)
+* `Numpy <https://numpy.org>`_
+* `pandas <https://pandas.pydata.org>`_ 
+* `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
+* `Astropy <https://www.astropy.org>`_
+* `scipy <https://docs.scipy.org/doc/>`_
+
+Explicit version requirements are specified in the project requirements.txt and setup.cfg.
+However, using ``pip`` or ``conda`` should install and enforce these versions automatically. 
+
+Optional
+########
+
+If using the sampling feature and you want a progress bar, you'll need to install:
+
+* `tqdm <https://tqdm.github.io>`_
 
 -----
 
