@@ -51,7 +51,7 @@ Our list of contributors continues to grow!
    :hidden: 
    :caption: About
 
-   introduction/installation
+   installation
    introduction/examples
    introduction/citing
    introduction/contributing
