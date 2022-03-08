@@ -1,8 +1,8 @@
-.. _overview:
+.. _overview/index:
 
-####################
+********
 Overview
-####################
+********
 
 
 ``pySYD`` is a python-based implementation of the IDL-based SYD pipeline 
