@@ -43,6 +43,7 @@ Our list of contributors continues to grow!
    :text: Get started!
    :class: btn-outline-secondary
 
+-----
 
 .. toctree::
    :maxdepth: 1
