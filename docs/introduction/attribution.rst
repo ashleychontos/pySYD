@@ -1,6 +1,11 @@
+.. _attribution-index:
+
 ***********
 Attribution
 ***********
+
+
+.. _attribution-citing:
 
 Citations
 =========
@@ -43,6 +48,7 @@ If applicable, please also use our `ASCL listing <https://ui.adsabs.harvard.edu/
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
 
+.. _attribution-projects:
 
 Projects w/ ``pySYD``
 =====================
