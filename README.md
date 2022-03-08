@@ -63,6 +63,6 @@ Please also use our [ASCL listing](https://ui.adsabs.harvard.edu/abs/2021ascl.so
 
 ## Contribution
 
-Our [list](AUTHORS.md) of contributors continues to grow! <br/> 
+Our [list](AUTHORS.rst) of contributors continues to grow! <br/> 
 If you'd like to be a part of that, please see [our guide](CONTRIBUTING.md) for contributing.
 
