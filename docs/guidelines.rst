@@ -1,3 +1,5 @@
+.. _guidelines/index:
+
 -----
 
 .. class:: center
