@@ -44,7 +44,7 @@ Citations
 
 Check out `projects <https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C/citations>`_ that have already used ``pySYD``! 
 
-Please see :ref:`this page <introduction/citing>` for information on how to properly cite the relevant sources and software.
+Please see :ref:`this page <introduction/attribution>` for information on how to properly cite the relevant sources and software.
 
 .. link-button:: introduction/installation
    :type: ref
@@ -59,7 +59,7 @@ Please see :ref:`this page <introduction/citing>` for information on how to prop
 
    introduction/installation
    introduction/examples
-   introduction/citing
+   introduction/attribution
    introduction/contributing
    introduction/performance
    
