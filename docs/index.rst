@@ -38,8 +38,8 @@ Our list of contributors continues to grow!
 
 .. include:: CONTRIBUTORS.rst
 
-.. link-button:: https://pysyd.readthedocs.io/en/latest/introduction/installation.html
-   :type: url
+.. link-button:: installation/index
+   :type: ref
    :text: Get started!
    :class: btn-outline-secondary
 
