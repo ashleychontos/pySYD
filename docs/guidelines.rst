@@ -1,4 +1,11 @@
+.. role::  raw-html(raw)
+    :format: html
+
 .. _guidelines/index:
+
+********************
+Community Guidelines
+********************
 
 -----
 
@@ -24,7 +31,7 @@ As a user and/or contributor, here are the guidelines we ask you to follow:
 
 .. _guidelines/question:
 
-&rightarrow; Do you have a general question that is not directly related to software functionality?
+:raw-html:`&rightarrow;` Do you have a general question that is not directly related to software functionality?
 
 **Please do *not* open 'issues' for general support questions as we want to preserve them for bug reports and new feature requests ONLY.** Therefore to save everyone time, we will be systematically closing all issues that do not follow these guidelines. Besides, you've got a much better chance of getting your question answered in our [discussion forum](stackoverflow.com/questions/tagged/angular-devtools). PLUS... we may already have the answer for you! 
 
@@ -36,7 +43,7 @@ If this still does not work for you and you would like to chat with someone in r
 
 .. _guidelines/issue:
 
-&rightarrow; Are you reporting a bug?
+:raw-html:`&rightarrow;` Are you reporting a bug?
 
 **If the code crashes or you find a bug, please search the issue tracker first to make sure the problem (i.e. issue) does not already exist.** If and only if you do this but still don't find anything, feel free to submit an issue. And, if you're *really* brave, you can submit an issue along with a pull request fix.
 
@@ -52,7 +59,7 @@ You can file new issues by filling out our blank.
 
 .. _guidelines/feature:
 
-&rightarrow; Have an idea for a new feature or functionality?
+:raw-html:`&rightarrow;` Have an idea for a new feature or functionality?
 
 You can _request_ a new feature by submit an issue to our GitHub
 Repository. If you would like to _implement_ a new feature, please submit an issue with
@@ -68,7 +75,7 @@ Please consider what kind of change it is:
 
 .. _guidelines/contribute:
 
-&rightarrow; Do you want to contribute code?
+:raw-html:`&rightarrow;` Do you want to contribute code?
 
 We would love for you to contribute to `pySYD` and make it even better than it is today! 
 
