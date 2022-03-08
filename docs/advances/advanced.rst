@@ -1,4 +1,4 @@
-.. _advanced:
+.. _advanced/index:
 .. role:: bash(code)
    :language: bash
 
