@@ -19,9 +19,9 @@ ages, etc.), asteroseismology is still mostly a niche field and closed-door scie
 
 In an effort to make asteroseismology more accessible to the broader astronomy
 community, ``pySYD`` was established as a Python package to automatically detect
-solar-like oscillations and measure their global asteroseismic parameters. Therefore, 
-the outputs from ``pySYD`` can be used to determine precise and accurate stellar 
-properties without the need for substantial background knowledge. In other words, 
+solar-like oscillations and measure their global properties. Therefore, the outputs 
+from ``pySYD`` can be used to determine precise and accurate stellar properties 
+without the need for substantial background knowledge in asteroseismology. In other words, 
 ``pySYD`` has been extensively tested and developed to be as hands-off as possible.
 
 This package is being actively developed in 
@@ -38,18 +38,11 @@ Our list of contributors continues to grow!
 
 .. include:: AUTHORS.rst
 
-
-Citations
-=========
-
-Check out `projects <https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C/citations>`_ that have already used ``pySYD``! 
-
-Please see :ref:`this page <introduction/attribution-index>` for information on how to properly cite the relevant sources and software.
-
 .. link-button:: introduction/installation-index
    :type: ref
    :text: Get started!
    :class: btn-outline-secondary
+
 
 .. toctree::
    :maxdepth: 1
