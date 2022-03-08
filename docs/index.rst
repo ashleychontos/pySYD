@@ -59,7 +59,7 @@ Please see :ref:`this page <introduction/attribution>` for information on how to
 
    introduction/installation
    introduction/examples
-   introduction/attribution
+   introduction/citing
    introduction/contributing
    introduction/performance
    
