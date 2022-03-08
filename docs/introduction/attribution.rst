@@ -4,6 +4,7 @@
 Attribution
 ***********
 
+-----
 
 .. _attribution-citing:
 
@@ -53,6 +54,9 @@ If applicable, please also use our `ASCL listing <https://ui.adsabs.harvard.edu/
     ``pySYD`` is only possible thanks to the many powerful Python libraries.
     Please also consider citing :ref:`these packages <installation-dependencies>`.
 
+
+----
+
 .. _attribution-projects:
 
 Projects w/ ``pySYD``
@@ -61,3 +65,5 @@ Projects w/ ``pySYD``
 We added a project thread in the public repository called `Projects w/ pySYD <https://github.com/ashleychontos/pySYD/discussions/28>`_.
 Please consider adding to this in any way -- anything from early results, figures, student projects to published manuscripts, posters,
 or any other ``pySYD``-related shoutouts. We would love to see firsthand what you are using ``pySYD`` for!
+
+-----
