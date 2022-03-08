@@ -51,8 +51,8 @@ If applicable, please also use our `ASCL listing <https://ui.adsabs.harvard.edu/
 
 .. note::
 
-    ``pySYD`` is only possible thanks to the many powerful Python libraries.
-    Please also consider citing :ref:`these packages <installation-dependencies>`.
+    ``pySYD`` is only possible thanks to many powerful Python libraries --
+    therefore we also encourage you to cite :ref:`these packages <installation-dependencies>`.
 
 
 ----
