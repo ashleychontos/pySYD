@@ -1,4 +1,4 @@
-**Main author:** Ashley Chontos (`git <https://github.com/ashleychontos>`_ | `email <achontos@hawaii.edu>`_ | `website <https://ashleyin.space>`_)
+**Main author:** Ashley Chontos (`email <achontos@hawaii.edu>`_ | `website <https://ashleyin.space>`_)
 
 **All contributors:** (sorted alphabetically)
 
