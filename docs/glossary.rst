@@ -15,8 +15,8 @@ solar-like oscillations (p-mode oscillations)
 global asteroseismic parameters
     the term 'global' is used to describe the general properties of the observed oscillations and is not associated with
     the detailed frequency analysis of individual oscillation modes, a process referred to as peakbagging. Traditionally
-    the two main global asteroseismic properties are numax and dnu, both of which are described in more detail in their
-    respective entry.
+    the two main global asteroseismic properties are :math:`\nu_{\mathrm{max}}` and :math:`\Delta\nu`, both of which are 
+    described in more detail in their respective entry.
     
     there are two distinct features of solar-like oscillations that enable the measurement of the two main global 
     properties, numax and dnu. The stochastic nature of convection leads to oscillation modes over a range of frequencies, 
@@ -32,12 +32,12 @@ global asteroseismic parameters
     that is referred to as the characteristic spacing or dnu.
 
 
-frequency of maximum power (numax)
+frequency of maximum power (:math:`\nu_{\mathrm{max}}`)
     the frequency corresponding to maximum power, which is roughly the center of the Gaussian-like envelope of oscillations
     
     scales with evolutionary state, logg, acoustic cutoff
 
-characteristic frequency separation (dnu)
+characteristic frequency separation (:math:`\Delta\nu`)
     the comb patter or regular spacing observed for solar-like oscillations for different modes
     
     scales with mean stellar density
