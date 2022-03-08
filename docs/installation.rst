@@ -3,7 +3,7 @@
     :text: Jump down to quickstart to get started right away!
     :classes: btn-outline-primary btn-block
 
-.. _installation/main:
+.. _installation/index:
 
 ************
 Installation
