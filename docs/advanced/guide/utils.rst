@@ -6,7 +6,5 @@ Container classes, parameter dictionaries, functions related to file loading and
 saving as well as various data manipulation methods (i.e. correcting artefacts, 
 binning data, etc.).
 
-.. module:: pysyd
-
 .. automodule:: pysyd.utils
    :no-inheritance-diagram:
