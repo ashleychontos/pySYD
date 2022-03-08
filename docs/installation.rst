@@ -106,21 +106,21 @@ You can test your installation by using the help command:
     
 .. dropdown:: pysyd --help
     
-    usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
-
-    pySYD: Automated Extraction of Global Asteroseismic Parameters
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      -version, --version   Print version number and exit.
-
-    pySYD modes:
-      {load,parallel,run,setup,test}
-        load                Load in data for a given target
-        parallel            Run pySYD in parallel
-        run                 Run the main pySYD pipeline
-        setup               Easy setup of relevant directories and files
-        test                Test different utilities (currently under development)
+    | usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
+    | 
+    | pySYD: Automated Extraction of Global Asteroseismic Parameters
+    |
+    | optional arguments:
+    |   -h, --help            show this help message and exit
+    |   -version, --version   Print version number and exit.
+    | 
+    | pySYD modes:
+    |   {load,parallel,run,setup,test}
+    |     load                Load in data for a given target
+    |     parallel            Run pySYD in parallel
+    |     run                 Run the main pySYD pipeline
+    |     setup               Easy setup of relevant directories and files
+    |     test                Test different utilities (currently under development)
 
 -----
 
@@ -151,28 +151,28 @@ The optional verbose command can be called with the setup feature:
     | 
     | /Users/ashleychontos/Desktop/info
     |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                  Dload  Upload   Total   Spent    Left  Speed
+    |                                                                   Dload  Upload   Total   Spent    Left  Speed
     | 100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49
     |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                  Dload  Upload   Total   Spent    Left  Speed
+    |                                                                   Dload  Upload   Total   Spent    Left  Speed
     | 100   239  100   239    0     0    508      0 --:--:-- --:--:-- --:--:--   508
     |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                  Dload  Upload   Total   Spent    Left  Speed
+    |                                                                   Dload  Upload   Total   Spent    Left  Speed
     | 100 1518k  100 1518k    0     0  1601k      0 --:--:-- --:--:-- --:--:-- 1601k
     |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                  Dload  Upload   Total   Spent    Left  Speed
+    |                                                                   Dload  Upload   Total   Spent    Left  Speed
     | 100 3304k  100 3304k    0     0  2958k      0  0:00:01  0:00:01 --:--:-- 2958k
     |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                  Dload  Upload   Total   Spent    Left  Speed
+    |                                                                   Dload  Upload   Total   Spent    Left  Speed
     | 100 1679k  100 1679k    0     0  1630k      0  0:00:01  0:00:01 --:--:-- 1630k
     |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                  Dload  Upload   Total   Spent    Left  Speed
+    |                                                                   Dload  Upload   Total   Spent    Left  Speed
     | 100 3523k  100 3523k    0     0  3101k      0  0:00:01  0:00:01 --:--:-- 3099k
     |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                  Dload  Upload   Total   Spent    Left  Speed
+    |                                                                   Dload  Upload   Total   Spent    Left  Speed
     | 100 1086k  100 1086k    0     0   943k      0  0:00:01  0:00:01 --:--:--  943k
     |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                  Dload  Upload   Total   Spent    Left  Speed
+    |                                                                   Dload  Upload   Total   Spent    Left  Speed
     | 100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k
     | 
     | 
