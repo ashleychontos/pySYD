@@ -46,7 +46,7 @@ Check out `projects <https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C/citat
 
 Please see :ref:`this page <introduction/attribution>` for information on how to properly cite the relevant sources and software.
 
-.. link-button:: introduction/installation
+.. link-button:: introduction/installation-index
    :type: ref
    :text: Get started!
    :class: btn-outline-secondary
