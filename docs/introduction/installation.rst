@@ -165,8 +165,9 @@ This package has the following dependencies:
 * `Astropy <https://www.astropy.org>`_
 * `scipy <https://docs.scipy.org/doc/>`_
 
-Explicit version requirements are specified in the project requirements.txt and setup.cfg.
-However, using ``pip`` or ``conda`` should install and enforce these versions automatically. 
+Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
+and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using ``pip`` or 
+``conda`` should install and enforce these versions automatically. 
 
 Optional
 ########
