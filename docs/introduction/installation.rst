@@ -10,8 +10,8 @@ Installation
 ************
 
 
-With pip [recommended]
-++++++++++++++++++++++
+With ``pip``
+++++++++++++
 
 Install the latest stable version using pip:
 
@@ -26,6 +26,24 @@ change into the top-level ``pysyd`` directory and try running the following comm
 .. code-block::
 
     python setup.py install
+    
+With ``conda``
+++++++++++++++
+
+Use conda to create an environment. For this example, I'll call it 'astero'.
+
+.. code-block::
+    
+    conda create -n astero numpy scipy pandas astropy matplotlib tqdm
+    
+See our complete list of dependencies (including versions) :ref:`below <installation-dependencies>`. 
+Then activate the environment and install ``pySYD``:
+
+.. code-block::
+
+    conda activate astero
+    pip install git+https://github.com/ashleychontos/pySYD
+
 
 From Source
 +++++++++++
@@ -131,10 +149,17 @@ which will print the absolute paths of all directories that are created during s
 
 .. _installation-dependencies:
 
-Python Dependencies
-####################
+Dependencies
+############
 
-This package has the following dependencies:
+This package has the following Python dependencies:
+
+* astropy (>=4.0.0)
+* matplotlib (>=1.5.3)
+* numpy
+* pandas (>=1.0.5)
+* scipy
+* tqdm
 
 -----
 
