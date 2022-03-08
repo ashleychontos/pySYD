@@ -48,7 +48,7 @@ Our list of contributors continues to grow!
    :maxdepth: 1
    :titlesonly:
    :hidden: 
-   :caption: Intro
+   :caption: About
 
    introduction/installation
    introduction/examples
