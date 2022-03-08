@@ -1,8 +1,8 @@
-.. _cli:
+.. _cli/index:
 
-############################
+**********************
 Command Line Interface
-############################
+**********************
 
 
 In order to maximize the performance of the software, we have included many optional commands to help identify the
