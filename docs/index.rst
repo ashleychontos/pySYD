@@ -52,13 +52,13 @@ Please see this page for information on how to properly cite the relevant source
    :hidden: 
    :caption: Introduction
 
-   installation
-   examples
-   glossary
-   overview
-   attribution
-   contibution
-   performance
+   introduction/installation
+   introduction/examples
+   introduction/glossary
+   introduction/overview
+   introduction/attribution
+   introduction/contibution
+   introduction/performance
    
    
 .. toctree::
@@ -67,9 +67,8 @@ Please see this page for information on how to properly cite the relevant source
    :hidden:
    :caption: Advanced
    
-   faq
-   advanced
-   api
-   user_guide
-   contributing
+   advanced/faq
+   advanced/advanced
+   advanced/guide/index
+   advanced/contributing
    
