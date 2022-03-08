@@ -1,0 +1,172 @@
+.. _overview/index:
+
+********
+Overview
+********
+
+
+``pySYD`` is a python-based implementation of the IDL-based SYD pipeline 
+`(Huber et al. 2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_, 
+which was extensively used to measure asteroseismic parameters for Kepler stars. 
+Papers based on asteroseismic parameters measured using the ``SYD`` pipeline include 
+`Huber et al. 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H/abstract>`_, 
+`Chaplin et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C/abstract>`_, 
+`Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_ 
+and `Yu et al. 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y/abstract>`_.
+
+``pySYD`` adapts the well-tested methodology from ``SYD`` while also improving these 
+existing analyses and expanding upon numerous new (optional) features. Improvements include:
+
+- Automated best-fit background model selection
+- Parallel processing
+- Easily accessible + command-line friendly interface
+- Ability to save samples for further analyses
+
+
+.. _modes:
+
+Modes
+========
+
+There are currently five operational ``pySYD`` modes: 
+
+#. ``setup`` : Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. This mode only
+   inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below). Using this feature will
+   set up the paths and files consistent with what is recommended and discussed in more detail below.
+
+#. ``load`` : Loads in data for a single target through ``pysyd.pipeline.load``. Because this does handle data, this has 
+   full access to both the :ref:`parent<parentparse>` and :ref:`main parser<mainparse>`.
+
+#. ``run`` : The main pySYD pipeline function is initialized through ``pysyd.pipeline.run`` and runs the two core modules 
+   (i.e. ``find_excess`` and ``fit_background``) for each star consecutively. This mode operates using most CLI options, inheriting
+   both the :ref:`parent<parentparse>` and :ref:`main parser<mainparse>` options.
+
+#. ``parallel`` : Operates the same way as the previous mode, but processes stars simultaneously in parallel. Based on the number of threads
+   available, stars are separated into groups (where the number of groups is exactly equal to the number of threads). This mode uses all CLI
+   options, including the number of threads to use for parallelization (:ref:`see here<parallel>`).
+
+#. ``test`` : Currently under development.
+
+=========================
+
+.. _structure:
+
+Structure
+=============
+
+We recommend using the following structure under three main directories, which is discussed 
+in more detail below:
+
+#. **info/** : [optional input] directory to provide prior information on the processed stars
+#. **data/** : [required input] directory containing the light curves and power spectra
+#. **results/** : [optional output] directory for result figures and files
+
+Input
+********
+
+Info/
+++++++++
+
+There are two main files provided:
+
+#. **info/todo.txt** : text file with one star ID per line, which must match the data ID. If no stars are specified via command line, the star(s) listed in the text file will be processed by default. This is recommended when running a large number of stars.
+
+#. **info/star_info.csv** : contains individual star information. Star IDs are crossmatched with this list and therefore, do not need to be in any particular order. In order to read information in properly, it **must** contain the following columns:
+
+   * "stars" [int] : star IDs that should exactly match the star provided via command line or in todo.txt
+   * "radius" [float] : stellar radius (units: solar radii)
+   * "teff" [float] : effective temperature (units: K)
+   * "logg" [float] : surface gravity (units: dex)
+   * "numax" [float] : the frequency corresponding to maximum power (units: muHz)
+   * "lower_ex" [float] : lower frequency limit to use in the find_excess module (units: muHz)
+   * "upper_ex" [float] : upper frequency limit to use in the find_excess module (units: muHz)
+   * "lower_bg" [float] : lower frequency limit to use in the fit_background module (units: muHz)
+   * "upper_bg" [float] : upper frequency limit to use in the fit_background module (units: muHz)
+   * "seed" [int] : random seed generated when using the Kepler correction option, which is saved for future reproducibility purposes
+
+Data/
+++++++++
+
+File format for a given star ID: 
+
+*  **ID_LC.txt** : time series data in units of days
+*  **ID_PS.txt** : power spectrum in units of muHz versus power or power density
+
+.. warning::
+
+    Time and frequency in the time series and power spectrum file **must** be in the specified units (days and muHz) in order for the pipeline 
+    to properly process the data and provide reliable results. 
+
+Output
+********
+
+Results/
+++++++++++
+
+Subdirectories are automatically created for each individually processed star.
+Results for each of the two main ``pySYD`` modules (``find_excess`` and ``fit_background``) 
+will be concatenated into a single csv in the upper-level results directory, which is
+helpful when running many stars.
+
+A single star will yield one summary figure (png) and one data product (csv) for each of the two
+main modules. Additionally, the background-corrected (divided) power spectrum is saved as a basic
+text file, for a total of 5 output files. If the monte-carlo sampling is used to calculate 
+uncertainties, an additional figure will plot the posterior distributions for the estimated 
+parameters. An optional feature (i.e. ``--samples``) is available to save the samples if desired. 
+See :ref:`examples` for a guide on what the output plots are showing.
+
+
+==========================
+
+
+How It Works
+===============
+
+When running the software, initialization of ``pySYD`` via command line will look in the following paths:
+
+- ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
+- ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
+- ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
+- ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
+
+which by default, is the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
+if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
+
+A ``pySYD`` pipeline ``Target`` class object has two main function calls:
+
+#. The first module :
+    * **Summary:** a crude, quick way to identify the power excess due to solar-like oscillations
+    * This uses a heavy smoothing filter to divide out the background and then implements a frequency-resolved, collapsed 
+      autocorrelation function (ACF) using 3 different ``box`` sizes
+    * The main purpose for this first module is to provide a good starting point for the
+      second module. The output from this routine provides a rough estimate for numax, which is translated 
+      into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode
+      oscillations
+#. The second module : 
+    * **Summary:** performs a more rigorous analysis to determine both the stellar background contribution
+      as well as the global asteroseismic parameters.
+    * Given the frequency range determined by the first module, this region is masked out to model 
+      the white- and red-noise contributions present in the power spectrum. The fitting procedure will
+      test a series of models and select the best-fit stellar background model based on the BIC.
+    * The power spectrum is corrected by dividing out this contribution, which also saves as an output text file.
+    * Now that the background has been removed, the global parameters can be more accurately estimated. Numax is
+      estimated by using a smoothing filter, where the peak of the heavily smoothed, background-corrected power
+      spectrum is the first and the second fits a Gaussian to this same power spectrum. The smoothed numax has 
+      typically been adopted as the default numax value reported in the literature since it makes no assumptions 
+      about the shape of the power excess.
+    * Using the masked power spectrum in the region centered around numax, an autocorrelation is computed to determine
+      the large frequency spacing.
+
+.. note::
+
+    By default, both modules will run and this is the recommended procedure if no other information 
+    is provided. 
+
+    If stellar parameters like the radius, effective temperature and/or surface gravity are provided in the **info/star_info.csv** file, ``pySYD`` 
+    can estimate a value for numax using a scaling relation. Therefore the first module can be bypassed,
+    and the second module will use the estimated numax as an initial starting point.
+
+    There is also an option to directly provide numax in the **info/star_info.csv** (or via command line, 
+    see :ref:`advanced usage<advanced>` for more details), which will override the value found in the first module. This option 
+    is recommended if you think that the value found in the first module is inaccurate, or if you have a visual 
+    estimate of numax from the power spectrum.
