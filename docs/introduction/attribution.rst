@@ -1,15 +1,8 @@
-.. _attribution-index:
+******
+Citing
+******
 
-***********
-Attribution
-***********
-
------
-
-.. _attribution-citing:
-
-Citations
-=========
+.. _citing-citations:
 
 If you found `pySYD` useful and make use of it in your work, please cite our `JOSS paper <https://arxiv.org/abs/2108.00582>`_:
 
@@ -52,12 +45,12 @@ If applicable, please also use our `ASCL listing <https://ui.adsabs.harvard.edu/
 .. note::
 
     ``pySYD`` is only possible thanks to many powerful Python libraries -- therefore
-    we also strongly encourage you to cite :ref:`its dependencies <installation-dependencies>`.
+    we strongly encourage you to also cite :ref:`its dependencies <installation-dependencies>`.
 
 
 ----
 
-.. _attribution-projects:
+.. _citing-projects:
 
 Projects w/ ``pySYD``
 =====================
