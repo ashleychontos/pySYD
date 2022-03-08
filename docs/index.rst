@@ -27,21 +27,21 @@ without the need for substantial background knowledge in asteroseismology. In ot
 This package is being actively developed in 
 `a public repository on GitHub <https://github.com/ashleychontos/pySYD>`_ -- we especially 
 welcome and *encourage* any new contributions to help make ``pySYD`` better! Please see 
-our `community guidelines <https://github.com/ashleychontos/pySYD/CONTRIBUTING.md>`_ 
-to find out how you can help. No contribution is too small!
+our :ref:`community guidelines <guidelines/index>` to find out how you can help. No contribution 
+is too small!
 
 
 Contributors
 ============
 
-Our list of contributors continues to grow! 
+Our list of contributors continues to grow!
 
 .. include:: CONTRIBUTORS.rst
 
 .. link-button:: installation/index
    :type: ref
-   :text: Get started!
-   :class: btn-outline-secondary
+   :text: Learn how to get started!
+   :class: btn-outline-secondary btn-block
 
 -----
 
