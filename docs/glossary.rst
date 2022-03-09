@@ -1,18 +1,24 @@
-*****************
-Glossary of terms
-*****************
+********
+Glossary
+********
 
 asteroseismology
     the study of oscillations in stars
 
 
-solar-like oscillations (p-mode oscillations)
-    implied in the name, these oscillations are driven by the same mechanism as that observed in the Sun, which is
-    due to turbulent, near-surface convection. They are also sometimes referred to as p-mode oscillations, after the
-    pressure-driven (or acoustic sound) waves that are resonating in the stellar cavity.
+characteristic frequency separation (:math:`\Delta\nu`)
+    the comb patter or regular spacing observed for solar-like oscillations for different modes
+    
+    scales with mean stellar density
 
 
-global asteroseismic parameters
+frequency of maximum power (:math:`\nu_{\mathrm{max}}`)
+    the frequency corresponding to maximum power, which is roughly the center of the Gaussian-like envelope of oscillations
+    
+    scales with evolutionary state, logg, acoustic cutoff
+
+
+global properties
     the term 'global' is used to describe the general properties of the observed oscillations and is not associated with
     the detailed frequency analysis of individual oscillation modes, a process referred to as peakbagging. Traditionally
     the two main global asteroseismic properties are :math:`\nu_{\mathrm{max}}` and :math:`\Delta\nu`, both of which are 
@@ -32,19 +38,14 @@ global asteroseismic parameters
     that is referred to as the characteristic spacing or dnu.
 
 
-frequency of maximum power (:math:`\nu_{\mathrm{max}}`)
-    the frequency corresponding to maximum power, which is roughly the center of the Gaussian-like envelope of oscillations
-    
-    scales with evolutionary state, logg, acoustic cutoff
-
-characteristic frequency separation (:math:`\Delta\nu`)
-    the comb patter or regular spacing observed for solar-like oscillations for different modes
-    
-    scales with mean stellar density
-
-
 *Kepler* legacy sample
-    a sample of well-studied, oscillating *Kepler* stars (cite)
+    a sample of well-studied *Kepler* stars exhibiting solar-like oscillations (cite)
+
+
+solar-like oscillations
+    implied in the name, these oscillations are driven by the same mechanism as that observed in the Sun, which is
+    due to turbulent, near-surface convection. They are also sometimes referred to as **p-mode oscillations**, after the
+    pressure-driven (or acoustic sound) waves that are resonating in the stellar cavity.
 
 
 ``SYD``
