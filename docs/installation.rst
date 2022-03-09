@@ -157,41 +157,78 @@ The optional verbose command can be called with the setup feature:
 
 .. dropdown:: pysyd setup --verbose
     
-    |`` Downloading relevant data from source directory:``
+    | Downloading relevant data from source directory:
     | 
-    |`` /Users/ashleychontos/Desktop/info``
-    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
-    |``                                    Dload  Upload   Total   Spent    Left  Speed``
-    |`` 100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49``
-    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
-    |``                                    Dload  Upload   Total   Spent    Left  Speed``
-    |`` 100   239  100   239    0     0    508      0 --:--:-- --:--:-- --:--:--   508``
-    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
-    |``                                    Dload  Upload   Total   Spent    Left  Speed``
-    |`` 100 1518k  100 1518k    0     0  1601k      0 --:--:-- --:--:-- --:--:-- 1601k``
-    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
-    |``                                    Dload  Upload   Total   Spent    Left  Speed``
-    |`` 100 3304k  100 3304k    0     0  2958k      0  0:00:01  0:00:01 --:--:-- 2958k``
-    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
-    |``                                    Dload  Upload   Total   Spent    Left  Speed``
-    |`` 100 1679k  100 1679k    0     0  1630k      0  0:00:01  0:00:01 --:--:-- 1630k``
-    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
-    |``                                    Dload  Upload   Total   Spent    Left  Speed``
-    |`` 100 3523k  100 3523k    0     0  3101k      0  0:00:01  0:00:01 --:--:-- 3099k``
-    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
-    |``                                    Dload  Upload   Total   Spent    Left  Speed``
-    |`` 100 1086k  100 1086k    0     0   943k      0  0:00:01  0:00:01 --:--:--  943k``
-    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
-    |``                                    Dload  Upload   Total   Spent    Left  Speed``
-    |`` 100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k``
+    | /Users/ashleychontos/Desktop/info``
+    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    |                                    Dload  Upload   Total   Spent    Left  Speed
+    | 100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49
+    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    |                                    Dload  Upload   Total   Spent    Left  Speed
+    | 100   239  100   239    0     0    508      0 --:--:-- --:--:-- --:--:--   508
+    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    |                                    Dload  Upload   Total   Spent    Left  Speed
+    | 100 1518k  100 1518k    0     0  1601k      0 --:--:-- --:--:-- --:--:-- 1601k
+    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    |                                    Dload  Upload   Total   Spent    Left  Speed
+    | 100 3304k  100 3304k    0     0  2958k      0  0:00:01  0:00:01 --:--:-- 2958k
+    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    |                                    Dload  Upload   Total   Spent    Left  Speed
+    | 100 1679k  100 1679k    0     0  1630k      0  0:00:01  0:00:01 --:--:-- 1630k
+    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    |                                    Dload  Upload   Total   Spent    Left  Speed
+    | 100 3523k  100 3523k    0     0  3101k      0  0:00:01  0:00:01 --:--:-- 3099k
+    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    |                                    Dload  Upload   Total   Spent    Left  Speed
+    | 100 1086k  100 1086k    0     0   943k      0  0:00:01  0:00:01 --:--:--  943k
+    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+    |                                    Dload  Upload   Total   Spent    Left  Speed
+    | 100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k
     | 
     | 
-    |``  - created input file directory: /Users/ashleychontos/Desktop/pysyd/info``
-    |``  - created data directory at /Users/ashleychontos/Desktop/pysyd/data``
-    |``  - example data saved``
-    |``  - results will be saved to /Users/ashleychontos/Desktop/pysyd/results``
+    |  - created input file directory: /Users/ashleychontos/Desktop/pysyd/info
+    |  - created data directory at /Users/ashleychontos/Desktop/pysyd/data
+    |  - example data saved
+    |  - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
 
 which will print the absolute paths of all directories that are created during setup.
+
+::
+
+    Downloading relevant data from source directory:
+     
+     /Users/ashleychontos/Desktop/info``
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100   239  100   239    0     0    508      0 --:--:-- --:--:-- --:--:--   508
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 1518k  100 1518k    0     0  1601k      0 --:--:-- --:--:-- --:--:-- 1601k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 3304k  100 3304k    0     0  2958k      0  0:00:01  0:00:01 --:--:-- 2958k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 1679k  100 1679k    0     0  1630k      0  0:00:01  0:00:01 --:--:-- 1630k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 3523k  100 3523k    0     0  3101k      0  0:00:01  0:00:01 --:--:-- 3099k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 1086k  100 1086k    0     0   943k      0  0:00:01  0:00:01 --:--:--  943k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k
+    
+    
+      - created input file directory: /Users/ashleychontos/Desktop/pysyd/info
+      - created data directory at /Users/ashleychontos/Desktop/pysyd/data
+      - example data saved
+      - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
+
 
 -----
 
