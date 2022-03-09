@@ -6,6 +6,12 @@ Pipeline [``pysyd.pipeline``]
 Introduction
 ############
 
+Imports
+#######
+
+Usage
+#####
+
 There are currently five operational ``pySYD`` modes: 
 
 #. ``setup`` : Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. This mode only
@@ -25,6 +31,9 @@ There are currently five operational ``pySYD`` modes:
 
 #. ``test`` : Currently under development but intended for developers.
 
+
+Examples
+########
 
 API
 ###
