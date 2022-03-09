@@ -1,7 +1,7 @@
 .. link-button:: installation/quickstart
     :type: ref
     :text: Jump down to quickstart to get started right away!
-    :classes: btn-outline-primary btn-block
+    :classes: btn-outline-secondary btn-block
 
 .. _installation/index:
 
@@ -78,17 +78,11 @@ This package has the following dependencies:
 * `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
 * `Astropy <https://www.astropy.org>`_
 * `scipy <https://docs.scipy.org/doc/>`_
+* `tqdm <https://tqdm.github.io>`_
 
 Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
 and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using ``pip`` or 
 ``conda`` should install and enforce these versions automatically. 
-
-Optional
-########
-
-If using the sampling feature and you want a progress bar, you'll need to install:
-
-* `tqdm <https://tqdm.github.io>`_
 
 -----
 
@@ -101,21 +95,21 @@ You can test your installation by using the help command:
     
 .. dropdown:: pysyd --help
     
-    |`` usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
-    | 
-    | pySYD: Automated Extraction of Global Asteroseismic Parameters
+    |`` usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...``
     |
-    | optional arguments:
-    |   -h, --help            show this help message and exit
-    |   -version, --version   Print version number and exit.
+    |`` pySYD: Automated Extraction of Global Asteroseismic Parameters``
+    |
+    |`` optional arguments:``
+    |``   -h, --help            show this help message and exit``
+    |``   -version, --version   Print version number and exit.``
     | 
-    | pySYD modes:
-    |   {load,parallel,run,setup,test}
-    |     load                Load in data for a given target
-    |     parallel            Run pySYD in parallel
-    |     run                 Run the main pySYD pipeline
-    |     setup               Easy setup of relevant directories and files
-    |     test                Test different utilities (currently under development)``
+    |`` pySYD modes:``
+    |``   {load,parallel,run,setup,test}``
+    |``     load                Load in data for a given target``
+    |``     parallel            Run pySYD in parallel``
+    |``     run                 Run the main pySYD pipeline``
+    |``     setup               Easy setup of relevant directories and files``
+    |``     test                Test different utilities (currently under development)``
 
 -----
 
@@ -141,39 +135,39 @@ The optional verbose command can be called with the setup feature:
 
 .. dropdown:: pysyd setup --verbose
     
-    |`` Downloading relevant data from source directory:
+    |`` Downloading relevant data from source directory:``
     | 
-    | /Users/ashleychontos/Desktop/info
-    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                    Dload  Upload   Total   Spent    Left  Speed
-    | 100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49
-    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                    Dload  Upload   Total   Spent    Left  Speed
-    | 100   239  100   239    0     0    508      0 --:--:-- --:--:-- --:--:--   508
-    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                    Dload  Upload   Total   Spent    Left  Speed
-    | 100 1518k  100 1518k    0     0  1601k      0 --:--:-- --:--:-- --:--:-- 1601k
-    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                    Dload  Upload   Total   Spent    Left  Speed
-    | 100 3304k  100 3304k    0     0  2958k      0  0:00:01  0:00:01 --:--:-- 2958k
-    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                    Dload  Upload   Total   Spent    Left  Speed
-    | 100 1679k  100 1679k    0     0  1630k      0  0:00:01  0:00:01 --:--:-- 1630k
-    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                    Dload  Upload   Total   Spent    Left  Speed
-    | 100 3523k  100 3523k    0     0  3101k      0  0:00:01  0:00:01 --:--:-- 3099k
-    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                    Dload  Upload   Total   Spent    Left  Speed
-    | 100 1086k  100 1086k    0     0   943k      0  0:00:01  0:00:01 --:--:--  943k
-    |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    |                                    Dload  Upload   Total   Spent    Left  Speed
-    | 100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k
+    |`` /Users/ashleychontos/Desktop/info``
+    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
+    |``                                    Dload  Upload   Total   Spent    Left  Speed``
+    |`` 100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49``
+    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
+    |``                                    Dload  Upload   Total   Spent    Left  Speed``
+    |`` 100   239  100   239    0     0    508      0 --:--:-- --:--:-- --:--:--   508``
+    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
+    |``                                    Dload  Upload   Total   Spent    Left  Speed``
+    |`` 100 1518k  100 1518k    0     0  1601k      0 --:--:-- --:--:-- --:--:-- 1601k``
+    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
+    |``                                    Dload  Upload   Total   Spent    Left  Speed``
+    |`` 100 3304k  100 3304k    0     0  2958k      0  0:00:01  0:00:01 --:--:-- 2958k``
+    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
+    |``                                    Dload  Upload   Total   Spent    Left  Speed``
+    |`` 100 1679k  100 1679k    0     0  1630k      0  0:00:01  0:00:01 --:--:-- 1630k``
+    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
+    |``                                    Dload  Upload   Total   Spent    Left  Speed``
+    |`` 100 3523k  100 3523k    0     0  3101k      0  0:00:01  0:00:01 --:--:-- 3099k``
+    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
+    |``                                    Dload  Upload   Total   Spent    Left  Speed``
+    |`` 100 1086k  100 1086k    0     0   943k      0  0:00:01  0:00:01 --:--:--  943k``
+    |``   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current``
+    |``                                    Dload  Upload   Total   Spent    Left  Speed``
+    |`` 100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k``
     | 
     | 
-    |  - created input file directory: /Users/ashleychontos/Desktop/pysyd/info 
-    |  - created data directory at /Users/ashleychontos/Desktop/pysyd/data 
-    |  - example data saved
-    |  - results will be saved to /Users/ashleychontos/Desktop/pysyd/results ``
+    |``  - created input file directory: /Users/ashleychontos/Desktop/pysyd/info``
+    |``  - created data directory at /Users/ashleychontos/Desktop/pysyd/data``
+    |``  - example data saved``
+    |``  - results will be saved to /Users/ashleychontos/Desktop/pysyd/results``
 
 which will print the absolute paths of all directories that are created during setup.
 
