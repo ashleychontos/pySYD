@@ -2,10 +2,12 @@
 Plots [``pysyd.plots``]
 ***********************
 
-## Introduction
+Introduction
+############
 
 
-## API
+API
+###
 
 All plotting routines.
 
