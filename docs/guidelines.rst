@@ -3,9 +3,9 @@
 
 .. _guidelines/index:
 
-********************
-Community Guidelines
-********************
+************
+Contributing
+************
 
 -----
 
