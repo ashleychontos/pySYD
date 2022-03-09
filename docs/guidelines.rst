@@ -15,7 +15,7 @@ Community Guidelines
 
 For most (if not all) questions/concerns, peeping our `discussions <https://github.com/ashleychontos/pySYD/discussions>`_ forum is an excellent place to start in case things have already been brought up or addressed.
 
-As a user and/or contributor, here are the guidelines we ask you to follow:
+As a contributor, here are the guidelines we ask you to follow:
 
 * :ref:`Question or problem <guidelines/question>`
 * :ref:`Issues & bugs <guidelines/issue>`
@@ -60,7 +60,7 @@ Ideally we would love to resolve all issues immediately but before fixing a bug,
 * provide the light curve and power spectrum data so that we can reproduce it from our end
 * what operating system you ran the software on and what version of the software you're using
 
-You can file new issues by filling out our `bug report template <>`_.
+You can file new issues by filling out our `bug report <https://github.com/ashleychontos/pySYD/issues/new?assignees=&labels=&template=bug_report.md>`_ template.
 
 -----
 
@@ -71,16 +71,27 @@ New features
 
 :raw-html:`&rightarrow;` Have an idea for a new feature or functionality?
 
-You can _request_ a new feature by submit an issue to our GitHub Repository. 
-If you would like to _implement_ a new feature, please submit an issue with
-a proposal for your work first, to be sure that we can use it.
+Indirect request 
+*****************
 
-Please consider what kind of change it is:
+If you come up with an idea for a new feature that you'd like to see implemented in 
+``pySYD`` but do not plan to do this yourself, you can submit an issue with our 
+`feature request <https://github.com/ashleychontos/pySYD/issues/new?assignees=&labels=&template=feature_request.md>`_ template.
+
+We welcome any and all ideas!
+
+Directly implement
+*******************
+
+However, if you come up with a brilliant idea that you'd like to take a stab at -- 
+Please first consider what kind of change it is:
 
 * For a **Major Feature**, first open an issue and outline your proposal so that it can be
   discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
   and help you to craft the change so that it is successfully accepted into the project.
-* **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
+* Any smaller or **Minor Features** can be crafted and directly submitted as a pull request. However,
+  before you submit a pull request, please see our :ref:`style guide <guidelines/style>` to facilitate
+  and expedite the merge process.
 
 -----
 
@@ -89,9 +100,9 @@ Please consider what kind of change it is:
 Contributing code
 #################
 
-:raw-html:`&rightarrow;`Do you want to contribute code?
+:raw-html:`&rightarrow;` Do you want to contribute code?
 
-We would love for you to contribute to `pySYD` and make it even better than it is today! 
+We would love for you to contribute to ``pySYD`` and make it even better than it is today! 
 
 -----
 
@@ -200,7 +211,7 @@ Pull Requests
 .. _guidelines/style:
 
 Style guide
------------
+###########
 
 ** A good rule of thumb is to try to make your code blend in with the surrounding code.
 
@@ -238,3 +249,10 @@ The new method of defining functions combines methods that were previously
 spread out over three different files [functions.js](src/functions.js),
 [buildHTML.js](src/buildHTML.js), [buildMathML.js](src/buildMathML.js) into a
 single file.  The goal is to have all functions use this new system.
+
+-----
+
+.. _guidelines/testing:
+
+Testing
+#######
