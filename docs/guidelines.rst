@@ -11,7 +11,7 @@ Community Guidelines
 
 .. note::
 
-    **We are continuously working towards our primary goal of accessible asteroseismology**
+    **Accessible asteroseismology is our primary goal**
 
 For most (if not all) questions/concerns, peeping our `discussions <https://github.com/ashleychontos/pySYD/discussions>`_ forum is an excellent place to start in case things have already been brought to our attention and/or addressed.
 
