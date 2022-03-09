@@ -79,6 +79,7 @@ that discusses the asteroseismic analysis and methodology.
 .. warning::
 
     **Citing et al.**
+    
     This work was only possible thanks to many powerful Python libraries -- we *strongly* 
     encourage you to also consider citing :ref:`its dependencies <installation/dependencies>`.
 
