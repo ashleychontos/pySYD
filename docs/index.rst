@@ -10,7 +10,7 @@ pySYD: |br| Automated Measurements |br| of Global Asteroseismic Parameters
 
 Asteroseismology, or the study of stellar oscillations, is a powerful tool
 for studying the internal structure of stars and determining their fundamental 
-properties. Specifically for stars similar to the Sun, turbulent near-surface 
+properties :cite:p:`aertz2021`. Specifically for stars similar to the Sun, turbulent near-surface 
 convection excites sound waves that propagate within the stellar cavity, and hence
 providing powerful constraints on stellar interiors that are inaccessible by 
 any other means. While it is well-established and widely-accepted as the gold 
@@ -32,18 +32,24 @@ is too small!
 
 
 Contributors
-============
+############
 
 Our list of contributors continues to grow!
 
 .. include:: CONTRIBUTORS.rst
+
+
+Bibliography
+############
+
+.. bibliography::
+    :cited:
 
 -----
 
 .. toctree::
    :maxdepth: 1
    :titlesonly:
-   :hidden: 
    :caption: Introduction
 
    installation
