@@ -8,7 +8,7 @@ from pysyd import models
 from pysyd import utils
 
 
-def set_plot_params():
+def _set_plot_params():
     """
     Sets the matplotlib parameters.
 
@@ -372,7 +372,7 @@ def plot_samples(star):
         plt.close()
 
 
-def plot_fits(star, color='lime'):
+def _plot_fits(star, color='lime'):
 
     npanels=len(star.models)+1
     d = utils.get_dict(type='plots')
@@ -462,7 +462,7 @@ def plot_fits(star, color='lime'):
         plt.close()
 
 
-def time_series(star, npanels=1):
+def _time_series(star, npanels=1):
 
     d = utils.get_dict(type='plots')
     x, y = d[npanels]['x'], d[npanels]['y']
@@ -483,7 +483,7 @@ def time_series(star, npanels=1):
         plt.close()
 
 
-def frequency_series(star, npanels=1):
+def _frequency_series(star, npanels=1):
 
     d = utils.get_dict(type='plots')
     x, y = d[npanels]['x'], d[npanels]['y']
@@ -506,7 +506,7 @@ def frequency_series(star, npanels=1):
         plt.close()
 
 
-def dnu_comparison(star, methods=['M','A','D'], markers=['o','D','^'], styles=['--','-.',':'],
+def _dnu_comparison(star, methods=['M','A','D'], markers=['o','D','^'], styles=['--','-.',':'],
                    colors=['#FF9408','#00A9E0','g'], names=['Maryum','Ashley','Dennis'], npanels=2):
 
     sig = 0.35*star.exp_dnu/2.35482 
