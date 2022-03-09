@@ -19,38 +19,42 @@ from pysyd import plots
 #
 
 class Target:
+    """
+    A pySYD pipeline target. Initialization stores all the relevant information and
+    checks/loads in data for the given target. pySYD no longer requires BOTH the time
+    series data and the power spectrum, but requires additional information via CLI if
+    the former is not provided i.e. cadence or nyquist frequency, the oversampling
+    factor (if relevant), etc.
+        
+    Attributes
+    ----------
+    star : int
+        the star ID
+    params : Dict[str,object]
+        the pipeline parameters
+    excess : Dict[str,object]
+        the parameters of the find excess routine
+    background : Dict[str,object]
+        the parameters relevant for the background-fitting procedure
+    globe : Dict[str,object]
+        parameters relevant for estimating global asteroseismic parameters numax and dnu
+    verbose : bool
+        if true, turns on the verbose output
+    
+    Parameters
+    ----------
+    args : argparse.Namespace
+        the parsed and updated command line arguments
+    
+    Methods
+    -------
+    TODO: Add methods
+    
+    """
 
     def __init__(self, star, args):
         """
-        A pySYD pipeline target. Initialization stores all the relevant information and
-        checks/loads in data for the given target. pySYD no longer requires BOTH the time
-        series data and the power spectrum, but requires additional information via CLI if
-        the former is not provided i.e. cadence or nyquist frequency, the oversampling
-        factor (if relevant), etc.
-    
-        Attributes
-        ----------
-        star : int
-            the star ID
-        params : Dict[str,object]
-            the pipeline parameters
-        excess : Dict[str,object]
-            the parameters of the find excess routine
-        background : Dict[str,object]
-            the parameters relevant for the background-fitting procedure
-        globe : Dict[str,object]
-            parameters relevant for estimating global asteroseismic parameters numax and dnu
-        verbose : bool
-            if true, turns on the verbose output
-    
-        Parameters
-        ----------
-        args : argparse.Namespace
-            the parsed and updated command line arguments
-
-        Methods
-        -------
-        TODO: Add methods
+        Creates a `pysyd.target.Target` object for each star that is processed.
 
         """
         self.name = star
@@ -332,7 +336,7 @@ class Target:
         return True
 
 
-    def get_white_noise(self):
+    def _get_white_noise(self):
         """
         Estimate the white noise level (in muHz) by taking the mean of
         the last 10% of the power spectrum.
@@ -346,7 +350,7 @@ class Target:
         self.noise = np.mean(self.random_pow[mask])
 
 
-    def estimate_initial_red(self, a=[]):
+    def _estimate_initial_red(self, a=[]):
         """
         Estimates amplitude of red noise components by using a smoothed version of the power
         spectrum with the power excess region masked out. This will take the mean of a specified 
@@ -384,7 +388,7 @@ class Target:
         self.a_orig = np.array(a)
 
 
-    def get_best_model(self):
+    def _get_best_model(self):
         """
         Determines the best-fit model for the stellar granulation background in the power spectrum
         by iterating through several models, where the initial guess for the number of Harvey-like 
@@ -485,7 +489,7 @@ class Target:
                 return True
 
 
-    def save_best_model(self, use='bic', test=True):
+    def _save_best_model(self, use='bic', test=True):
         """
         Saves information re: the selected best-fit model (for the stellar background).
         
@@ -533,7 +537,7 @@ class Target:
             self.background['results'][self.name]['white'].append(self.pars[-1])
 
 
-    def get_red_noise(self):
+    def _get_red_noise(self):
         """
         Calculates red noise level, or stellar background contribution, from power spectrum.
 
@@ -829,7 +833,7 @@ class Target:
 # Functions related to making the echelle diagram
 #
 
-    def get_ridges(self):
+    def _get_ridges(self):
         """
         Create echelle diagram.
 
