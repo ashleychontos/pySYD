@@ -1,6 +1,6 @@
 **Main author:** Ashley Chontos (`email <achontos@hawaii.edu>`_ | `website <https://ashleyin.space>`_)
 
-**All contributors:**
+**All contributors (listed alphabetically):**
 
 * Ashley Chontos (`@ashleychontos <https://github.com/ashleychontos>`_)
 * Sam Grayson (`@charmoniumQ <https://github.com/charmoniumQ>`_)
