@@ -6,11 +6,12 @@ Thank you for visiting the ``pySYD`` user guide! This is currently be expanded a
 find any errors or stale links.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
 
    cli
    pipeline
+   utils
    target
-   models
-   utils	      
+   models	      
    plots
+   tutorial
