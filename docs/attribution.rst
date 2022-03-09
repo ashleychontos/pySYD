@@ -76,10 +76,10 @@ framework from ``SYD``, we ask that you please cite `the original paper <https:/
 that discusses the asteroseismic analysis and methodology. 
 
 
-Citing et al.
-*************
+.. warning::
 
-This work was only possible thanks to many powerful Python libraries -- we *strongly* 
-encourage you to also cite :ref:`its dependencies <installation/dependencies>`.
+    **Citing et al.**
+    This work was only possible thanks to many powerful Python libraries -- we *strongly* 
+    encourage you to also consider citing :ref:`its dependencies <installation/dependencies>`.
 
 -----
