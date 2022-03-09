@@ -38,13 +38,6 @@ Our list of contributors continues to grow!
 
 .. include:: CONTRIBUTORS.rst
 
-
-Bibliography
-############
-
-.. bibliography::
-    :cited:
-
 -----
 
 .. toctree::
@@ -60,13 +53,18 @@ Bibliography
    
    
 .. toctree::
-   :maxdepth: 1
    :titlesonly:
    :hidden:
    :caption: Advanced
    
-   questions
+   Community Guidelines <guidelines>
    advanced
-   guide/index
-   guidelines
-   
+   User Guide <guide/index>
+   FAQs <questions>
+
+
+Bibliography
+############
+
+.. bibliography::
+    :cited:
