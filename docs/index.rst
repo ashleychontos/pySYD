@@ -38,11 +38,6 @@ Our list of contributors continues to grow!
 
 .. include:: CONTRIBUTORS.rst
 
-.. link-button:: installation
-   :type: ref
-   :text: Learn how to get started!
-   :class: btn-outline-secondary btn-block
-
 -----
 
 .. toctree::
@@ -52,20 +47,18 @@ Our list of contributors continues to grow!
    :caption: Introduction
 
    installation
+   getting_started
    glossary
    attribution
-   guidelines
    
    
 .. toctree::
    :maxdepth: 1
-   :titlesonly:
    :hidden:
    :caption: Advanced
    
-   overview
-   performance
    questions
    advanced
    guide/index
+   guidelines
    
