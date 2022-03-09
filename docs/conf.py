@@ -255,6 +255,10 @@ extensions = [
     'sphinx.ext.todo',
  ]
 
+# So sphinx-panels does not include its own CSS classes (different format than rest)
+# or at least try this idk
+panels_add_bootstrap_css = False
+
 # Bibliography:
 bibtex_bibfiles = ['references.bib']
 bibtex_reference_style = 'author_year'
