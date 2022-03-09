@@ -50,6 +50,7 @@ Bibliography
 .. toctree::
    :maxdepth: 1
    :titlesonly:
+   :hidden:
    :caption: Introduction
 
    installation
