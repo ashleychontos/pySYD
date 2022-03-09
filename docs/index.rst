@@ -1,12 +1,6 @@
 .. |br| raw:: html
 
    <br />
-   
-.. raw:: html
-
-     <style> .font {font-family:'Courier New'} </style><style> .red {color:red} </style>
-
-.. role:: font
 
 .. module:: pysyd
 
@@ -19,9 +13,9 @@ for studying the internal structure of stars and determining their fundamental
 properties. Specifically for stars similar to the Sun, turbulent near-surface 
 convection excites sound waves that propagate within the stellar cavity, and hence
 providing powerful constraints on stellar interiors that are inaccessible by 
-any other means. :font:`While it is well-established and widely-accepted as the gold 
+any other means. While it is well-established and widely-accepted as the gold 
 standard for characterizing fundamental stellar properties (e.g., masses, radii,
-ages, etc.), asteroseismology is still mostly a niche field and closed-door science.` 
+ages, etc.), asteroseismology is still mostly a niche field and closed-door science. 
 
 In an effort to make asteroseismology more accessible to the broader astronomy
 community, ``pySYD`` was established as a Python package to automatically detect
@@ -59,7 +53,7 @@ Our list of contributors continues to grow!
 
    installation
    glossary
-   citing
+   attribution
    guidelines
    
    
