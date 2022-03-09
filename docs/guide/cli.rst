@@ -4,13 +4,14 @@
 Command Line Interface
 **********************
 
+-----
 
-In order to maximize the performance of the software, we have included many optional commands to help identify the
-best possible asteroseismic parameters in even the lowest signal cases. 
+Please keep in mind that ``pySYD`` was developed with the intent that it would be primarily used
+as a command-line tool. However, we acknowledge that this is not convenient for everyone and have
+therefore provided some tutorials on how to use it in a Jupyter notebook.
 
-
-CLI
-==========
+Help
+####
 
 From a terminal window, running the ``pySYD`` help command for the main pipeline execution (i.e. ``pysyd.run``)
 will display the following output:
@@ -164,14 +165,16 @@ features.
 Additionally, we have examples of some put to use in :ref:`advanced usage<advanced>` 
 and also have included a brief :ref:`tutorial` below that describes some of these commands.
 
+-----
 
+.. _cli/commands:
 
-Commands
-===========
+Available commands
+###################
 
-Due to the large number of options, we have sorted parameters both into relevant science :ref:`groups<groups>`
-and also listed them by their :ref:`object type<inputtype>`. 
-
+Due to the large number of available commands, we have sorted parameters by:
+* :ref:`related groups <cli/groups>`
+* :ref:`option types <cli/types>`
 
 .. note::
 
@@ -187,13 +190,27 @@ and also listed them by their :ref:`object type<inputtype>`.
      4. Include the model metrics and values with the verbose output (``-i``, ``--include``).
      
 
-.. _groups:
+.. _cli/groups:
 
-Groups
-********
+By related topics
+*****************
+
+Jump to:
+* :ref:`high-level functions <cli/groups/high>`
+* :ref:`data analyses <cli/groups/data>`
+* :ref:`estimating numax <cli/groups/est>`
+* :ref:`granulation background <cli/groups/bg>`
+* :ref:`final numax <cli/groups/numax>`
+* :ref:`final dnu <cli/groups/dnu>`
+* :ref:`echelle diagram <cli/groups/ech>`
+* :ref:`estimating uncertainties <cli/groups/mc>`
+* :ref:`parallel processing <cli/groups/pp>`
+
+
+.. _cli/groups/high:
 
 High-level functionality
-```````````````````````````
+````````````````````````
 
 All ``pySYD`` modes inherent the parent parser, which includes the properties 
 enumerated below. With the exception of the ``verbose`` command, most of these
@@ -234,8 +251,10 @@ used very sparingly.
    * action = ``store_true``
 
 
+.. _cli/groups/data:
+
 Data analyses
-```````````````````````````
+`````````````
 
 The following features are primarily related to the initial and final treatment of
 data products, including information about the input data, how to process and save
@@ -312,8 +331,10 @@ the data as well as which modules to run.
    * action = ``store_false``
 
 
+.. _cli/groups/est:
+
 Estimating numax
-```````````````````````````
+````````````````
 
 The following options are relevant for the first, optional module that is designed
 to estimate numax if it is not known: 
@@ -364,8 +385,10 @@ to estimate numax if it is not known:
    * unit = muHz
 
 
+.. _cli/groups/bg:
+
 Granulation background
-```````````````````````````
+``````````````````````
 
 Below is a complete list of parameters relevant to the background-fitting routine:
 
@@ -428,9 +451,10 @@ Below is a complete list of parameters relevant to the background-fitting routin
    * unit = muHz
 
 
+.. _cli/groups/numax:
    
 Deriving numax
-```````````````````````````
+``````````````
 
 All of the following parameters are related to deriving numax, or the frequency
 corresponding to maximum power:
@@ -467,8 +491,10 @@ corresponding to maximum power:
    * unit = muHz
 
 
+.. _cli/groups/dnu:
+
 Deriving dnu
-```````````````````````````
+````````````
 
 Below are all options related to the characteristic frequency spacing (dnu):
 
@@ -501,8 +527,10 @@ Below are all options related to the characteristic frequency spacing (dnu):
    * default = ``1.0``
    
 
+.. _cli/groups/ech:
+
 Echelle diagram
-```````````````````````````
+```````````````
 
 All customizable options relevant for the echelle diagram output:
 
@@ -566,10 +594,12 @@ All customizable options relevant for the echelle diagram output:
    * type = ``bool``
    * default = ``False``
    * action = ``store_true``
-   
+
+
+.. _cli/groups/mc:
    
 Estimating uncertainties
-```````````````````````````
+````````````````````````
 
 All CLI options relevant for the Monte-Carlo sampling:
 
@@ -586,8 +616,10 @@ All CLI options relevant for the Monte-Carlo sampling:
    * action = ``store_true``
   
 
+.. _cli/groups/pp:
+
 Parallel processing
-```````````````````````````
+```````````````````
 
 Additional option for the number of threads to use when running stars in parallel.
 
@@ -606,14 +638,23 @@ Additional option for the number of threads to use when running stars in paralle
     of the input power spectrum.
 
 
-.. _inputtype:
+.. _cli/types:
 
 
-Types
-*********
+By option types
+***************
+
+Jump to:
+* :ref:`booleans <cli/types/bool>`
+* :ref:`integers <cli/types/int>`
+* :ref:`floats <cli/types/float>`
+* :ref:`strings <cli/types/str>`
+
+
+.. _cli/types/bool:
 
 ``boolean``
-``````````````
+````````````
 
 Our boolean flags are sorted alphabetically by the single hash flag (and span almost the
 entire English alphabet):
@@ -710,8 +751,10 @@ entire English alphabet):
    * action = ``store_true``
 
 
+.. _cli/types/int:
+
 ``integer``
-```````````````
+```````````
 
 - ``--laws``, ``--nlaws``
    * dest = ``args.n_laws``
@@ -754,6 +797,8 @@ entire English alphabet):
    * help = Number of trials to estimate numax
    * default = `3`
 
+
+.. _cli/types/float:
 
 ``float``
 ````````````
@@ -866,9 +911,10 @@ entire English alphabet):
    * unit = muHz
 
 
+.. _cli/types/str:
 
 ``string``
-````````````
+``````````
 
 
 - ``--basis``
