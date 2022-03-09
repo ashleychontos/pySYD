@@ -116,21 +116,21 @@ Or we will try this:
 
 ::
 
-    **usage:** pySYD [-h] [-version] {load,parallel,run,setup,test} ...
+    usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
     
-    **pySYD:** Automated Extraction of Global Asteroseismic Parameters
+    pySYD: Automated Extraction of Global Asteroseismic Parameters
     
-    **optional arguments:**
+    optional arguments:
       -h, --help            show this help message and exit
       \-version, --version   Print version number and exit.
      
-    **pySYD modes:**
+    pySYD modes:
       {load,parallel,run,setup,test}
-        **load**                Load in data for a given target
-        **parallel**            Run pySYD in parallel
-        **run**                 Run the main pySYD pipeline
-        **setup**               Easy setup of relevant directories and files
-        **test**                Test different utilities (currently under development)
+        load                Load in data for a given target
+        parallel            Run pySYD in parallel
+        run                 Run the main pySYD pipeline
+        setup               Easy setup of relevant directories and files
+        test                Test different utilities (currently under development)
 
 
 -----
