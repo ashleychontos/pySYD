@@ -9,21 +9,18 @@ Community Guidelines
 
 -----
 
-.. class:: center
+.. note::
 
-**We are continuously working towards our primary goal of accessible asteroseismology**
-
- 
------
+    **We are continuously working towards our primary goal of accessible asteroseismology**
 
 For most (if not all) questions/concerns, peeping our `discussions <https://github.com/ashleychontos/pySYD/discussions>`_ forum is an excellent place to start in case things have already been brought up or addressed.
 
 As a user and/or contributor, here are the guidelines we ask you to follow:
 
-* :ref:`Question or problem? <guideslines/question>`
+* :ref:`Question or problem <guidelines/question>`
 * :ref:`Issues & bugs <guidelines/issue>`
-* :ref:`New ideas <guidelines/feature>`
-* :ref:`Contributing? <guidelines/contribute>`
+* :ref:`New features <guidelines/feature>`
+* :ref:`Contributing code <guidelines/contribute>`
 * :ref:`Style guide <guidelines/style>`
 * :ref:`Testing <guidelines/testing>`
 
@@ -31,17 +28,27 @@ As a user and/or contributor, here are the guidelines we ask you to follow:
 
 .. _guidelines/question:
 
-:raw-html:`&rightarrow;` Do you have a general question that is not directly related to software functionality?
+Question or problem
+###################
 
-**Please do *not* open 'issues' for general support questions as we want to preserve them for bug reports and new feature requests ONLY.** Therefore to save everyone time, we will be systematically closing all issues that do not follow these guidelines. Besides, you've got a much better chance of getting your question answered in our [discussion forum](stackoverflow.com/questions/tagged/angular-devtools). PLUS... we may already have the answer for you! 
+:raw-html:`&rightarrow;` Do you have a general question that is not directly related to software functionality?
 
 Please visit our relevant `thread <https://github.com/ashleychontos/pySYD/discussions/37#discussion-3918112>`_ first to see if your question has already been asked. You can also help us keep this space up-to-date, linking topics/issues to relevant threads and adding appropriate tags whenever/wherever possible. This is not only helpful to us but also helpful for the community! Once we have enough data points, we will establish a forum for frequently asked questions (FAQ).
 
-If this still does not work for you and you would like to chat with someone in real-time, please contact `Ashley <mailto:achontos@hawaii.edu>`_ to set up a call or zoom meeting.
+.. warning::
+
+    **Please do not open 'issues' for general support questions as we want to preserve them for bug reports** 
+    **and new feature requests ONLY.** Therefore to save everyone time, we will be systematically closing all 
+    issues that do not follow these guidelines.
+
+If this still does not work for you and you would like to chat with someone in real-time, please contact `Ashley <mailto:achontos@hawaii.edu>`_ to set up a chat or zoom meeting.
 
 -----
 
 .. _guidelines/issue:
+
+Issues & bugs
+#############
 
 :raw-html:`&rightarrow;` Are you reporting a bug?
 
@@ -49,33 +56,40 @@ If this still does not work for you and you would like to chat with someone in r
 
 Ideally we would love to resolve all issues immediately but before fixing a bug, we first to need reproduce and confirm it. There is a template of the required information when you submit an issue, but generally we ask that:
 
-- clearly and concisely explain the issue or bug
-- provide the light curve and power spectrum data so that we can reproduce it from our end
-- what operating system you ran the software on and what version of the software you're using
+* clearly and concisely explain the issue or bug
+* provide the light curve and power spectrum data so that we can reproduce it from our end
+* what operating system you ran the software on and what version of the software you're using
 
-You can file new issues by filling out our blank.
+You can file new issues by filling out our `bug report template <>`_.
 
 -----
 
 .. _guidelines/feature:
 
+New features
+############
+
 :raw-html:`&rightarrow;` Have an idea for a new feature or functionality?
 
-You can _request_ a new feature by submit an issue to our GitHub
-Repository. If you would like to _implement_ a new feature, please submit an issue with
+You can _request_ a new feature by submit an issue to our GitHub Repository. 
+If you would like to _implement_ a new feature, please submit an issue with
 a proposal for your work first, to be sure that we can use it.
+
 Please consider what kind of change it is:
 
-- For a **Major Feature**, first open an issue and outline your proposal so that it can be
+* For a **Major Feature**, first open an issue and outline your proposal so that it can be
   discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
   and help you to craft the change so that it is successfully accepted into the project.
-- **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
+* **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
 
 -----
 
 .. _guidelines/contribute:
 
-:raw-html:`&rightarrow;` Do you want to contribute code?
+Contributing code
+#################
+
+:raw-html:`&rightarrow;`Do you want to contribute code?
 
 We would love for you to contribute to `pySYD` and make it even better than it is today! 
 
@@ -180,19 +194,6 @@ Pull Requests
  - new commands should be added to `docs/support_table.md` and `docs/supported.md`
  - commits should be squashed before merging
  - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
- 
-.. _guidelines/testing:
-
-Testing
-+++++++
-
-Local testing can be done by running the webpack-dev-server using configuration
-`webpack.dev.js`. Run `yarn` to install dependencies, and then `yarn start`
-to start the server.
-
-This will host an interactive editor at
-[http://localhost:7936/](http://localhost:7936/) to play around with and test
-changes.
 
 ----------
 
@@ -201,24 +202,27 @@ changes.
 Style guide
 -----------
 
+** A good rule of thumb is to try to make your code blend in with the surrounding code.
+
 Code
 ++++
- - 4 spaces for indentation
- - 80 character line length
- - commas last
- - declare variables in the outermost scope that they are used
- - camelCase for variables in JavaScript and for classes/objects in Python
- - snake_case for variables in Python
+ * 4 spaces for indentation (i.e. no tabs please)
+ * 80 character line length
+ * commas last
+ * declare variables in the outermost scope that they are used
+ * camelCase for variables in JavaScript and for classes/objects in Python
+ * snake_case for variables in Python
 
-** A good rule of thumb is to try to make your code blend in with the surrounding code.
+Docstrings
+++++++++++
 
 Coding Rules
 ++++++++++++
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
-- All features or bug fixes **must be tested** by one or more specs (unit-tests).
-- We follow [Google's JavaScript Style Guide][js-style-guide].
+* All features or bug fixes **must be tested** by one or more specs (unit-tests).
+* We follow [Google's JavaScript Style Guide][js-style-guide].
 
 Adding new functions
 
