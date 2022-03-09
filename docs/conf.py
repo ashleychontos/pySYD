@@ -17,6 +17,7 @@ import sys
 import pathlib
 import datetime
 import warnings
+import nbsphinx
 from importlib import import_module
 
 nbsphinx_allow_errors = True
