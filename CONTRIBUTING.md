@@ -28,9 +28,9 @@ Please visit our relevant [thread](https://github.com/ashleychontos/pySYD/discus
 ---
 **NOTE**
 
-Please do not open an issue for general support questions as we want to preserve them for bug reports
+**Please do not open an issue for general support questions as we want to preserve them for bug reports
 and new feature requests ONLY. Therefore to save everyone time, we will be systematically closing all 
-issues that do not follow these guidelines.
+issues that do not follow these guidelines.**
 
 ---
 
