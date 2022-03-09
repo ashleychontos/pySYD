@@ -5,6 +5,15 @@ Models [``pysyd.models``]
 Introduction
 #############
 
+Imports
+#######
+
+Usage
+#####
+
+Examples
+########
+
 API
 ###
 
