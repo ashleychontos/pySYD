@@ -9,7 +9,7 @@ from pysyd.target import Target
 # Main function that assigns functions for different pySYD modes 
 #
 
-def main(args=None):
+def _main(args=None):
     """
     Main script to run the pySYD pipeline
 
