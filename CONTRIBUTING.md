@@ -19,7 +19,7 @@ As a contributor, here are the guidelines we ask you to follow:
 * [Testing](#testing)
 
 <a name="question"></a>
-### Question or problem
+## Question or problem
 
 &rightarrow; Do you have a general question that is not directly related to software functionality?
 
@@ -37,7 +37,7 @@ issues that do not follow these guidelines.
 If this still does not work for you and you would like to chat with someone in real-time, please contact [Ashley](mailto:achontos@hawaii.edu) to set up a chat or zoom meeting.
 
 <a name="issue"></a>
-### Issues & bugs
+## Issues & bugs
 
 &rightarrow; Are you reporting a bug?
 
@@ -52,12 +52,12 @@ Ideally we would love to resolve all issues immediately but before fixing a bug,
 You can file new issues by filling out our [bug report](https://github.com/ashleychontos/pySYD/issues/new?assignees=&labels=&template=bug_report.md) template.
 
 <a name="feature"></a>
-### New features
+## New features
 
 &rightarrow; Have an idea for a new feature or functionality?
 
 
-#### Indirect request 
+### Indirect request 
 
 If you come up with an idea for a new feature that you'd like to see implemented in 
 ``pySYD`` but do not plan to do this yourself, you can submit an issue with our 
@@ -66,7 +66,7 @@ If you come up with an idea for a new feature that you'd like to see implemented
 We welcome any and all ideas!
 
 
-#### Directly implement
+### Directly implement
 
 However, if you come up with a brilliant idea that you'd like to take a stab at -- 
 please first consider what kind of change it is:
@@ -80,13 +80,13 @@ please first consider what kind of change it is:
   the merge process.
 
 <a name="contribute"></a>
-### Contributing code
+## Contributing code
 
 &rightarrow; Do you want to contribute code?
 
 We would love for you to contribute to `pySYD` and make it even better than it is today! 
 
-#### Submitting a Pull Request (PR)
+### Submitting a Pull Request (PR)
 
 **PR reminders:**
  - PR title and description should be as clear as possible
@@ -96,11 +96,11 @@ We would love for you to contribute to `pySYD` and make it even better than it i
  - new commands should be added to `docs/support_table.md` and `docs/supported.md`
 
 <a name="style"></a>
-### Style guide
+## Style guide
 
 &rightarrow; A good rule of thumb is to try to make your code blend in with the surrounding code
 
-#### Code
+### Code
  * 4 spaces for indentation (i.e. no tabs please)
  * 80 character line length
  * commas last
@@ -108,11 +108,11 @@ We would love for you to contribute to `pySYD` and make it even better than it i
  * camelCase for classes/objects in Python
  * snake_case for variables in Python
 
-#### Docstrings
+### Docstrings
  * compliant with PEP 257
  * numpydoc
 
-#### Coding Rules
+### Coding Rules
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
@@ -120,4 +120,4 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 * We follow [Google's JavaScript Style Guide][js-style-guide].
 
 <a name="testing"></a>
-### Testing
+## Testing
