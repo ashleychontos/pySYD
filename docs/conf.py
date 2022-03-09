@@ -110,8 +110,8 @@ intersphinx_mapping = {
 
 
 project = 'pySYD'
-copyright = '2022, Ashley Chontos and contributors.'
-author = 'Ashley Chontos and contributors.'
+copyright = '2022, Ashley Chontos and contributors'
+author = 'Ashley Chontos and contributors'
 
 # This does not *have* to match the package name, but typically does
 #project = setup_cfg['name']
