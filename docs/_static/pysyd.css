@@ -41,17 +41,18 @@ div.output_area div[class*=highlight] pre {
 h1 {
   font-family: "Lato", sans-serif;
   color: #013243; /* warm black */
+  letter-spacing: -.02em;
 }
 
 
 h2 {
   color: #4d77cf; /* han blue */
-  letter-spacing: -.03em;
+  letter-spacing: -.02em;
 }
 
 h3 {
-  color: #013243; /* warm black */
-  letter-spacing: -.03em;
+  color: #ffa500; /* warm black */
+  letter-spacing: -.02em;
 }
 
 /* Override some aspects of the pydata-sphinx-theme: taken from Pandas */
