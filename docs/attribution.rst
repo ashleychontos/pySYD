@@ -1,25 +1,29 @@
-.. _citing/main:
+.. _attribution/index:
 
-******
-Citing
-******
+***********
+Attribution
+***********
 
-.. _citing/current:
+-----
 
-#################
-Current Citations
-#################
+.. _attribution/projects:
 
-.. link-button:: https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C/citations
-    :type: url
-    :text: Click here to see projects that have already used pySYD!
-    :classes: btn-outline-secondary
+Projects w/ ``pySYD``
+#####################
 
-################
-Future Citations
-################
+We have added a project thread in the public ``pySYD`` repo called `Projects w/ pySYD <https://github.com/ashleychontos/pySYD/discussions/28>`_.
+Please consider adding to this in any way -- anything from early results, figures, student projects to published manuscripts, posters,
+or any other ``pySYD``-related shoutouts. We would love to see what you are using ``pySYD`` for firsthand!
 
-If you found ``pySYD`` useful and make use of it in your work, please cite our `JOSS paper <https://arxiv.org/abs/2108.00582>`_:
+-----
+
+Citations
+#########
+
+Citing ``pySYD``
+****************
+
+If you make use of ``pySYD`` in your work, please cite our `JOSS paper <https://arxiv.org/abs/2108.00582>`_:
 
 .. code-block::
 
@@ -57,21 +61,25 @@ If applicable, please also use our `ASCL listing <https://ui.adsabs.harvard.edu/
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
 
-.. warning::
+.. link-button:: https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C/citations
+    :type: url
+    :text: Click here to see projects that have already used pySYD!
+    :classes: btn-outline-secondary
 
-    ``pySYD`` is only possible thanks to many powerful Python libraries -- we *strongly* 
-    encourage you to also cite :ref:`its dependencies <installation/dependencies>`.
+
+Citing ``SYD``
+**************
+
+``pySYD`` is a python-based implementation of the IDL-based ``SYD`` pipeline, which was extensively
+used to measure asteroseismic parameters for *Kepler* stars. Since ``pySYD`` adapted the well-tested 
+framework from ``SYD``, we ask that you please cite `the original paper <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H>`_ 
+that discusses the asteroseismic analysis and methodology. 
 
 
-----
+Citing et al.
+*************
 
-.. _citing/projects:
-
-Projects w/ ``pySYD``
-=====================
-
-We added a project thread in the public repository called `Projects w/ pySYD <https://github.com/ashleychontos/pySYD/discussions/28>`_.
-Please consider adding to this in any way -- anything from early results, figures, student projects to published manuscripts, posters,
-or any other ``pySYD``-related shoutouts. We would love to see firsthand what you are using ``pySYD`` for!
+This work was only possible thanks to many powerful Python libraries -- we *strongly* 
+encourage you to also cite :ref:`its dependencies <installation/dependencies>`.
 
 -----
