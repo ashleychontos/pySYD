@@ -5,6 +5,15 @@ Utilities [``pysyd.utils``]
 Introduction
 ############
 
+Imports
+#######
+
+Usage
+#####
+
+Examples
+########
+
 API
 ###
 
