@@ -8,13 +8,16 @@
 Attribution
 ***********
 
-There are many people to thank for the completion of this project. As alluded to earlier, our list of contributors
-continues to grow!
+There are many people to thank for the completion of this project. First and foremost, the original translation of
+this work was based on the IDL-based ``SYD`` pipeline -- which was written by my PhD advisor, Daniel Huber, during
+his PhD. Therefore, none of this would have been possible without those years of work!
+
+And finally, as alluded to earlier, our list of contributors continues to grow!
 
 .. include:: CONTRIBUTORS.rst
 
-Plus we have amazing collaborators that have helped with the development and improving the user-fiendly aspect of the
-software. Many thanks to:
+Plus we have many amazing collaborators that have helped with the development of the software, and in particular, the 
+improvements which have ultimately made ``pySYD`` more user-friendly. So many thanks to: 
 
 .. include:: COLLABORATORS.rst
 
@@ -43,21 +46,21 @@ If you make use of ``pySYD`` in your work, please cite our `JOSS paper <https://
 
 .. code-block::
 
-    |@article{2021arXiv210800582C,
-    |       author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
-    |        title = "{$\texttt{pySYD}$: Automated measurements of global asteroseismic parameters}",
-    |      journal = {arXiv e-prints},
-    |     keywords = {Astrophysics - Solar and Stellar Astrophysics, Astrophysics - Instrumentation and Methods for Astrophysics},
-    |         year = 2021,
-    |        month = aug,
-    |          eid = {arXiv:2108.00582},
-    |        pages = {arXiv:2108.00582},
-    |archivePrefix = {arXiv},
-    |       eprint = {2108.00582},
-    | primaryClass = {astro-ph.SR}, 
-    |       adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},
-    |      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
-    |}
+    | @article{2021arXiv210800582C,
+    |        author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
+    |         title = "{$\texttt{pySYD}$: Automated measurements of global asteroseismic parameters}",
+    |       journal = {arXiv e-prints},
+    |      keywords = {Astrophysics - Solar and Stellar Astrophysics, Astrophysics - Instrumentation and Methods for Astrophysics},
+    |          year = 2021,
+    |         month = aug,
+    |           eid = {arXiv:2108.00582},
+    |         pages = {arXiv:2108.00582},
+    | archivePrefix = {arXiv},
+    |        eprint = {2108.00582},
+    |  primaryClass = {astro-ph.SR}, 
+    |        adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},
+    |       adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+    | }
 
 If applicable, please also use our `ASCL listing <https://ui.adsabs.harvard.edu/abs/2021ascl.soft11017C>`_ as a software citation:
 
