@@ -19,7 +19,7 @@ from pysyd.models import *
 # HIGHER-LEVEL FUNCTIONALITY OF THE SOFTWARE
 #
 
-def get_info(args):
+def _get_info(args):
     """
     Loads todo.txt, sets up file paths, loads in any available star information, saves the 
     relevant parameters for each of the two main routines and sets the plotting parameters.
@@ -52,7 +52,7 @@ def get_info(args):
     return args
 
 
-def get_parameters(args):
+def _get_parameters(args):
     """
     Basic function to call the individual functions that load and
     save parameters for different modules.
@@ -349,7 +349,7 @@ def get_global_params(args, sm_par=None, lower_ps=None, upper_ps=None, width=1.0
 # Can store different settings for individual stars
 #
 
-def get_csv_info(args, force=False, guess=None):
+def _get_csv_info(args, force=False, guess=None):
     """
     Reads in any star information provided via args.info and is 'info/star_info.csv' by default. 
     ** Please note that this is NOT required for pySYD to run successfully **
@@ -557,7 +557,7 @@ def load_data(star, args):
     return star
 
 
-def load_file(path):
+def _load_file(path):
     """
     Load a light curve or a power spectrum from a basic 2xN txt file
     and stores the data into the `x` (independent variable) and `y`
@@ -695,7 +695,7 @@ def load_power_spectrum(args, star, note='', long=10**6):
 # -> this will save the seed for reproducibiity purposes
 #
 
-def set_seed(star, lower=1, upper=10**7, size=1):
+def _set_seed(star, lower=1, upper=10**7, size=1):
     """
     For Kepler targets that require a correction via CLI (--kc), a random seed is generated
     from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
@@ -959,7 +959,7 @@ def get_estimates(star, max_trials=6):
 # Still needs to be tested: no estimate of numax but global fit
 #
 
-def check_numax(star):
+def _check_numax(star):
     """
     Checks if there is a starting value for numax as pySYD needs this information to begin the 
     second module (whether be it from the first module, CLI or saved to info/star_info.csv).
@@ -997,7 +997,7 @@ def check_numax(star):
 # Sets data up for the derivation of asteroseismic parameters
 #
 
-def get_initial(star, lower_bg=1.0):
+def _get_initial(star, lower_bg=1.0):
     """
     Gets initial guesses for granulation components (i.e. timescales and amplitudes) using
     solar scaling relations. This resets the power spectrum and has its own independent
@@ -1058,7 +1058,7 @@ def get_initial(star, lower_bg=1.0):
 # several parameters
 #
 
-def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=1.0):
+def _solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=1.0):
     """
     Uses scaling relations from the Sun to:
     1) estimate the width of the region of oscillations using numax
@@ -1124,7 +1124,7 @@ def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=1
 # Save information
 #
 
-def save_file(star, formats=[">15.8f", ">18.10e"]):
+def _save_file(star, formats=[">15.8f", ">18.10e"]):
     """
     Saves the corrected power spectrum, which is computed by subtracting
     the best-fit stellar background model from the power spectrum.
@@ -1157,7 +1157,7 @@ def save_file(star, formats=[">15.8f", ">18.10e"]):
         print(' **background-corrected PS saved**')
 
 
-def save_estimates(star):
+def _save_estimates(star):
     """
     Save the results of the find excess routine into the save folder of the current star.
 
@@ -1176,7 +1176,7 @@ def save_estimates(star):
     ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
 
 
-def save_results(star):
+def _save_results(star):
     """
     Saves the results of the `fit_background` module.
 
@@ -1213,7 +1213,7 @@ def save_results(star):
 # Optional verbose output function
 #
 
-def verbose_output(star):
+def _verbose_output(star):
     """
     If `True`, prints results from the global asteroseismic fit.
 
@@ -1244,7 +1244,7 @@ def verbose_output(star):
 # Concatenates data for individual stars into a single csv
 #
 
-def scrape_output(args):
+def _scrape_output(args):
     """
     Grabs each individual star's results and concatenates results into a single csv in info/ for each submodule
     (i.e. excess.csv and background.csv). This is automatically called if the pySYD is successfully executed for 
@@ -1285,7 +1285,7 @@ def scrape_output(args):
 # Read in large python containers (dictionaries) 
 #
 
-def get_dict(type='params'):
+def _get_dict(type='params'):
     """
     Quick function to read in longer python dictionaries, which is primarily used in
     the utils script (i.e. verbose_output, scrape_output) and in the pipeline script 
@@ -1323,7 +1323,7 @@ def get_dict(type='params'):
 # written without compromising previous results
 #
 
-def get_next(star, ext, count=1):
+def _get_next(star, ext, count=1):
     """
     Determines the next path when disabling the overwriting of saved files
 
@@ -1358,7 +1358,7 @@ def get_next(star, ext, count=1):
 # Function to get the highest peaks in an array
 #
 
-def max_elements(x, y, npeaks, exp_dnu=None):
+def _max_elements(x, y, npeaks, exp_dnu=None):
     """
     Get the x,y values for the n highest peaks in a power
     spectrum. 
@@ -1398,7 +1398,7 @@ def max_elements(x, y, npeaks, exp_dnu=None):
 # Function to get the singular maximum in an array
 #
 
-def return_max(x_array, y_array, exp_dnu=None, index=False):
+def _return_max(x_array, y_array, exp_dnu=None, index=False):
     """
     Return the either the value of peak or the index of the peak corresponding to the most likely dnu given a prior estimate,
     otherwise just the maximum value.
@@ -1441,7 +1441,7 @@ def return_max(x_array, y_array, exp_dnu=None, index=False):
         return x_array[idx], y_array[idx]
 
 
-def bin_data(x, y, width, log=False, mode='mean'):
+def _bin_data(x, y, width, log=False, mode='mean'):
     """
     Bins a series of data.
 
@@ -1493,7 +1493,7 @@ def bin_data(x, y, width, log=False, mode='mean'):
 # solar) physical values in cgs.
 #
 
-def ask_int(question, n_trials, max_attempts=10, count=1, special=False):    
+def _ask_int(question, n_trials, max_attempts=10, count=1, special=False):    
     """
     Ask for an integer user input.
 
@@ -1540,7 +1540,7 @@ def ask_int(question, n_trials, max_attempts=10, count=1, special=False):
     return None
 
 
-def delta_nu(numax):
+def _delta_nu(numax):
     """
     Estimates dnu using numax scaling relation.
 
