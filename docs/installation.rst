@@ -122,7 +122,7 @@ Or we will try this:
     
     optional arguments:
       -h, --help            show this help message and exit
-      \-version, --version   Print version number and exit.
+      -version, --version   Print version number and exit.
      
     pySYD modes:
       {load,parallel,run,setup,test}
@@ -159,7 +159,7 @@ The optional verbose command can be called with the setup feature:
     
     | Downloading relevant data from source directory:
     | 
-    | /Users/ashleychontos/Desktop/info``
+    | /Users/ashleychontos/Desktop/info
     |   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
     |                                    Dload  Upload   Total   Spent    Left  Speed
     | 100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49
