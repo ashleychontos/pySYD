@@ -13,7 +13,7 @@ Community Guidelines
 
     **We are continuously working towards our primary goal of accessible asteroseismology**
 
-For most (if not all) questions/concerns, peeping our `discussions <https://github.com/ashleychontos/pySYD/discussions>`_ forum is an excellent place to start in case things have already been brought up or addressed.
+For most (if not all) questions/concerns, peeping our `discussions <https://github.com/ashleychontos/pySYD/discussions>`_ forum is an excellent place to start in case things have already been brought to our attention and/or addressed.
 
 As a contributor, here are the guidelines we ask you to follow:
 
