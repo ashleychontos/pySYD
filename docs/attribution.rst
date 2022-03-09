@@ -1,3 +1,7 @@
+.. |br| raw:: html
+
+   <br />
+
 .. _attribution/index:
 
 ***********
@@ -13,7 +17,7 @@ Projects w/ ``pySYD``
 
 We have added a project thread in the public ``pySYD`` repo called `Projects w/ pySYD <https://github.com/ashleychontos/pySYD/discussions/28>`_.
 Please consider adding to this in any way -- anything from early results, figures, student projects to published manuscripts, posters,
-or any other ``pySYD``-related shoutouts. We would love to see what you are using ``pySYD`` for firsthand!
+or any other ``pySYD``-related shoutouts. |br| **We would love to see what you are using ``pySYD`` for firsthand!**
 
 -----
 
@@ -78,9 +82,7 @@ that discusses the asteroseismic analysis and methodology.
 
 .. warning::
 
-    **Citing et al.**
-    
-    This work was only possible thanks to many powerful Python libraries -- we *strongly* 
-    encourage you to also consider citing :ref:`its dependencies <installation/dependencies>`.
+    **Citing et al.** |br| This work was only possible thanks to many powerful Python libraries
+    -- we *strongly* encourage you to also consider citing :ref:`its dependencies <installation/dependencies>`.
 
 -----
