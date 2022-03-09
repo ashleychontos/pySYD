@@ -54,6 +54,7 @@ Our list of contributors continues to grow!
    
 .. toctree::
    :maxdepth: 1
+   :titlesonly:
    :hidden:
    :caption: Advanced
    
