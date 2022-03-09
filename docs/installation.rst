@@ -95,21 +95,43 @@ You can test your installation by using the help command:
     
 .. dropdown:: pysyd --help
     
-    |`` usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...``
+    | usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
     |
-    |`` pySYD: Automated Extraction of Global Asteroseismic Parameters``
+    | pySYD: Automated Extraction of Global Asteroseismic Parameters
     |
-    |`` optional arguments:``
-    |``   -h, --help            show this help message and exit``
-    |``   -version, --version   Print version number and exit.``
+    | optional arguments:
+    |   -h, --help            show this help message and exit
+    |   -version, --version   Print version number and exit.
     | 
-    |`` pySYD modes:``
-    |``   {load,parallel,run,setup,test}``
-    |``     load                Load in data for a given target``
-    |``     parallel            Run pySYD in parallel``
-    |``     run                 Run the main pySYD pipeline``
-    |``     setup               Easy setup of relevant directories and files``
-    |``     test                Test different utilities (currently under development)``
+    | pySYD modes:
+    |   {load,parallel,run,setup,test}
+    |     load                Load in data for a given target
+    |     parallel            Run pySYD in parallel
+    |     run                 Run the main pySYD pipeline
+    |     setup               Easy setup of relevant directories and files
+    |     test                Test different utilities (currently under development)
+
+
+Or we will try this:
+
+::
+
+    **usage:** pySYD [-h] [-version] {load,parallel,run,setup,test} ...
+    
+    **pySYD:** Automated Extraction of Global Asteroseismic Parameters
+    
+    **optional arguments:**
+      -h, --help            show this help message and exit
+      \-version, --version   Print version number and exit.
+     
+    **pySYD modes:**
+      {load,parallel,run,setup,test}
+        **load**                Load in data for a given target
+        **parallel**            Run pySYD in parallel
+        **run**                 Run the main pySYD pipeline
+        **setup**               Easy setup of relevant directories and files
+        **test**                Test different utilities (currently under development)
+
 
 -----
 
