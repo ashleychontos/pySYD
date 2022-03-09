@@ -69,14 +69,15 @@ We welcome any and all ideas!
 #### Directly implement
 
 However, if you come up with a brilliant idea that you'd like to take a stab at -- 
-Please first consider what kind of change it is:
+please first consider what kind of change it is:
 
-* For a **Major Feature**, first open an issue and outline your proposal so that it can be
-  discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
+* For a **Major Feature**, first 
+  [open an issue and outline your proposal](https://github.com/ashleychontos/pySYD/issues/new?assignees=&labels=&template=outline_major_pr.md) 
+  so that it can be discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
   and help you to craft the change so that it is successfully accepted into the project.
 * Any smaller or **Minor Features** can be crafted and directly submitted as a pull request. However,
-  before you submit a pull request, please see our :ref:`style guide <guidelines/style>` to facilitate
-  and expedite the merge process.
+  before you submit a pull request, please see our [style guide](#style) to facilitate and expedite 
+  the merge process.
 
 <a name="contribute"></a>
 ### Contributing code
@@ -85,103 +86,14 @@ Please first consider what kind of change it is:
 
 We would love for you to contribute to `pySYD` and make it even better than it is today! 
 
-Submission Guidelines
+#### Submitting a Pull Request (PR)
 
-Issues & Bugs
-
-Before you submit an issue, please search the issue tracker, maybe an issue for your problem already exists and the discussion might inform you of workarounds readily available.
-
-We want to fix all the issues as soon as possible, but before fixing a bug we need to reproduce and confirm it. In order to reproduce bugs we will systematically ask you to provide a minimal reproduction scenario by providing a project which breaks Angular DevTools. Also make sure that you list:
-
-- version of Angular DevTools used
-- version of Angular used
-- 3rd-party libraries and their versions
-- and most importantly - a use-case that fails
-
-You can file new issues by filling out our new issue form.
-
-**Submitting a Pull Request (PR)**
-
-Community Guidelines
-
-Before you submit your Pull Request (PR), please consider the following guidelines:
-
-- Search [GitHub](https://github.com/angular/angular) for an open or closed PR related to your submission in order to minimize duplicated efforts. 
-- [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) the rangle/angular-devtools repo.
-- In your forked repository, make your changes in a new git branch:
-
-  ```shell
-  git checkout -b my-fix-branch main
-  ```
-
-- Create your patch, **including appropriate test cases**.
-- Follow our [Coding Rules](#rules).
-- Commit your changes using a descriptive commit message that follows our
-  [commit message conventions](#commit). Adherence to these conventions
-  is necessary because release notes are automatically generated from these messages.
-
-  ```shell
-  git commit -a
-  ```
-
-  Note: the optional commit `-a` command line option will automatically "add" and "rm" edited files.
-
-- Push your branch to GitHub:
-
-  ```shell
-  git push origin my-fix-branch
-  ```
-
-- In GitHub, send a pull request to `angular-devtools:main`.
-- If we suggest changes then:
-
-  - Make the required updates.
-  - Re-run the Angular DevTools test and lint suites to ensure tests are still passing and you're following the coding style.
-  - Rebase your branch and force push to your GitHub repository (this will update your Pull Request):
-
-    ```shell
-    git rebase main -i
-    git push -f
-    ```
-
-That's it! Thank you for your contribution!
-
-**After your pull request is merged**
-
-After your pull request is merged, you can safely delete your branch and pull the changes
-from the main (upstream) repository:
-
-- Delete the remote branch on GitHub either through the GitHub web UI or your local shell as follows:
-
-  ```shell
-  git push origin --delete my-fix-branch
-  ```
-
-- Check out the main branch:
-
-  ```shell
-  git checkout main -f
-  ```
-
-- Delete the local branch:
-
-  ```shell
-  git branch -D my-fix-branch
-  ```
-
-- Update your main with the latest upstream version:
-
-  ```shell
-  git pull --ff upstream main
-  ```
-
-Pull Requests
-
- - PR title and description should follow [Angular Commit Message Conventions](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
+**PR reminders:**
+ - PR title and description should be as clear as possible
+ - please follow our [guide](#style) for code and docstrings formats
  - link back to the original issue(s) whenever possible
- - new commands should be added to `docs/support_table.md` and `docs/supported.md`
- - commits should be squashed before merging
  - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
+ - new commands should be added to `docs/support_table.md` and `docs/supported.md`
 
 <a name="style"></a>
 ### Style guide
@@ -208,4 +120,4 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 * We follow [Google's JavaScript Style Guide][js-style-guide].
 
 <a name="testing"></a>
-#### Testing
+### Testing
