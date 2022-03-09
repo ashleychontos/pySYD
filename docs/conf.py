@@ -14,6 +14,7 @@
 import os
 import re
 import sys
+import pysyd
 import pathlib
 import datetime
 import warnings
