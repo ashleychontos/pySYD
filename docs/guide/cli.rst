@@ -173,8 +173,9 @@ Available commands
 ###################
 
 Due to the large number of available commands, we have sorted parameters by:
-* :ref:`related groups <cli/groups>`
-* :ref:`option types <cli/types>`
+
+- :ref:`related groups <cli/groups>`
+- :ref:`option types <cli/types>`
 
 .. note::
 
@@ -196,15 +197,16 @@ By related topics
 *****************
 
 Jump to:
-* :ref:`high-level functions <cli/groups/high>`
-* :ref:`data analyses <cli/groups/data>`
-* :ref:`estimating numax <cli/groups/est>`
-* :ref:`granulation background <cli/groups/bg>`
-* :ref:`final numax <cli/groups/numax>`
-* :ref:`final dnu <cli/groups/dnu>`
-* :ref:`echelle diagram <cli/groups/ech>`
-* :ref:`estimating uncertainties <cli/groups/mc>`
-* :ref:`parallel processing <cli/groups/pp>`
+
+- :ref:`high-level functions <cli/groups/high>`
+- :ref:`data analyses <cli/groups/data>`
+- :ref:`estimating numax <cli/groups/est>`
+- :ref:`granulation background <cli/groups/bg>`
+- :ref:`final numax <cli/groups/numax>`
+- :ref:`final dnu <cli/groups/dnu>`
+- :ref:`echelle diagram <cli/groups/ech>`
+- :ref:`estimating uncertainties <cli/groups/mc>`
+- :ref:`parallel processing <cli/groups/pp>`
 
 
 .. _cli/groups/high:
@@ -645,10 +647,11 @@ By option types
 ***************
 
 Jump to:
-* :ref:`booleans <cli/types/bool>`
-* :ref:`integers <cli/types/int>`
-* :ref:`floats <cli/types/float>`
-* :ref:`strings <cli/types/str>`
+
+- :ref:`booleans <cli/types/bool>`
+- :ref:`integers <cli/types/int>`
+- :ref:`floats <cli/types/float>`
+- :ref:`strings <cli/types/str>`
 
 
 .. _cli/types/bool:
