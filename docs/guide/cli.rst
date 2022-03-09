@@ -6,9 +6,11 @@ Command Line Interface
 
 -----
 
-Please keep in mind that ``pySYD`` was developed with the intent that it would be primarily used
-as a command-line tool. However, we acknowledge that this is not convenient for everyone and have
-therefore provided some tutorials on how to use it in a Jupyter notebook.
+.. note::
+
+    ``pySYD`` was developed s.t. it would be primarily used as a command-line tool. However, we 
+    acknowledge that this is not convenient for everyone and have therefore provided some tutorials 
+    on how to use it in a Jupyter notebook.
 
 -----
 
