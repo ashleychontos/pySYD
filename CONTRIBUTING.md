@@ -176,7 +176,6 @@ from the main (upstream) repository:
   ```
 
 Pull Requests
-+++++++++++++
 
  - PR title and description should follow [Angular Commit Message Conventions](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
  - link back to the original issue(s) whenever possible
@@ -194,7 +193,7 @@ Pull Requests
  * 80 character line length
  * commas last
  * declare variables in the outermost scope that they are used
- * camelCase for variables in JavaScript and for classes/objects in Python
+ * camelCase for classes/objects in Python
  * snake_case for variables in Python
 
 #### Docstrings
@@ -207,21 +206,6 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 * All features or bug fixes **must be tested** by one or more specs (unit-tests).
 * We follow [Google's JavaScript Style Guide][js-style-guide].
-
-Adding new functions
-
-New functions should be added in [src/functions](src/functions) using
-`defineFunction` from [defineFunction.js](src/defineFunction.js).  Read the
-comments in this file to get started.  Look at
-[phantom.js](src/functions/phantom.js) and
-[delimsizing.js](src/functions/delimsizing.js) as examples of how to use
-`defineFunction`.  Notice how delimsizing.js groups several related functions
-together in a single call to `defineFunction`.
-
-The new method of defining functions combines methods that were previously
-spread out over three different files [functions.js](src/functions.js),
-[buildHTML.js](src/buildHTML.js), [buildMathML.js](src/buildMathML.js) into a
-single file.  The goal is to have all functions use this new system.
 
 <a name="testing"></a>
 #### Testing
