@@ -3,11 +3,11 @@
    <br />
    
 .. raw:: html
-    
+
      <style> .font {font-family:'Courier New'} .red {color:red} </style>
 
 .. role:: redfont
-   
+
 .. module:: pysyd
 
 **************************************************************************
@@ -55,7 +55,7 @@ Our list of contributors continues to grow!
    :maxdepth: 1
    :titlesonly:
    :hidden: 
-   :caption: Getting Started
+   :caption: Introduction
 
    installation
    glossary
@@ -67,7 +67,7 @@ Our list of contributors continues to grow!
    :maxdepth: 1
    :titlesonly:
    :hidden:
-   :caption: User Guide
+   :caption: Advanced
    
    overview
    performance
