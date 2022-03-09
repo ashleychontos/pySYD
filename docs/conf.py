@@ -229,6 +229,10 @@ html_css_files = [
 
 latex_logo = '_static/latex.png'
 
+latex_elements = {
+    'sphinxsetup': 'verbatimwithframe=false',
+}
+
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [('index', project + '.tex', project + u' Documentation',
@@ -257,7 +261,7 @@ extensions = [
 
 # So sphinx-panels does not include its own CSS classes (different format than rest)
 # or at least try this idk
-panels_add_bootstrap_css = False
+#panels_add_bootstrap_css = False
 
 # Bibliography:
 bibtex_bibfiles = ['references.bib']
