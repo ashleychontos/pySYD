@@ -3,17 +3,8 @@
 Pipeline [``pysyd.pipeline``]
 *****************************
 
-Used with the command line interface (CLI), which will accept the command line arguments
-and initialize the appropriate module. This includes the main pipeline initialization, which
-now has parallelization capabilities.
-
 Introduction
 ############
-
-.. _modes:
-
-Modes
-========
 
 There are currently five operational ``pySYD`` modes: 
 
@@ -32,11 +23,15 @@ There are currently five operational ``pySYD`` modes:
    available, stars are separated into groups (where the number of groups is exactly equal to the number of threads). This mode uses all CLI
    options, including the number of threads to use for parallelization (:ref:`see here<parallel>`).
 
-#. ``test`` : Currently under development.
+#. ``test`` : Currently under development but intended for developers.
 
 
 API
 ###
+
+Used with the command line interface (CLI), which will accept the command line arguments
+and initialize the appropriate module. This includes the main pipeline initialization, which
+now has parallelization capabilities.
 
 .. automodule:: pysyd.pipeline
    :members:
