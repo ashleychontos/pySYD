@@ -5,6 +5,14 @@ Plots [``pysyd.plots``]
 Introduction
 ############
 
+Imports
+#######
+
+Usage
+#####
+
+Examples
+########
 
 API
 ###
