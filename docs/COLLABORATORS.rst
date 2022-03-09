@@ -1,4 +1,4 @@
-**All collaborators:** 
+``pySYD`` **collaborators:** 
 
 * Tim Bedding
 * Marc Hon
