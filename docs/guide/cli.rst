@@ -10,6 +10,8 @@ Please keep in mind that ``pySYD`` was developed with the intent that it would b
 as a command-line tool. However, we acknowledge that this is not convenient for everyone and have
 therefore provided some tutorials on how to use it in a Jupyter notebook.
 
+-----
+
 Help
 ####
 
@@ -165,6 +167,13 @@ features.
 Additionally, we have examples of some put to use in :ref:`advanced usage<advanced>` 
 and also have included a brief :ref:`tutorial` below that describes some of these commands.
 
+.. warning::
+
+    All parameters are optimized for most star types but some may need adjusting. 
+    An example is the smoothing width (``--sw``), which is 20 muHz by default, but 
+    may need to be adjusted based on the nyquist frequency and frequency resolution 
+    of the input power spectrum.
+
 -----
 
 .. _cli/commands:
@@ -189,7 +198,8 @@ Due to the large number of available commands, we have sorted parameters by:
      2. Turn on the verbose output (``-v``, ``--verbose``),
      3. Overwrite existing files with the same name (``-o``, ``--overwrite``), and
      4. Include the model metrics and values with the verbose output (``-i``, ``--include``).
-     
+
+-----
 
 .. _cli/groups:
 
@@ -630,18 +640,10 @@ Additional option for the number of threads to use when running stars in paralle
    * help = Number of processes to run in parallel. If nothing is provided, the software will use the ``multiprocessing`` package to determine the number of CPUs on the operating system and then adjust accordingly.
    * type = int
    * default = `0`
-   
-   
-.. warning::
 
-    All parameters are optimized for most star types but some may need adjusting. 
-    An example is the smoothing width (``--sw``), which is 20 muHz by default, but 
-    may need to be adjusted based on the nyquist frequency and frequency resolution 
-    of the input power spectrum.
-
+-----
 
 .. _cli/types:
-
 
 By option types
 ***************
