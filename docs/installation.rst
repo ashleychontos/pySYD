@@ -11,7 +11,7 @@ Installation
 
 
 With ``pip``
-************
+############
 
 Install the latest stable version using pip:
 
@@ -28,7 +28,7 @@ change into the top-level ``pysyd`` directory and try running the following comm
     python setup.py install
     
 With ``conda``
-**************
+##############
 
 Use conda to create an environment. For this example, I'll call it 'astero'.
 
@@ -46,7 +46,7 @@ Then activate the environment and install ``pySYD``:
 
 
 With ``git``
-************
+############
 
 The latest development version can be cloned from GitHub using git:
 
@@ -62,13 +62,12 @@ Then to build and install the project use:
 
 from inside the cloned ``pySYD`` directory.
 
------
 
 .. _installation/dependencies:
 
 
-Dependencies
-************
+Package Dependencies
+####################
 
 This package has the following dependencies:
 
@@ -84,37 +83,16 @@ Explicit version requirements are specified in the project `requirements.txt <ht
 and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using ``pip`` or 
 ``conda`` should install and enforce these versions automatically. 
 
------
-
 .. _installation/testing:
 
-Testing
-*******
+Testing your installation
+*************************
 
 You can test your installation by using the help command: 
-    
-.. dropdown:: pysyd --help
-    
-    | usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
-    |
-    | pySYD: Automated Extraction of Global Asteroseismic Parameters
-    |
-    | optional arguments:
-    |   -h, --help            show this help message and exit
-    |   -version, --version   Print version number and exit.
-    | 
-    | pySYD modes:
-    |   {load,parallel,run,setup,test}
-    |     load                Load in data for a given target
-    |     parallel            Run pySYD in parallel
-    |     run                 Run the main pySYD pipeline
-    |     setup               Easy setup of relevant directories and files
-    |     test                Test different utilities (currently under development)
-
-
-Or we will try this:
 
 ::
+
+    $ pysyd --help
 
     usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
     
@@ -133,7 +111,6 @@ Or we will try this:
         test                Test different utilities (currently under development)
 
 
------
 
 .. _installation/quickstart:
 
@@ -149,5 +126,3 @@ To get started right away, use the following commands:
     pip install pysyd
     pysyd setup
     pysyd run --star 1435467 -dv
-
------
