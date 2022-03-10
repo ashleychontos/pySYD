@@ -41,26 +41,25 @@ Our list of contributors continues to grow!
 -----
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :titlesonly:
-   :hidden:
    :caption: Introduction
 
    installation
    getting_started
-   glossary
    attribution
    
    
 .. toctree::
+   :maxdepth: 2
    :titlesonly:
-   :hidden:
    :caption: Advanced
    
-   Community Guidelines <guidelines>
+   FAQs <questions>
    advanced
    User Guide <guide/index>
-   FAQs <questions>
+   Community Guidelines <guidelines>
+   glossary
 
 
 Bibliography
