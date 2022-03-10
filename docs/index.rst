@@ -30,31 +30,20 @@ welcome and *encourage* any new contributions to help make ``pySYD`` better! Ple
 our :ref:`community guidelines <guidelines/index>` to find out how you can help. No contribution 
 is too small!
 
------
-
 .. toctree::
    :maxdepth: 2
    :titlesonly:
-   :caption: Introduction
+   :caption: Contents
 
    installation
    getting_started
-   attribution
-   
------
-   
-.. toctree::
-   :maxdepth: 2
-   :titlesonly:
-   :caption: Advanced
-   
-   FAQs <questions>
-   advanced
+   Tutorials <tutorials/index>
    User Guide <guide/index>
-   Community Guidelines <guidelines>
+   Contributing <guidelines>
    glossary
+   
 
------
+
 
 Bibliography
 ############
