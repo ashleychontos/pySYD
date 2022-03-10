@@ -12,7 +12,11 @@ As a command-line tool
 
 .. _cli/help:
 
-Try this: :term:`a`
+Try clicking this :term:`a`
+
+Try clicking this :term:`save`
+
+Try clicking this :term:`bg`
 
 Navigating 
 ###########
@@ -713,7 +717,7 @@ Glossary of options
 
 .. glossary::
 
-    a, ask : ``bool``
+    a, ask
         the option to select which trial (or estimate) of numax to use from the first module
         **TODO: this is not yet operational**
          * dest = ``args.ask``
