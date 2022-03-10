@@ -704,323 +704,345 @@ Additional option for the number of threads to use when running stars in paralle
 
 -----
 
-.. _cli/types:
-
-By option types
-***************
-
-Jump to:
-
-- :ref:`booleans <cli/types/bool>`
-- :ref:`integers <cli/types/int>`
-- :ref:`floats <cli/types/float>`
-- :ref:`strings <cli/types/str>`
+Glossary of options
+###################
 
 
-.. _cli/types/bool:
-
-``boolean``
-````````````
-
-Our boolean flags are sorted alphabetically by the single hash flag (and span almost the
-entire English alphabet):
 
 - ``-a``, ``--ask``
    * dest = ``args.ask``
+   * type = ``bool``
    * help = Ask which trial (or estimate) of numax to use
    * default = ``False``
    * action = ``store_true``
 - ``-b``, ``--bg``, ``--background``, 
    * dest = ``args.background``
+   * type = ``bool``
    * help = Turn off the background fitting procedure
    * default = ``True``
    * action = ``store_false``
 - ``-c``, ``--cli``
    * dest = ``args.cli``
+   * type = ``bool``
    * help = This option should not be adjusted for current users
    * default = ``True``
    * action = ``store_false``
 - ``-d``, ``--save``
    * dest = ``args.save``
+   * type = ``bool``
    * help = Save output files and figures (to disk)
    * default = ``True``
    * action = ``store_false``
 - ``-e``, ``--ie``, ``--interpech``
    * dest = ``args.interp_ech``
+   * type = ``bool``
    * help = Turn on the bilinear interpolation of the plotted echelle diagram
    * default = ``False``
    * action = ``store_true``
 - ``-f``, ``--fix``, ``--fixwn``, ``--wn``
    * dest = ``args.fix``
+   * type = ``bool``
    * help = Fix the white noise level
    * default = ``False``
    * action = ``store_true``
 - ``-g``, ``--globe``, ``--global``, 
    * dest = ``args.globe``
+   * type = ``bool``
    * help = Do not estimate global asteroseismic parameters numax and dnu
    * default = ``True``
    * action = ``store_false``
 - ``-i``, ``--include``
    * dest = ``args.include``
+   * type = ``bool``
    * help = Include metric values in verbose output, default is `False`.
    * default = ``False``
    * action = ``store_true``
 - ``-k``, ``--kc``, ``--kepcorr``
    * dest = ``args.kepcorr``
+   * type = ``bool``
    * help = turn on the *Kepler* short-cadence artefact correction module
    * default = ``False``
    * action = ``store_true``
 - ``-m``, ``--samples``
    * dest = ``args.samples``
+   * type = ``bool``
    * help = Save samples from Monte-Carlo sampling (i.e. parameter posteriors)
    * default = ``False``
    * action = ``store_true``
 - ``-n``, ``--notch``
    * dest = ``args.notching``
+   * type = ``bool``
    * help = Use notching technique to reduce effects from mixed modes (not fully functional, creates weirds effects for higher SNR cases)
    * default = ``False``
    * action = ``store_true``
 - ``-o``, ``--over``, ``--overwrite``
    * dest = ``args.overwrite``
+   * type = ``bool``
    * help = Overwrite existing files with the same name/path
    * default = ``False``
    * action = ``store_true``
 - ``-p``, ``--par``, ``--parallel``
    * dest = ``args.parallel``
+   * type = ``bool``
    * help = Run pySYD in parallel mode
    * default = ``False``
    * action = ``store_true``
 - ``-s`` , ``--show``
    * dest = ``args.show``
+   * type = ``bool``
    * help = show output figures (note: this is not recommended if running many stars)
    * default = ``False``
    * action = ``store_true``
 - ``-t``, ``--test``
    * dest = ``args.test``
+   * type = ``bool``
    * help = Extra verbose output for testing functionality (not currently implemented)
    * default = ``False``
    * action = ``store_true``
 - ``-v``, ``--verbose``
    * dest = ``args.verbose``
+   * type = ``bool``
    * help = Turn on verbose output
    * default = ``False``
    * action = ``store_true``
 - ``-x``, ``--ex``, ``--excess``
    * dest = ``args.background``
+   * type = ``bool``
    * help = turn off find excess module
    * default = ``True``
    * action = ``store_false``
 - ``-y``, ``--hey``
    * dest = ``args.hey``
+   * type = ``bool``
    * help = Plugin for Daniel Hey's echelle package (not currently implemented yet)
    * default = ``False``
    * action = ``store_true``
 
-
-.. _cli/types/int:
-
-``integer``
-```````````
-
 - ``--laws``, ``--nlaws``
    * dest = ``args.n_laws``
+   * type = ``int``
    * help = Force the number of red-noise component(s)
    * default = `None`
 - ``--mc``, ``--iter``, ``--mciter``
    * dest = ``args.mc_iter``
+   * type = ``int``
    * help = Number of Monte-Carlo iterations
    * default = `1`
 - ``--nox``, ``--nacross``
    * dest = ``args.nox``
+   * type = ``int``
    * help = Resolution for the x-axis of the ED
    * default = `50`
 - ``--noy``, ``--ndown``, ``--norders``
    * dest = ``args.noy``
+   * type = ``int``
    * help = The number of orders to plot on the ED y-axis
    * default = `0`
 - ``-nt``, ``--nt``, ``-nthread``, ``--nthread``, ``-nthreads``, ``--nthreads`` 
    * dest = ``args.n_threads``
+   * type = ``int``
    * help = Number of processes to run in parallel. If nothing is provided, the software will use the ``multiprocessing`` package to determine the number of CPUs on the operating system and then adjust accordingly.
    * default = `0`
 - ``--ofa``, ``--of_actual``
    * dest = ``args.of_actual``
+   * type = ``int``
    * help = The oversampling factor of the provided power spectrum. Default is `0`, which means it is calculated from the time series data. Note: This needs to be provided if there is no time series data!
    * default = `0`
 - ``--ofn``, ``--of_new``
    * dest = ``args.of_new``
+   * type = ``int``
    * help = The new oversampling factor to use in the first iterations of both modules. Default is `5` (see performance for more details).
    * default = `5`
 - ``--peak``, ``--peaks``, ``--npeaks``
    * dest = ``args.n_peaks``
+   * type = ``int``
    * help = Number of peaks to fit in the ACF
    * default = `5`
 - ``--rms``, ``--nrms``
    * dest = ``args.n_rms``
+   * type = ``int``
    * help = Number of points used to estimate amplitudes of individual background components (this should rarely need to be touched)
    * default = `20`
 - ``--trials``, ``--ntrials``
    * dest = ``args.n_trials``
+   * type = ``int``
    * help = Number of trials to estimate numax
    * default = `3`
 
-
-.. _cli/types/float:
-
-``float``
-````````````
-
-
 - ``--bf``, ``--box``, ``--boxfilter``
    * dest = ``args.box_filter``
+   * type = ``float``
    * help = Box filter width (in muHz) for plotting the power spectrum
    * default = `1.0`
    * unit = muHz
 - ``--bin``, ``--binning``
    * dest = ``args.binning``
+   * type = ``float``
    * help = Interval for binning of spectrum in log(muHz) (bins equally in logspace).
    * default = `0.005`
    * unit = log(muHz)
 - ``--cv``, ``--value``
    * dest = ``args.clip_value``
+   * type = ``float``
    * help = Clip value for echelle diagram (i.e. if ``args.clip_ech`` is ``True``). If none is provided, it will cut at 3x the median value of the folded power spectrum.
    * default = ``3.0``
    * unit = fractional psd
 - ``--dnu``
    * dest = ``args.dnu``
+   * type = ``float``
    * help = Brute force method to provide value for dnu
    * nargs = '*'
    * default = ``None``
 - ``--ew``, ``--exwidth``
    * dest = ``args.width``
+   * type = ``float``
    * help = Fractional value of width to use for power excess, where width is computed using a solar scaling relation and then centered on the estimated numax.
    * default = `1.0`
 - ``--iw``, ``--indwidth``
    * dest = ``args.ind_width``
+   * type = ``float``
    * help = Width of binning for power spectrum (in muHz)
    * default = `20.0`
 - ``--lb``, ``--lowerb``
    * dest = ``args.lower_bg``
+   * type = ``float``
    * help = Lower limit of power spectrum to use in fitbg module. Please note: unless numax is known, it is not suggested to fix this beforehand.
    * nargs = '*'
    * default = ``1.0``
    * unit = muHz
 - ``--le``, ``--uppere``
    * dest = ``args.lower_ech``
+   * type = ``float``
    * help = Lower frequency limit of the folded PS to whiten mixed modes before determining the correct dnu
    * nargs = '*'
    * default = ``None``
    * unit = muHz
 - ``--lp``, ``--lowerp``
    * dest = ``args.lower_ps``
+   * type = ``float``
    * help = Lower frequency limit for zoomed in power spectrum (around power excess)
    * nargs = '*'
    * default = ``None``
    * unit = muHz
 - ``--lx``, ``--lowerx``
    * dest = ``args.lower_ex``
+   * type = ``float``
    * help = Lower limit of power spectrum to use in findex module
    * default = `1.0`
    * unit = muHz
 - ``--numax``
    * dest = ``args.numax``
+   * type = ``float``
    * help = Brute force method to bypass findex and provide value for numax. Please note: len(args.numax) == len(args.targets) for this to work! This is mostly intended for single star runs.
    * nargs = '*'
    * default = ``None``
 - ``--se``, ``--smoothech``
    * dest = ``args.smooth_ech``
+   * type = ``float``
    * help = Option to smooth the echelle diagram output using a box filter
    * default = ``None``
    * unit = muHz
 - ``--sm``, ``--smpar``
    * dest = ``args.sm_par``
+   * type = ``float``
    * help = Value of smoothing parameter to estimate the smoothed numax (typical values range from `1`-`4`)
    * default = `None`
 - ``--sp``, ``--smoothps``
    * dest = ``args.smooth_ps``
+   * type = ``float``
    * help = Box filter width for smoothing of the power spectrum. The default is 2.5, but will switch to 0.5 for more evolved stars (numax < 500 muHz).
    * default = `2.5`
    * unit = muHz
 - ``--step``, ``--steps``
    * dest = ``args.step``
+   * type = ``float``
    * help = The step width for the collapsed ACF wrt the fraction of the boxsize
    * default = `0.25`
 - ``--sw``, ``--smoothwidth``
    * dest = ``args.smooth_width``
+   * type = ``float``
    * help = Box filter width (in muHz) for smoothing the power spectrum
    * default = `20.0`
 - ``--thresh``, ``--threshold``
    * dest = ``args.threshold``
+   * type = ``float``
    * help = Fractional value of the ACF FWHM to use for determining dnu
    * default = ``1.0``
 - ``--ub``,  ``--upperb``
    * dest = ``args.upper_bg``
+   * type = ``float``
    * help = Upper limit of power spectrum to use in fitbg module. Please note: unless numax is known, it is not suggested to fix this beforehand.
    * nargs = '*'
    * default = ``6000.0``
    * unit = muHz
 - ``--ue``,  ``--uppere``
    * dest = ``args.upper_ech``
+   * type = ``float``
    * help = Upper frequency limit of the folded PS to whiten mixed modes before determining the correct dnu
    * nargs = '*'
    * default = ``None``
    * unit = muHz
 - ``--up``,  ``--upperp``
    * dest = ``args.upper_ps``
+   * type = ``float``
    * help = Upper frequency limit for zoomed in power spectrum (around power excess)
    * nargs = '*'
    * default = ``None``
    * unit = muHz
 - ``--ux``, ``--upperx``
    * dest = ``args.upper_ex``
+   * type = ``float``
    * help = Upper limit of power spectrum to use in findex module
    * default = `6000.0`
    * unit = muHz
-
-
-.. _cli/types/str:
-
-``string``
-``````````
-
-
 - ``--basis``
    * dest = ``args.basis``
+   * type = ``str``
    * help = Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***
    * default = `'tau_sigma'`
 - ``--bm``, ``--mode``, ``--bmode`` 
    * dest = ``args.mode``
+   * type = ``str``
    * help = Which mode to use when binning. Choices are ["mean", "median", "gaussian"]
    * default = ``mean``
 - ``--ce``, ``--cm``, ``--color``
    * dest = ``args.cmap``
+   * type = ``str``
    * help = Change colormap of ED, which is `binary` by default.
    * default = ``binary``
 - ``--file``, ``--list``, ``--todo``
    * dest = ``args.file``
+   * type = ``str``
    * help = Path to text file that contains the list of stars to process (convenient for running many stars).
    * default = ``TODODIR``
 - ``--in``, ``--input``, ``--inpdir``
    * dest = ``args.inpdir``
+   * type = ``str``
    * help = Path to input data
    * default = ``INPDIR``
 - ``--info``, ``--information`` 
    * dest = ``args.info``
+   * type = ``str``
    * help = Path to the csv containing star information (although not required).
    * default = ``INFODIR``
 - ``--method``
    * dest = ``args.method``
+   * type = ``str``
    * help = Method to use to determine dnu, choices ~['M', 'A', 'D']
    * default = ``D``
 - ``--metric``
    * dest = ``args.metric``
+   * type = ``str``
    * help = Which model metric to use for the best-fit background model, choices~['bic','aic']
    * default = `'bic'`
 - ``--out``, ``--output``, ``--outdir``
    * dest = ``args.outdir``
+   * type = ``str``
    * help = Path that results are saved to
    * default = ``OUTDIR``
 - ``--star``, ``--stars``
    * dest = ``args.star``
+   * type = ``str``
    * help = List of stars to process. Default is ``None``, which will read in the star list from ``args.file``.
    * nargs = '*'
    * default = ``None``
@@ -1028,9 +1050,9 @@ entire English alphabet):
 
 -----
 
-.. _cli/tutorial::
+.. _cli/examples::
 
-Tutorials
+Examples
 #########
 
 .. role:: bash(code)
@@ -1038,7 +1060,7 @@ Tutorials
 
 
 Below are examples of how to use specific ``pySYD`` command-line features, including before and after figures
-to better demonstrate the differencee. 
+to better demonstrate the difference. 
 
 
 ``--dnu``: force dnu
@@ -1051,7 +1073,7 @@ to better demonstrate the differencee.
 +-------------------------------------------------+---------------------------------------------------------+
 |:bash:`pysyd run --star 9512063 --numax 843`     |:bash:`pysyd run --star 9512063 --numax 843 --dnu 49.54` |
 +-------------------------------------------------+---------------------------------------------------------+
-| .. figure:: figures/advanced/9512063_before.png | .. figure:: figures/advanced/9512063_after.png          |
+| .. figure:: ../figures/advanced/9512063_before.png | .. figure:: ../figures/advanced/9512063_after.png          |
 |    :width: 600                                  |    :width: 600                                          |
 +-------------------------------------------------+---------------------------------------------------------+
 
@@ -1066,7 +1088,7 @@ to better demonstrate the differencee.
 +------------------------------------------------------------------+------------------------------------------------------------------+
 | :bash:`pysyd run --star 9542776 --numax 900`                     | :bash:`pysyd run --star 9542776 --numax 900 --ew 1.5`            |
 +------------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: figures/advanced/9542776_before.png                  | .. figure:: figures/advanced/9542776_after.png                   |
+| .. figure:: ../figures/advanced/9542776_before.png                  | .. figure:: ../figures/advanced/9542776_after.png                   |
 |    :width: 600                                                   |    :width: 600                                                   |
 +------------------------------------------------------------------+------------------------------------------------------------------+
 
@@ -1081,7 +1103,7 @@ to better demonstrate the differencee.
 +------------------------------------------------------------------+------------------------------------------------------------------+
 | :bash:`pysyd run 3112889 --numax 871.52 --dnu 53.2`              | :bash:`pysyd run --star 3112889 --numax 871.52 --dnu 53.2 --ie`  |
 +------------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: figures/advanced/3112889_before.png                  | .. figure:: figures/advanced/3112889_after.png                   |
+| .. figure:: ../figures/advanced/3112889_before.png                  | .. figure:: ../figures/advanced/3112889_after.png                   |
 |    :width: 600                                                   |    :width: 600                                                   |
 +------------------------------------------------------------------+------------------------------------------------------------------+
 
@@ -1096,7 +1118,7 @@ to better demonstrate the differencee.
 +------------------------------------------------------------------+------------------------------------------------------------------+
 | :bash:`pysyd run --star 8045442 --numax 550`                     | :bash:`pysyd run --star 8045442 --numax 550 --kc`                |
 +------------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: figures/advanced/8045442_before.png                  | .. figure:: figures/advanced/8045442_after.png                   |
+| .. figure:: ../figures/advanced/8045442_before.png                  | .. figure:: ../figures/advanced/8045442_after.png                   |
 |    :width: 600                                                   |    :width: 600                                                   |
 +------------------------------------------------------------------+------------------------------------------------------------------+
 
@@ -1111,7 +1133,7 @@ to better demonstrate the differencee.
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 | :bash:`pysyd run --star 10731424 --numax 750`                            | :bash:`pysyd run --star 10731424 --numax 750 --lp 490`                   |
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| .. figure:: figures/advanced/10731424_before.png                         | .. figure:: figures/advanced/10731424_after.png                          |
+| .. figure:: ../figures/advanced/10731424_before.png                         | .. figure:: ../figures/advanced/10731424_after.png                          |
 |    :width: 600                                                           |    :width: 600                                                           |
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 
@@ -1126,7 +1148,7 @@ to better demonstrate the differencee.
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 | :bash:`pysyd run --star 9455860`                                         | :bash:`pysyd run --star 9455860 --npeaks 10`                             |
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| .. figure:: figures/advanced/9455860_before.png                          | .. figure:: figures/advanced/9455860_after.png                           |
+| .. figure:: ../figures/advanced/9455860_before.png                          | .. figure:: ../figures/advanced/9455860_after.png                           |
 |    :width: 600                                                           |    :width: 600                                                           |
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 
@@ -1141,7 +1163,7 @@ to better demonstrate the differencee.
 +-------------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 5791521`                      | :bash:`pysyd run --star 5791521 --numax 670`          |
 +-------------------------------------------------------+-------------------------------------------------------+
-| .. figure:: figures/advanced/5791521_before.png       | .. figure:: figures/advanced/5791521_after.png        |
+| .. figure:: ../figures/advanced/5791521_before.png       | .. figure:: ../figures/advanced/5791521_after.png        |
 |    :width: 600                                        |    :width: 600                                        |
 +-------------------------------------------------------+-------------------------------------------------------+
 
@@ -1156,7 +1178,7 @@ to better demonstrate the differencee.
 +--------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 11769801`                | :bash:`pysyd run --star 11769801 -ux 3500`            |
 +--------------------------------------------------+-------------------------------------------------------+
-| .. figure:: figures/advanced/11769801_before.png | .. figure:: figures/advanced/11769801_after.png       |
+| .. figure:: ../figures/advanced/11769801_before.png | .. figure:: ../figures/advanced/11769801_after.png       |
 |    :width: 600                                   |    :width: 600                                        |
 +--------------------------------------------------+-------------------------------------------------------+
 
