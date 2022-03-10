@@ -18,7 +18,6 @@ import pysyd
 import pathlib
 import datetime
 import warnings
-#import nbsphinx
 from importlib import import_module
 
 nbsphinx_allow_errors = True
@@ -28,6 +27,7 @@ nbsphinx_allow_errors = True
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 sys.path.append('/usr/local/lib/python3.7/site-packages/sphinx_panels')
+sys.path.append('/usr/local/lib/python3.7/site-packages/ipython_genutils'
 
 # Get configuration information from setup.cfg
 #from configparser import ConfigParser
