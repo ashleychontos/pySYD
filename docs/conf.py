@@ -17,6 +17,7 @@ import sys
 import pysyd
 import pathlib
 import datetime
+import nbsphinx
 import warnings
 from importlib import import_module
 
@@ -251,7 +252,6 @@ automodsumm_inherited_members = True
 
 # Add nbsphinx
 extensions = [
-    'nbsphinx',
     'sphinx_panels',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
