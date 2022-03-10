@@ -5,9 +5,9 @@ Getting Started
 ***************
 
 Setup
-*****
+#####
 
-The easiest way to start using the ``pySYD`` package is by running our ``setup`` feature
+The easiest way to start using ``pySYD`` is by running our ``setup`` feature
 from a convenient directory:
 
 .. code-block::
