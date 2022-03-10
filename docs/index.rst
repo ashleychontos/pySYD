@@ -4,9 +4,7 @@
 
 .. module:: pysyd
 
-**************************************************************************
-pySYD: |br| Automated Measurements |br| of Global Asteroseismic Parameters
-**************************************************************************
+.. image:: _static/latex.png
 
 Asteroseismology, or the study of stellar oscillations, is a powerful tool
 for studying the internal structure of stars and determining their fundamental 
