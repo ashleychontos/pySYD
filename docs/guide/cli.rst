@@ -12,6 +12,8 @@ As a command-line tool
 
 .. _cli/help:
 
+Try this: :term:`a`
+
 Navigating 
 ###########
 
@@ -179,6 +181,8 @@ Deriving :math:`\Delta\nu`
                             Fractional value of FWHM to use for ACF
 
 .. _cli/help/ech:
+
+
 
 Echelle diagram
 ***************
@@ -724,46 +728,48 @@ Glossary of options
          * dest = ``args.background``
          * type = ``bool``
          * default = ``True``
-    
+         * action = ``store_false``
+
     c, cli
         while in the list of commands, this option should not be tinkered with for current
         users. The purpose of adding this was to extend it to beyond the basic command-line
         usage -- therefore, this triggers to ``False`` when calling functions from a notebook
-     
-
-
-
-
-- ``-c``, ``--cli``
-   * dest = ``args.cli``
-   * type = ``bool``
-   * help = This option should not be adjusted for current users
-   * default = ``True``
-   * action = ``store_false``
-- ``-d``, ``--save``
-   * dest = ``args.save``
-   * type = ``bool``
-   * help = Save output files and figures (to disk)
-   * default = ``True``
-   * action = ``store_false``
-- ``-e``, ``--ie``, ``--interpech``
-   * dest = ``args.interp_ech``
-   * type = ``bool``
-   * help = Turn on the bilinear interpolation of the plotted echelle diagram
-   * default = ``False``
-   * action = ``store_true``
-- ``-f``, ``--fix``, ``--fixwn``, ``--wn``
-   * dest = ``args.fix``
-   * type = ``bool``
-   * help = Fix the white noise level
-   * default = ``False``
-   * action = ``store_true``
-- ``-g``, ``--globe``, ``--global``, 
-   * dest = ``args.globe``
-   * type = ``bool``
-   * help = Do not estimate global asteroseismic parameters numax and dnu
-   * default = ``True``
-   * action = ``store_false``
+         * dest = ``args.cli``
+         * type = ``bool``
+         * default = ``True``
+         * action = ``store_false``
+         
+     d, save
+         turn off the automatic saving of output figures and files
+          * dest = ``args.save``
+          * type = ``bool``
+          * default = ``True``
+          * action = ``store_false``
+          
+      e, ie, interpech
+          turn on the bilinear interpolation of the plotted echelle diagram
+           * dest = ``args.interp_ech``
+           * type = ``bool``
+           * default = ``False``
+           * action = ``store_true``
+           
+       f, fix, fixwn, wn
+           fix the white noise level in the background fitting **NOT operational yet**
+           this still needs to be tested
+            * dest = ``args.fix``
+            * type = ``bool``
+            * default = ``False``
+            * action = ``store_true``
+            
+        g, globe, global
+            do not estimate the global asteroseismic parameter numax and dnu (although
+            I'm not sure why you would want to do that because that's exactly what this
+            software is intended for)
+             * dest = ``args.globe``
+             * type = ``bool``
+             * default = ``True``
+             * action = ``store_false``
+             
 - ``-i``, ``--include``
    * dest = ``args.include``
    * type = ``bool``
