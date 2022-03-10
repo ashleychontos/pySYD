@@ -14,4 +14,3 @@ find any errors or stale links.
    target
    models	      
    plots
-   tutorial
