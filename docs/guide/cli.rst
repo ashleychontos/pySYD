@@ -20,7 +20,7 @@ Try clicking this :term:`--bg`
 
 Try clicking this :term:`--samples`
 
-Try clicking this :term:`<``-m``>`
+Try clicking this :term:`-m`
 
 Navigating 
 ###########
