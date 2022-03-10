@@ -30,14 +30,6 @@ welcome and *encourage* any new contributions to help make ``pySYD`` better! Ple
 our :ref:`community guidelines <guidelines/index>` to find out how you can help. No contribution 
 is too small!
 
-
-Contributors
-############
-
-Our list of contributors continues to grow!
-
-.. include:: CONTRIBUTORS.rst
-
 -----
 
 .. toctree::
@@ -49,6 +41,7 @@ Our list of contributors continues to grow!
    getting_started
    attribution
    
+-----
    
 .. toctree::
    :maxdepth: 2
@@ -61,6 +54,7 @@ Our list of contributors continues to grow!
    Community Guidelines <guidelines>
    glossary
 
+-----
 
 Bibliography
 ############
