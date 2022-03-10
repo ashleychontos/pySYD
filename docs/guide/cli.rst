@@ -707,20 +707,29 @@ Additional option for the number of threads to use when running stars in paralle
 Glossary of options
 ###################
 
+.. glossary::
+
+    a
+    ask
+        the option to select which trial (or estimate) of numax to use from the first module
+        **TODO: this is not yet operational**
+        * dest = ``args.ask``
+        * type = ``bool``
+        * default = ``False``
+        * action = ``store_true``
+    b
+    bg
+    background
+        controls the background-fitting procedure -- BUT this should never be touched
+        since a majority of the work done in the software happens here and it should 
+        not need to be turned off
+        * dest = ``args.background``
+        * type = ``bool``
+        * default = ``True``
 
 
-- ``-a``, ``--ask``
-   * dest = ``args.ask``
-   * type = ``bool``
-   * help = Ask which trial (or estimate) of numax to use
-   * default = ``False``
-   * action = ``store_true``
-- ``-b``, ``--bg``, ``--background``, 
-   * dest = ``args.background``
-   * type = ``bool``
-   * help = Turn off the background fitting procedure
-   * default = ``True``
-   * action = ``store_false``
+.. Glossary::
+
 - ``-c``, ``--cli``
    * dest = ``args.cli``
    * type = ``bool``
