@@ -21,7 +21,7 @@ import warnings
 import nbsphinx
 from importlib import import_module
 
-nbsphinx_allow_errors = True
+nbsphinx_allow_errors = False
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
