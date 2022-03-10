@@ -8,7 +8,7 @@ from pysyd import models
 from pysyd import utils
 
 
-def _set_plot_params():
+def set_plot_params():
     """
     Sets the matplotlib parameters.
 
