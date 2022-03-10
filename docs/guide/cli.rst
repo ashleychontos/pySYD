@@ -717,8 +717,8 @@ Glossary of options
 
 .. glossary::
 
-    a
-    ask
+    -a
+    --ask
         the option to select which trial (or estimate) of numax to use from the first module
         **TODO: this is not yet operational**
          * dest = ``args.ask``
@@ -726,9 +726,9 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    b
-    bg
-    background
+    -b
+    --bg
+    --background
         controls the background-fitting procedure -- BUT this should never be touched
         since a majority of the work done in the software happens here and it should 
         not need to be turned off
@@ -737,8 +737,8 @@ Glossary of options
          * default = ``True``
          * action = ``store_false``
     
-    c
-    cli
+    -c
+    --cli
         while in the list of commands, this option should not be tinkered with for current
         users. The purpose of adding this was to extend it to beyond the basic command-line
         usage -- therefore, this triggers to ``False`` when calling functions from a notebook
@@ -747,22 +747,27 @@ Glossary of options
          * default = ``True``
          * action = ``store_false``
         
-    d
-    save
+    -d
+    --save
         turn off the automatic saving of output figures and files
          * dest = ``args.save``
          * type = ``bool``
          * default = ``True``
          * action = ``store_false``
           
-    e, ie, interpech
+    -e
+    --ie
+    --interpech
         turn on the bilinear interpolation of the plotted echelle diagram
          * dest = ``args.interp_ech``
          * type = ``bool``
          * default = ``False``
          * action = ``store_true``
            
-    f, fix, fixwn, wn
+    -f
+    --fix
+    --fixwn
+    --wn
         fix the white noise level in the background fitting **NOT operational yet**
         this still needs to be tested
          * dest = ``args.fix``
@@ -770,7 +775,9 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
             
-    g, globe, global
+    -g
+    --globe
+    --global
         do not estimate the global asteroseismic parameter numax and dnu (although
         I'm not sure why you would want to do that because that's exactly what this
         software is intended for)
@@ -779,7 +786,8 @@ Glossary of options
          * default = ``True``
          * action = ``store_false``
     
-    i, include
+    -i
+    --include
         include metric (i.e. BIC, AIC) values in verbose output during the background
         fitting procedure
          * dest = ``args.include``
@@ -787,7 +795,9 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    k, kc, kepcorr
+    -k
+    --kc
+    --kepcorr
         turn on the *Kepler* short-cadence artefact correction module. if you don't
         know what a *Kepler* short-cadence artefact is, chances are you shouldn't mess
         around with this option yet
@@ -796,7 +806,8 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    laws, nlaws
+    --laws
+    --nlaws
         force the number of red-noise component(s). **fun fact:** the older IDL version
         of ``SYD`` fixed this number to ``2`` for the *Kepler* legacy sample -- now we
         have made it customizable all the way down to an individual star!
@@ -804,7 +815,8 @@ Glossary of options
          * type = ``int``
          * default = `None`
     
-    m, samples
+    ``-m``
+    --samples
         option to save the samples from the Monte-Carlo sampling (i.e. parameter 
         posteriors) in case you'd like to reproduce your own plots, etc.
          * dest = ``args.samples``
@@ -812,7 +824,9 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    mc, iter, mciter
+    --mc
+    --iter
+    --mciter
         number of Monte-Carlo-like iterations. This is `1` by default, since you should
         always check the data and output figures before running the sampling algorithm.
         But for purposes of generating uncertainties, `n=200` is typically sufficient.
@@ -820,7 +834,8 @@ Glossary of options
          * type = ``int``
          * default = `1`
     
-    n, notch
+    -n
+    --notch
         use notching technique to reduce effects from mixes modes (pretty sure this is not
         full functional yet, creates weird effects for higher SNR cases)
          * dest = ``args.notching``
@@ -828,7 +843,8 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    nox, nacross
+    nox
+    nacross
         specifies the number of bins (i.e. the resolution) to use for the x-axis of the
         echelle diagram -- fixing this number if complicated because it depends on both the
         resolution of the power spectrum as well as the characteristic frequency separation.
@@ -838,7 +854,9 @@ Glossary of options
          * type = ``int``
          * default = `50`
     
-    noy, ndown, norders
+    noy
+    ndown
+    norders
         similar to :term:`nox`, this specifies the number of bins (i.e. orders) to use on the
         y-axis of the echelle diagram. **TODO:** check how it is automatically calculating the
         number of orders since there cannot be `0`.
@@ -846,7 +864,9 @@ Glossary of options
          * type = ``int``
          * default = `0`
     
-    nt, nthread, nthreads
+    nt
+    nthread
+    nthreads
         the number of processes to run in parallel. If nothing is provided when you run in ``pysyd.parallel``
         mode, the software will use the ``multiprocessing`` package to determine the number of CPUs on the
         operating system and then adjust accordingly. **In short:** this probably does not need to be changed
@@ -854,7 +874,9 @@ Glossary of options
          * type = ``int``
          * default = `0`
     
-    o, over, overwrite
+    o
+    over
+    overwrite
         newer option to overwrite existing files with the same name/path since it will now add extensions
         with numbers to avoid overwriting these files
          * dest = ``args.overwrite``
@@ -862,34 +884,40 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    ofa, ofactual
+    ofa
+    ofactual
         the oversampling factor of the provided power spectrum. Default is `0`, which means it is calculated from
         the time series data. **Note:** this needs to be provided if there is no time series data!
          * dest = ``args.of_actual``
          * type = ``int``
          * default = `0`
     
-    ofn, ofnew
+    ofn
+    ofnew
         the new oversampling factor to use in the first iteration of both modules ** see performance for more details?
          * dest = ``args.of_new``
          * type = ``int``
          * default = `5`
     
-    p, par, parallel
+    p
+    par
+    parallel
         run ``pySYD`` in parallel mode
          * dest = ``args.parallel``
          * type = ``bool``
          * default = ``False``
          * action = ``store_true``
     
-    s, show
+    s
+    show
         show output figures, which is not recommended if running many stars
          * dest = ``args.show``
          * type = ``bool``
          * default = ``False``
          * action = ``store_true``
     
-    t, test
+    t
+    test
         extra verbose output for testing functionality (not currently implemented)
         **NEED TO DO**
          * dest = ``args.test``
@@ -897,7 +925,8 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    v, verbose
+    v
+    verbose
         turn on the verbose output (also not recommended when running many stars, and
         definitely *not* when in parallel mode) **Check** this but I think it will be
         disabled automatically if the parallel mode is `True`
@@ -906,7 +935,9 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    x, ex, excess
+    x
+    ex
+    excess
         turn off the find excess module -- this will automatically happen if :term:`numax`
         is provided
          * dest = ``args.excess``
@@ -914,7 +945,8 @@ Glossary of options
          * default = ``True``
          * action = ``store_false``
     
-    y, hey
+    y
+    hey
         plugin for Daniel Hey's interactive echelle package **but is not currently implemented**
         **TODO**
          * dest = ``args.hey``
