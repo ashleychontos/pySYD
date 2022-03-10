@@ -430,6 +430,7 @@ Glossary of options
          * nargs = `'*'`
          * default = `1.0`
          * unit = :math:`\mu \mathrm{Hz}`
+         * **see also:** :term:`--ub`, :term:`--upperb`
          
     ``--le``
     ``--uppere``
@@ -590,18 +591,20 @@ Glossary of options
 
     ``--se``
     ``--smoothech``
-   * dest = ``args.smooth_ech``
-   * type = `float`
-   * help = Option to smooth the echelle diagram output using a box filter
-   * default = `None`
-   * unit = muHz
+        option to smooth the echelle diagram output using a box filter of this width
+         * dest = ``args.smooth_ech``
+         * type = `float`
+         * default = `None`
+         * unit = :math:`\mu \mathrm{Hz}`
 
     ``--sm``
     ``--smpar``
-   * dest = ``args.sm_par``
-   * type = `float`
-   * help = Value of smoothing parameter to estimate the smoothed numax (typical values range from `1`-`4`)
-   * default = `None`
+        the value of the smoothing parameter to estimate the smoothed numax (that is really confusing)
+        **note:** typical values range from `1`-`4` but this is fixed based on years of trial & error
+         * dest = ``args.sm_par``
+         * type = `float`
+         * default = `None`
+         * unit = fractional :math:`\mu \mathrm{Hz}`
 
     ``--sp``
     ``--smoothps``
@@ -663,6 +666,48 @@ Glossary of options
          * dest = ``args.n_trials``
          * type = `int`
          * default = `3`
+
+    ``--ub``
+    ``--upperb``
+        the upper limit of the power spectrum used in the background-fitting module **Please note:** 
+        unless :math:`\nu_{\mathrm{max}}` is known, it is highly recommended that you do *not* fix this beforehand
+         * dest = ``args.upper_bg``
+         * type = `float`
+         * nargs = `'*'`
+         * default = `6000.0`
+         * unit = :math:`\mu \mathrm{Hz}`
+         * **see also:** :term:`--lb`, :term:`--lowerb`
+
+    ``--ue``
+    ``--uppere``
+        the upper frequency limit of the folded power spectrum used to "whiten" mixed modes before determining
+        the correct :math:`\Delta\nu`
+         * dest = ``args.upper_ech``
+         * type = `float`
+         * nargs = `'*'`
+         * default = `None`
+         * unit = :math:`\mu \mathrm{Hz}`
+         * **see also:** :term:`--le`, :term:`--lowere`
+
+    ``--up``
+    ``--upperp``
+        the upper frequency limit used for the zoomed in power spectrum. In other words, this is an option to
+        use a different upper bound than the one determined automatically
+         * dest = ``args.upper_ps``
+         * type = `float`
+         * nargs = `'*'`
+         * default = `None`
+         * unit = :math:`\mu \mathrm{Hz}`
+         * **see also:** :term:`--lp`, :term:`--lowerp`
+
+    ``--ux``
+    ``--upperx``
+        the upper frequency limit of the power spectrum to use in the first module
+         * dest = ``args.upper_ex``
+         * type = `float`
+         * default = `6000.0`
+         * unit = :math:`\mu \mathrm{Hz}`
+         * **see also:** :term:`--lx`, :term:`--lowerx`
     
     ``-v``
     ``--verbose``
@@ -695,36 +740,7 @@ Glossary of options
 
 
 
-- ``--ub``,  ``--upperb``
-   * dest = ``args.upper_bg``
-   * type = ``float``
-   * help = Upper limit of power spectrum to use in fitbg module. Please note: unless numax is known, it is not suggested to fix this beforehand.
-   * nargs = '*'
-   * default = ``6000.0``
-   * unit = muHz
 
-- ``--ue``,  ``--uppere``
-   * dest = ``args.upper_ech``
-   * type = ``float``
-   * help = Upper frequency limit of the folded PS to whiten mixed modes before determining the correct dnu
-   * nargs = '*'
-   * default = ``None``
-   * unit = muHz
-
-- ``--up``,  ``--upperp``
-   * dest = ``args.upper_ps``
-   * type = ``float``
-   * help = Upper frequency limit for zoomed in power spectrum (around power excess)
-   * nargs = '*'
-   * default = ``None``
-   * unit = muHz
-
-- ``--ux``, ``--upperx``
-   * dest = ``args.upper_ex``
-   * type = ``float``
-   * help = Upper limit of power spectrum to use in findex module
-   * default = `6000.0`
-   * unit = muHz
 
 - ``--basis``
    * dest = ``args.basis``
