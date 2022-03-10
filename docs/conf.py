@@ -204,6 +204,8 @@ html_logo = "figures/misc/pysyd_logo_rtd.png"
 # using the given strftime format.
 #html_last_updated_fmt = ''
 
+html_show_sphinx = False
+
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 html_title = '{0} v{1}'.format(project, release)
@@ -247,6 +249,7 @@ automodsumm_inherited_members = True
 
 # Add nbsphinx
 extensions = [
+    'nbsphinx',
     'sphinx_panels',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
