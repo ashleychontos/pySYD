@@ -18,6 +18,10 @@ Try clicking this :term:`-b`
 
 Try clicking this :term:`--bg`
 
+Try clicking this :term:`--samples`
+
+Try clicking this :term:`<``-m``>`
+
 Navigating 
 ###########
 
@@ -817,7 +821,7 @@ Glossary of options
          * default = `None`
     
     ``-m``
-    --samples
+    ``--samples``
         option to save the samples from the Monte-Carlo sampling (i.e. parameter 
         posteriors) in case you'd like to reproduce your own plots, etc.
          * dest = ``args.samples``
@@ -909,6 +913,14 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
+    peak
+    peaks
+    npeaks
+        the number of peaks to identify in the autocorrelation function
+         * dest = ``args.n_peaks``
+         * type = ``int``
+         * default = `5`
+    
     -s
     --save
         turn off the automatic saving of output figures and files
@@ -958,13 +970,6 @@ Glossary of options
     
 
 
-
-
-- ``--peak``, ``--peaks``, ``--npeaks``
-   * dest = ``args.n_peaks``
-   * type = ``int``
-   * help = Number of peaks to fit in the ACF
-   * default = `5`
 
 - ``--rms``, ``--nrms``
    * dest = ``args.n_rms``
