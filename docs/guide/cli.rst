@@ -716,8 +716,8 @@ Glossary of options
         the option to select which trial (or estimate) of numax to use from the first module
         **TODO: this is not yet operational**
          * dest = ``args.ask``
-         * type = ``bool``
-         * default = ``False``
+         * type = `bool`
+         * default = `False`
          * action = ``store_true``
     
     ``-b``
@@ -737,7 +737,7 @@ Glossary of options
         box filter width for plotting the power spectrum **TODO:** make sure this does
         not affect any actual measurements and this is just an aesthetic
          * dest = ``args.box_filter``
-         * type = ``float``
+         * type = `float`
          * default = `1.0`
          * unit = :math:`\mu \mathrm{Hz}`
          
@@ -746,7 +746,7 @@ Glossary of options
         interval for the binning of spectrum in :math:`\mathrm{log(}\mu\mathrm{Hz)}`
         *this bins equally in logspace*
          * dest = ``args.binning``
-         * type = ``float``
+         * type = `float`
          * default = `0.005`
          * unit = log(:math:`\mu \mathrm{Hz}`)
     
@@ -766,8 +766,8 @@ Glossary of options
         users. The purpose of adding this was to extend it to beyond the basic command-line
         usage -- therefore, this triggers to ``False`` when calling functions from a notebook
          * dest = ``args.cli``
-         * type = ``bool``
-         * default = ``True``
+         * type = `bool`
+         * default = `True`
          * action = ``store_false``
 
     ``-d``
@@ -775,9 +775,23 @@ Glossary of options
     ``--display``
         show output figures, which is not recommended if running many stars
          * dest = ``args.show``
-         * type = ``bool``
-         * default = ``False``
+         * type = `bool`
+         * default = `False`
          * action = ``store_true``
+    
+    ``--dnu``
+        brute force method to provide value for dnu. **Note:** if using the ``pysyd.utils.whiten_mixed`` 
+        modes module, this will need to be provided along with :term:`--le` and :term:`--ue`.
+         * dest = ``args.dnu``
+         * type = ``float``
+         * nargs = '*'
+         * default = `None`
+
+- ``--ew``, ``--exwidth``
+   * dest = ``args.width``
+   * type = ``float``
+   * help = Fractional value of width to use for power excess, where width is computed using a solar scaling relation and then centered on the estimated numax.
+   * default = `1.0`
     
     ``-e``
     ``--ie``
@@ -965,6 +979,14 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
+    ``--trials``
+    ``--ntrials``
+        the number of trials used to estimate numax in the first module -- can be bypassed if :term:`--numax`
+        is provided.
+         * dest = ``args.n_trials``
+         * type = ``int``
+         * default = `3`
+    
     ``-v``
     ``--verbose``
         turn on the verbose output (also not recommended when running many stars, and
@@ -993,33 +1015,6 @@ Glossary of options
          * type = ``bool``
          * default = ``False``
          * action = ``store_true``
-    
-    
-
-
-
-
-
-- ``--trials``, ``--ntrials``
-   * dest = ``args.n_trials``
-   * type = ``int``
-   * help = Number of trials to estimate numax
-   * default = `3`
-
-
-
-- ``--dnu``
-   * dest = ``args.dnu``
-   * type = ``float``
-   * help = Brute force method to provide value for dnu
-   * nargs = '*'
-   * default = ``None``
-
-- ``--ew``, ``--exwidth``
-   * dest = ``args.width``
-   * type = ``float``
-   * help = Fractional value of width to use for power excess, where width is computed using a solar scaling relation and then centered on the estimated numax.
-   * default = `1.0`
 
 - ``--iw``, ``--indwidth``
    * dest = ``args.ind_width``
