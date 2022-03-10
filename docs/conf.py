@@ -21,7 +21,7 @@ import warnings
 import nbsphinx
 from importlib import import_module
 
-nbsphinx_allow_errors = False
+nbsphinx_allow_errors = True
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -86,8 +86,8 @@ autoclass_content = "both"
 # This is added to the end of RST files - a good place to put substitutions to
 # be used globally.
 rst_epilog = """
-.. | numax | :math:`\rm \nu_{max}`
-.. | dnu | :math:`\Delta\nu`
+.. | numax | replace:: :math:`\rm \nu_{max}`
+.. | dnu | replace:: :math:`\Delta\nu`
 """
 
 # intersphinx
@@ -180,21 +180,21 @@ html_theme = 'sphinx_rtd_theme'
 
 html_logo = "figures/misc/pysyd_logo_rtd.png"
 
-html_theme_options = {
-    "logo_link": "index",
-    "icon_links": [
-        {
-            "name": "GitHub",
-            "url": "https://github.com/ashleychontos/pySYD",
-            "icon": "fab fa-github-square",
-        },
-        {
-            "name": "Twitter",
-            "url": "https://twitter.com/ashleychontos",
-            "icon": "fab fa-twitter-square",
-        },
-    ],
-}
+#html_theme_options = {
+#    "logo_link": "index",
+#    "icon_links": [
+#        {
+#            "name": "GitHub",
+#            "url": "https://github.com/ashleychontos/pySYD",
+#            "icon": "fab fa-github-square",
+#        },
+#        {
+#            "name": "Twitter",
+#            "url": "https://twitter.com/ashleychontos",
+#            "icon": "fab fa-twitter-square",
+#        },
+#    ],
+#}
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
