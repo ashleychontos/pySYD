@@ -717,7 +717,8 @@ Glossary of options
 
 .. glossary::
 
-    a, ask
+    a
+    ask
         the option to select which trial (or estimate) of numax to use from the first module
         **TODO: this is not yet operational**
          * dest = ``args.ask``
@@ -725,7 +726,9 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    b, bg, background
+    b
+    bg
+    background
         controls the background-fitting procedure -- BUT this should never be touched
         since a majority of the work done in the software happens here and it should 
         not need to be turned off
@@ -734,7 +737,8 @@ Glossary of options
          * default = ``True``
          * action = ``store_false``
     
-    c, cli
+    c
+    cli
         while in the list of commands, this option should not be tinkered with for current
         users. The purpose of adding this was to extend it to beyond the basic command-line
         usage -- therefore, this triggers to ``False`` when calling functions from a notebook
@@ -743,7 +747,8 @@ Glossary of options
          * default = ``True``
          * action = ``store_false``
         
-    d, save
+    d
+    save
         turn off the automatic saving of output figures and files
          * dest = ``args.save``
          * type = ``bool``
