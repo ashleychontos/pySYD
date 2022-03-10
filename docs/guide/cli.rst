@@ -12,11 +12,11 @@ As a command-line tool
 
 .. _cli/help:
 
-Try clicking this :term:`a`
+Try clicking this :term:`a <-a>`
 
-Try clicking this :term:`save`
+Try clicking this :term:`-b`
 
-Try clicking this :term:`bg`
+Try clicking this :term:`--bg`
 
 Navigating 
 ###########
@@ -746,15 +746,16 @@ Glossary of options
          * type = ``bool``
          * default = ``True``
          * action = ``store_false``
-        
-    -d
-    --save
-        turn off the automatic saving of output figures and files
-         * dest = ``args.save``
+
+    d
+    show
+    display
+        show output figures, which is not recommended if running many stars
+         * dest = ``args.show``
          * type = ``bool``
-         * default = ``True``
-         * action = ``store_false``
-          
+         * default = ``False``
+         * action = ``store_true``
+    
     -e
     --ie
     --interpech
@@ -908,13 +909,13 @@ Glossary of options
          * default = ``False``
          * action = ``store_true``
     
-    s
-    show
-        show output figures, which is not recommended if running many stars
-         * dest = ``args.show``
+    -s
+    --save
+        turn off the automatic saving of output figures and files
+         * dest = ``args.save``
          * type = ``bool``
-         * default = ``False``
-         * action = ``store_true``
+         * default = ``True``
+         * action = ``store_false``
     
     t
     test
