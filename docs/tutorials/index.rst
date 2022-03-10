@@ -9,7 +9,7 @@ that demonstrate different uses of the underlying ``pySYD`` API.
 .. toctree::
    :maxdepth: 2
    :titlesonly:
-   :caption: Using ``pySYD``
+   :caption: Using pySYD
    
-   In a notebook <basic_example.ipynb>
+   In a notebook <example_nb.ipynb>
    As a command-line tool <../guide/cli>
