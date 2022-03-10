@@ -66,19 +66,19 @@ If applicable, please also use our `ASCL listing <https://ui.adsabs.harvard.edu/
 
 .. code-block::
 
-    |@misc{2021ascl.soft11017C,
-    |       author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
-    |        title = "{pySYD: Measuring global asteroseismic parameters}",
-    |     keywords = {Software},
-    |         year = 2021,
-    |        month = nov,
-    |          eid = {ascl:2111.017},
-    |        pages = {ascl:2111.017},
-    |archivePrefix = {ascl},
-    |       eprint = {2111.017},
-    |       adsurl = {https://ui.adsabs.harvard.edu/abs/2021ascl.soft11017C},
-    |      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
-    |}
+    """@misc{2021ascl.soft11017C,
+              author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
+               title = "{pySYD: Measuring global asteroseismic parameters}",
+            keywords = {Software},
+                year = 2021,
+               month = nov,
+                 eid = {ascl:2111.017},
+               pages = {ascl:2111.017},
+       archivePrefix = {ascl},
+              eprint = {2111.017},
+              adsurl = {https://ui.adsabs.harvard.edu/abs/2021ascl.soft11017C},
+             adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+       }"""
 
 
 .. link-button:: https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C/citations
