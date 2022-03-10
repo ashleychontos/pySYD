@@ -287,6 +287,13 @@ Glossary of options
          * default = `True`
          * action = ``store_false``
     
+    ``--basis``
+        which basis to use for the background fitting (i.e. `'a_b'`, `'pgran_tau'`, 
+        `'tau_sigma'`), **NOT OPERATIONAL YET**
+         * dest = ``args.basis``
+         * type = `str`
+         * default = `'tau_sigma'`
+    
     ``--bf``
     ``--box``
     ``--boxfilter``
@@ -305,6 +312,22 @@ Glossary of options
          * type = `float`
          * default = `0.005`
          * unit = log(:math:`\mu \mathrm{Hz}`)
+
+    ``--bm``
+    ``--mode``
+    ``--bmode``
+        which mode to choose when binning. Choices are ~[`"mean"`, `"median"`, `"gaussian"`]
+         * dest = ``args.mode``
+         * type = `str`
+         * default = `"mean"`
+
+    ``--ce``
+    ``--cm``
+    ``--color``
+        change the colormap used in the echelle diagram, which is `'binary'` by default
+         * dest = ``args.cmap``
+         * type = `str`
+         * default = `'binary'`
     
     ``--cv``
     ``--value``
@@ -372,6 +395,16 @@ Glossary of options
          * default = `False`
          * action = ``store_true``
 
+    ``--file``
+    ``--list``
+    ``--todo``
+        the path to the text file that contains the list of stars to process, which is convenient
+        for running many stars
+         * dest = ``args.file``
+         * type = `str`
+         * default = ``TODODIR``
+         * **see also:** :term:`--star`, :term:`--stars`
+
     ``-g``
     ``--globe``
     ``--global``
@@ -391,6 +424,21 @@ Glossary of options
          * type = `bool`
          * default = `False`
          * action = ``store_true``
+
+    ``--in``
+    ``--input``
+    ``--inpdir``
+        path to the input data
+         * dest = ``args.inpdir``
+         * type = `str`
+         * default = ``INPDIR``
+
+    ``--info``
+    ``--information``
+        path to the csv containing all the stellar information (although *not* required)
+         * dest = ``args.info``
+         * type = `str`
+         * default = ``INFODIR``
     
     ``--iw``
     ``--indwidth``
@@ -481,6 +529,20 @@ Glossary of options
          * dest = ``args.mc_iter``
          * type = `int`
          * default = `1`
+
+    ``--method``
+        development option to change the method used to determine dnu, choices are
+        ~[`'M'`,`'A'`,`'D'`] for Maryum, Ashley and Dennis (respectively)
+         * dest = ``args.method``
+         * type = `str`
+         * default = `'D'`
+
+    ``--metric``
+        which model metric to use for the best-fit background model, current choices are
+        ~[`'bic'`, `'aic'`] but **still being developed and tested**
+         * dest = ``args.metric``
+         * type = `str`
+         * default = `'bic'`
     
     ``-n``
     ``--notch``
@@ -555,6 +617,14 @@ Glossary of options
          * dest = ``args.of_new``
          * type = `int`
          * default = `5`
+         
+    ``--out``
+    ``--output``
+    ``--outdir``
+        path to save results to
+         * dest = ``args.outdir``
+         * type = `str`
+         * default = `'OUTDIR'`
     
     ``-p``
     ``--par``
@@ -615,6 +685,15 @@ Glossary of options
          * default = `2.5`
          * unit = :math:`\mu \mathrm{Hz}`
 
+    ``--star``
+    ``--stars``
+        list of stars to process. Default is `None`, which will read in the star list from ``args.file`` instead
+         * dest = ``args.star``
+         * type = `str`
+         * nargs = `'*'`
+         * default = `None`
+         * **see also:** :term:`--file`, :term:`--list`, :term:`--todo`
+
     ``--step``
     ``--steps``
         the step width for the collapsed autocorrelation function w.r.t. the fraction of the
@@ -631,13 +710,15 @@ Glossary of options
          * type = `float`
          * default = `20.0`
          * unit = :math:`\mu \mathrm{Hz}`
-         
+
+
 .. warning::
 
     All parameters are optimized for most star types but some may need adjusting. 
     An example is the smoothing width (``--sw``), which is 20 muHz by default, but 
     may need to be adjusted based on the nyquist frequency and frequency resolution 
     of the input power spectrum.
+
 
 .. glossary::
     
@@ -739,74 +820,7 @@ Glossary of options
          * action = ``store_true``
 
 
-
-
-
-- ``--basis``
-   * dest = ``args.basis``
-   * type = ``str``
-   * help = Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***
-   * default = `'tau_sigma'`
-
-- ``--bm``, ``--mode``, ``--bmode`` 
-   * dest = ``args.mode``
-   * type = ``str``
-   * help = Which mode to use when binning. Choices are ["mean", "median", "gaussian"]
-   * default = ``mean``
-
-- ``--ce``, ``--cm``, ``--color``
-   * dest = ``args.cmap``
-   * type = ``str``
-   * help = Change colormap of ED, which is `binary` by default.
-   * default = ``binary``
-
-- ``--file``, ``--list``, ``--todo``
-   * dest = ``args.file``
-   * type = ``str``
-   * help = Path to text file that contains the list of stars to process (convenient for running many stars).
-   * default = ``TODODIR``
-
-- ``--in``, ``--input``, ``--inpdir``
-   * dest = ``args.inpdir``
-   * type = ``str``
-   * help = Path to input data
-   * default = ``INPDIR``
-
-- ``--info``, ``--information`` 
-   * dest = ``args.info``
-   * type = ``str``
-   * help = Path to the csv containing star information (although not required).
-   * default = ``INFODIR``
-
-- ``--method``
-   * dest = ``args.method``
-   * type = ``str``
-   * help = Method to use to determine dnu, choices ~['M', 'A', 'D']
-   * default = ``D``
-
-- ``--metric``
-   * dest = ``args.metric``
-   * type = ``str``
-   * help = Which model metric to use for the best-fit background model, choices~['bic','aic']
-   * default = `'bic'`
-
-- ``--out``, ``--output``, ``--outdir``
-   * dest = ``args.outdir``
-   * type = ``str``
-   * help = Path that results are saved to
-   * default = ``OUTDIR``
-
-- ``--star``, ``--stars``
-   * dest = ``args.star``
-   * type = ``str``
-   * help = List of stars to process. Default is ``None``, which will read in the star list from ``args.file``.
-   * nargs = '*'
-   * default = ``None``
-
-
------
-
-.. _cli/examples::
+.. _cli/examples:
 
 Examples
 #########
