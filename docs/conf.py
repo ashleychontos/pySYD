@@ -18,7 +18,7 @@ import pysyd
 import pathlib
 import datetime
 import warnings
-import nbsphinx
+#import nbsphinx
 from importlib import import_module
 
 nbsphinx_allow_errors = True
