@@ -733,7 +733,7 @@ Glossary of options
          * type = ``bool``
          * default = ``True``
          * action = ``store_false``
-
+    
     c, cli
         while in the list of commands, this option should not be tinkered with for current
         users. The purpose of adding this was to extend it to beyond the basic command-line
@@ -742,150 +742,198 @@ Glossary of options
          * type = ``bool``
          * default = ``True``
          * action = ``store_false``
-         
-     d, save
-         turn off the automatic saving of output figures and files
-          * dest = ``args.save``
-          * type = ``bool``
-          * default = ``True``
-          * action = ``store_false``
+        
+    d, save
+        turn off the automatic saving of output figures and files
+         * dest = ``args.save``
+         * type = ``bool``
+         * default = ``True``
+         * action = ``store_false``
           
-      e, ie, interpech
-          turn on the bilinear interpolation of the plotted echelle diagram
-           * dest = ``args.interp_ech``
-           * type = ``bool``
-           * default = ``False``
-           * action = ``store_true``
+    e, ie, interpech
+        turn on the bilinear interpolation of the plotted echelle diagram
+         * dest = ``args.interp_ech``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
            
-       f, fix, fixwn, wn
-           fix the white noise level in the background fitting **NOT operational yet**
-           this still needs to be tested
-            * dest = ``args.fix``
-            * type = ``bool``
-            * default = ``False``
-            * action = ``store_true``
+    f, fix, fixwn, wn
+        fix the white noise level in the background fitting **NOT operational yet**
+        this still needs to be tested
+         * dest = ``args.fix``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
             
-        g, globe, global
-            do not estimate the global asteroseismic parameter numax and dnu (although
-            I'm not sure why you would want to do that because that's exactly what this
-            software is intended for)
-             * dest = ``args.globe``
-             * type = ``bool``
-             * default = ``True``
-             * action = ``store_false``
-             
-- ``-i``, ``--include``
-   * dest = ``args.include``
-   * type = ``bool``
-   * help = Include metric values in verbose output, default is `False`.
-   * default = ``False``
-   * action = ``store_true``
-- ``-k``, ``--kc``, ``--kepcorr``
-   * dest = ``args.kepcorr``
-   * type = ``bool``
-   * help = turn on the *Kepler* short-cadence artefact correction module
-   * default = ``False``
-   * action = ``store_true``
-- ``-m``, ``--samples``
-   * dest = ``args.samples``
-   * type = ``bool``
-   * help = Save samples from Monte-Carlo sampling (i.e. parameter posteriors)
-   * default = ``False``
-   * action = ``store_true``
-- ``-n``, ``--notch``
-   * dest = ``args.notching``
-   * type = ``bool``
-   * help = Use notching technique to reduce effects from mixed modes (not fully functional, creates weirds effects for higher SNR cases)
-   * default = ``False``
-   * action = ``store_true``
-- ``-o``, ``--over``, ``--overwrite``
-   * dest = ``args.overwrite``
-   * type = ``bool``
-   * help = Overwrite existing files with the same name/path
-   * default = ``False``
-   * action = ``store_true``
-- ``-p``, ``--par``, ``--parallel``
-   * dest = ``args.parallel``
-   * type = ``bool``
-   * help = Run pySYD in parallel mode
-   * default = ``False``
-   * action = ``store_true``
-- ``-s`` , ``--show``
-   * dest = ``args.show``
-   * type = ``bool``
-   * help = show output figures (note: this is not recommended if running many stars)
-   * default = ``False``
-   * action = ``store_true``
-- ``-t``, ``--test``
-   * dest = ``args.test``
-   * type = ``bool``
-   * help = Extra verbose output for testing functionality (not currently implemented)
-   * default = ``False``
-   * action = ``store_true``
-- ``-v``, ``--verbose``
-   * dest = ``args.verbose``
-   * type = ``bool``
-   * help = Turn on verbose output
-   * default = ``False``
-   * action = ``store_true``
-- ``-x``, ``--ex``, ``--excess``
-   * dest = ``args.background``
-   * type = ``bool``
-   * help = turn off find excess module
-   * default = ``True``
-   * action = ``store_false``
-- ``-y``, ``--hey``
-   * dest = ``args.hey``
-   * type = ``bool``
-   * help = Plugin for Daniel Hey's echelle package (not currently implemented yet)
-   * default = ``False``
-   * action = ``store_true``
+    g, globe, global
+        do not estimate the global asteroseismic parameter numax and dnu (although
+        I'm not sure why you would want to do that because that's exactly what this
+        software is intended for)
+         * dest = ``args.globe``
+         * type = ``bool``
+         * default = ``True``
+         * action = ``store_false``
+    
+    i, include
+        include metric (i.e. BIC, AIC) values in verbose output during the background
+        fitting procedure
+         * dest = ``args.include``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    k, kc, kepcorr
+        turn on the *Kepler* short-cadence artefact correction module. if you don't
+        know what a *Kepler* short-cadence artefact is, chances are you shouldn't mess
+        around with this option yet
+         * dest = ``args.kepcorr``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    laws, nlaws
+        force the number of red-noise component(s). **fun fact:** the older IDL version
+        of ``SYD`` fixed this number to ``2`` for the *Kepler* legacy sample -- now we
+        have made it customizable all the way down to an individual star!
+         * dest = ``args.n_laws``
+         * type = ``int``
+         * default = `None`
+    
+    m, samples
+        option to save the samples from the Monte-Carlo sampling (i.e. parameter 
+        posteriors) in case you'd like to reproduce your own plots, etc.
+         * dest = ``args.samples``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    mc, iter, mciter
+        number of Monte-Carlo-like iterations. This is `1` by default, since you should
+        always check the data and output figures before running the sampling algorithm.
+        But for purposes of generating uncertainties, `n=200` is typically sufficient.
+         * dest = ``args.mc_iter``
+         * type = ``int``
+         * default = `1`
+    
+    n, notch
+        use notching technique to reduce effects from mixes modes (pretty sure this is not
+        full functional yet, creates weird effects for higher SNR cases)
+         * dest = ``args.notching``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    nox, nacross
+        specifies the number of bins (i.e. the resolution) to use for the x-axis of the
+        echelle diagram -- fixing this number if complicated because it depends on both the
+        resolution of the power spectrum as well as the characteristic frequency separation.
+        This is another example where, if you don't know what this means, you probably should
+        not change it.
+         * dest = ``args.nox``
+         * type = ``int``
+         * default = `50`
+    
+    noy, ndown, norders
+        similar to :term:`nox`, this specifies the number of bins (i.e. orders) to use on the
+        y-axis of the echelle diagram. **TODO:** check how it is automatically calculating the
+        number of orders since there cannot be `0`.
+         * dest = ``args.noy``
+         * type = ``int``
+         * default = `0`
+    
+    nt, nthread, nthreads
+        the number of processes to run in parallel. If nothing is provided when you run in ``pysyd.parallel``
+        mode, the software will use the ``multiprocessing`` package to determine the number of CPUs on the
+        operating system and then adjust accordingly. **In short:** this probably does not need to be changed
+         * dest = ``args.n_threads``
+         * type = ``int``
+         * default = `0`
+    
+    o, over, overwrite
+        newer option to overwrite existing files with the same name/path since it will now add extensions
+        with numbers to avoid overwriting these files
+         * dest = ``args.overwrite``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    ofa, ofactual
+        the oversampling factor of the provided power spectrum. Default is `0`, which means it is calculated from
+        the time series data. **Note:** this needs to be provided if there is no time series data!
+         * dest = ``args.of_actual``
+         * type = ``int``
+         * default = `0`
+    
+    ofn, ofnew
+        the new oversampling factor to use in the first iteration of both modules ** see performance for more details?
+         * dest = ``args.of_new``
+         * type = ``int``
+         * default = `5`
+    
+    p, par, parallel
+        run ``pySYD`` in parallel mode
+         * dest = ``args.parallel``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    s, show
+        show output figures, which is not recommended if running many stars
+         * dest = ``args.show``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    t, test
+        extra verbose output for testing functionality (not currently implemented)
+        **NEED TO DO**
+         * dest = ``args.test``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    v, verbose
+        turn on the verbose output (also not recommended when running many stars, and
+        definitely *not* when in parallel mode) **Check** this but I think it will be
+        disabled automatically if the parallel mode is `True`
+         * dest = ``args.verbose``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    x, ex, excess
+        turn off the find excess module -- this will automatically happen if :term:`numax`
+        is provided
+         * dest = ``args.excess``
+         * type = ``bool``
+         * default = ``True``
+         * action = ``store_false``
+    
+    y, hey
+        plugin for Daniel Hey's interactive echelle package **but is not currently implemented**
+        **TODO**
+         * dest = ``args.hey``
+         * type = ``bool``
+         * default = ``False``
+         * action = ``store_true``
+    
+    
 
-- ``--laws``, ``--nlaws``
-   * dest = ``args.n_laws``
-   * type = ``int``
-   * help = Force the number of red-noise component(s)
-   * default = `None`
-- ``--mc``, ``--iter``, ``--mciter``
-   * dest = ``args.mc_iter``
-   * type = ``int``
-   * help = Number of Monte-Carlo iterations
-   * default = `1`
-- ``--nox``, ``--nacross``
-   * dest = ``args.nox``
-   * type = ``int``
-   * help = Resolution for the x-axis of the ED
-   * default = `50`
-- ``--noy``, ``--ndown``, ``--norders``
-   * dest = ``args.noy``
-   * type = ``int``
-   * help = The number of orders to plot on the ED y-axis
-   * default = `0`
-- ``-nt``, ``--nt``, ``-nthread``, ``--nthread``, ``-nthreads``, ``--nthreads`` 
-   * dest = ``args.n_threads``
-   * type = ``int``
-   * help = Number of processes to run in parallel. If nothing is provided, the software will use the ``multiprocessing`` package to determine the number of CPUs on the operating system and then adjust accordingly.
-   * default = `0`
-- ``--ofa``, ``--of_actual``
-   * dest = ``args.of_actual``
-   * type = ``int``
-   * help = The oversampling factor of the provided power spectrum. Default is `0`, which means it is calculated from the time series data. Note: This needs to be provided if there is no time series data!
-   * default = `0`
-- ``--ofn``, ``--of_new``
-   * dest = ``args.of_new``
-   * type = ``int``
-   * help = The new oversampling factor to use in the first iterations of both modules. Default is `5` (see performance for more details).
-   * default = `5`
+
+
+
 - ``--peak``, ``--peaks``, ``--npeaks``
    * dest = ``args.n_peaks``
    * type = ``int``
    * help = Number of peaks to fit in the ACF
    * default = `5`
+
 - ``--rms``, ``--nrms``
    * dest = ``args.n_rms``
    * type = ``int``
    * help = Number of points used to estimate amplitudes of individual background components (this should rarely need to be touched)
    * default = `20`
+
 - ``--trials``, ``--ntrials``
    * dest = ``args.n_trials``
    * type = ``int``
@@ -898,34 +946,40 @@ Glossary of options
    * help = Box filter width (in muHz) for plotting the power spectrum
    * default = `1.0`
    * unit = muHz
+
 - ``--bin``, ``--binning``
    * dest = ``args.binning``
    * type = ``float``
    * help = Interval for binning of spectrum in log(muHz) (bins equally in logspace).
    * default = `0.005`
    * unit = log(muHz)
+
 - ``--cv``, ``--value``
    * dest = ``args.clip_value``
    * type = ``float``
    * help = Clip value for echelle diagram (i.e. if ``args.clip_ech`` is ``True``). If none is provided, it will cut at 3x the median value of the folded power spectrum.
    * default = ``3.0``
    * unit = fractional psd
+
 - ``--dnu``
    * dest = ``args.dnu``
    * type = ``float``
    * help = Brute force method to provide value for dnu
    * nargs = '*'
    * default = ``None``
+
 - ``--ew``, ``--exwidth``
    * dest = ``args.width``
    * type = ``float``
    * help = Fractional value of width to use for power excess, where width is computed using a solar scaling relation and then centered on the estimated numax.
    * default = `1.0`
+
 - ``--iw``, ``--indwidth``
    * dest = ``args.ind_width``
    * type = ``float``
    * help = Width of binning for power spectrum (in muHz)
    * default = `20.0`
+
 - ``--lb``, ``--lowerb``
    * dest = ``args.lower_bg``
    * type = ``float``
@@ -933,6 +987,7 @@ Glossary of options
    * nargs = '*'
    * default = ``1.0``
    * unit = muHz
+
 - ``--le``, ``--uppere``
    * dest = ``args.lower_ech``
    * type = ``float``
@@ -940,6 +995,7 @@ Glossary of options
    * nargs = '*'
    * default = ``None``
    * unit = muHz
+
 - ``--lp``, ``--lowerp``
    * dest = ``args.lower_ps``
    * type = ``float``
@@ -947,50 +1003,59 @@ Glossary of options
    * nargs = '*'
    * default = ``None``
    * unit = muHz
+
 - ``--lx``, ``--lowerx``
    * dest = ``args.lower_ex``
    * type = ``float``
    * help = Lower limit of power spectrum to use in findex module
    * default = `1.0`
    * unit = muHz
+
 - ``--numax``
    * dest = ``args.numax``
    * type = ``float``
    * help = Brute force method to bypass findex and provide value for numax. Please note: len(args.numax) == len(args.targets) for this to work! This is mostly intended for single star runs.
    * nargs = '*'
    * default = ``None``
+
 - ``--se``, ``--smoothech``
    * dest = ``args.smooth_ech``
    * type = ``float``
    * help = Option to smooth the echelle diagram output using a box filter
    * default = ``None``
    * unit = muHz
+
 - ``--sm``, ``--smpar``
    * dest = ``args.sm_par``
    * type = ``float``
    * help = Value of smoothing parameter to estimate the smoothed numax (typical values range from `1`-`4`)
    * default = `None`
+
 - ``--sp``, ``--smoothps``
    * dest = ``args.smooth_ps``
    * type = ``float``
    * help = Box filter width for smoothing of the power spectrum. The default is 2.5, but will switch to 0.5 for more evolved stars (numax < 500 muHz).
    * default = `2.5`
    * unit = muHz
+
 - ``--step``, ``--steps``
    * dest = ``args.step``
    * type = ``float``
    * help = The step width for the collapsed ACF wrt the fraction of the boxsize
    * default = `0.25`
+
 - ``--sw``, ``--smoothwidth``
    * dest = ``args.smooth_width``
    * type = ``float``
    * help = Box filter width (in muHz) for smoothing the power spectrum
    * default = `20.0`
+
 - ``--thresh``, ``--threshold``
    * dest = ``args.threshold``
    * type = ``float``
    * help = Fractional value of the ACF FWHM to use for determining dnu
    * default = ``1.0``
+
 - ``--ub``,  ``--upperb``
    * dest = ``args.upper_bg``
    * type = ``float``
@@ -998,6 +1063,7 @@ Glossary of options
    * nargs = '*'
    * default = ``6000.0``
    * unit = muHz
+
 - ``--ue``,  ``--uppere``
    * dest = ``args.upper_ech``
    * type = ``float``
@@ -1005,6 +1071,7 @@ Glossary of options
    * nargs = '*'
    * default = ``None``
    * unit = muHz
+
 - ``--up``,  ``--upperp``
    * dest = ``args.upper_ps``
    * type = ``float``
@@ -1012,57 +1079,68 @@ Glossary of options
    * nargs = '*'
    * default = ``None``
    * unit = muHz
+
 - ``--ux``, ``--upperx``
    * dest = ``args.upper_ex``
    * type = ``float``
    * help = Upper limit of power spectrum to use in findex module
    * default = `6000.0`
    * unit = muHz
+
 - ``--basis``
    * dest = ``args.basis``
    * type = ``str``
    * help = Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***
    * default = `'tau_sigma'`
+
 - ``--bm``, ``--mode``, ``--bmode`` 
    * dest = ``args.mode``
    * type = ``str``
    * help = Which mode to use when binning. Choices are ["mean", "median", "gaussian"]
    * default = ``mean``
+
 - ``--ce``, ``--cm``, ``--color``
    * dest = ``args.cmap``
    * type = ``str``
    * help = Change colormap of ED, which is `binary` by default.
    * default = ``binary``
+
 - ``--file``, ``--list``, ``--todo``
    * dest = ``args.file``
    * type = ``str``
    * help = Path to text file that contains the list of stars to process (convenient for running many stars).
    * default = ``TODODIR``
+
 - ``--in``, ``--input``, ``--inpdir``
    * dest = ``args.inpdir``
    * type = ``str``
    * help = Path to input data
    * default = ``INPDIR``
+
 - ``--info``, ``--information`` 
    * dest = ``args.info``
    * type = ``str``
    * help = Path to the csv containing star information (although not required).
    * default = ``INFODIR``
+
 - ``--method``
    * dest = ``args.method``
    * type = ``str``
    * help = Method to use to determine dnu, choices ~['M', 'A', 'D']
    * default = ``D``
+
 - ``--metric``
    * dest = ``args.metric``
    * type = ``str``
    * help = Which model metric to use for the best-fit background model, choices~['bic','aic']
    * default = `'bic'`
+
 - ``--out``, ``--output``, ``--outdir``
    * dest = ``args.outdir``
    * type = ``str``
    * help = Path that results are saved to
    * default = ``OUTDIR``
+
 - ``--star``, ``--stars``
    * dest = ``args.star``
    * type = ``str``
@@ -1195,14 +1273,14 @@ to better demonstrate the difference.
 ********************************************************
 
 +--------------------------------------------------+-------------------------------------------------------+
-| Before                                           | After                                                 |
+| Before                                             | After                                                     |
 +==================================================+=======================================================+
-| Set the upper frequency limit in power spectrum; useful when `pySYD` latches on to an artefact.          |
+| Set the upper frequency limit in power spectrum; useful when `pySYD` latches on to an artefact.                |
 +--------------------------------------------------+-------------------------------------------------------+
-| :bash:`pysyd run --star 11769801`                | :bash:`pysyd run --star 11769801 -ux 3500`            |
+| :bash:`pysyd run --star 11769801`                   | :bash:`pysyd run --star 11769801 -ux 3500`               |
 +--------------------------------------------------+-------------------------------------------------------+
 | .. figure:: ../figures/advanced/11769801_before.png | .. figure:: ../figures/advanced/11769801_after.png       |
-|    :width: 600                                   |    :width: 600                                        |
+|    :width: 600                                      |    :width: 600                                           |
 +--------------------------------------------------+-------------------------------------------------------+
 
 
