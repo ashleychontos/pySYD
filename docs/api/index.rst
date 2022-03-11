@@ -1,4 +1,4 @@
-
+.. module:: pysyd
 
 ***
 API
