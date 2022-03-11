@@ -44,6 +44,8 @@ amount but they are only there to make your asteroseismic experience as customiz
 As you are navigating this webpage, keep in mind that we have a special :ref:`glossary<cli/glossary>` for 
 all our command-line options.
 
+-----
+
 .. _cli/help/high:
 
 High-level functions
@@ -71,6 +73,13 @@ used very sparingly.
                             Output directory
       -v, --verbose         Turn on verbose output
 
+**Glossary terms:** :term:`-c<-c, --cli>`, :term:`--cli<-c, --cli>`, :term:`--file<--file, --list, --todo>`, 
+:term:`--in<--in, --input, --inpdir>`, :term:`--info<--info, --information>`, :term:`--information<--info, --information>`, 
+:term:`--inpdir<--in, --input, --inpdir>`, :term:`--input<--in, --input, --inpdir>`, :term:`--list<--file, --list, --todo>`, 
+:term:`--out<--out, --outdir, --output>`, :term:`--outdir<--out, --outdir, --output>`, :term:`--output<--out, --outdir, --output>`, 
+:term:`--todo<--file, --list, --todo>`, :term:`-v<-v, --verbose>`, :term:`--verbose<-v, --verbose>`
+
+-----
 
 .. _cli/help/data:
 
@@ -90,7 +99,7 @@ the data as well as which modules to run.
       -g, --globe, --global
                             Do not estimate global asteroseismic parameters (i.e.
                             numax or dnu)
-      -k, --kc, --kep_corr  Turn on the Kepler short-cadence artefact correction
+      -k, --kc, --kepcorr  Turn on the Kepler short-cadence artefact correction
                             routine
       --ofa n, --ofactual n
                             The oversampling factor (OF) of the input PS
@@ -105,7 +114,18 @@ the data as well as which modules to run.
       -t, --test            Extra verbose output for testing functionality
       -x, --ex, --excess    Turn off the find excess routine
 
-**Glossary terms:** :term:`-s<-s, --save>`, :term:`--save<-s, --save>`
+**Glossary terms:** :term:`-b<-b, --bg, --background>`, :term:`--background<-b, --bg, --background>`, 
+:term:`--bg<-b, --bg, --background>`, :term:`-d<-d, --show, --display>`, :term:`--display<-d, --show, --display>`, 
+:term:`--ex<-x, --ex, --excess>`, :term:`--excess<-x, --ex, --excess>`, :term:`-g<-g, --globe, --global>`, 
+:term:`--global<-g, --globe, --global>`, :term:`--globe<-g, --globe, --global>`, :term:`-k<-k, --kc, --kepcorr>`, 
+:term:`--kc<-k, --kc, --kepcorr>`, :term:`--kepcorr<-k, --kc, --kepcorr>`, :term:`--ofa<--ofa, --ofactual>`, 
+:term:`--ofactual<--ofa, --ofactual>`, :term:`--ofn<--ofn, --ofnew>`, :term:`--ofn<--ofn, --ofnew>`, 
+:term:`-o<-o, --over, --overwrite>`, :term:`--over<-o, --over, --overwrite>`, :term:`--overwrite<-o, --over, --overwrite>`, 
+:term:`-p<-p, --par, --parallel>`, :term:`--par<-p, --par, --parallel>`, :term:`--parallel<-p, --par, --parallel>`, 
+:term:`-s<-s, --save>`, :term:`--save<-s, --save>`, :term:`--show<-d, --show, --display>`, :term:`--star<--star, --stars>`, 
+:term:`--stars<--star, --stars>`, :term:`-t<-t, --test>`, :term:`--test<-t, --test>`, :term:`-x<-x, --ex, --excess>`
+
+-----
 
 .. _cli/help/est:
 
@@ -132,6 +152,8 @@ to estimate numax if it is not known:
                             Upper frequency limit of PS
                             
 **Glossary terms:** :term:`-a<-a, --ask>`, :term:`--ask<-a, --ask>`
+
+-----
 
 .. _cli/help/bg:
 
@@ -160,6 +182,8 @@ Below is a complete list of parameters relevant to the background-fitting routin
       --ub freq, --upperb freq
                             Upper frequency limit of PS
 
+-----
+
 .. _cli/help/numax:
 
 Deriving :math:`\nu_{\mathrm{max}}`
@@ -184,6 +208,9 @@ corresponding to maximum power:
       --up [freq [freq ...]], --upperp [freq [freq ...]]
                             Upper frequency limit for zoomed in PS
 
+
+-----
+
 .. _cli/help/dnu:
 
 Deriving :math:`\Delta\nu`
@@ -202,6 +229,8 @@ Below are all options related to the characteristic frequency spacing (dnu):
                             Box filter width [in muHz] of PS for ACF
       --thresh value, --threshold value
                             Fractional value of FWHM to use for ACF
+
+-----
 
 .. _cli/help/ech:
 
@@ -234,6 +263,8 @@ All customizable options relevant for the echelle diagram output:
       --ue [freq [freq ...]], --uppere [freq [freq ...]]
                             Upper frequency limit of folded PS to whiten mixed
                             modes
+
+-----
 
 .. _cli/help/mc:
 
