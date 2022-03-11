@@ -15,7 +15,7 @@ def _main(args=None):
     """
     Main script to run the pySYD pipeline
 
-    Args:
+    Parameters:
         args : argparse.Namespace
             the command line arguments
 
@@ -57,7 +57,7 @@ def load(args, star=None, verbose=False, command='run'):
         information that is required to run any ``pySYD`` mode successfully
         (with the exception of ``pysyd.pipeline.setup``)
 
-    Args:
+    Parameters:
         args : argparse.Namespace
             the command line arguments
         star : object, optional
@@ -98,7 +98,7 @@ def run(args):
     Main function to initiate the pySYD pipeline (consecutively, not
     in parallel)
 
-    Args:
+    Parameters:
         args : argparse.Namespace
             the command line arguments
 
@@ -129,7 +129,7 @@ def pipe(group, args, count=0):
     This function is called by both ``pysyd.pipeline.run`` and ``pysyd.pipeline.parallel``
     modes to initiate the ``pySYD`` pipeline for a group of stars
 
-    Args:
+    Parameters:
         group : List[object]
             list of stars to be processed as a group
         args : argparse.Namespace
@@ -167,7 +167,7 @@ def parallel(args):
     
     Run ``pySYD`` in parallel for a large number of stars
 
-    Args:
+    Parameters:
         args : argparse.Namespace
             the command line arguments
     
@@ -207,6 +207,10 @@ def test(args):
     wanting to contribute to ``pySYD``. Ideally this will test new ``pySYD``
     functions.
     
+    Parameters:
+        args : argparse.Namespace
+            the command line arguments
+    
     Warning:
         NOT CURRENTLY IMPLEMENTED
         
@@ -229,7 +233,7 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
     Running this after installation will create the appropriate directories in the current working
     directory as well as download example data and files to test your pySYD installation
 
-    Args:
+    Parameters:
         args : argparse.Namespace
             the command line arguments
         note : str, optional
