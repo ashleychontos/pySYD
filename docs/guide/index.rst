@@ -1,3 +1,5 @@
+
+
 ***
 API
 ***
@@ -7,6 +9,7 @@ find any errors or stale links.
 
 .. toctree::
    :maxdepth: 1
+   :caption: For everything else:
 
    pipeline
    utils
