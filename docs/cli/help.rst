@@ -1,8 +1,8 @@
 
 .. _cli/help:
 
-CLI Help 
-###########
+Running help 
+############
 
 From terminal, the following help command for the main pipeline execution (via ``pysyd.pipeline.run``): 
 
@@ -39,8 +39,8 @@ amount but they are only there to make your asteroseismic experience as customiz
  - :ref:`sampling <cli/help/mc>`
  - :ref:`parallel processing <cli/help/pp>`
 
-As you are navigating this webpage, keep in mind that we have a special :ref:`cli/glossary` for our
-CLI options.
+As you are navigating this webpage, keep in mind that we have a special :ref:`glossary<cli/glossary>` for 
+all our command-line options.
 
 .. _cli/help/high:
 
