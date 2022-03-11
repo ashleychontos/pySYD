@@ -45,7 +45,7 @@ is too small!
    :titlesonly:
    :caption: Community
    
-   vision
+   Our vision <vision>
    other
    attribution
    guidelines
