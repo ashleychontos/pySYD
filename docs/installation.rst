@@ -1,14 +1,13 @@
-.. link-button:: quickstart
-    :type: ref
-    :text: Jump to Quickstart to get started right away!
-    :classes: btn-outline-secondary btn-block
-
 .. _installation/index:
 
 ************
 Installation
 ************
 
+.. link-button:: quickstart
+    :type: ref
+    :text: Jump to Quickstart to get started right away!
+    :classes: btn-outline-secondary btn-block
 
 With ``pip``
 ############
