@@ -1,6 +1,6 @@
 .. link-button:: getting_started
     :type: ref
-    :text: Jump down to Quickstart to get started right away!
+    :text: Jump to Quickstart to get started right away!
     :classes: btn-outline-secondary btn-block
 
 .. _installation/index:
@@ -110,19 +110,3 @@ You can test your installation by using the help command:
         setup               Easy setup of relevant directories and files
         test                Test different utilities (currently under development)
 
-
-
-.. _installation/quickstart:
-
-Quickstart
-**********
-
-To get started right away, use the following commands:
-
-.. code-block::
-
-    mkdir ~/path_to_put_pysyd_stuff
-    cd ~/path_to_put_pysyd_stuff
-    pip install pysyd
-    pysyd setup
-    pysyd run --star 1435467 -dv
