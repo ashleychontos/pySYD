@@ -5,7 +5,7 @@ def background(frequency, guesses, mode='regular', ab=False, noise=None):
     """
     The main model for the stellar background fitting
 
-    Args:
+    Parameters:
         frequency : numpy.ndarray
             the frequency of the power spectrum
         guesses : list
@@ -71,7 +71,7 @@ def gaussian(frequency, offset, amplitude, center, width):
     Observed solar-like oscillations have a Gaussian-like profile and
     therefore, detections are modeled as a Gaussian distribution.
 
-    Args:
+    Parameters:
         frequency : numpy.ndarray
             the frequency array
         offset : float
@@ -108,7 +108,7 @@ def harvey_none(frequency, white_noise, ab=False):
     Warning: 
         check if this is working for null detections
 
-    Args:
+    Parameters:
         frequency : numpy.ndarray
             the frequency array
         white_noise : float
@@ -132,7 +132,7 @@ def harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
     
     Stellar background model consisting of a single Harvey-like component.
 
-    Args:
+    Parameters:
         frequency : numpy.ndarray
             the frequency array
         tau_1 : float
@@ -164,7 +164,7 @@ def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False)
     
     Stellar background model consisting of two Harvey-like components.
 
-    Args:
+    Parameters:
         frequency : numpy.ndarray
             the frequency array
         tau_1 : float
@@ -202,7 +202,7 @@ def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, whit
     
     Stellar background model consisting of three Harvey-like components.
 
-    Args:
+    Parameters:
         frequency : numpy.ndarray
             the frequency array
         tau_1 : float
@@ -245,7 +245,7 @@ def log_likelihood(observations, model):
     Until we figure out a better method, we are computing the likelhood using
     the mean squared error.
 
-    Args:
+    Parameters:
         observations : numpy.ndarray
             the observed power spectrum
         model : numpy.ndarray
@@ -265,7 +265,7 @@ def compute_aic(observations, model, n_parameters):
     Computes the Akaike Information Criterion (AIC) given the 
     background model of the power spectrum.
 
-    Args:
+    Parameters:
         observations : numpy.ndarray
             the observed power spectrum
         model : numpy.ndarray
@@ -290,7 +290,7 @@ def compute_bic(observations, model, n_parameters):
     Computes the Bayesian Information Criterion (BIC) given the 
     background model of the power spectrum.
 
-    Args:
+    Parameters:
         observations : numpy.ndarray
             the observed power spectrum
         model : numpy.ndarray
