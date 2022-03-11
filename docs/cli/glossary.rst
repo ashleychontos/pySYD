@@ -47,13 +47,15 @@ List of options
          * unit = log(:math:`\mu \mathrm{Hz}`)
 
     ``--bm, --mode, --bmode``
-        which mode to choose when binning. Choices are ~[`"mean"`, `"median"`, `"gaussian"`]
+        which mode to choose when binning. 
+        Choices are ~[`"mean"`, `"median"`, `"gaussian"`]
          * dest = ``args.mode``
          * type = `str`
          * default = `"mean"`
 
     ``--ce, --cm, --color``
-        change the colormap used in the echelle diagram, which is `'binary'` by default
+        change the colormap used in the echelle diagram, 
+        which is `'binary'` by default
          * dest = ``args.cmap``
          * type = `str`
          * default = `'binary'`
@@ -77,7 +79,8 @@ List of options
          * action = ``store_false``
 
     ``-d, --show, --display``
-        show output figures, which is not recommended if running many stars
+        show output figures, which is 
+        not recommended if running many stars
          * dest = ``args.show``
          * type = `bool`
          * default = `False`
@@ -93,7 +96,8 @@ List of options
          * **REQUIRES:** :term:`--le<--le, --lowere>`/:term:`--lowere<--le, --lowere>` *and* term:`--ue<--ue, --uppere>`/:term:`--uppere<--ue, --uppere>`
     
     ``-e, --ie, --interpech``
-        turn on the bilinear interpolation of the plotted echelle diagram
+        turn on the bilinear interpolation 
+        of the plotted echelle diagram
          * dest = ``args.interp_ech``
          * type = `bool`
          * default = `False`
@@ -150,13 +154,15 @@ List of options
          * default = ``INPDIR``
 
     ``--info, --information``
-        path to the csv containing all the stellar information (although *not* required)
+        path to the csv containing all the stellar information 
+        (although *not* required)
          * dest = ``args.info``
          * type = `str`
          * default = ``INFODIR``
     
     ``--iw, --indwidth``
-        width of binning for the power spectrum used in the first module **TODO: CHECK THIS** 
+        width of binning for the power spectrum used in the first module 
+        **TODO: CHECK THIS** 
          * dest = ``args.ind_width``
          * type = `float`
          * default = `20.0`
@@ -213,7 +219,8 @@ List of options
          * **see also:** :term:`--up<--up, --upperp>`, :term:`--upperp<--up, --upperp>`
          
     ``--lx, --lowerx``
-        the lower limit of the power spectrum to use in the first module (to estimate numax)
+        the lower limit of the power spectrum 
+        to use in the first module (to estimate numax)
          * dest = ``args.lower_ex``
          * type = `float`
          * default = `1.0`
@@ -287,7 +294,8 @@ List of options
          * default = `0`
          
     ``--numax``
-        brute force method to bypass the first module and provide an initial starting value for :math:`\rm \nu_{max}`
+        brute force method to bypass the first module and provide 
+        an initial starting value for :math:`\rm \nu_{max}`
         ``Asserts len(args.numax) == len(args.targets)``
         * dest = ``args.numax``
         * type = `float`
@@ -312,27 +320,31 @@ List of options
          * **see also:** :term:`--ofn<--ofn, --ofnew>`, :term:`--ofnew<--ofn, --ofnew>`
     
     ``--ofn, --ofnew``
-        the new oversampling factor to use in the first iteration of both modules ** see performance for more details?
+        the new oversampling factor to use in the first iteration of 
+        both modules ** see performance for more details?
          * dest = ``args.of_new``
          * type = `int`
          * default = `5`
          * **see also:** :term:`--ofa<--ofa, --ofactual>`, :term:`--ofactual<--ofa, --ofactual>`
          
     ``--out, --output, --outdir``
-        path to save results to
+        path to save 
+        results to
          * dest = ``args.outdir``
          * type = `str`
          * default = `'OUTDIR'`
     
     ``-p, --par, --parallel``
-        run ``pySYD`` in parallel mode
+        run ``pySYD`` in 
+        parallel mode
          * dest = ``args.parallel``
          * type = `bool`
          * default = `False`
          * action = ``store_true``
     
     ``--peak, --peaks, --npeaks``
-        the number of peaks to identify in the autocorrelation function
+        the number of peaks to identify 
+        in the autocorrelation function
          * dest = ``args.n_peaks``
          * type = `int`
          * default = `5`
@@ -345,14 +357,16 @@ List of options
          * default = `20`
     
     ``-s, --save``
-        turn off the automatic saving of output figures and files
+        turn off the automatic saving 
+        of output figures and files
          * dest = ``args.save``
          * type = `bool`
          * default = `True`
          * action = ``store_false``
 
     ``--se, --smoothech``
-        option to smooth the echelle diagram output using a box filter of this width
+        option to smooth the echelle diagram output 
+        using a box filter of this width
          * dest = ``args.smooth_ech``
          * type = `float`
          * default = `None`
@@ -376,7 +390,8 @@ List of options
          * unit = :math:`\mu \mathrm{Hz}`
 
     ``--star, --stars``
-        list of stars to process. Default is `None`, which will read in the star list from ``args.file`` instead
+        list of stars to process. Default is `None`, which will read 
+        in the star list from ``args.file`` instead
          * dest = ``args.star``
          * type = `str`
          * nargs = `'*'`
@@ -392,7 +407,8 @@ List of options
          * unit = fractional :math:`\mu \mathrm{Hz}`
 
     ``--sw, --smoothwidth``
-        the width of the box filter that is used to smooth the power spectrum
+        the width of the box filter that is 
+        used to smooth the power spectrum
          * dest = ``args.smooth_width``
          * type = `float`
          * default = `20.0`
@@ -411,7 +427,8 @@ List of options
 .. glossary::
     
     ``-t, --test``
-        extra verbose output for testing functionality (not currently implemented)
+        extra verbose output for testing functionality 
+        (not currently implemented)
         **NEED TO DO**
          * dest = ``args.test``
          * type = `bool`
@@ -464,7 +481,8 @@ List of options
          * **see also:** :term:`--lp<--lp, --lowerp>`, :term:`--lowerp<--lp, --lowerp>`
 
     ``--ux, --upperx``
-        the upper frequency limit of the power spectrum to use in the first module
+        the upper frequency limit of the power 
+        spectrum to use in the first module
          * dest = ``args.upper_ex``
          * type = `float`
          * default = `6000.0`
@@ -489,7 +507,8 @@ List of options
          * action = ``store_false``
     
     ``-y, --hey``
-        plugin for Daniel Hey's interactive echelle package **but is not currently implemented**
+        plugin for Daniel Hey's interactive echelle 
+        package **but is not currently implemented**
         **TODO**
          * dest = ``args.hey``
          * type = `bool`
