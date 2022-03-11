@@ -32,7 +32,6 @@ is too small!
 .. toctree::
    :titlesonly:
    :caption: About
-   :name: about
 
    installation
    quickstart
