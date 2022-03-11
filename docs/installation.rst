@@ -1,4 +1,4 @@
-.. link-button:: getting_started
+.. link-button:: quickstart
     :type: ref
     :text: Jump to Quickstart to get started right away!
     :classes: btn-outline-secondary btn-block
