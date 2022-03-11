@@ -87,8 +87,6 @@ autoclass_content = "both"
 # This is added to the end of RST files - a good place to put substitutions to
 # be used globally.
 rst_epilog = """
-.. | numax | replace:: :math:`\rm \nu_{max}`
-.. | dnu | replace:: :math:`\Delta\nu`
 """
 
 # intersphinx
