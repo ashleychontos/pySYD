@@ -93,20 +93,20 @@ def main():
                              default=True, 
                              action='store_false',
     )
-    main_parser.add_argument('-k', '--kc', '--kep_corr', 
+    main_parser.add_argument('-k', '--kc', '--kepcorr', 
                              dest='kep_corr',
                              help='Turn on the Kepler short-cadence artefact correction routine',
                              default=False, 
                              action='store_true',
     )
-    main_parser.add_argument('--ofa', '--of_actual',
+    main_parser.add_argument('--ofa', '--ofactual',
                              metavar='n',
                              dest='of_actual',
                              help='The oversampling factor (OF) of the input PS',
                              type=int,
                              default=None,
     )
-    main_parser.add_argument('--ofn', '--of_new',
+    main_parser.add_argument('--ofn', '--ofnew',
                              metavar='n',
                              dest='of_new',
                              help='The OF to be used for the first iteration',
