@@ -76,7 +76,7 @@ used very sparingly.
 **Glossary terms:** :term:`-c<-c, --cli>`, :term:`--cli<-c, --cli>`, :term:`--file<--file, --list, --todo>`, 
 :term:`--in<--in, --input, --inpdir>`, :term:`--info<--info, --information>`, :term:`--information<--info, --information>`, 
 :term:`--inpdir<--in, --input, --inpdir>`, :term:`--input<--in, --input, --inpdir>`, :term:`--list<--file, --list, --todo>`, 
-:term:`--out<--out, --outdir, --output>`, :term:`--outdir<--out, --outdir, --output>`, :term:`--output<--out, --outdir, --output>`, 
+:term:`--out<--out, --output, --outdir>`, :term:`--outdir<--out, --output, --outdir>`, :term:`--output<--out, --output, --outdir>`, 
 :term:`--todo<--file, --list, --todo>`, :term:`-v<-v, --verbose>`, :term:`--verbose<-v, --verbose>`
 
 -----
