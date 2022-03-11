@@ -1,8 +1,8 @@
-.. _getting_started/index:
+.. _quickstart/index:
 
-***************
-Getting Started
-***************
+**********
+Quickstart
+**********
 
 Setup
 #####
