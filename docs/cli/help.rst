@@ -23,6 +23,8 @@ From terminal, the following help command for the main pipeline execution (via `
                      [--sp value] [--thresh value] [--ce cmap] [--cv value] [-y]
                      [-e] [--le [freq [freq ...]]] [--notch] [--nox n] [--noy n]
                      [--se value] [--ue [freq [freq ...]]] [--mc n] [-m]
+    optional arguments:
+      -h, --help            show this help message and exit
 
 will display an enormous list of options but do not fret, this is for good reason and we have
 broken them down into relevant groups to make it easier to digest. It may seem like an overwhelming 
@@ -56,6 +58,20 @@ enumerated below. With the exception of the ``verbose`` command, most of these
 features are related to the initial (setup) paths and directories and should be
 used very sparingly. 
 
+.. code-block::
+
+      -c, --cli             This option should not be adjusted for current users
+      --file path, --list path, --todo path
+                            List of stars to process
+      --in path, --input path, --inpdir path
+                            Input directory
+      --info path, --information path
+                            Path to star info
+      --out path, --outdir path, --output path
+                            Output directory
+      -v, --verbose         Turn on verbose output
+
+
 .. _cli/help/data:
 
 Initial data analyses
@@ -67,18 +83,6 @@ the data as well as which modules to run.
 
 .. code-block::
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      -c, --cli             This option should not be adjusted for current users
-      --file path, --list path, --todo path
-                            List of stars to process
-      --in path, --input path, --inpdir path
-                            Input directory
-      --info path, --information path
-                            Path to star info
-      --out path, --outdir path, --output path
-                            Output directory
-      -v, --verbose         Turn on verbose output
       -b, --bg, --background
                             Turn off the automated background fitting routine
       -d, --show, --display
@@ -88,9 +92,9 @@ the data as well as which modules to run.
                             numax or dnu)
       -k, --kc, --kep_corr  Turn on the Kepler short-cadence artefact correction
                             routine
-      --ofa n, --of_actual n
+      --ofa n, --ofactual n
                             The oversampling factor (OF) of the input PS
-      --ofn n, --of_new n   The OF to be used for the first iteration
+      --ofn n, --ofnew n   The OF to be used for the first iteration
       -o, --over, --overwrite
                             Overwrite existing files with the same name/path
       -p, --par, --parallel
@@ -100,6 +104,8 @@ the data as well as which modules to run.
                             List of stars to process
       -t, --test            Extra verbose output for testing functionality
       -x, --ex, --excess    Turn off the find excess routine
+
+**Glossary terms:** :term:`-s<-s, --save>`, :term:`--save<-s, --save>`
 
 .. _cli/help/est:
 
@@ -124,6 +130,8 @@ to estimate numax if it is not known:
                             Box filter width (in muHz) for smoothing the PS
       --ux freq, --upperx freq
                             Upper frequency limit of PS
+                            
+**Glossary terms:** :term:`-a<-a, --ask>`, :term:`--ask<-a, --ask>`
 
 .. _cli/help/bg:
 
