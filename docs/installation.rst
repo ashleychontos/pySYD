@@ -1,6 +1,6 @@
-.. link-button:: installation/quickstart
+.. link-button:: getting_started
     :type: ref
-    :text: Jump down to quickstart to get started right away!
+    :text: Jump down to Quickstart to get started right away!
     :classes: btn-outline-secondary btn-block
 
 .. _installation/index:
