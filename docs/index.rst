@@ -33,6 +33,7 @@ is too small!
 
    installation
    quickstart
+   glossary
    
 .. toctree::
    :titlesonly:
@@ -50,10 +51,19 @@ is too small!
    attribution
    guidelines
 
-.. toctree::
-   :hidden:
-   
-   glossary
+
+Contributors
+############
+
+Our team continues to grow!
+
+.. include: CONTRIBUTORS.rst
+
+
+``pySYD`` collaborators:
+************************
+
+.. include: COLLABORATORS.rst
    
    
 
