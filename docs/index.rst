@@ -29,21 +29,26 @@ is too small!
 
 .. toctree::
    :titlesonly:
-   :caption: About
+   :caption: Intro
 
    installation
    quickstart
+   glossary
+   
+.. toctree::
+   :titlesonly:
+   :caption: About
+   vision
+   other
    attribution
    guidelines
-   Other Software <other>
-   glossary
    
 .. toctree::
    :titlesonly:
    :caption: User Guide
    
-   cli/index
-   api/index
+   As a command-line tool <cli/index>
+   For everything else <api/index>
    
 
 
