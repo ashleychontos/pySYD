@@ -38,6 +38,7 @@ is too small!
 .. toctree::
    :titlesonly:
    :caption: About
+   
    vision
    other
    attribution
@@ -50,8 +51,6 @@ is too small!
    As a command-line tool <cli/index>
    For everything else <api/index>
    
-
-
 
 Bibliography
 ############
