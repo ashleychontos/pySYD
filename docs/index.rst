@@ -33,7 +33,6 @@ is too small!
 
    installation
    quickstart
-   glossary
    
 .. toctree::
    :titlesonly:
@@ -48,8 +47,15 @@ is too small!
    :titlesonly:
    :caption: User Guide
    
-   As a command-line tool <cli/index>
-   For everything else <api/index>
+   api/index
+   cli/index
+
+.. toctree::
+   :titlesonly:
+   :hidden:
+   
+   glossary
+   
    
 
 Bibliography
