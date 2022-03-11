@@ -29,12 +29,12 @@ our :ref:`community guidelines <guidelines/index>` to find out how you can help.
 is too small!
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :titlesonly:
    :caption: Contents
 
    installation
-   getting_started
+   Quickstart <getting_started>
    Tutorials <tutorials/index>
    User Guide <guide/index>
    Contributing <guidelines>
