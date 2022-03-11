@@ -33,21 +33,22 @@ is too small!
    :maxdepth: 1
    :titlesonly:
    :caption: About
+   :name: about
 
-   Installation <installation>
-   Quickstart <getting_started>
-   Citing ``pySYD`` <attribution>
-   Contributing <guidelines>
+   installation
+   quickstart
+   attribution
+   guidelines
    Other Software <other>
    glossary
    
 .. toctree::
    :maxdepth: 1
    :titlesonly:
-   :caption: Advanced
+   :caption: User Guide
    
-   Tutorials <tutorials/index>
-   User Guide <guide/index>
+   cli/index
+   guide/index
    
 
 
