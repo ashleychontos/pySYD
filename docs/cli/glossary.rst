@@ -93,7 +93,7 @@ List of options
          * type = `float`
          * nargs = `'*'`
          * default = `None`
-         * **REQUIRES:** :term:`--le<--le, --lowere>`/:term:`--lowere<--le, --lowere>` *and* term:`--ue<--ue, --uppere>`/:term:`--uppere<--ue, --uppere>`
+         * **REQUIRES:** :term:`--le<--le, --lowere>`/:term:`--lowere<--le, --lowere>` *and* :term:`--ue<--ue, --uppere>`/:term:`--uppere<--ue, --uppere>`
     
     ``-e, --ie, --interpech``
         turn on the bilinear interpolation 
