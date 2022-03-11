@@ -30,7 +30,6 @@ our :ref:`community guidelines <guidelines/index>` to find out how you can help.
 is too small!
 
 .. toctree::
-   :maxdepth: 1
    :titlesonly:
    :caption: About
    :name: about
@@ -43,7 +42,6 @@ is too small!
    glossary
    
 .. toctree::
-   :maxdepth: 1
    :titlesonly:
    :caption: User Guide
    
