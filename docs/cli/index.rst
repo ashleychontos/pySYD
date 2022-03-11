@@ -8,7 +8,8 @@ The primary goal of ``pySYD`` has always been accessible asteroseismology, which
 to be primarily used as a hands-off command-line tool.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :titlesonly:
    :caption: CLI
    
    help
