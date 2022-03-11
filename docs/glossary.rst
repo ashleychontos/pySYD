@@ -7,20 +7,19 @@ Glossary
     asteroseismology
         the study of oscillations in stars
 
-    :math:`\Delta\nu`
     dnu
     characteristic frequency separation
         the comb patter or regular spacing observed for solar-like oscillations for different modes
+         * **variable:** :math:`\Delta\nu`
     
         scales with mean stellar density
 
-    :math:`\nu_{\mathrm{max}}`
     numax
     frequency of maximum power
         the frequency corresponding to maximum power, which is roughly the center of the Gaussian-like envelope of oscillations
+        * **variable:** :math:`\nu_{\mathrm{max}}`
     
         scales with evolutionary state, logg, acoustic cutoff
-
 
     global properties
         the term 'global' is used to describe the general properties of the observed oscillations and is not associated with
@@ -41,11 +40,10 @@ Glossary
         to the center of the frequency range (numax), there is a regular spacing or comb pattern between the observed modes 
         that is referred to as the characteristic spacing or dnu.
 
-
     *Kepler* legacy sample
         a sample of well-studied *Kepler* stars exhibiting solar-like oscillations (cite)
 
-
+    p-mode oscillations
     solar-like oscillations
         implied in the name, these oscillations are driven by the same mechanism as that observed in the Sun, which is
         due to turbulent, near-surface convection. They are also sometimes referred to as **p-mode oscillations**, after the
