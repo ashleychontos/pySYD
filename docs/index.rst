@@ -57,13 +57,12 @@ Contributors
 
 Our team continues to grow!
 
-.. include: CONTRIBUTORS.rst
+.. include:: CONTRIBUTORS.rst
 
+Plus we have many amazing collaborators that have helped with the development of the software, and in particular, the 
+improvements which have ultimately made ``pySYD`` more user-friendly. So many thanks to: 
 
-``pySYD`` collaborators:
-************************
-
-.. include: COLLABORATORS.rst
+.. include:: COLLABORATORS.rst
    
    
 
