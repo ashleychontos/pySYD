@@ -29,19 +29,10 @@ is too small!
 
 .. toctree::
    :titlesonly:
-   :caption: Intro
+   :caption: Introduction
 
    installation
    quickstart
-   
-.. toctree::
-   :titlesonly:
-   :caption: About
-   
-   vision
-   other
-   attribution
-   guidelines
    
 .. toctree::
    :titlesonly:
@@ -49,9 +40,17 @@ is too small!
    
    api/index
    cli/index
-
+   
 .. toctree::
    :titlesonly:
+   :caption: Community
+   
+   vision
+   other
+   attribution
+   guidelines
+
+.. toctree::
    :hidden:
    
    glossary
