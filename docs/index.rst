@@ -10,17 +10,18 @@ Asteroseismology, or the study of stellar oscillations, is a powerful tool
 for studying the internal structure of stars and determining their fundamental 
 properties [aertz2021]_. Specifically for stars similar to the Sun, turbulent near-surface 
 convection excites sound waves that propagate within the stellar cavity, and hence
-providing powerful constraints on stellar interiors that are inaccessible by 
+provides powerful constraints on stellar interiors that are inaccessible by 
 any other means. While it is well-established and widely-accepted as the gold 
 standard for characterizing fundamental stellar properties (e.g., masses, radii,
-ages, etc.), asteroseismology is still mostly a niche field and closed-door science. 
+ages, etc.), asteroseismology is a niche field and still mostly a closed-door science. 
 
 In an effort to make asteroseismology more accessible to the broader astronomy
-community, ``pySYD`` was established as a Python package to automatically detect
-solar-like oscillations and measure their global properties. Therefore, the outputs 
-from ``pySYD`` can be used to determine precise and accurate stellar properties 
-without the need for substantial background knowledge in asteroseismology. In other words, 
-``pySYD`` has been extensively tested and developed to be as hands-off as possible.
+community, ``pySYD`` was developed as a Python package to automatically detect
+solar-like oscillations and measure their global properties. Therefore for non-expert
+users, ``pySYD`` is designed to be an end-to-end product -- serving as a hands-off tool
+that does not require substiantial background knowledge in asteroseismology but still
+reap the benefits! Even for the expert users, ``pySYD`` has many new features and 
+improvements to customize your asteroseismology experience.
 
 This package is being actively developed in 
 `a public repository on GitHub <https://github.com/ashleychontos/pySYD>`_ -- we especially 
@@ -31,14 +32,22 @@ is too small!
 .. toctree::
    :maxdepth: 1
    :titlesonly:
-   :caption: Contents
+   :caption: About
 
-   installation
+   Installation <installation>
    Quickstart <getting_started>
+   Citing ``pySYD`` <attribution>
+   Contributing <guidelines>
+   Other Software <other>
+   glossary
+   
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+   :caption: Advanced
+   
    Tutorials <tutorials/index>
    User Guide <guide/index>
-   Contributing <guidelines>
-   glossary
    
 
 
