@@ -1,0 +1,17 @@
+.. _cli/index:
+
+**********************
+As a command-line tool
+**********************
+
+The primary goal of ``pySYD`` has always been accessible asteroseismology, which was therefore developed
+to be primarily used as a hands-off command-line tool.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: CLI
+   
+   help
+   examples
+   glossary
+   advanced
