@@ -26,29 +26,30 @@ class Target:
     the former is not provided i.e. cadence or nyquist frequency, the oversampling
     factor (if relevant), etc.
         
-    Attributes
-    ----------
-    star : int
-        the star ID
-    params : Dict[str,object]
-        the pipeline parameters
-    excess : Dict[str,object]
-        the parameters of the find excess routine
-    background : Dict[str,object]
-        the parameters relevant for the background-fitting procedure
-    globe : Dict[str,object]
-        parameters relevant for estimating global asteroseismic parameters numax and dnu
-    verbose : bool
-        if true, turns on the verbose output
+    Attributes:
+        star : object
+            the star ID
+        params : Dict[str,object]
+            the pipeline parameters
+        excess : Dict[str,object]
+            the parameters of the find excess routine
+        background : Dict[str,object]
+            the parameters relevant for the background-fitting procedure
+        globe : Dict[str,object]
+            parameters relevant for estimating global asteroseismic parameters numax and dnu
+        verbose : bool
+            if true, turns on the verbose output
     
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the parsed and updated command line arguments
+    Parameters:
+        args : argparse.Namespace
+            the parsed and updated command line arguments
     
-    Methods
-    -------
-    TODO: Add methods
+    Methods:
+        pysyd.target.Target.collapsed_acf()
+        pysyd.target.Target.collapsed_acf
+        target.Target.collapsed_acf()
+        target.Target.collapsed_acf
+    
     
     """
 
