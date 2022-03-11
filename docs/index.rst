@@ -2,8 +2,6 @@
 
    <br />
 
-.. module:: pysyd
-
 .. image:: _static/latex.png
 
 Asteroseismology, or the study of stellar oscillations, is a powerful tool
@@ -45,7 +43,7 @@ is too small!
    :caption: User Guide
    
    cli/index
-   guide/index
+   api/index
    
 
 
