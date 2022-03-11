@@ -9,7 +9,8 @@ find any errors or stale links.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :hidden:
+   :caption: Contents
 
    pipeline
    utils
