@@ -9,7 +9,6 @@ find any errors or stale links.
 
 .. toctree::
    :maxdepth: 1
-   :hidden:
    :caption: Contents
 
    pipeline
