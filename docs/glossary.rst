@@ -4,22 +4,58 @@ Glossary
 
 .. glossary::
 
+    AIC
+    Akikdaf Information Criterion
+    
+    
     asteroseismology
         the study of oscillations in stars
+    
+    ACF
+    autocorrelation function
+    
+    
+    background
+    
+    
+    BCPS
+    background-corrected power spectrum
+    
+    
+    BDPS
+    background-divided power spectrum
+    
+    
+    BSPS
+    background-subtracted power spectrum
+    
+    
+    BIC
+    Bayesian Information Criterion
+    
+    
+    critically sampled
+        sfdklja
 
     dnu
-    characteristic frequency separation
+    large frequency separation
         the comb patter or regular spacing observed for solar-like oscillations for different modes
          * **variable:** :math:`\Delta\nu`
     
         scales with mean stellar density
+    
+    FPS
+    folded power spectrum
 
     numax
     frequency of maximum power
         the frequency corresponding to maximum power, which is roughly the center of the Gaussian-like envelope of oscillations
-        * **variable:** :math:`\nu_{\mathrm{max}}`
+         * **variable:** :math:`\nu_{\mathrm{max}}`
     
         scales with evolutionary state, logg, acoustic cutoff
+        
+    FWHM
+    full-width half maximum
 
     global properties
         the term 'global' is used to describe the general properties of the observed oscillations and is not associated with
@@ -39,17 +75,45 @@ Glossary
         In addition 
         to the center of the frequency range (numax), there is a regular spacing or comb pattern between the observed modes 
         that is referred to as the characteristic spacing or dnu.
+        
+    granulation background
+
 
     *Kepler* legacy sample
         a sample of well-studied *Kepler* stars exhibiting solar-like oscillations (cite)
+        
+    mesogranulation
+    
+    
+    notching
+        a process
+        
+    order
+    
+    
+    oversampling
+
 
     p-mode oscillations
     solar-like oscillations
         implied in the name, these oscillations are driven by the same mechanism as that observed in the Sun, which is
         due to turbulent, near-surface convection. They are also sometimes referred to as **p-mode oscillations**, after the
         pressure-driven (or acoustic sound) waves that are resonating in the stellar cavity.
+    
+    PSD
+    power spectral density
+    
+    
+    PS
+    power spectrum
+        
+        
+    resolution
+
 
     ``SYD``
         the well-known IDL-based asteroseismic pipeline created by Dan Huber during his PhD in Sydney (hence SYD). ``SYD``
         has been extensively tested and benchmarked to other closed-source asteroseismic tools on *Kepler* stars.
+        
+    whiten
 
