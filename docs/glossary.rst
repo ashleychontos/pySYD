@@ -22,16 +22,20 @@ Glossary of documentation terms
     background
         this basically means any other noise structures present in the power spectrum that are *not* 
         due to the solar-like oscillations. This is traditionally parametrized as:
-        
+
+
 .. math::
 
     P(\nu) = W + \frac{}{}
-    
-    
+
+
+.. glossary::
+
     BCPS
     background-corrected power spectrum
         the power spectrum after removing the best-fit stellar background model. In general, this step
         removes any slopes in power spectra due to correlated red-noise properties
+
 
 .. note::
 
