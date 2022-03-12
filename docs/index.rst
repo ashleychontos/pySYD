@@ -59,8 +59,8 @@ Our team continues to grow!
 
 .. include:: CONTRIBUTORS.rst
 
-Plus we have many amazing collaborators that have helped with the development of the software, and in particular, the 
-improvements which have ultimately made ``pySYD`` more user-friendly. So many thanks to: 
+Plus we have many amazing collaborators that have helped with the development of the software, especially with the 
+improvements that have ultimately made ``pySYD`` more user-friendly. Many thanks to: 
 
 .. include:: COLLABORATORS.rst
    
