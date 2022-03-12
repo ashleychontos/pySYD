@@ -4,11 +4,6 @@
 Installation
 ************
 
-.. link-button:: quickstart
-    :type: ref
-    :text: Jump to Quickstart to get started right away!
-    :classes: btn-outline-secondary btn-block
-
 With ``pip``
 ############
 
@@ -25,6 +20,12 @@ change into the top-level ``pysyd`` directory and try running the following comm
 .. code-block::
 
     python setup.py install
+    
+
+.. link-button:: quickstart
+    :type: ref
+    :text: Jump to Quickstart to get started right away!
+    :classes: btn-outline-secondary btn-block
     
 With ``conda``
 ##############
