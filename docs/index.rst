@@ -6,7 +6,7 @@
 
 Asteroseismology, or the study of stellar oscillations, is a powerful tool
 for studying the internal structure of stars and determining their fundamental 
-properties [aertz2021]_. Specifically for stars similar to the Sun, turbulent near-surface 
+properties [@aertz2021]_. Specifically for stars similar to the Sun, turbulent near-surface 
 convection excites sound waves that propagate within the stellar cavity, and hence
 provides powerful constraints on stellar interiors that are inaccessible by 
 any other means. While it is well-established and widely-accepted as the gold 
