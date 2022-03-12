@@ -6,33 +6,37 @@ Glossary
 
     AIC
     Akikdaf Information Criterion
+        afjdkajfl
     
+    artefact
+        *Kepler* short-cadence artefact in the power spectrum from a short-cadence light curve 
+        occurring at the nyquist frequency for long-cadence (i.e. ~270muHz)
     
     asteroseismology
         the study of oscillations in stars
     
     ACF
     autocorrelation function
-    
+        ajdkfaj;
     
     background
-    
+        jdlakfjadlk
     
     BCPS
     background-corrected power spectrum
-    
+        djklfajdlka
     
     BDPS
     background-divided power spectrum
-    
+        jdlafkjdalkjd
     
     BSPS
     background-subtracted power spectrum
-    
+        dkjflakdj
     
     BIC
     Bayesian Information Criterion
-    
+        ldkfjaldkjl
     
     critically sampled
         sfdklja
@@ -46,6 +50,7 @@ Glossary
     
     FPS
     folded power spectrum
+        ldkfjaldkjfa -> used for echelle diagrams and whitening
 
     numax
     frequency of maximum power
@@ -56,6 +61,7 @@ Glossary
         
     FWHM
     full-width half maximum
+        kdjfladk
 
     global properties
         the term 'global' is used to describe the general properties of the observed oscillations and is not associated with
@@ -77,22 +83,29 @@ Glossary
         that is referred to as the characteristic spacing or dnu.
         
     granulation background
+        dlfakjdlakjafld
 
 
     *Kepler* legacy sample
         a sample of well-studied *Kepler* stars exhibiting solar-like oscillations (cite)
         
     mesogranulation
-    
+        dkjfaldjal
     
     notching
         a process
         
+    nyquist frequency
+        the highest frequency that can be sampled, which is set by the cadence of (or time between) 
+        observations (1/2*cadence)
+         * **variable:** :math:`\rm \nu_{nyq}`
+        
     order
+        kldjfladkjad
     
     
     oversampling
-
+        ldkjfaljadlak
 
     p-mode oscillations
     solar-like oscillations
@@ -102,18 +115,18 @@ Glossary
     
     PSD
     power spectral density
-    
+        ldjkfalkdajfal :math:`\rm ppm^{2} \,\, \mu Hz^{-1}`
     
     PS
     power spectrum
-        
+        dlfajk;adj
         
     resolution
-
+        dkljflajd set by the total length (i.e. time) of the time series 
 
     ``SYD``
         the well-known IDL-based asteroseismic pipeline created by Dan Huber during his PhD in Sydney (hence SYD). ``SYD``
         has been extensively tested and benchmarked to other closed-source asteroseismic tools on *Kepler* stars.
         
-    whiten
-
+    whitening
+        kjdfla;jdlak
