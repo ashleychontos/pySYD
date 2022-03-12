@@ -33,6 +33,7 @@ is too small!
    :caption: Getting Started
 
    installation
+   setup
    quickstart
    glossary
    
