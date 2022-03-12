@@ -29,7 +29,7 @@ is too small!
 
 .. toctree::
    :titlesonly:
-   :caption: Introduction
+   :caption: Getting Started
 
    installation
    quickstart
