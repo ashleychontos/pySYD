@@ -1,5 +1,3 @@
-.. _installation/index:
-
 ************
 Installation
 ************
@@ -82,8 +80,6 @@ This package has the following dependencies:
 Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
 and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using ``pip`` or 
 ``conda`` should install and enforce these versions automatically. 
-
-.. _installation/testing:
 
 Testing your installation
 *************************
