@@ -1,6 +1,10 @@
-***************
-``pysyd.utils``
-***************
+*****************
+Utility functions
+*****************
+
+Container classes, parameter dictionaries, functions related to file loading and/or
+saving as well as various data manipulation methods (i.e. correcting artefacts, 
+binning data, etc.).
 
 Introduction
 ############
@@ -14,12 +18,8 @@ Usage
 Examples
 ########
 
-API
-###
-
-Container classes, parameter dictionaries, functions related to file loading and/or
-saving as well as various data manipulation methods (i.e. correcting artefacts, 
-binning data, etc.).
+``pysyd.utils`` API
+###################
 
 .. automodule:: pysyd.utils
    :members:
