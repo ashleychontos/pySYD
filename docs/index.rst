@@ -29,7 +29,7 @@ is too small!
 
 .. link-button:: quickstart
     :type: ref
-    :text: Jump to Quickstart to get started right away!
+    :text: Skip the intro stuff and get started right away!
     :classes: btn-outline-secondary btn-block
 
 .. toctree::
