@@ -9,5 +9,6 @@ and features so that we can be as inclusive as possible!
 .. toctree::
    :titlesonly:
    :maxdepth: 2
+   :caption: Options
    
-   In a notebook <example.ipynb>
+   Notebook tutorial <example.ipynb>
