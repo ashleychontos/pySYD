@@ -1,6 +1,6 @@
-****************
-Related software
-****************
+*************
+Related tools
+*************
 
 ``pySYD`` provides general purpose tools for performing asteroseismic analysis in the frequency domain.
 Several tools have been developed to solve related scientific and data analysis problems. On this page we
