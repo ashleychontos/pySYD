@@ -42,9 +42,9 @@ is too small!
    :hidden:
    :caption: Usage
    
-   api/index
+   library/index
    cli/index
-   In a notebook <example_nb.ipynb>
+   other/index
    
 .. toctree::
    :titlesonly:
