@@ -9,7 +9,7 @@ find any errors or stale links -- please let us know!
 
 .. toctree::
    :titlesonly:
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents
    
    library/index
