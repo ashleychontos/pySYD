@@ -85,5 +85,3 @@ from.
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
 
 
-Structure
-#########
