@@ -1,6 +1,6 @@
-***************
-``pysyd.plots``
-***************
+*****************
+Plotting routines
+*****************
 
 Introduction
 ############
@@ -14,10 +14,8 @@ Usage
 Examples
 ########
 
-API
-###
-
-All plotting routines.
+``pysyd.plots`` API
+###################
 
 .. automodule:: pysyd.plots
    :members:
