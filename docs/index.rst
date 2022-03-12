@@ -27,15 +27,20 @@ welcome and *encourage* any new contributions to help make ``pySYD`` better! Ple
 our :ref:`community guidelines <guidelines/index>` to find out how you can help. No contribution 
 is too small!
 
+.. link-button:: quickstart
+    :type: ref
+    :text: Jump to Quickstart to get started right away!
+    :classes: btn-outline-secondary btn-block
+
 .. toctree::
    :titlesonly:
    :hidden:
-   :caption: Intro
+   :caption: About
 
-   Installation <installation>
+   installation
    setup
    quickstart
-   User Guide <user_guide>
+   user_guide
    Glossary <glossary>
    
 .. toctree::
@@ -43,8 +48,8 @@ is too small!
    :hidden:
    :caption: Community
    
-   Our Vision <vision>
-   Related Tools <other>
+   vision
+   other
    attribution
    guidelines
 
