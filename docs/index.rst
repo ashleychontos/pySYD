@@ -49,7 +49,7 @@ is too small!
 .. toctree::
    :titlesonly:
    :hidden:
-   :caption: Community
+   :caption: Community Guidelines
    
    Our vision <vision>
    other
@@ -64,11 +64,6 @@ Our team continues to grow!
 
 .. include:: CONTRIBUTORS.rst
 
-Plus we have many amazing collaborators that have helped with the development of the software, especially with the 
-improvements that have ultimately made ``pySYD`` more user-friendly. Many thanks to: 
-
-.. include:: COLLABORATORS.rst
-
 .. important::
 
     ``pySYD`` was initially the `Python` translation of the `IDL`-based asteroseismology pipeline ``SYD``, which was written 
@@ -76,6 +71,15 @@ improvements that have ultimately made ``pySYD`` more user-friendly. Many thanks
     without his i) years of hard work during his PhD as well as ii) years of patience during my PhD.
     
     **A very special S/O to Dan!**
+
+
+Collaborators
+#############
+
+Plus we have many amazing collaborators that have helped with the development of the software, especially with the 
+improvements that have ultimately made ``pySYD`` more user-friendly. Many thanks to: 
+
+.. include:: COLLABORATORS.rst
    
 
 Bibliography
