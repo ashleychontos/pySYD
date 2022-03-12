@@ -12,7 +12,6 @@ find any errors or stale links -- please let us know!
    :maxdepth: 2
    :caption: Contents
    
-   ``pySYD`` library <library/index>
-   As a command-line tool <cli/index>
-   In a Jupyter notebook <other/example.ipynb>
-   Other <other/index>
+   library/index
+   cli/index
+   other/index
