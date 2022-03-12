@@ -17,7 +17,7 @@ import sys
 import pysyd
 import pathlib
 import datetime
-#import nbsphinx
+import nbsphinx
 import warnings
 from importlib import import_module
 
