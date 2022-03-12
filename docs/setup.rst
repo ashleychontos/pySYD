@@ -17,7 +17,7 @@ and let ``pySYD`` do the rest for you!
 Make a local directory
 ######################
 
-While `pip` installed ``pySYD`` in your `PYTHONPATH`, we recommend that you first 
+While `pip` installed ``pySYD`` to your `PYTHONPATH`, we recommend that you first 
 create a local pysyd directory before running setup. This is the
 only reason we didn't include our examples as package data, as it would've put them
 in your root directory and we realize this can be difficult to find.
