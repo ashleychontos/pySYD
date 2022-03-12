@@ -4,7 +4,7 @@
 The ``pySYD`` library
 *********************
 
-We are so excited that you are ready to take a deep dive into asteroseismology.
+We are so excited that you are ready to take a deeper dive into asteroseismology.
 
 Overview
 ########
