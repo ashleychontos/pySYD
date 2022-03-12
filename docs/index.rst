@@ -33,17 +33,18 @@ is too small!
     :classes: btn-outline-secondary btn-block
 
 .. toctree::
-   :titlesonly:
-   :caption: About
+   :maxdepth: 2
+   :hidden:
+   :caption: Getting Started
 
    installation
-   setup
    quickstart
    user_guide
    Glossary <glossary>
    
 .. toctree::
    :titlesonly:
+   :maxdepth: 2
    :hidden:
    :caption: Community
    
