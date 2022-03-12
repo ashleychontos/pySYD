@@ -8,33 +8,6 @@
 Attribution
 ***********
 
-There are many people to thank for the completion of this project. First and foremost, the original translation of
-this work was based on the IDL-based ``SYD`` pipeline -- which was written by my PhD advisor, Daniel Huber, during
-his PhD. Therefore, none of this would have been possible without those years of work!
-
-And finally, as alluded to earlier, our list of contributors continues to grow!
-
-.. include:: CONTRIBUTORS.rst
-
-Plus we have many amazing collaborators that have helped with the development of the software, and in particular, the 
-improvements which have ultimately made ``pySYD`` more user-friendly. So many thanks to: 
-
-.. include:: COLLABORATORS.rst
-
------
-
-.. _attribution/projects:
-
-Projects w/ ``pySYD``
-#####################
-
-If you, someone you know, or a project you know about has made use of ``pySYD``, please consider visiting and
-contributing to the public `Projects w/ pySYD <https://github.com/ashleychontos/pySYD/discussions/28>`_ thread 
-in our GitHub repo. Feel free to add anything and everything from early results, figure(s), student projects to
-published manuscripts, posters, or any other ``pySYD``-related shoutouts. |br| 
-**We would love to see what you are using** ``pySYD`` **for firsthand!**
-
------
 
 Citations
 #########
@@ -101,4 +74,16 @@ that discusses the asteroseismic analysis and methodology.
     **Citing et al.** |br| This work was only possible thanks to many powerful Python libraries
     -- we *strongly* encourage you to also consider citing :ref:`its dependencies <installation/dependencies>`.
 
------
+
+.. _attribution/projects:
+
+Projects w/ ``pySYD``
+#####################
+
+If you, someone you know, or a project you know about has made use of ``pySYD``, please consider visiting and
+contributing to the public `Projects w/ pySYD <https://github.com/ashleychontos/pySYD/discussions/28>`_ thread 
+in our GitHub repo. Feel free to add anything and everything from early results, figure(s), student projects to
+published manuscripts, posters, or any other ``pySYD``-related shoutouts. |br| 
+**We would love to see what you are using** ``pySYD`` **for firsthand!**
+
+
