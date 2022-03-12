@@ -250,6 +250,7 @@ automodsumm_inherited_members = True
 
 # Add nbsphinx
 extensions = [
+    'nbsphinx',
     'sphinx_panels',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
