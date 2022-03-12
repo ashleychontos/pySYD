@@ -35,7 +35,7 @@ is too small!
    Installation <installation>
    setup
    quickstart
-   User Guide <library/index>
+   User Guide <user_guide>
    Glossary <glossary>
    
 .. toctree::
