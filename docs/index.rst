@@ -32,27 +32,19 @@ is too small!
    :hidden:
    :caption: Intro
 
-   installation
+   Installation <installation>
    setup
    quickstart
+   User Guide <library/index>
    Glossary <glossary>
-   
-.. toctree::
-   :titlesonly:
-   :hidden:
-   :caption: Usage
-   
-   library/index
-   cli/index
-   other/index
    
 .. toctree::
    :titlesonly:
    :hidden:
    :caption: Community
    
-   Our vision <vision>
-   other
+   Our Vision <vision>
+   Related Tools <other>
    attribution
    guidelines
 
