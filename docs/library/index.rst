@@ -1,10 +1,10 @@
 .. module:: pysyd
 
-***************
-``pySYD`` Guide
-***************
+**********
+User Guide
+**********
 
-Thank you for visiting the ``pySYD`` user guide! 
+Thank you for visiting our user guide and the ``pySYD`` documentation. 
 
 This is currently be expanded and developed in case you
 find any errors or stale links.
