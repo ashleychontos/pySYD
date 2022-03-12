@@ -1,10 +1,13 @@
 
-******************
-``pysyd.pipeline``
-******************
+********************
+Main pipeline driver
+********************
 
 Introduction
 ############
+
+This was initially created to be used with the command-line tool but has been expanded to include
+functions compatible with `Python` notebooks as well. This is still a work in progress! 
 
 Imports
 #######
@@ -35,12 +38,8 @@ There are currently five operational ``pySYD`` modes:
 Examples
 ########
 
-API
-###
-
-Used with the command line interface (CLI), which will accept the command line arguments
-and initialize the appropriate module. This includes the main pipeline initialization, which
-now has parallelization capabilities.
+``pysyd.pipeline`` API
+######################
 
 .. automodule:: pysyd.pipeline
    :members:
