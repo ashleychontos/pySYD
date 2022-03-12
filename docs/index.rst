@@ -43,6 +43,7 @@ is too small!
    
    api/index
    cli/index
+   In a notebook <tutorials/examble_nb.ipynb>
    
 .. toctree::
    :titlesonly:
