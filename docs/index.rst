@@ -29,6 +29,7 @@ is too small!
 
 .. toctree::
    :titlesonly:
+   :hidden:
    :caption: Getting Started
 
    installation
@@ -37,6 +38,7 @@ is too small!
    
 .. toctree::
    :titlesonly:
+   :hidden:
    :caption: User Guide
    
    api/index
@@ -44,6 +46,7 @@ is too small!
    
 .. toctree::
    :titlesonly:
+   :hidden:
    :caption: Community
    
    Our vision <vision>
