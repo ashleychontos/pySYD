@@ -1,63 +1,10 @@
-************
-Installation
-************
+.. _installation/index:
 
-With ``pip``
-############
-
-Install the latest stable version using pip:
-
-.. code-block::
-
-    pip install pysyd
-
-This is the recommended way to install the package. The ``pysyd`` binary should have been automatically 
-placed in your system's path via the ``pip`` command. If your system can not find the ``pysyd`` executable, 
-change into the top-level ``pysyd`` directory and try running the following command:
-
-.. code-block::
-
-    python setup.py install
-
-
-With ``conda``
-##############
-
-Use conda to create an environment. For this example, I'll call it 'astero'.
-
-.. code-block::
-    
-    conda create -n astero numpy scipy pandas astropy matplotlib tqdm
-    
-See our complete list of dependencies (including versions) :ref:`below <installation-dependencies>`. 
-Then activate the environment and install ``pySYD``:
-
-.. code-block::
-
-    conda activate astero
-    pip install git+https://github.com/ashleychontos/pySYD
-
-
-With ``git``
-############
-
-The latest development version can be cloned from GitHub using git:
-
-.. code-block::
-
-    git clone git://github.com/ashleychontos/pySYD.git
-
-Then to build and install the project use:
-
-.. code-block::
-
-    python -m pip install .
-
-from inside the cloned ``pySYD`` directory.
-
+**********************
+``pySYD`` Installation
+**********************
 
 .. _installation/dependencies:
-
 
 Package Dependencies
 ####################
@@ -73,13 +20,80 @@ This package has the following dependencies:
 * `tqdm <https://tqdm.github.io>`_
 
 Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
-and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using ``pip`` or 
-``conda`` should install and enforce these versions automatically. 
+and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
+`conda` should install and enforce these versions automatically. 
 
-Testing your installation
-*************************
+.. _installation/installing:
 
-You can test your installation by using the help command: 
+Installing
+##########
+
+There are three main ways you can install the software.
+
+With `pip`
+**********
+
+The ``pySYD`` package is available on the Python Package Index (PyPI) (`here<https://pypi.org/project/pysyd/>`_).
+Therefore you can install the latest stable version using `pip`:
+
+.. code-block::
+
+    pip install pysyd
+
+**This is the recommended way to install the package.** 
+
+The ``pysyd`` binary should have been automatically placed in your system's path via the ``pip`` command. 
+If your system can not find the ``pysyd`` executable, change into the top-level ``pysyd`` directory and try 
+running the following command:
+
+.. code-block::
+
+    python setup.py install
+
+With `conda`
+************
+
+You can also use conda to create an environment. For this example, I'll call it 'astero'.
+
+.. code-block::
+    
+    conda create -n astero numpy scipy pandas astropy matplotlib tqdm
+    
+See our complete list of dependencies (including versions) :ref:`below <installation-dependencies>`. 
+Then activate the environment and install ``pySYD``:
+
+.. code-block::
+
+    conda activate astero
+    pip install git+https://github.com/ashleychontos/pySYD
+
+
+With `git`
+**********
+
+If you are wanting to contribute, you can clone the latest development
+version from `GitHub <https://github.com/ashleychontos/pySYD>`_ using `git`.
+
+.. code-block::
+
+    git clone git://github.com/ashleychontos/pySYD.git
+
+The next step is to build and install the project:
+
+.. code-block::
+
+    python -m pip install .
+
+which needs to be executed from the top-level directory inside the 
+cloned ``pySYD`` repo.
+
+.. _installation/testing:
+
+Testing 
+#######
+
+You can test your installation by using the help command, which should
+display the following output:
 
 ::
 
