@@ -128,7 +128,7 @@ one last step before we can start doing some science!
 Make a local directory
 **********************
 
-While `pip` installed ``pySYD`` to your `PYTHONPATH`, we recommend that you first 
+While `pip` installed ``pySYD`` to your ``PYTHONPATH``, we recommend that you first 
 create a local pysyd directory before running setup. This way you can keep all your 
 pysyd-related data, results and information in a single, easy-to-find location. *Note:* 
 This is the only reason we didn't include our examples as package data, as it would've put 
@@ -159,7 +159,7 @@ use the software because it:
 - sets up the recommended local directory structure
 
 The only thing you need to do from your end is initiate the command -- which now 
-that you've created a local pysyd directory -- all you have to donown is jump into 
+that you've created a local pysyd directory -- all you have to do now is jump into 
 that directory and run the following command:
 
 .. code-block::
