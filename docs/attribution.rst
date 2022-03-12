@@ -71,8 +71,8 @@ that discusses the asteroseismic analysis and methodology.
 
 .. important::
 
-    **Citing et al.** |br| This work was only possible thanks to many powerful Python libraries
-    -- we *strongly* encourage you to also consider citing :ref:`its dependencies <installation/dependencies>`.
+    This work was only possible thanks to many powerful Python libraries -- we *strongly* encourage you 
+    to also consider citing :ref:`its dependencies <installation/dependencies>`.
 
 
 .. _attribution/projects:
@@ -82,7 +82,9 @@ Projects w/ ``pySYD``
 
 If you, someone you know, or a project you know about has made use of ``pySYD``, please consider visiting and
 contributing to the public `Projects w/ pySYD <https://github.com/ashleychontos/pySYD/discussions/28>`_ thread 
-in our GitHub repo. Feel free to add anything and everything from early results, figure(s), student projects to
+in our GitHub repo. 
+
+Feel free to add anything and everything from early results, figure(s), student projects to
 published manuscripts, posters, or any other ``pySYD``-related shoutouts. |br| 
 **We would love to see what you are using** ``pySYD`` **for firsthand!**
 
