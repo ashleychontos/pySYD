@@ -8,8 +8,9 @@ CLI help
 Running the help command 
 ########################
 
-To give you an idea about the healthy number of features ``pySYD`` has via command line,
-use the following help command for the main pipeline execution (via ``pysyd.pipeline.run``): 
+To give you an idea about the tons of ``pySYD`` features has via command line,
+use the help command for the main pipeline execution (``pysyd.pipeline.run``),
+since this is where a majority of the options are relevant.
 
 .. code-block::
 
@@ -31,15 +32,19 @@ use the following help command for the main pipeline execution (via ``pysyd.pipe
     optional arguments:
       -h, --help            show this help message and exit
 
-This was actually just a teaser. If you also did it from your end, it will display an enormous 
-list of options but do not fret, this is for good reason and we have broken them down into relevant 
-groups to make it easier to digest. It may seem like an overwhelming amount but they are only there 
-to make your asteroseismic experience as customizable as possible.
+This was actually just a teaser! 
+
+If you also did it from your end, you probably noticed an output that was a factor of ~5-10 longer!
+It may seem like an overwhelming amount but do not fret, this is for good reason -- and that's to 
+make your asteroseismic experience as customizable as possible. Down below, we have broken the 
+commands up by relevant science/software groups to make it easier to digest. 
 
 .. note::
 
-    As you are navigating this webpage, keep in mind that we have a special 
-    :ref:`glossary<cli/glossary>` for all our command-line options.
+    As you are navigating this page, keep in mind that we also have a special 
+    :ref:`glossary<cli/glossary>` for all our command-line options. This includes everything
+    from the variable type, default value and relevant units to how it's stored within the 
+    software itself! These links are provided at the bottom of each section.
 
 Jump to:
 ********
