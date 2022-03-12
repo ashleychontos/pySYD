@@ -34,7 +34,6 @@ is too small!
 
 .. toctree::
    :titlesonly:
-   :hidden:
    :caption: About
 
    installation
