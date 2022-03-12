@@ -30,7 +30,7 @@ is too small!
 .. toctree::
    :titlesonly:
    :hidden:
-   :caption: Getting Started
+   :caption: Intro
 
    installation
    setup
@@ -40,7 +40,7 @@ is too small!
 .. toctree::
    :titlesonly:
    :hidden:
-   :caption: User Guide
+   :caption: Usage
    
    api/index
    cli/index
@@ -49,7 +49,7 @@ is too small!
 .. toctree::
    :titlesonly:
    :hidden:
-   :caption: Community Guidelines
+   :caption: Community
    
    Our vision <vision>
    other
