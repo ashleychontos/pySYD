@@ -1,6 +1,6 @@
-********
-Glossary
-********
+*******************************
+Glossary of documentation terms
+*******************************
 
 .. glossary::
 
@@ -20,19 +20,38 @@ Glossary
         ajdkfaj;
     
     background
-        jdlakfjadlk
+        this basically means any other noise structures present in the power spectrum that are *not* 
+        due to the solar-like oscillations. This is traditionally parametrized as:
+        
+.. math::
+
+    P(\nu) = W + \frac{}{}
+    
     
     BCPS
     background-corrected power spectrum
-        djklfajdlka
+        the power spectrum after removing the best-fit stellar background model. In general, this step
+        removes any slopes in power spectra due to correlated red-noise properties
+
+.. note::
+
+    A :term:`background-corrected power spectrum` (:term:`BCPS`) is an umbrella term that has the same
+    meanings as a :term:`background-divided power spectrum` (:term:`BDPS`) *and* a
+    :term:`background-subtracted power spectrum` (:term:`BSPS`) **but** is good to avoid when possible
+    since it does not specify how the power spectrum has been corrected.
+
     
     BDPS
     background-divided power spectrum
-        jdlafkjdalkjd
+        the power spectrum divided by the best-fit stellar background model. Using this method for data 
+        analysis is great for first detecting and identifying any solar-like oscillations since it will
+        make the power excess due to stellar oscillations appear higher signal-to-noise
     
     BSPS
     background-subtracted power spectrum
-        dkjflakdj
+        the best-fit stellar background model is subtracted from the power spectrum. While this method
+        appears to give a lower signal-to-noise detection, the amplitudes measured through this analysis
+        are physically-motivated and correct (i.e. can be compared with other literature values)
     
     BIC
     Bayesian Information Criterion
