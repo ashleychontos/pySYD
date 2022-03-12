@@ -2,33 +2,34 @@
 Setting up
 **********
 
-The ``pySYD`` package comes with a convenient setup feature that can be run 
-from command line in a single step. We ***strongly encourage*** you to run this step
+The ``pySYD`` package comes with a convenient setup feature (accessed via
+`pysyd.pipeline.setup<library/pipeline>`_) that can be run from the command 
+line in a single step. We ***strongly encourage*** you to run this step
 regardless of how you intend to use ``pySYD`` (i.e., command line, notebook) 
 because it:
 
-#. downloads data for three example stars,
-#. provides the example input files to use along with the software, *and* 
-#. sets up the recommended directory structure
+- downloads data for three example stars
+- provides the example input files to use along with the software *and* 
+- sets up the recommended directory structure
 
 Therefore, the only thing you need to do from your end is initiate the command
-and let ``pySYD`` do the rest for you!
+and let ``pySYD`` do the rest of the work for you!
 
 Make a local directory
 ######################
 
 While `pip` installed ``pySYD`` to your `PYTHONPATH`, we recommend that you first 
-create a local pysyd directory before running setup. This is the
-only reason we didn't include our examples as package data, as it would've put them
-in your root directory and we realize this can be difficult to find.
+create a local pysyd directory before running setup. This way you can keep all your 
+pysyd-related data, results and information in an easy-to-find location. This is 
+the only reason we didn't include our examples as package data, as it would've put 
+them in your root directory and we realize this can be difficult to locate.
 
 .. code-block::
     
     mkdir ~/path/to/local/pysyd/directory
     
-This way you can keep all your pysyd-related data, results and information in an 
-easy-to-find location. You also do not have to worry about restricted access and
-all that other jazz.
+This way you also don't have to worry about file permissions, restricted access, and
+all that other jazz. 
 
 ``pySYD`` setup
 ################
