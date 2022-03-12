@@ -35,12 +35,13 @@ Glossary of documentation terms
 
 .. note::
 
-    A :term:`background-corrected power spectrum` (:term:`BCPS`) is an umbrella term that has the same
-    meanings as a :term:`background-divided power spectrum` (:term:`BDPS`) *and* a
-    :term:`background-subtracted power spectrum` (:term:`BSPS`) **but** is good to avoid when possible
+    A :term:`background-corrected power spectrum` (:term:`BCPS`) is an umbrella term that has the same 
+    meanings as a :term:`background-divided power spectrum` (:term:`BDPS`) *and* a 
+    :term:`background-subtracted power spectrum` (:term:`BSPS`) **but** is good to avoid when possible 
     since it does not specify how the power spectrum has been corrected.
 
-    
+.. glossary::
+
     BDPS
     background-divided power spectrum
         the power spectrum divided by the best-fit stellar background model. Using this method for data 
