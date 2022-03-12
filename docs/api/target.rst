@@ -1,6 +1,8 @@
-****************
-``pysyd.target``
-****************
+**************
+Target star(s)
+**************
+
+The heart & soul of the ``pySYD`` package
 
 Introduction
 ############
@@ -17,10 +19,8 @@ Usage
 Examples
 ########
 
-API
-###
-
-The main pipeline class object that is initialized for each processed star.
+``pysyd.target`` API
+####################
 
 .. automodule:: pysyd.target
    :members:
