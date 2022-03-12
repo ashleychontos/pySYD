@@ -3,7 +3,7 @@ Setting up
 **********
 
 The ``pySYD`` package comes with a convenient setup feature that can be run 
-from command line in a single step. We strongly encourage you to run this step
+from command line in a single step. We ***strongly encourage*** you to run this step
 regardless of how you intend to use ``pySYD`` (i.e., command line, notebook) 
 because it:
 
