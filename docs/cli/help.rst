@@ -1,14 +1,19 @@
 
 .. _cli/help:
 
-Running help 
-############
+********
+CLI help
+********
 
-From terminal, the following help command for the main pipeline execution (via ``pysyd.pipeline.run``): 
+Running the help command 
+########################
+
+To give you an idea about the healthy number of features ``pySYD`` has via command line,
+use the following help command for the main pipeline execution (via ``pysyd.pipeline.run``): 
 
 .. code-block::
 
-    pysyd run --help
+    $ pysyd run --help
     
     usage: pySYD run [-h] [-c] [--file path] [--in path] [--info path]
                      [--out path] [-v] [-b] [-d] [-g] [-k] [--ofa n] [--ofn n]
@@ -26,11 +31,18 @@ From terminal, the following help command for the main pipeline execution (via `
     optional arguments:
       -h, --help            show this help message and exit
 
-will display an enormous list of options but do not fret, this is for good reason and we have
-broken them down into relevant groups to make it easier to digest. It may seem like an overwhelming 
-amount but they are only there to make your asteroseismic experience as customizable as possible.
+This was actually just a teaser. If you also did it from your end, it will display an enormous 
+list of options but do not fret, this is for good reason and we have broken them down into relevant 
+groups to make it easier to digest. It may seem like an overwhelming amount but they are only there 
+to make your asteroseismic experience as customizable as possible.
 
-**Jump to:**
+.. note::
+
+    As you are navigating this webpage, keep in mind that we have a special 
+    :ref:`glossary<cli/glossary>` for all our command-line options.
+
+Jump to:
+********
  - :ref:`high-level functions <cli/help/high>`
  - :ref:`data analyses <cli/help/data>`
  - :ref:`estimating numax <cli/help/est>`
@@ -40,9 +52,6 @@ amount but they are only there to make your asteroseismic experience as customiz
  - :ref:`echelle diagram <cli/help/ech>`
  - :ref:`sampling <cli/help/mc>`
  - :ref:`parallel processing <cli/help/pp>`
-
-As you are navigating this webpage, keep in mind that we have a special :ref:`glossary<cli/glossary>` for 
-all our command-line options.
 
 -----
 
@@ -151,7 +160,12 @@ to estimate numax if it is not known:
       --ux freq, --upperx freq
                             Upper frequency limit of PS
                             
-**Glossary terms:** :term:`-a<-a, --ask>`, :term:`--ask<-a, --ask>`
+**Glossary terms:** :term:`-a<-a, --ask>`, :term:`--ask<-a, --ask>`, :term:`--bin<--bin, --binning>`, 
+:term:`--binning<--bin, --binning>`, :term:`--bm<--bm, --mode, --bmode>`, :term:`--bmode<--bm, --mode, --bmode>`, 
+:term:`--lowerx<--lx, --lowerx>`, :term:`--lx<--lx, --lowerx>`, :term:`--mode<--bm, --mode, --bmode>`, 
+:term:`--ntrials<--trials, --ntrials>`, :term:`--step<--step, --steps>`, :term:`--steps<--step, --steps>`, 
+:term:`--sw<--sw, --smoothwidth>`, :term:`--smoothwidth<--sw, --smoothwidth>`, :term:`--trials<--trials, --ntrials>`, 
+:term:`--upperx<--ux, --upperx>`, :term:`--ux<--ux, --upperx>`
 
 -----
 
@@ -168,7 +182,8 @@ Below is a complete list of parameters relevant to the background-fitting routin
                             'pgran_tau', 'tau_sigma'), *** NOT operational yet ***
       --bf value, --box value, --boxfilter value
                             Box filter width [in muHz] for plotting the PS
-      -f, --fix, --fixwn    Fix the white noise level
+      -f, --fix, --fixwn, --wn    
+                            Fix the white noise level
       -i, --include         Include metric values in verbose output, default is
                             `False`.
       --iw value, --indwidth value
@@ -181,6 +196,14 @@ Below is a complete list of parameters relevant to the background-fitting routin
                             noise component(s)
       --ub freq, --upperb freq
                             Upper frequency limit of PS
+
+**Glossary terms:** :term:`--basis`, :term:`--bf<--bf, --box, --boxfilter>`, :term:`--box<--bf, --box, --boxfilter>`, 
+:term:`--boxfilter<--bf, --box, --boxfilter>`, :term:`-f<-f, --fix, --fixwn, --wn>`, 
+:term:`--fixf<-f, --fix, --fixwn, --wn>`, :term:`--fixwn<-f, --fix, --fixwn, --wn>`, :term:`-i<-i, --include>`, 
+:term:`--include<-i, --include>`, :term:`--iw<--iw, --indwidth>`, :term:`--indwidth<--iw, --indwidth>`, 
+:term:`--laws<--laws, --nlaws>`, :term:`--lb<--lb, --lowerb>`, :term:`--lowerb<--lb, --lowerb>`, :term:`--metric`, 
+:term:`--nrms<--rms, --nrms>`, :term:`--rms<--rms, --nrms>`, :term:`--nlaws<--laws, --nlaws>`, 
+:term:`--ub<--ub, --upperb>`, :term:`--upperb<--ub, --upperb>`, :term:`--wn<-f, --fix, --fixwn, --wn>`
 
 -----
 
@@ -208,6 +231,9 @@ corresponding to maximum power:
       --up [freq [freq ...]], --upperp [freq [freq ...]]
                             Upper frequency limit for zoomed in PS
 
+**Glossary terms:** :term:`--ew<--ew, --exwidth>`, :term:`--exwidth<--ew, --exwidth>`, :term:`--lp<--lp, --lowerp>`, 
+:term:`--lowerp<--lp, --lowerp>`, :term:`--numax`, :term:`--sm<--sm, --smpar>`, :term:`--smpar<--sm, --smpar>`, 
+:term:`--up<--up, --upperp>`, :term:`--upperp<--up, --upperp>`
 
 -----
 
@@ -229,6 +255,10 @@ Below are all options related to the characteristic frequency spacing (dnu):
                             Box filter width [in muHz] of PS for ACF
       --thresh value, --threshold value
                             Fractional value of FWHM to use for ACF
+
+**Glossary terms:** :term:`--dnu`, :term:`--method`, :term:`--npeaks<--peak, --peaks, --npeaks>`, 
+:term:`--peak<--peak, --peaks, --npeaks>`, :term:`--peaks<--peak, --peaks, --npeaks>`, :term:`--sp<--sp, --smoothps>`, 
+:term:`--smoothps<--sp, --smoothps>`, :term:`--thresh<--thresh, --threshold>`
 
 -----
 
@@ -264,6 +294,14 @@ All customizable options relevant for the echelle diagram output:
                             Upper frequency limit of folded PS to whiten mixed
                             modes
 
+**Glossary terms:** :term:`--ce<--ce, --cm, --color>`, :term:`--cm<--ce, --cm, --color>`, :term:`--color<--ce, --cm, --color>`, 
+:term:`--cv<--cv, --value>`, :term:`-e<-e, --ie, --interpech>`, :term:`--hey<-y, --hey>`, :term:`--ie<-e, --ie, --interpech>`, 
+:term:`--interpech<-e, --ie, --interpech>`, :term:`--le<--le, --lowere>`, :term:`--lowere<--le, --lowere>`, 
+:term:`--nox<--nox, --nacross>`, :term:`--nacross<--nox, --nacross>`, :term:`--ndown<--noy, --ndown, --norders>`, 
+:term:`--norders<--noy, --ndown, --norders>`, :term:`--noy<--noy, --ndown, --norders>`, :term:`--se<--se, --smoothech>`, 
+:term:`--smoothech<--se, --smoothech>`,  :term:`--ue<--ue, --uppere>`, :term:`--uppere<--ue, --uppere>`,
+:term:`--value<--cv, --value>`, :term:`-y<-y, --hey>`
+
 -----
 
 .. _cli/help/mc:
@@ -271,7 +309,7 @@ All customizable options relevant for the echelle diagram output:
 Sampling
 *********
 
-All CLI options relevant for the Monte-Carlo sampling:
+All CLI options relevant for the Monte-Carlo sampling in order to estimate uncertainties:
 
 .. code-block::
 
@@ -279,11 +317,12 @@ All CLI options relevant for the Monte-Carlo sampling:
                             Number of Monte-Carlo iterations
       -m, --samples         Save samples from the Monte-Carlo sampling
 
+**Glossary terms:** :term:`--iter<--mc, --iter, --mciter>`, :term:`-m<-m, --samples>`, :term:`--mc<--mc, --iter, --mciter>`, 
+:term:`--mciter<--mc, --iter, --mciter>`, :term:`--samples<-m, --samples>`
 
-which shows a very long but very healthy list of available options. We tried to make this
-easier on the eyes by separating the commands into related groups, but do not fret! We realize
-this is a lot of information, which is why we have dedicated an entire page to describing these
-features.
+-----
+
+In the next topic, we will show some examples using these options.
 
 Additionally, we have examples of some put to use in :ref:`advanced usage<advanced>` 
 and also have included a brief :ref:`tutorial` below that describes some of these commands.
