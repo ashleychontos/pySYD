@@ -11,8 +11,8 @@ find any errors or stale links.
    :maxdepth: 1
    :caption: Contents
 
-   pipeline
-   utils
-   target
-   models	      
-   plots
+   Main pipeline driver <pipeline>
+   Utility functions <utils>
+   Target stars <target>
+   Frequency distributions <models>	      
+   Plotting routines <plots>
