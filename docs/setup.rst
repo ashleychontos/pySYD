@@ -30,8 +30,8 @@ This way you can keep all your pysyd-related data, results and information in an
 easy-to-find location. You also do not have to worry about restricted access and
 all that other jazz.
 
-Setup
-#####
+``pySYD`` setup
+################
 
 Now that you've created a local pysyd directory, all you have to do now is
 jump into that directory and run the one liner: 
