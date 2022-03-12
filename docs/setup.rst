@@ -1,28 +1,22 @@
+.. _setup/index:
+
 **********
 Setting up
 **********
 
-The ``pySYD`` package comes with a convenient setup feature (accessed via
-`pysyd.pipeline.setup<library/pipeline>`_) that can be run from the command 
-line in a single step. We ***strongly encourage*** you to run this step
-regardless of how you intend to use ``pySYD`` (i.e., command line, notebook) 
-because it:
-
-- downloads data for three example stars
-- provides the example input files to use along with the software *and* 
-- sets up the recommended directory structure
-
-Therefore, the only thing you need to do from your end is initiate the command
-and let ``pySYD`` do the rest of the work for you!
+Ok now that you have properly installed and tested the software, let's get started!
 
 Make a local directory
 ######################
 
 While `pip` installed ``pySYD`` to your `PYTHONPATH`, we recommend that you first 
 create a local pysyd directory before running setup. This way you can keep all your 
-pysyd-related data, results and information in an easy-to-find location. This is 
-the only reason we didn't include our examples as package data, as it would've put 
+pysyd-related data, results and information in a single, easy-to-find location. *Note:* 
+This is the only reason we didn't include our examples as package data, as it would've put 
 them in your root directory and we realize this can be difficult to locate.
+
+The folder or directory can be whatever is most convenient for you, but for demonstration
+purposes we'll use:
 
 .. code-block::
     
@@ -34,18 +28,30 @@ all that other jazz.
 ``pySYD`` setup
 ################
 
-Now that you've created a local pysyd directory, all you have to do now is
-jump into that directory and run the one liner: 
+The ``pySYD`` package comes with a convenient setup feature (accessed via
+:ref:`pysyd.pipeline.setup<library/pipeline>`) which can be ran from the command 
+line in a single step. 
+
+We ***strongly encourage*** you to run this step regardless of how you intend to 
+use the software because it:
+
+- downloads data for three example stars
+- provides the example [optional] input files to use with the software *and* 
+- sets up the recommended local directory structure
+
+The only thing you need to do from your end is initiate the command -- which now 
+that you've created a local pysyd directory -- all you have to donown is jump into 
+that directory and run the following command:
 
 .. code-block::
 
-    cd ~/path/to/local/pysyd/directory
     pysyd setup
 
-As alluded to before, this step will create some relative directory structure that
-might be useful to know. So instead, run it with the :term:`--verbose<-v, --verbose>`
-command so you can see what is being downloaded and where it is being downloaded
-from.
+and let ``pySYD`` do the rest of the work for you. 
+
+Actually since this step will create a relative directory structure that might be 
+useful to know, let's run the above command again but this time with the :term:`verbose output<-v, --verbose>`
+so you can see what's being downloaded.
 
 ::
 
@@ -86,3 +92,4 @@ from.
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
 
 
+**Note:** this is another good sanity check to make sure everything is working as intended.
