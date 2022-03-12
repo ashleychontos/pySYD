@@ -91,6 +91,9 @@ Glossary
         
     mesogranulation
         dkjfaldjal
+        
+    mixed modes
+        ldfjadkjf -> what you need to whiten
     
     notching
         a process
