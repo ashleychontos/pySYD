@@ -1,8 +1,8 @@
 .. module:: pysyd
 
-*****************
-``pySYD`` library
-*****************
+*********************
+The ``pySYD`` library
+*********************
 
 We are so excited that you are ready to take a deep dive into asteroseismology.
 
