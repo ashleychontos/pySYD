@@ -35,7 +35,7 @@ is too small!
    installation
    setup
    quickstart
-   glossary
+   Glossary <glossary>
    
 .. toctree::
    :titlesonly:
