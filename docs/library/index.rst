@@ -1,29 +1,15 @@
 .. module:: pysyd
 
-**********
-User Guide
-**********
-
-Thank you for visiting our user guide and the ``pySYD`` documentation. 
-
-This is currently be expanded and developed in case you
-find any errors or stale links.
+*****************
+``pySYD`` library
+*****************
 
 .. toctree::
    :titlesonly:
    :maxdepth: 1
-   :caption: ``pySYD`` library
 
    Main pipeline driver <pipeline>
    Utility functions <utils>
    Target stars <target>
    Frequency distributions <models>	      
    Plotting routines <plots>
-   
-.. toctree::
-   :titlesonly:
-   :maxdepth: 1
-   :caption: Usage
-   
-   Command line <../cli/index>
-   Other <../other/index>
