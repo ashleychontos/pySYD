@@ -108,7 +108,7 @@ Glossary of documentation terms
 
     global properties
         in asteroseismology, the global asteroseismic parameters or properties refer to :math:`\nu_{\mathrm{max}}` 
-        (:term:`numax`) and :math:`\Delta\nu` (:term:`dnu) 
+        (:term:`numax`) and :math:`\Delta\nu` (:term:`dnu`) 
         
     granulation
         the smallest (i.e. quickest) scale of convective processes
