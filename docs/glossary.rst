@@ -134,14 +134,19 @@ Glossary of documentation terms
         
     dnu
     large frequency separation
-        generally this is the comb pattern or regular spacing observed for solar-like oscillations.
-        It is exactly equal to the frequency spacing between modes with the same :term:`spherical degree` 
-        and consecutive :term:`radial order`s.
+        the so-called large frequency separation is the inverse of twice the sound travel time between
+        the center of the star and the surface. Even more generally, this is the comb pattern or regular 
+        spacing observed for solar-like oscillations. It is exactly equal to the frequency spacing between 
+        modes with the same :term:`spherical degree` and consecutive :term:`radial order`s.
          * **variable:** :math:`\Delta\nu`
          * **units:** :math:`\rm \mu Hz`
          * **definition:**
-    
-        scales with mean stellar density
+     
+ .. math::
+ 
+     \Delta\nu = \large[2 \int_{0}^{R} \frac{\mathrm{d}r}{c}\large]^{-1} \propto \bar{\rho}
+ 
+ .. glossary::
         
     light curve
         the measure of an object's brightness with time
