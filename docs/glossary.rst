@@ -187,6 +187,7 @@ Glossary of documentation terms
         in asteroseismology, the radial order (:math:`n`) is the number of nodes from the surface to the center of the
         star. For solar-like oscillators, modes are typically characterized by higher radial orders and low spherical
         degree. By definition, modes of the same spherical degree and consecutive radial orders are separated by :term:`dnu`.
+         * **variable:** :math:`n`
         
     scaling relations
         these empirical relations are typically scaled with respect to the Sun, since it is the star we know best. These
@@ -196,7 +197,8 @@ Glossary of documentation terms
     spherical degree
         in asteroseismology, the spherical degree (:math:`\ell`) is the number of oscillation modes on the surface of
         the star. For unresolved asteroseismology, this is typically very low order degrees and has only been possible
-        up to a spherical degree of :math:`\ell = 3`.
+        up to a spherical degree of :math:`\ell = 3`
+         * **variable:** :math:`\ell`
 
     ``SYD``
         the well-known IDL-based asteroseismic pipeline created by Dan Huber during his PhD in Sydney (hence SYD). ``SYD``
