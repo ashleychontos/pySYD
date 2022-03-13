@@ -32,9 +32,9 @@ since this is where a majority of the options are relevant.
     optional arguments:
       -h, --help            show this help message and exit
 
-This was actually just a teaser! 
+This was actually just a teaser! If you ran it from your end, you probably noticed an 
+output that was a factor of ~5-10 longer!
 
-If you also did it from your end, you probably noticed an output that was a factor of ~5-10 longer!
 It may seem like an overwhelming amount but do not fret, this is for good reason -- and that's to 
 make your asteroseismic experience as customizable as possible. Down below, we have broken the 
 commands up by relevant science/software groups to make it easier to digest. 
