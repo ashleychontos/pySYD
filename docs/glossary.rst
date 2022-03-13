@@ -5,23 +5,23 @@ Glossary of documentation terms
 .. glossary::
 
     AIC
-    Akikdaf Information Criterion
+    Akaike Information Criterion
         afjdkajfl
-    
-    artefact
-        *Kepler* short-cadence artefact in the power spectrum from a short-cadence light curve 
-        occurring at the nyquist frequency for long-cadence (i.e. ~270muHz)
     
     asteroseismology
         the study of oscillations in stars
     
     ACF
     autocorrelation function
-        ajdkfaj;
+        in this context it is a small range of frequencies in the power spectrum surrounding the 
+        solar-like oscillations, then the power array is correlated (or convolved) with a copy of
+        the power array. This is a helpful diagnostic tool for quantitatively confirming the 
+        p-mode oscillations, since they have regular spacings in the frequency domain and therefore
+        should create strong peaks at integer and half integer harmonics of :math:`\Delta\nu`
     
     background
         this basically means any other noise structures present in the power spectrum that are *not* 
-        due to the solar-like oscillations. This is traditionally parametrized as:
+        due to solar-like oscillations. This is traditionally parametrized as:
 
 
 .. math::
@@ -44,6 +44,7 @@ Glossary of documentation terms
     :term:`background-subtracted power spectrum` (:term:`BSPS`) **but** is good to avoid when possible 
     since it does not specify how the power spectrum has been corrected.
 
+
 .. glossary::
 
     BDPS
@@ -62,77 +63,100 @@ Glossary of documentation terms
     Bayesian Information Criterion
         ldkfjaldkjl
     
-    critically sampled
+    critically-sampled power spectrum
         sfdklja
-
-    dnu
-    large frequency separation
-        the comb patter or regular spacing observed for solar-like oscillations for different modes
-         * **variable:** :math:`\Delta\nu`
-    
-        scales with mean stellar density
+        
+    ED
+    echelle diagram
+        a diagnostic tool to confirm that :term:`dnu` is correct. This is done by folding the power spectrum (:term:`FPS`)
+        using :term:`dnu` (you can think of it as the PS modulo the spacing), and if the :term:`large frequency separation`
+        is correct, the different oscillation modes will form straight ridges. **Fun fact:** the word 'echelle' is French 
+        for ladder
+        
+    FFT
+    fast fourier transform
+        a method used in signal analysis to determine the most dominant periodicities present in a :term:`light curve`
     
     FPS
     folded power spectrum
-        ldkfjaldkjfa -> used for echelle diagrams and whitening
+        the power spectrum folded (or stacked) at some frequency, which is typically done with the :term:`large frequency separation`
+        to construct an :term:`echelle diagram`
 
     numax
     frequency of maximum power
         the frequency corresponding to maximum power, which is roughly the center of the Gaussian-like envelope of oscillations
          * **variable:** :math:`\nu_{\mathrm{max}}`
+         * **units:** :math:`\rm \mu Hz`
     
         scales with evolutionary state, logg, acoustic cutoff
         
     FWHM
     full-width half maximum
-        kdjfladk
+        for a Gaussian-like distribution, the full-width at half maximum (or full-width half max) is
+        approximately equal to :math:`\pm 1\sigma`
 
     global properties
-        the term 'global' is used to describe the general properties of the observed oscillations and is not associated with
-        the detailed frequency analysis of individual oscillation modes, a process referred to as peakbagging. Traditionally
-        the two main global asteroseismic properties are :math:`\nu_{\mathrm{max}}` and :math:`\Delta\nu`, both of which are 
-        described in more detail in their respective entry.
-    
-        there are two distinct features of solar-like oscillations that enable the measurement of the two main global 
-        properties, numax and dnu. The stochastic nature of convection leads to oscillation modes over a range of frequencies, 
-        where the envelope of the observed modes is approximately Gaussian and the frequency corresponding to the middle of
-        peak of this Gaussian-like envelope is referred to as numax. The second feature is the comb pattern or regular spacing
-        between different modes, which is referred to as the characteristic frequency spacing or dnu. Therefore, the term 'global' 
-        is used to describe the general properties of the oscillations, like the center and amplitude of the Gaussian-like envelope. The second 
-        distinct feature is the comb pattern or regular spacing between different modes, which is
-        referred to as the characteristic frequency spacing or dnu. For purposes of our analyses, global asteroseismic 
-        parameters regular spacing or combP-mode oscillations
-        In addition 
-        to the center of the frequency range (numax), there is a regular spacing or comb pattern between the observed modes 
-        that is referred to as the characteristic spacing or dnu.
+        in asteroseismology, the global asteroseismic parameters or properties refer to :math:`\nu_{\mathrm{max}}` 
+        (:term:`numax`) and :math:`\Delta\nu` (:term:`dnu) 
         
-    granulation background
-        dlfakjdlakjafld
-
+    granulation
+        the smallest (i.e. quickest) scale of convective processes
+        
+    Harvey component
+    Harvey model
+        named after the person who first person who discovered the relation -- and found it did a good 
+        job characterizing granulation amplitudes and time scales in the Sun
+        
+    *Kepler* artefact
+        *Kepler* short-cadence artefact in the power spectrum from a short-cadence light curve 
+        occurring at the nyquist frequency for long-cadence (i.e. ~270muHz)
 
     *Kepler* legacy sample
-        a sample of well-studied *Kepler* stars exhibiting solar-like oscillations (cite)
+        a sample of well-studied *Kepler* stars exhibiting solar-like oscillations (cite Lund+2014)
+        
+    dnu
+    large frequency separation
+        generally this is the comb pattern or regular spacing observed for solar-like oscillations.
+        It is exactly equal to the frequency spacing between modes with the same :term:`spherical degree` 
+        and consecutive :term:`radial order`s.
+         * **variable:** :math:`\Delta\nu`
+         * **units:** :math:`\rm \mu Hz`
+         * **definition:**
+    
+        scales with mean stellar density
+        
+    light curve
+        the measure of an object's brightness with time
         
     mesogranulation
-        dkjfaldjal
+        the intermediate scale of convection
         
     mixed modes
-        ldfjadkjf -> what you need to whiten
+        in special circumstances, pressure (or p-) modes couple with gravity (or g-) modes and make 
+        the spectrum of a solar-like oscillator much more difficult to interpret -- in particular,
+        for measuring the :term:`large frequency separation`
     
     notching
         a process
         
     nyquist frequency
         the highest frequency that can be sampled, which is set by the cadence of (or time between) 
-        observations (1/2*cadence)
+        observations
          * **variable:** :math:`\rm \nu_{nyq}`
+         * **units:** :math:`\rm \mu Hz`
+         * **definition:**
+         
+.. math::
+
+    \mathrm{\nu_{nyq}} = \frac{1}{2*\mathrm{cadence}}
+    
+.. glossary::
         
     order
         kldjfladkjad
     
-    
-    oversampling
-        ldkjfaljadlak
+    oversampled power spectrum
+        if the resolution
 
     p-mode oscillations
     solar-like oscillations
@@ -142,18 +166,36 @@ Glossary of documentation terms
     
     PSD
     power spectral density
-        ldjkfalkdajfal :math:`\rm ppm^{2} \,\, \mu Hz^{-1}`
+        a power spectrum that is normalized s.t. it satisfies Parseval's theorem :math:`\rm ppm^{2} \,\, \mu Hz^{-1}`
     
     PS
     power spectrum
-        dlfajk;adj
+        the measure of a star's power at different frequencies, which is computed by taking the fourier transform 
+        of a :term:`light curve`.
+        
+    radial order
+        in asteroseismology, the radial order (:math:`n`) is the number of nodes from the surface to the center of the
+        star. For solar-like oscillators, modes are typically characterized by higher radial orders and low spherical
+        degree. By definition, modes of the same spherical degree and consecutive radial orders are separated by :term:`dnu`.
         
     resolution
-        dkljflajd set by the total length (i.e. time) of the time series 
+        the resolution of a :term:`power spectrum` is set by the total length (i.e. time) of the time series
+        
+    scaling relations
+        these empirical relations are typically scaled with respect to the Sun, since it is the star we know best. These
+        are used in many aspects of asteroseismology, but the most common use is to derive fundamental stellar parameters
+        mass and radius given the effective temperature of the star and its :term:`global properties`
+        
+    spherical degree
+        in asteroseismology, the spherical degree (:math:`\ell`) is the number of oscillation modes on the surface of
+        the star. For unresolved asteroseismology, this is typically very low order degrees and has only been possible
+        up to a spherical degree of :math:`\ell = 3`.
 
     ``SYD``
         the well-known IDL-based asteroseismic pipeline created by Dan Huber during his PhD in Sydney (hence SYD). ``SYD``
         has been extensively tested and benchmarked to other closed-source asteroseismic tools on *Kepler* stars.
         
     whitening
-        kjdfla;jdlak
+        a process to remove undesired artefacts or effects present in a power spectrum by taking that frequency region 
+        and replacing it with white noise. This is typically done for subiants with :term:`mixed modes` in order to better 
+        estimate :term:`dnu`. This can also help mitigate the short-cadence :term:`Kepler artefact`.
