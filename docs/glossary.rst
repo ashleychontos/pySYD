@@ -49,8 +49,8 @@ Glossary of documentation terms
 
     A :term:`background-corrected power spectrum` (:term:`BCPS`) is an umbrella term that has the same 
     meanings as a :term:`background-divided power spectrum` (:term:`BDPS`) *and* a 
-    :term:`background-subtracted power spectrum` (:term:`BSPS`) **but** is good to avoid when possible 
-    since it does not specify how the power spectrum has been corrected.
+    :term:`background-subtracted power spectrum` (:term:`BSPS`). Thus it is best ***to avoid*** this
+    phrase if at all possible since it does not specify how the power spectrum has been modified.
 
 
 .. glossary::
@@ -86,9 +86,9 @@ Glossary of documentation terms
     ED
     echelle diagram
         a diagnostic tool to confirm that :term:`dnu` is correct. This is done by folding the power spectrum (:term:`FPS`)
-        using :term:`dnu` (you can think of it as the PS modulo the spacing), and if the :term:`large frequency separation`
-        is correct, the different oscillation modes will form straight ridges. **Fun fact:** the word 'echelle' is French 
-        for ladder
+        using :term:`dnu` (you can think of it as the PS modulo the spacing) -- which if the :term:`large frequency separation`
+        is correct -- the different oscillation modes will form straight ridges. **Fun fact:** the word :math:`\rm \'{e}chelle`
+        is actually French for ladder
         
     FFT
     fast fourier transform
@@ -108,7 +108,7 @@ Glossary of documentation terms
         scales with evolutionary state, logg, acoustic cutoff
         
     frequency resolution
-        the resolution of a :term:`power spectrum` is set by the reciprocal of total length of 
+        the resolution of a :term:`power spectrum` is set by the reciprocal of the total length of 
         the time series, :math:`(\Delta T)^{-1}`
         
     FWHM
@@ -206,17 +206,14 @@ Glossary of documentation terms
         the fourier transform of the :term:`light curve`.
         
     radial order
-        the radial order is the number of nodal shells of the standing wave. in asteroseismology, the radial order (:math:`n`) 
-        is the number of nodes from the surface to the center of the star. For solar-like oscillators, modes are typically 
-        characterized by high radial orders and low spherical degree. In the Sun, the modes with the highest amplitudes have
-        radial orders :math:`n\sim`19-22`. By definition, modes of the same spherical degree and 
-        consecutive radial orders are separated by :term:`dnu`.
-         * **variable:** :math:`n`
+        in asteroseismology, the radial order (:math:`n`) is the number of nodes from the surface to the center of the star.
+        For solar-like oscillators, modes are typically characterized by high radial orders and low spherical degree. By 
+        definition, modes of the same spherical degree and consecutive radial orders are separated by :term:`dnu`.
         
     scaling relations
-        these empirical relations are typically scaled with respect to the Sun, since it is the star we know best. These
-        are used in many aspects of asteroseismology, but the most common use is to derive fundamental stellar parameters
-        mass and radius given the effective temperature of the star and its :term:`global properties`:
+        empirical relations for fundamental stellar properties that are scaled with respect to the Sun, since it is the star 
+        we know best. In asteroseismology, the most common relations combine :term:`global asteroseismic parameters<global properties>`
+        with spectroscopic effective temperatures to derive stellar masses and radii:
         
 .. math::
 
@@ -229,16 +226,11 @@ Glossary of documentation terms
 .. glossary::
         
     spherical degree
-        in asteroseismology, the spherical degree (:math:`\ell`) is the number of oscillation modes on the surface of
-        the star. For unresolved asteroseismology, this is typically very low order degrees and has only been possible
-        up to a spherical degree of :math:`\ell = 3`
-         * **variable:** :math:`\ell`
+        the spherical degree (:math:`\ell`) is the number of nodal lines on the surface of the star, which for unresolved 
+        distant stars, has only been possible for up to a spherical degree of :math:`\ell = 3`
 
-    ``SYD``
-        the well-known IDL-based asteroseismic pipeline created by Dan Huber during his PhD in Sydney (hence SYD). ``SYD``
-        has been extensively tested and benchmarked to other closed-source asteroseismic tools on *Kepler* stars.
-        
+    whiten
     whitening
-        a process to remove undesired artefacts or effects present in a power spectrum by taking that frequency region 
-        and replacing it with white noise. This is typically done for subiants with :term:`mixed modes` in order to better 
-        estimate :term:`dnu`. This can also help mitigate the short-cadence :term:`Kepler artefact`.
+        a process to remove undesired artefacts or effects present in a frequency spectrum by taking that frequency region 
+        and replacing it with simulated white noise. This is typically done for subiants with :term:`mixed modes` in order 
+        to better estimate :term:`dnu`. This can also help mitigate the short-cadence :term:`Kepler artefact`.
