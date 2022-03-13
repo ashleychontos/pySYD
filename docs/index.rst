@@ -32,8 +32,8 @@ is too small!
 
 .. toctree::
    :titlesonly:
-   :maxdepth: 3
-   :caption: Introduction
+   :maxdepth: 2
+   :caption: Getting Started
    :hidden:
    
    installation
