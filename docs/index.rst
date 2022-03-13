@@ -2,9 +2,9 @@
 
    <br />
 
-****************************************************************************
-`pySYD`: |br| automated measurements |br| of global asteroseismic parameters
-****************************************************************************
+**************************************************************************
+pySYD: |br| automated measurements |br| of global asteroseismic parameters
+**************************************************************************
 
 Asteroseismology, or the study of stellar oscillations, is a powerful tool
 for studying the internal structure of stars and determining their fundamental 
@@ -32,8 +32,9 @@ is too small!
 
 .. toctree::
    :titlesonly:
-   :maxdepth: 2
-   :caption: Getting Started
+   :maxdepth: 3
+   :caption: Introduction
+   :hidden:
    
    installation
    quickstart
@@ -45,7 +46,7 @@ is too small!
    :titlesonly:
    :maxdepth: 2
    :caption: Community
-   :name: community
+   :hidden: 
    
    Our Vision <vision>
    related
