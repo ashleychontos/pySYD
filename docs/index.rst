@@ -27,31 +27,18 @@ welcome and *encourage* any new contributions to help make ``pySYD`` better! Ple
 our :ref:`community guidelines <guidelines/index>` to find out how you can help. No contribution 
 is too small!
 
-.. link-button:: quickstart
-    :type: ref
-    :text: Skip the introductory stuff and get started right away!
-    :classes: btn-outline-secondary btn-block
 
 .. toctree::
    :titlesonly:
    :maxdepth: 2
    :caption: Getting Started
+   
+   installation
+   quickstart
+   guide/index
+   Glossary <glossary>
 
-   installation
-   quickstart
-   user_guide
-   Glossary <glossary>
-   
-.. toctree::
-   :titlesonly:
-   :maxdepth: 2
-   :caption: Try Again
-   
-   installation
-   quickstart
-   user_guide
-   Glossary <glossary>
-   
+
 .. toctree::
    :titlesonly:
    :maxdepth: 2
@@ -59,9 +46,15 @@ is too small!
    :name: community
    
    Our Vision <vision>
-   other
+   related
    attribution
    guidelines
+
+
+.. link-button:: quickstart
+    :type: ref
+    :text: Skip the introductory stuff and get started right away!
+    :classes: btn-outline-secondary btn-block
    
 
 Bibliography
