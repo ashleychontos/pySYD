@@ -6,8 +6,8 @@ Installation
 
 .. _installation/dependencies:
 
-Package Dependencies
-####################
+Dependencies
+############
 
 This package has the following dependencies:
 
