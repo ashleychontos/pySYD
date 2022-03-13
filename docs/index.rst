@@ -44,7 +44,7 @@ is too small!
    
 .. toctree::
    :titlesonly:
-   :maxdepth:
+   :maxdepth: 2
    :caption: Try Again
    
    installation
