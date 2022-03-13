@@ -211,7 +211,17 @@ Glossary of documentation terms
     scaling relations
         these empirical relations are typically scaled with respect to the Sun, since it is the star we know best. These
         are used in many aspects of asteroseismology, but the most common use is to derive fundamental stellar parameters
-        mass and radius given the effective temperature of the star and its :term:`global properties`
+        mass and radius given the effective temperature of the star and its :term:`global properties`:
+        
+.. math::
+
+    \frac{R_{\star}}{R_{\odot}} = \large( \frac{\nu{\mathrm{max}}}{\nu{\mathrm{max,\odot}}} \large) \large( \frac{\Delta\nu}{\Delta\nu_{\odot}} \large)^{-2} \large( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \large)^{1/2}
+    
+.. math::
+
+    \frac{M_{\star}}{M_{\odot}} = \large( \frac{\nu{\mathrm{max}}}{\nu{\mathrm{max,\odot}}} \large)^{3} \large( \frac{\Delta\nu}{\Delta\nu_{\odot}} \large)^{-4} \large( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \large)^{3/2}
+    
+.. glossary::
         
     spherical degree
         in asteroseismology, the spherical degree (:math:`\ell`) is the number of oscillation modes on the surface of
