@@ -12,5 +12,5 @@ find any errors or stale links -- please let us know!
    :maxdepth: 2
    :caption: Contents
    
-   cli/index
+   As a command-line tool <cli/index>
    other/index
