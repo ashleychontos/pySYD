@@ -146,7 +146,7 @@ Glossary of documentation terms
   
 .. math::
  
-    \Delta\nu = \large[2 \int_{0}^{R} \frac{\mathrm{d}r}{c}\large]^{-1} \propto \bar{\rho}
+    \Delta\nu = \bigg[2 \int_{0}^{R} \frac{\mathrm{d}r}{c}\bigg]^{-1} \propto \bar{\rho}
  
 .. glossary::
         
@@ -173,7 +173,7 @@ Glossary of documentation terms
          
 .. math::
 
-    \mathrm{\nu_{nyq}} = \frac{1}{2*\mathrm{cadence}}
+    \mathrm{\nu_{nyq}} = \frac{1}{2 \Delta t}
     
 .. glossary::
     
@@ -219,11 +219,11 @@ Glossary of documentation terms
         
 .. math::
 
-    \frac{R_{\star}}{R_{\odot}} = \Large( \frac{\nu_{\mathrm{max}}}{\nu_{\mathrm{max,\odot}}} \Large) \large( \frac{\Delta\nu}{\Delta\nu_{\odot}} \large)^{-2} \large( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \large)^{1/2}
+    \frac{R_{\star}}{R_{\odot}} = \bigg( \frac{\nu_{\mathrm{max}}}{\nu_{\mathrm{max,\odot}}} \bigg) \bigg( \frac{\Delta\nu}{\Delta\nu_{\odot}} \bigg)^{-2} \bigg( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \bigg)^{1/2}
     
 .. math::
 
-    \frac{M_{\star}}{M_{\odot}} = \Large( \frac{\nu_{\mathrm{max}}}{\nu_{\mathrm{max,\odot}}} \Large)^{3} \large( \frac{\Delta\nu}{\Delta\nu_{\odot}} \large)^{-4} \large( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \large)^{3/2}
+    \frac{M_{\star}}{M_{\odot}} = \bigg( \frac{\nu_{\mathrm{max}}}{\nu_{\mathrm{max,\odot}}} \bigg)^{3} \bigg( \frac{\Delta\nu}{\Delta\nu_{\odot}} \bigg)^{-4} \bigg( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \bigg)^{3/2}
     
 .. glossary::
         
