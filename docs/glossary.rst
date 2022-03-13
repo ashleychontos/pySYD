@@ -217,11 +217,11 @@ Glossary of documentation terms
         
 .. math::
 
-    \frac{R_{\star}}{R_{\odot}} = \large( \frac{\nu{\mathrm{max}}}{\nu{\mathrm{max,\odot}}} \large) \large( \frac{\Delta\nu}{\Delta\nu_{\odot}} \large)^{-2} \large( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \large)^{1/2}
+    \frac{R_{\star}}{R_{\odot}} = \Large( \frac{\nu_{\mathrm{max}}}{\nu_{\mathrm{max,\odot}}} \Large) \large( \frac{\Delta\nu}{\Delta\nu_{\odot}} \large)^{-2} \large( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \large)^{1/2}
     
 .. math::
 
-    \frac{M_{\star}}{M_{\odot}} = \large( \frac{\nu{\mathrm{max}}}{\nu{\mathrm{max,\odot}}} \large)^{3} \large( \frac{\Delta\nu}{\Delta\nu_{\odot}} \large)^{-4} \large( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \large)^{3/2}
+    \frac{M_{\star}}{M_{\odot}} = \Large( \frac{\nu_{\mathrm{max}}}{\nu_{\mathrm{max,\odot}}} \Large)^{3} \large( \frac{\Delta\nu}{\Delta\nu_{\odot}} \large)^{-4} \large( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \large)^{3/2}
     
 .. glossary::
         
