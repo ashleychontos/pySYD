@@ -1,8 +1,7 @@
-.. _installation/index:
-
 ************
 Installation
 ************
+
 
 .. _installation/dependencies:
 
@@ -23,7 +22,6 @@ Explicit version requirements are specified in the project `requirements.txt <ht
 and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
 `conda` should install and enforce these versions automatically. 
 
-.. _installation/install:
 
 Installing
 ##########
@@ -33,6 +31,7 @@ There are three main ways you can install the software:
 #. :ref:`Using pip install <installation/pip>`
 #. :ref:`Creating a conda environment <installation/conda>`
 #. :ref:`Clone directly from GitHub <installation/git>`
+
 
 .. _installation/pip:
 
@@ -56,6 +55,7 @@ running the following command:
 
     python setup.py install
 
+
 .. _installation/conda:
 
 With `conda`
@@ -74,6 +74,7 @@ Then activate the environment and install ``pySYD``:
 
     conda activate astero
     pip install git+https://github.com/ashleychontos/pySYD
+
 
 .. _installation/git:
 
@@ -99,8 +100,8 @@ cloned ``pySYD`` repo.
 
 .. _installation/test:
 
-Testing 
-#######
+Testing the installation 
+########################
 
 You can test your installation by using the help command, which should
 display the following output:
@@ -126,13 +127,16 @@ display the following output:
         test                Test different utilities (currently under development)
 
 
+
 .. _installation/setup:
 
 Setting up
 ###########
 
-Ok now that you have properly installed and tested the software, there's just this
-one last step before we can start doing some science!
+Ok now that you have properly installed and tested the software, there's just 
+one last step before we can start doing some science...
+
+We need some data to do the science with!
 
 Make a local directory
 **********************
