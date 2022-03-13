@@ -7,12 +7,6 @@
 Contributing
 ************
 
------
-
-.. note::
-
-    **Accessible asteroseismology is our primary goal**
-
 For most (if not all) questions/concerns, peeping our `discussions <https://github.com/ashleychontos/pySYD/discussions>`_ forum is an excellent place to start in case things have already been brought to our attention and/or addressed.
 
 As a contributor, here are the guidelines we ask you to follow:
@@ -23,8 +17,6 @@ As a contributor, here are the guidelines we ask you to follow:
 * :ref:`Contributing code <guidelines/contribute>`
 * :ref:`Style guide <guidelines/style>`
 * :ref:`Testing <guidelines/testing>`
-
------
 
 .. _guidelines/question:
 
