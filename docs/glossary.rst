@@ -7,7 +7,7 @@ Glossary of documentation terms
     AIC
     Akaike Information Criterion
         a common metric for model selection that prevents overfitting of data by penalizing
-        models with higher numbers of paramters (:math:`k`)
+        models with higher numbers of parameters (:math:`k`)
          * **definition:**
         
 .. math::
@@ -70,7 +70,14 @@ Glossary of documentation terms
     BIC
     Bayesian Information Criterion
         a common metric for model selection
-    
+         * **definition:**
+        
+.. math::
+
+    \mathrm{BIC} = 2k - 2\mathrm{ln}(\hat{L})
+
+.. glossary::
+
     critically-sampled power spectrum
         sfdklja
         
@@ -171,6 +178,11 @@ Glossary of documentation terms
         implied in the name, these oscillations are driven by the same mechanism as that observed in the Sun, which is
         due to turbulent, near-surface convection. They are also sometimes referred to as **p-mode oscillations**, after the
         pressure-driven (or acoustic sound) waves that are resonating in the stellar cavity.
+        
+.. note::
+
+    Each p-mode can be described by three integers following spherical harmonics. The radial order (:math:`n`), the spherical
+    degree (:math:`\ell`) and the azimuthal order (:math:`m`).
     
     PSD
     power spectral density
@@ -184,9 +196,11 @@ Glossary of documentation terms
         the fourier transform of the :term:`light curve`.
         
     radial order
-        in asteroseismology, the radial order (:math:`n`) is the number of nodes from the surface to the center of the
-        star. For solar-like oscillators, modes are typically characterized by higher radial orders and low spherical
-        degree. By definition, modes of the same spherical degree and consecutive radial orders are separated by :term:`dnu`.
+        the radial order is the number of nodal shells of the standing wave. in asteroseismology, the radial order (:math:`n`) 
+        is the number of nodes from the surface to the center of the star. For solar-like oscillators, modes are typically 
+        characterized by high radial orders and low spherical degree. In the Sun, the modes with the highest amplitudes have
+        radial orders :math:`n\sim`19-22`. By definition, modes of the same spherical degree and 
+        consecutive radial orders are separated by :term:`dnu`.
          * **variable:** :math:`n`
         
     scaling relations
