@@ -71,10 +71,12 @@ Glossary of documentation terms
     Bayesian Information Criterion
         a common metric for model selection
          * **definition:**
-        
+
+
 .. math::
 
     \mathrm{BIC} = 2k - 2\mathrm{ln}(\hat{L})
+
 
 .. glossary::
 
@@ -141,12 +143,12 @@ Glossary of documentation terms
          * **variable:** :math:`\Delta\nu`
          * **units:** :math:`\rm \mu Hz`
          * **definition:**
-     
- .. math::
+  
+.. math::
  
-     \Delta\nu = \large[2 \int_{0}^{R} \frac{\mathrm{d}r}{c}\large]^{-1} \propto \bar{\rho}
+    \Delta\nu = \large[2 \int_{0}^{R} \frac{\mathrm{d}r}{c}\large]^{-1} \propto \bar{\rho}
  
- .. glossary::
+.. glossary::
         
     light curve
         the measure of an object's brightness with time
