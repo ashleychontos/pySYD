@@ -2,30 +2,6 @@
 Installation
 ************
 
-
-.. _installation/dependencies:
-
-Dependencies
-############
-
-This package has the following dependencies:
-
-* `Python <https://www.python.org>`_ (>=3)
-* `Numpy <https://numpy.org>`_
-* `pandas <https://pandas.pydata.org>`_ 
-* `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
-* `Astropy <https://www.astropy.org>`_
-* `scipy <https://docs.scipy.org/doc/>`_
-* `tqdm <https://tqdm.github.io>`_
-
-Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
-and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
-`conda` should install and enforce these versions automatically. 
-
-
-Installing
-##########
-
 There are three main ways you can install the software:
 
 #. :ref:`Using pip install <installation/pip>`
@@ -98,6 +74,26 @@ which needs to be executed from the top-level directory inside the
 cloned ``pySYD`` repo.
 
 
+.. _installation/dependencies:
+
+Dependencies
+############
+
+This package has the following dependencies:
+
+* `Python <https://www.python.org>`_ (>=3)
+* `Numpy <https://numpy.org>`_
+* `pandas <https://pandas.pydata.org>`_ 
+* `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
+* `Astropy <https://www.astropy.org>`_
+* `scipy <https://docs.scipy.org/doc/>`_
+* `tqdm <https://tqdm.github.io>`_
+
+Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
+and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
+`conda` should install and enforce these versions automatically. 
+
+
 .. _installation/test:
 
 Testing the installation 
@@ -133,8 +129,8 @@ display the following output:
 Setting up
 ###########
 
-Ok now that you have properly installed and tested the software, there's just 
-one last step before we can start doing some science...
+Ok now that the software has been successfully installed and tested, there's just 
+one thing missing before we can do the science...
 
 We need some data to do the science with!
 
