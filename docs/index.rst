@@ -39,7 +39,7 @@ is too small!
    installation
    quickstart
    guide/library/index
-   Usage <guide/cli/index>
+   User Guide <guide/cli/index>
    Glossary <glossary>
 
 
