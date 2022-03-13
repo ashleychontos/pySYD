@@ -108,7 +108,8 @@ Glossary of documentation terms
         scales with evolutionary state, logg, acoustic cutoff
         
     frequency resolution
-        the resolution of a :term:`power spectrum` is set by the total length (i.e. time) of the time series
+        the resolution of a :term:`power spectrum` is set by the reciprocal of total length of 
+        the time series, :math:`(\Delta T)^{-1}`
         
     FWHM
     full-width half maximum
@@ -165,8 +166,8 @@ Glossary of documentation terms
         a process
         
     nyquist frequency
-        the highest frequency that can be sampled, which is set by the cadence of (or time between) 
-        observations
+        the highest frequency that can be sampled, which is set by the cadence of observations 
+        (:math:`\Delta t`) 
          * **variable:** :math:`\rm \nu_{nyq}`
          * **units:** :math:`\rm \mu Hz`
          * **definition:**
