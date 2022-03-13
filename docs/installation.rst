@@ -36,8 +36,8 @@ There are three main ways you can install the software:
 
 .. _installation/pip:
 
-1. With `pip`
-*************
+With `pip`
+**********
 
 The ``pySYD`` package is available on the Python Package Index (PyPI) (`here <https://pypi.org/project/pysyd/>`_).
 Therefore you can install the latest stable version using `pip`:
@@ -58,8 +58,8 @@ running the following command:
 
 .. _installation/conda:
 
-2. With `conda`
-***************
+With `conda`
+************
 
 You can also use conda to create an environment. For this example, I'll call it 'astero'.
 
@@ -77,8 +77,8 @@ Then activate the environment and install ``pySYD``:
 
 .. _installation/git:
 
-3. With `git`
-*************
+With `git`
+**********
 
 If you are wanting to contribute, you can clone the latest development
 version from `GitHub <https://github.com/ashleychontos/pySYD>`_ using `git`.
