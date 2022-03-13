@@ -6,7 +6,15 @@ Glossary of documentation terms
 
     AIC
     Akaike Information Criterion
-        afjdkajfl
+        a common metric for model selection that prevents overfitting of data by penalizing
+        models with higher numbers of paramters (:math:`k`)
+         * **definition:**
+        
+.. math::
+
+    \mathrm{AIC} = 2k - 2\mathrm{ln}(\hat{L})
+    
+.. glossary::
     
     asteroseismology
         the study of oscillations in stars
@@ -61,7 +69,7 @@ Glossary of documentation terms
     
     BIC
     Bayesian Information Criterion
-        ldkfjaldkjl
+        a common metric for model selection
     
     critically-sampled power spectrum
         sfdklja
@@ -89,6 +97,9 @@ Glossary of documentation terms
          * **units:** :math:`\rm \mu Hz`
     
         scales with evolutionary state, logg, acoustic cutoff
+        
+    frequency resolution
+        the resolution of a :term:`power spectrum` is set by the total length (i.e. time) of the time series
         
     FWHM
     full-width half maximum
@@ -151,12 +162,9 @@ Glossary of documentation terms
     \mathrm{\nu_{nyq}} = \frac{1}{2*\mathrm{cadence}}
     
 .. glossary::
-        
-    order
-        kldjfladkjad
     
     oversampled power spectrum
-        if the resolution
+        if the resolution of the power spectrum is greater than 1/T
 
     p-mode oscillations
     solar-like oscillations
@@ -166,20 +174,19 @@ Glossary of documentation terms
     
     PSD
     power spectral density
-        a power spectrum that is normalized s.t. it satisfies Parseval's theorem :math:`\rm ppm^{2} \,\, \mu Hz^{-1}`
+        when the power of a frequency spectrum is normalized s.t. it satisfies Parseval's theorem (which is just a fancy way of 
+        saying that the fourier transform is unitary)
+         * **unit:** :math:`\rm ppm^{2} \,\, \mu Hz^{-1}`
     
     PS
     power spectrum
-        the measure of a star's power at different frequencies, which is computed by taking the fourier transform 
-        of a :term:`light curve`.
+        any object that varies in time also has a corresponding frequency (or power) spectrum, which here, is computed by taking 
+        the fourier transform of the :term:`light curve`.
         
     radial order
         in asteroseismology, the radial order (:math:`n`) is the number of nodes from the surface to the center of the
         star. For solar-like oscillators, modes are typically characterized by higher radial orders and low spherical
         degree. By definition, modes of the same spherical degree and consecutive radial orders are separated by :term:`dnu`.
-        
-    resolution
-        the resolution of a :term:`power spectrum` is set by the total length (i.e. time) of the time series
         
     scaling relations
         these empirical relations are typically scaled with respect to the Sun, since it is the star we know best. These
