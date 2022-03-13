@@ -4,7 +4,7 @@
 ``pySYD`` library
 *****************
 
-We are *thrilled* that you are eager to learn more about asteroseismology! 
+We are absolutely *thrilled* that you are eager to learn more about asteroseismology! 
 
 Overview
 ########
