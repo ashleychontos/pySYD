@@ -38,7 +38,8 @@ is too small!
    
    installation
    quickstart
-   guide/index
+   guide/library/index
+   Usage <guide/cli/index>
    Glossary <glossary>
 
 
