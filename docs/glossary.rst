@@ -189,6 +189,8 @@ Glossary of documentation terms
     Each p-mode can be described by three integers following spherical harmonics. The radial order (:math:`n`), the spherical
     degree (:math:`\ell`) and the azimuthal order (:math:`m`).
     
+.. glossary::
+    
     PSD
     power spectral density
         when the power of a frequency spectrum is normalized s.t. it satisfies Parseval's theorem (which is just a fancy way of 
