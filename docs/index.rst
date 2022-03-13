@@ -33,8 +33,8 @@ is too small!
     :classes: btn-outline-secondary btn-block
 
 .. toctree::
+   :titlesonly:
    :maxdepth: 2
-   :hidden:
    :caption: Getting Started
 
    installation
