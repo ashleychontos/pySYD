@@ -5,14 +5,7 @@ from pysyd import plots
 from pysyd.target import Target
 
 
-#####################################################################
-# Loads in information and parameters relevant to all pySYD modes
-# (except for setup)
-# NOTE: this does not load in a target or target data, this is
-#       purely information for running any star successfully
-#
-
-def load(args, star=None, verbose=False, command='run'):
+def load(args=None, star=None, verbose=False, command='run'):
     """
     
     Module to load in all the relevant information and dictionaries
@@ -39,24 +32,16 @@ def load(args, star=None, verbose=False, command='run'):
             current data available for the provided target
 
     """
+    # If running from something other than command line
     if args is None:
+        # Use container class as a base to add args to
         args = utils.Constants()
-        args.cli = False
-        if star is None:
-            print("If using this method, please provide the 'star' keyword argument")
-            print("(i.e. the star to be processed) and try again.")
-            return
-        else:
-            args.stars = [star]
+        assert star is not None, "If using this method, please provide the 'star' keyword argument \ni.e. the star to be processed and try again."
+        args.stars = [star]
     # Load relevant pySYD parameters
     args = utils.get_info(args)
     return args
 
-
-#####################################################################
-# Run main pySYD pipeline (consecutively, not in parallel)
-#
-    
 
 def run(args):
     """
@@ -81,14 +66,6 @@ def run(args):
             print()
         # Concatenates output into two files
         utils.scrape_output(args)
-
-
-#####################################################################
-# Pipe is called by both 'run' and 'parallel' modes to initiate the
-# pySYD pipeline for a group of stars
-# i.e. consecutively for the 'run' command
-#      and multiprocessing in 'parallel' mode
-#
 
 
 def pipe(group, args, count=0):
@@ -124,10 +101,6 @@ def pipe(group, args, count=0):
     # Number of successfully processed stars
     return count
 
-
-#####################################################################
-# Run pySYD pipeline in parallel for a large number of stars
-#
 
 def parallel(args):
     """
@@ -191,11 +164,6 @@ def test(args):
     dnu_comparison()
 
 
-#####################################################################
-# Downloads examples and sets up local directories for a quickstart
-#
-
-
 def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
     """
     
@@ -209,6 +177,7 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
             suppressed (optional) verbose output
         raw : str
             path to download "raw" package data and examples from the ``pySYD`` source directory
+
 
     """
     # Import relevant (external) python modules
