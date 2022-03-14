@@ -14,7 +14,7 @@ There are three main ways you can install the software:
 With `pip`
 ##########
 
-The ``pySYD`` package is available on the Python Package Index (PyPI) (`here <https://pypi.org/project/pysyd/>`_).
+The ``pySYD`` package is available on the Python Package Index (`PyPI <https://pypi.org/project/pysyd/>`_).
 Therefore you can install the latest stable version using `pip`:
 
 .. code-block::
