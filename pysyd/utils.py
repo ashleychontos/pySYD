@@ -19,24 +19,23 @@ from pysyd.models import *
 # HIGHER-LEVEL FUNCTIONALITY OF THE SOFTWARE
 #
 
-def _get_info(args):
+def get_info(args):
     """
+    
     Loads todo.txt, sets up file paths, loads in any available star information, saves the 
     relevant parameters for each of the two main routines and sets the plotting parameters.
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        command-line arguments
-    parallel : bool
-        if pysyd will be running in parallel mode
-    CLI : bool, optional
-        if CLI is not being used (i.e. `False`), the modules draw default values from a different location
+    Args:
+        args : argparse.Namespace
+            command-line arguments
+        parallel : bool
+            if pysyd will be running in parallel mode
+        CLI : bool, optional
+            if CLI is not being used (i.e. `False`), the modules draw default values from a different location
 
-    Returns
-    -------
-    args : argparse.Namespace
-        the updated command-line arguments
+    Returns:
+        args : argparse.Namespace
+            the updated command-line arguments
 
     """
     # Get parameters for all modules
@@ -52,20 +51,19 @@ def _get_info(args):
     return args
 
 
-def _get_parameters(args):
+def get_parameters(args):
     """
+    
     Basic function to call the individual functions that load and
     save parameters for different modules.
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        command-line arguments
+    Args:
+        args : argparse.Namespace
+            command-line arguments
 
-    Returns
-    -------
-    args : argparse.Namespace
-        the updated command-line arguments
+    Returns:
+        args : argparse.Namespace
+            the updated command-line arguments
 
     """
     # Initialize main 'params' dictionary
@@ -84,33 +82,32 @@ def get_main_params(args, cli=False, stars=None, excess=True, background=True, g
                     verbose=False, command='run', parallel=False, show=False, testing=False, 
                     save=True, kep_corr=False, of_actual=None, of_new=None, overwrite=True):
     """
+    
     Get the parameters for the find excess routine.
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the command line arguments
-    stars : List[str], optional
-        list of targets to process. If `None`, will read in from `info/todo.txt` (default).
-    verbose : bool, optional
-        turn on verbose output. Default is `False`.
-    show : bool, optional
-        show output figures. Default is `False`.
-    save : bool, optional
-        save all data products. Default is `True`.
-    kep_corr : bool, optional
-        use the module that corrects for known kepler artefacts. Default is `False`.
-    of_actual : int, optional
-        oversampling factor of input PS. Default value is `None`.
-    of_new : int, optional
-        oversampling factor of newly-computed PS. Default value is `None`.
+    Args:
+        args : argparse.Namespace
+            the command line arguments
+        stars : List[str], optional
+            list of targets to process. If `None`, will read in from `info/todo.txt` (default).
+        verbose : bool, optional
+            turn on verbose output. Default is `False`.
+        show : bool, optional
+            show output figures. Default is `False`.
+        save : bool, optional
+            save all data products. Default is `True`.
+        kep_corr : bool, optional
+            use the module that corrects for known kepler artefacts. Default is `False`.
+        of_actual : int, optional
+            oversampling factor of input PS. Default value is `None`.
+        of_new : int, optional
+            oversampling factor of newly-computed PS. Default value is `None`.
 
-    Returns
-    -------
-    args : argparse.Namespace
-        the updated command line arguments
-    args.params : Dict[str,object]
-        the parameters of higher-level functionality
+    Returns:
+        args : argparse.Namespace
+            the updated command line arguments
+        args.params : Dict[str,object]
+            the parameters of higher-level functionality
 
     """
     vars = ['stars', 'inpdir', 'outdir', 'cli', 'command', 'info', 'show', 'save', 'testing',
@@ -147,25 +144,20 @@ def get_main_params(args, cli=False, stars=None, excess=True, background=True, g
 
 def get_groups(args):
     """
+    
     Sets up star groups to run in parallel based on the number of threads.
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        command line arguments
-    parallel : bool
-        run pySYD in parallel
+    Args:
+        args : argparse.Namespace
+            command line arguments
+        parallel : bool
+            run pySYD in parallel
 
-    Returns
-    -------
-    args : argparse.Namespace
-        the updated command line arguments
-    args.params['groups'] : ndarray
-        star groups to process (groups == number of threads)
-
-    Returns
-    ----------
-    None
+    Returns:
+        args : argparse.Namespace
+            the updated command line arguments
+        args.params['groups'] : ndarray
+            star groups to process (groups == number of threads)
 
     """
     if args.parallel:
@@ -189,29 +181,28 @@ def get_groups(args):
 def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=20.0, 
                       mode='mean', lower_ex=1.0, upper_ex=8000., ask=False,):
     """
+    
     Get the parameters for the find excess routine.
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the command line arguments
-    ask : bool, optional
-        If `True`, it will ask which trial to use as the estimate for numax.
-    n_trials : int, optional
-        the number of trials. Default value is `3`.
-    step : float, optional
-        TODO: Write description. Default value is `0.25`.
-    binning : float, optional
-        logarithmic binning width. Default value is `0.005`.
-    mode : {'mean', 'median', 'gaussian'}
-        mode to use when binning
+    Args:
+        args : argparse.Namespace
+            the command line arguments
+        ask : bool, optional
+            If `True`, it will ask which trial to use as the estimate for numax.
+        n_trials : int, optional
+            the number of trials. Default value is `3`.
+        step : float, optional
+            TODO: Write description. Default value is `0.25`.
+        binning : float, optional
+            logarithmic binning width. Default value is `0.005`.
+        mode : {'mean', 'median', 'gaussian'}
+            mode to use when binning
 
-    Returns
-    -------
-    args : argparse.Namespace
-        the updated command line arguments
-    args.findex : Dict[str,object]
-        the parameters of the find excess routine
+    Returns:
+        args : argparse.Namespace
+            the updated command line arguments
+        args.findex : Dict[str,object]
+            the parameters of the find excess routine
 
     """
     vars = ['step', 'binning', 'mode', 'smooth_width', 'ask', 'n_trials', 'lower_ex', 'upper_ex', 'results']
@@ -231,39 +222,38 @@ def get_background_params(args, ind_width=20.0, box_filter=1.0, n_rms=20, metric
                           mc_iter=1, samples=False, n_laws=None, fix_wn=False, basis='tau_sigma',
                           lower_bg=1.0, upper_bg=8000.,):
     """
+    
     Get the parameters for the background-fitting routine.
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the command line arguments
-    box_filter : float
-        the size of the 1D box smoothing filter (in muHz). Default value is `1.0`.
-    ind_width : float
-        the independent average smoothing width (in muHz). Default value is `20.0`.
-    n_rms : int
-        number of data points to estimate red noise contributions. Default value is `20`.
-    metric : str
-        which metric to use (i.e. bic or aic) for model selection. Default is `'bic'`.
-    include : bool
-        include metric values in verbose output. Default is `False`.
-    basis : str
-        which basis to use for background fitting, e.g. {a,b} parametrization. Default is `tau_sigma`.
-    n_laws : int
-        force number of Harvey-like components in background fit. Default value is `None`.
-    fix_wn : bool
-        fix the white noise level in the background fit. Default is `False`.
-    mc_iter : int
-        number of samples used to estimate uncertainty. Default value is `1`.
-    samples : bool
-        if true, will save the monte carlo samples to a csv. Default value is `False`.
+    Args:
+        args : argparse.Namespace
+            the command line arguments
+        box_filter : float
+            the size of the 1D box smoothing filter (in muHz). Default value is `1.0`.
+        ind_width : float
+            the independent average smoothing width (in muHz). Default value is `20.0`.
+        n_rms : int
+            number of data points to estimate red noise contributions. Default value is `20`.
+        metric : str
+            which metric to use (i.e. bic or aic) for model selection. Default is `'bic'`.
+        include : bool
+            include metric values in verbose output. Default is `False`.
+        basis : str
+            which basis to use for background fitting, e.g. {a,b} parametrization. Default is `tau_sigma`.
+        n_laws : int
+            force number of Harvey-like components in background fit. Default value is `None`.
+        fix_wn : bool
+            fix the white noise level in the background fit. Default is `False`.
+        mc_iter : int
+            number of samples used to estimate uncertainty. Default value is `1`.
+        samples : bool
+            if true, will save the monte carlo samples to a csv. Default value is `False`.
 
-    Returns
-    -------
-    args : argparse.Namespace
-        the updated command line arguments
-    args.fitbg : Dict[str,object]
-        the parameters relevant for the fit background routine
+    Returns:
+        args : argparse.Namespace
+            the updated command line arguments
+        args.fitbg : Dict[str,object]
+            the parameters relevant for the fit background routine
 
     """
     vars = ['ind_width', 'box_filter', 'n_rms', 'n_laws', 'fix_wn', 'basis', 'metric', 'include',
@@ -288,49 +278,49 @@ def get_global_params(args, sm_par=None, lower_ps=None, upper_ps=None, width=1.0
                       clip_value=3.0, smooth_ech=None, interp_ech=False, lower_ech=None, 
                       upper_ech=None, nox=50, noy=0, notching=False):
     """
+    
     Get the parameters relevant for finding global asteroseismic parameters numax and dnu.
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the command line arguments
-    sm_par : float
-        Gaussian filter width for determining smoothed numax (values are typically between 1-4)
-    method : str
-        method to determine dnu, choices are ~['M','A','D'] (default is `'D'`).
-    lower_ps : float
-        lower bound of power excess (in muHz). Default value is `None`.
-    upper_ps : float
-        upper bound of power excess (in muHz). Default value is `None`.
-    width : float
-        fractional width to use for power excess centerd on numax. Default value is `1.0`.
-    smooth_ps : float
-        box filter [in muHz] for PS smoothing before calculating ACF. Default value is `1.5`.
-    threshold : float
-        fractional width of FWHM to use in ACF for later iterations. Default value is `1.0`.
-    n_peaks : int
-        the number of peaks to select. Default value is `5`.
-    lower_ech : float
-        lower bound of folded PS (in muHz) to 'whiten' mixed modes. Default value is `None`.
-    upper_ech : float
-        upper bound of folded PS (in muHz) to 'whiten' mixed modes. Default value is `None`.
-    clip_value : float
-        the minimum frequency of the echelle plot. Default value is `0.0`.
-    smooth_ech : float
-        option to smooth the output of the echelle plot
-    interp_ech : bool
-        turns on the bilinear smoothing in echelle plot
-    nox : int
-        x-axis resolution on the echelle diagram. Default value is `50`. (NOT CURRENTLY IMPLEMENTED YET)
-    noy : int
-        how many radial orders to plot on the echelle diagram. Default value is `5`. (NOT CURRENTLY IMPLEMENTED YET)
+    Args:
+        args : argparse.Namespace
+            the command line arguments
+        sm_par : float
+            Gaussian filter width for determining smoothed numax (values are typically between 1-4)
+        method : str
+            method to determine dnu, choices are ~['M','A','D'] (default is `'D'`).
+        lower_ps : float
+            lower bound of power excess (in muHz). Default value is `None`.
+        upper_ps : float
+            upper bound of power excess (in muHz). Default value is `None`.
+        width : float
+            fractional width to use for power excess centerd on numax. Default value is `1.0`.
+        smooth_ps : float
+            box filter [in muHz] for PS smoothing before calculating ACF. Default value is `1.5`.
+        threshold : float
+            fractional width of FWHM to use in ACF for later iterations. Default value is `1.0`.
+        n_peaks : int
+            the number of peaks to select. Default value is `5`.
+        lower_ech : float
+            lower bound of folded PS (in muHz) to 'whiten' mixed modes. Default value is `None`.
+        upper_ech : float
+            upper bound of folded PS (in muHz) to 'whiten' mixed modes. Default value is `None`.
+        clip_value : float
+            the minimum frequency of the echelle plot. Default value is `0.0`.
+        smooth_ech : float
+            option to smooth the output of the echelle plot
+        interp_ech : bool
+            turns on the bilinear smoothing in echelle plot
+        nox : int
+            x-axis resolution on the echelle diagram. Default value is `50`. (NOT CURRENTLY IMPLEMENTED YET)
+        noy : int
+            how many radial orders to plot on the echelle diagram. Default value is `5`. (NOT CURRENTLY IMPLEMENTED YET)
 
-    Returns
-    -------
-    args : argparse.Namespace
-        the updated command line arguments
-    args.globe : Dict[str,object]
-        the parameters relevant for determining the global parameters routine
+    Returns:
+        args : argparse.Namespace
+            the updated command line arguments
+        args.globe : Dict[str,object]
+            the parameters relevant for determining the global parameters routine
+
 
     """
     vars = ['sm_par', 'width', 'smooth_ps', 'threshold', 'n_peaks', 'method', 'cmap', 'clip_value', 
@@ -349,24 +339,24 @@ def get_global_params(args, sm_par=None, lower_ps=None, upper_ps=None, width=1.0
 # Can store different settings for individual stars
 #
 
-def _get_csv_info(args, force=False, guess=None):
+def get_csv_info(args, force=False, guess=None):
     """
+    
     Reads in any star information provided via args.info and is 'info/star_info.csv' by default. 
     ** Please note that this is NOT required for pySYD to run successfully **
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the command line arguments
-    force : float
-        if not false (i.e. non-zero) will force dnu to be the equal to this value. 
-    guess : float
-        estimate or guess for dnu 
+    Args:
+        args : argparse.Namespace
+            the command line arguments
+        force : float
+            if not false (i.e. non-zero) will force dnu to be the equal to this value. 
+        guess : float
+            estimate or guess for dnu 
 
-    Returns
-    -------
-    args : argparse.Namespace
-        the updated command line arguments
+    Returns:
+        args : argparse.Namespace
+            the updated command line arguments
+
 
     """
     constants = Constants()
@@ -420,18 +410,17 @@ def _get_csv_info(args, force=False, guess=None):
 
 def check_input_args(args, max_laws=3):
     """ 
+    
     Make sure that any command-line inputs are the proper lengths, types, etc.
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the command line arguments
-    max_laws : int
-        maximum number of resolvable Harvey components
+    Args:
+        args : argparse.Namespace
+            the command line arguments
+        max_laws : int
+            maximum number of resolvable Harvey components
 
-    Yields
-    ------
-    ???
+    Yields:
+        ??? (what's the thing for asserting)
 
     """
 
@@ -451,31 +440,30 @@ def check_input_args(args, max_laws=3):
 def get_command_line(args, numax=None, dnu=None, lower_ps=None, upper_ps=None, 
                      lower_ech=None, upper_ech=None):
     """
+    
     If certain CLI options are provided, it saves it to the appropriate star. This
     is called after the csv is checked and therefore, this will override any duplicated
     information provided there (if applicable).
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        the command line arguments
-    args.lower_ps : float, optional
-        the lower frequency bound for numax (in muHz). Default is `None`.
-    args.upper_ps : float, optional
-        the upper frequency bound for numax (in muHz). Default is `None`.
-    args.numax : List[float], optional
-        the estimated numax (in muHz). Default is `None`.
-    args.dnu : List[float], optional
-        the estimated frequency spacing or dnu (in muHz). Default is `None`.
-    args.lower_ech : List[float], optional
-        the lower frequency for whitening the folded PS (in muHz). Default is `None`.
-    args.upper_ech : List[float], optional
-        the upper frequency for whitening the folded PS (in muHz). Default is `None`.
+    Args:
+        args : argparse.Namespace
+            the command line arguments
+        args.lower_ps : float, optional
+            the lower frequency bound for numax (in muHz). Default is `None`.
+        args.upper_ps : float, optional
+            the upper frequency bound for numax (in muHz). Default is `None`.
+        args.numax : List[float], optional
+            the estimated numax (in muHz). Default is `None`.
+        args.dnu : List[float], optional
+            the estimated frequency spacing or dnu (in muHz). Default is `None`.
+        args.lower_ech : List[float], optional
+            the lower frequency for whitening the folded PS (in muHz). Default is `None`.
+        args.upper_ech : List[float], optional
+            the upper frequency for whitening the folded PS (in muHz). Default is `None`.
 
-    Returns
-    -------
-    args : argparse.Namespace
-        the updated command line arguments
+    Returns:
+        args : argparse.Namespace
+            the updated command line arguments
 
     """
 
@@ -514,28 +502,26 @@ def get_command_line(args, numax=None, dnu=None, lower_ps=None, upper_ps=None,
 # Data and information related to a processed star
 #
 
-
 def load_data(star, args):
     """
+    
     Loads both the light curve and power spectrum data in for a given star,
     which will return `False` if unsuccessful and therefore, not run the rest
     of the pipeline.
 
-    Parameters
-    ----------
-    star : target.Target
-        the pySYD pipeline object
-    args : argparse.Namespace
-        command line arguments
+    Args:
+        star : target.Target
+            the pySYD pipeline object
+        args : argparse.Namespace
+            command line arguments
 
-    Returns
-    -------
-    star : target.Target
-        the pySYD pipeline object
-    star.lc : bool
-        will return `True` if the light curve data was loaded in properly otherwise `False`
-    star.ps : bool
-        will return `True` if the power spectrum file was successfully loaded otherwise `False`
+    Returns:
+        star : target.Target
+            the pySYD pipeline object
+        star.lc : bool
+            will return `True` if the light curve data was loaded in properly otherwise `False`
+        star.ps : bool
+            will return `True` if the power spectrum file was successfully loaded otherwise `False`
 
     """
     if not star.params['cli']:
@@ -557,23 +543,22 @@ def load_data(star, args):
     return star
 
 
-def _load_file(path):
+def load_file(path):
     """
+    
     Load a light curve or a power spectrum from a basic 2xN txt file
     and stores the data into the `x` (independent variable) and `y`
     (dependent variable) arrays, where N is the length of the series.
 
-    Parameters
-    ----------
-    path : str
-        the file path of the data file
+    args:
+        path : str
+            the file path of the data file
 
-    Returns
-    -------
-    x : numpy.array
-        the independent variable i.e. the time or frequency array 
-    y : numpy.array
-        the dependent variable, in this case either the flux or power array
+    Returns:
+        x : numpy.array
+            the independent variable i.e. the time or frequency array 
+        y : numpy.array
+            the dependent variable, in this case either the flux or power array
 
     """
     f = open(path, "r")
@@ -587,34 +572,33 @@ def _load_file(path):
 
 def load_time_series(args, star, note=''):
     """
+    
     If available, star.lc is set to `True`, the time series data
     is loaded in, and then it calculates the cadence and nyquist 
     freqency. If time series data is not provided, either the
     cadence or nyquist frequency must be provided via CLI
 
-    Parameters
-    ----------
-    star : target.Target
-        the pySYD pipeline object
-    args : argparse.Namespace
-        command line arguments
-    args.cadence : int
-        cadence of time series data (if known but data is not available)
-    args.nyquist : float
-        nyquist frequency of the provided power spectrum
-    note : str
-        optional suppressed verbose output
+    Args:
+        star : target.Target
+            the pySYD pipeline object
+        args : argparse.Namespace
+            command line arguments
+        args.cadence : int
+            cadence of time series data (if known but data is not available)
+        args.nyquist : float
+            nyquist frequency of the provided power spectrum
+        note : str
+            optional suppressed verbose output
 
-    Returns
-    -------
-    star : target.Target
-        the pySYD pipeline object
-    star.lc : bool
-        will return `True` if the light curve data was loaded in properly otherwise `False`
-    star.time : numpy.array
-        time array in days
-    star.flux : numpy.array
-        relative or normalized flux array
+    Returns:
+        star : target.Target
+            the pySYD pipeline object
+        star.lc : bool
+            will return `True` if the light curve data was loaded in properly otherwise `False`
+        star.time : numpy.array
+            time array in days
+        star.flux : numpy.array
+            relative or normalized flux array
 
     """
     star.lc = False
@@ -635,37 +619,36 @@ def load_time_series(args, star, note=''):
 
 def load_power_spectrum(args, star, note='', long=10**6):
     """
+    
     Loads in the power spectrum data in for a given star,
     which will return `False` if unsuccessful and therefore, not run the rest
     of the pipeline.
 
-    Parameters
-    ----------
-    star : target.Target
-        the pySYD pipeline object
-    args : argparse.Namespace
-        command line arguments
-    args.kep_corr : bool
-        if true, will run the module to mitigate the Kepler artefacts in the power spectrum. Default is `False`.
-    args.of_actual : int
-        the oversampling factor, if the power spectrum is already oversampled. Default is `1`, assuming a critically sampled PS.
-    args.of_new : float
-        the oversampling factor to use for the first iterations. Default is `5`.
-    note : str
-        optional suppressed verbose output
-    long : int
-        will display a warning if length of PS is longer than 10**6 lines 
+    Args:
+        star : target.Target
+            the pySYD pipeline object
+        args : argparse.Namespace
+            command line arguments
+        args.kep_corr : bool
+            if true, will run the module to mitigate the Kepler artefacts in the power spectrum. Default is `False`.
+        args.of_actual : int
+            the oversampling factor, if the power spectrum is already oversampled. Default is `1`, assuming a critically sampled PS.
+        args.of_new : float
+            the oversampling factor to use for the first iterations. Default is `5`.
+        note : str
+            optional suppressed verbose output
+        long : int
+            will display a warning if length of PS is longer than 10**6 lines 
 
-    Returns
-    -------
-    star : target.Target
-        the pySYD pipeline object
-    star.ps : bool
-        will return `True` if the power spectrum file was successfully loaded otherwise `False`
-    star.frequency : numpy.array
-        frequency array in muHz
-    star.power : numpy.array
-        power spectral density array
+    Returns:
+        star : target.Target
+            the pySYD pipeline object
+        star.ps : bool
+            will return `True` if the power spectrum file was successfully loaded otherwise `False`
+        star.frequency : numpy.array
+            frequency array in muHz
+        star.power : numpy.array
+            power spectral density array
 
     """
     star.ps = False
@@ -695,26 +678,25 @@ def load_power_spectrum(args, star, note='', long=10**6):
 # -> this will save the seed for reproducibiity purposes
 #
 
-def _set_seed(star, lower=1, upper=10**7, size=1):
+def set_seed(star, lower=1, upper=10**7, size=1):
     """
+    
     For Kepler targets that require a correction via CLI (--kc), a random seed is generated
     from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
 
-    Parameters
-    ----------
-    star : target.Target
-        the pySYD pipeline object
-    lower : int 
-        lower limit for random seed value. Default value is `1`.
-    upper : int
-        upper limit for random seed value. Default value is `10**7`.
-    size : int
-        number of seed values returned. Default value is `1`.
+    Args:
+        star : target.Target
+            the pySYD pipeline object
+        lower : int 
+            lower limit for random seed value (default=`1`)
+        upper : int
+            upper limit for random seed value (default=`10**7`)
+        size : int
+            number of seed values returned (default=`1`)
 
-    Returns
-    -------
-    star : target.Target
-        the pySYD pipeline object
+    Returns:
+        star : target.Target
+            the pySYD pipeline object
         
     """
 
@@ -734,36 +716,40 @@ def _set_seed(star, lower=1, upper=10**7, size=1):
 # (primarily in Q0-Q3 data)
 #
 
-def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_upper =[380.0,530.0], 
+def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_upper=[380.0,530.0], 
                     hf_lower = [4530.0,5011.0,5097.0,5575.0,7020.0,7440.0,7864.0],
                     hf_upper = [4534.0,5020.0,5099.0,5585.0,7030.0,7450.0,7867.0],):
     """
-    Removes SC artefacts in Kepler power spectra by replacing them with noise (using linear interpolation)
-    following a chi-squared distribution. 
+    Remove Kepler short-cadence artefact
+    
+    Module to remove artefacts found in Kepler power spectra by replacing them with noise 
+    (using linear interpolation) following a chi-squared distribution. 
 
-    Known artefacts are:
-    1) 1./LC harmonics
-    2) high frequency artefacts (>5000 muHz)
-    3) low frequency artefacts 250-400 muHz (mostly present in Q0 and Q3 data)
+    Args:
+        star : target.Target
+            the pySYD pipeline object
+        lcp : float
+            long cadence period in Msec
+        lf_lower : List[float]
+            lower limit of low frequency artefact
+        lf_upper : List[float]
+            upper limit of low frequency artefact
+        hf_lower : List[float]
+            lower limit of high frequency artefact
+        hf_upper : List[float]
+            upper limit of high frequency artefact
+	    
+    Returns:
+        star : target.Target
+            the pySYD pipeline object
 
-    Parameters
-    ----------
-    star : target.Target
-        the pySYD pipeline object
-    lcp : float
-        long cadence period in Msec
-    lf_lower : List[float]
-        lower limit of low frequency artefact
-    lf_upper : List[float]
-        upper limit of low frequency artefact
-    hf_lower : List[float]
-        lower limit of high frequency artefact
-    hf_upper : List[float]
-        upper limit of high frequency artefact
-    Returns
-    -------
-    star : target.Target
-        the pySYD pipeline object
+    Note:
+        Known artefacts are:
+         #. 1./LC harmonics
+         #. high frequency artefacts (>5000 muHz)
+         #. low frequency artefacts 250-400 muHz (mostly present in Q0 and Q3 data)
+
+
     """
 
     if star.params[star.name]['seed'] is None:
@@ -809,9 +795,11 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_
 # dof) to properly estimate dnu.
 #
 
-def whiten_mixed(star):
+def whiten_mixed(star, notching=False):
     """
-    Generates random white noise in place of ell=1 for subgiants with mixed modes to better
+    Remove mixed modes
+    
+    Module to help reduce the effects of mixed modes random white noise in place of ell=1 for subgiants with mixed modes to better
     constrain the characteristic frequency spacing.
 
     Parameters
@@ -850,26 +838,26 @@ def whiten_mixed(star):
 
 def check_input_data(args, star, note):
     """
+    
     Checks the type(s) of input data and creates any additional, optional
     arrays as well as critically-sampled power spectra (when applicable).
 
-    Parameters
-    ----------
-    args : argparse.Namespace
-        command line arguments
-    star : target.Target
-        pySYD target object
-    note : str, optional
-        optional verbose output
+    Args:
+        args : argparse.Namespace
+            command line arguments
+        star : target.Target
+            pySYD target object
+        note : str, optional
+            optional verbose output
 
-    Returns
-    -------
-    args : argparse.Namespace
-        updated command line arguments
-    star : target.Target
-        updated pySYD target object
+    Returns:
+        args : argparse.Namespace
+            updated command line arguments
+        star : target.Target
+            updated pySYD target object
     note : str, optional
         updated optional verbose output
+
 
     """
     if star.lc:
@@ -910,18 +898,20 @@ def check_input_data(args, star, note):
 
 def get_estimates(star, max_trials=6):
     """
-    Parameters used with the first module, which is automated method to identify
+    
+    Parameters used with the first module, which is an automated method to identify
     power excess due to solar-like oscillations.
 
-    Parameters
-    ----------
-    star : target.Target
-        pySYD target object
+    Args:
+        star : target.Target
+            pySYD target object
+	max_trials : int, optional
+	    the number of "guesses" or trials to perform to estimate numax
 
-    Returns
-    -------
-    star : target.Target
-        updated pySYD target object
+    Returns:
+        star : target.Target
+            updated pySYD target object
+
 
     """
     # If running the first module, mask out any unwanted frequency regions
@@ -959,15 +949,14 @@ def get_estimates(star, max_trials=6):
 # Still needs to be tested: no estimate of numax but global fit
 #
 
-def _check_numax(star):
+def check_numax(star):
     """
-    Checks if there is a starting value for numax as pySYD needs this information to begin the 
-    second module (whether be it from the first module, CLI or saved to info/star_info.csv).
+    
+    Checks if there is a starting value for numax
 
-    Returns
-    -------
-    result : bool
-        will return `True` if there is prior value for numax otherwise `False`.
+    Returns:
+        bool
+            will return `True` if there is prior value for numax otherwise `False`.
 
     """
     # THIS MUST BE FIXED TOO
@@ -997,27 +986,27 @@ def _check_numax(star):
 # Sets data up for the derivation of asteroseismic parameters
 #
 
-def _get_initial(star, lower_bg=1.0):
+def get_initial(star, lower_bg=1.0):
     """
+    
     Gets initial guesses for granulation components (i.e. timescales and amplitudes) using
     solar scaling relations. This resets the power spectrum and has its own independent
     filter (i.e. [lower,upper] mask) to use for this subroutine.
 
-    Parameters
-    ----------
-    star : target.Target
-        pySYD target object
-    star.oversample : bool
-        if `True`, it will use an oversampled power spectrum for the first iteration or 'step'
-    minimum_freq : float
-        minimum frequency to use for the power spectrum if `None` is provided (via info/star_info.csv). Default = `10.0` muHz. Please note: this is typically sufficient for most stars but may affect evolved stars!
-    maximum_freq : float
-        maximum frequency to use for the power spectrum if `None` is provided (via info/star_info.csv). Default = `5000.0` muHz.
+    Args:
+        star : target.Target
+            pySYD target object
+        star.oversample : bool
+            if `True`, it will use an oversampled power spectrum for the first iteration or 'step'
+        minimum_freq : float
+            minimum frequency to use for the power spectrum if `None` is provided (via info/star_info.csv). Default = `10.0` muHz. Please note: this is typically sufficient for most stars but may affect evolved stars!
+        maximum_freq : float
+            maximum frequency to use for the power spectrum if `None` is provided (via info/star_info.csv). Default = `5000.0` muHz.
 
-    Returns
-    -------
-    star : target.Target
-        updated pySYD target object
+    Returns:
+        star : target.Target
+            updated pySYD target object
+
 
     """
     star.frequency, star.power = np.copy(star.freq_os), np.copy(star.pow_os)
@@ -1058,16 +1047,26 @@ def _get_initial(star, lower_bg=1.0):
 # several parameters
 #
 
-def _solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=1.0):
+def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=1.0):
     """
+    Solar scaling relation
+    
     Uses scaling relations from the Sun to:
     1) estimate the width of the region of oscillations using numax
     2) guess starting values for granulation timescales
 
-    Parameters
-    ----------
-    max_laws : int
-        the maximum number of resolvable Harvey-like components
+    Args:
+        star : target.Target
+	    pySYD target object
+	scaling : str
+	    which scaling relation to use
+        max_laws : int
+            the maximum number of resolvable Harvey-like components
+	times : float
+	    
+    Returns:
+        star : target.Target
+            updated pySYD target object
 
     """
     constants = Constants()
@@ -1124,23 +1123,25 @@ def _solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=
 # Save information
 #
 
-def _save_file(star, formats=[">15.8f", ">18.10e"]):
+def save_file(star, formats=[">15.8f", ">18.10e"]):
     """
-    Saves the corrected power spectrum, which is computed by subtracting
-    the best-fit stellar background model from the power spectrum.
+    Saves background-subtracted power spectrum
+    
+    After determining the best-fit stellar background model, this module
+    saved the background-subtracted power spectrum
 
-    Parameters
-    ----------
-    star : target.Target
-        the pySYD pipeline target
-    formats : List[str]
-        2x1 list of formats to save arrays as
-    star.params[star.name]['path'] : str
-        path to save the background-corrected power spectrum
-    star.frequency : ndarray
-        frequency array
-    star.bg_corr_sub : ndarray
-        background-subtracted power spectrum
+    Args:
+        star : target.Target
+            the pySYD pipeline target
+        formats : List[str]
+            2x1 list of formats to save arrays as
+        star.params[star.name]['path'] : str
+            path to save the background-corrected power spectrum
+        star.frequency : ndarray
+            frequency array
+        star.bg_corr_sub : ndarray
+            background-subtracted power spectrum
+
 
     """
     f_name = os.path.join(star.params[star.name]['path'],'bgcorr_ps.txt')
@@ -1157,14 +1158,15 @@ def _save_file(star, formats=[">15.8f", ">18.10e"]):
         print(' **background-corrected PS saved**')
 
 
-def _save_estimates(star):
+def save_estimates(star):
     """
-    Save the results of the find excess routine into the save folder of the current star.
+    
+    Saves the estimate for numax (from first module)
 
-    Parameters
-    ----------
-    star : target.Target
-        pipeline target with the results of the `find_excess` routine
+    Args:
+        star : target.Target
+            pipeline target with the results of the `find_excess` routine
+
 
     """
     best = star.excess['results'][star.name]['best']
@@ -1176,14 +1178,15 @@ def _save_estimates(star):
     ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
 
 
-def _save_results(star):
+def save_results(star):
     """
-    Saves the results of the `fit_background` module.
+    
+    Saves the derived global asteroseismic parameters (from the main module)
 
-    Parameters
-    ----------
-    star : target.Target
-        pipeline target with the results of the `fit_background` routine
+    Args:
+        star : target.Target
+            pipeline target with the results of the `fit_background` routine
+
 
     """
     results={}
@@ -1213,9 +1216,12 @@ def _save_results(star):
 # Optional verbose output function
 #
 
-def _verbose_output(star):
+def verbose_output(star):
     """
-    If `True`, prints results from the global asteroseismic fit.
+    Verbose output
+
+    Prints the results from the global asteroseismic fit (if args.verbose is `True`)
+
 
     """
     note=''
@@ -1244,11 +1250,14 @@ def _verbose_output(star):
 # Concatenates data for individual stars into a single csv
 #
 
-def _scrape_output(args):
+def scrape_output(args):
     """
-    Grabs each individual star's results and concatenates results into a single csv in info/ for each submodule
-    (i.e. excess.csv and background.csv). This is automatically called if the pySYD is successfully executed for 
-    at least one star.
+    Concatenate results
+    
+    Takes the results from each processed target and concatenates the results into a single csv 
+    for each submodule (i.e. excess.csv and background.csv). This is automatically called if pySYD 
+    successfully runs for at least one star (count >= 1)
+    
 
     """
     path = os.path.join(args.params['outdir'],'**','')
@@ -1285,21 +1294,22 @@ def _scrape_output(args):
 # Read in large python containers (dictionaries) 
 #
 
-def _get_dict(type='params'):
+def get_dict(type='params'):
     """
+    Read dictionary
+    
     Quick function to read in longer python dictionaries, which is primarily used in
     the utils script (i.e. verbose_output, scrape_output) and in the pipeline script 
     (i.e. setup)
 
-    Parameters
-    ----------
-    type : str
-        which dictionary to read in, choices ~['params','columns']. Default is 'params'.
+    Args:
+        type : str
+            which dictionary to read in, choices ~['params','columns']. Default is 'params'.
 
-    Returns
-    -------
-    Dict[str,Dict[,]]
-        the loaded, relevant dictionary
+    Returns:
+        result : Dict[str,Dict[,]]
+            the loaded, relevant dictionary
+
 
     """
     if type == 'functions':
@@ -1318,28 +1328,25 @@ def _get_dict(type='params'):
         return ast.literal_eval(f.read())
 
 
-#####################################################################
-# When not overwriting, this will determine the next file that can be
-# written without compromising previous results
-#
-
-def _get_next(star, ext, count=1):
+def get_next(star, ext, count=1):
     """
-    Determines the next path when disabling the overwriting of saved files
+    Get next integer
+    
+    When the overwriting of files is disabled, this module determines what
+    the last saved file was 
 
-    Parameters
-    ----------
-    star : target.Target
-        root directory (i.e. star.params[star.name]['path']) pipeline target 
-    ext : str
-        name and type of file to be saved
-    count : int
-        starting count, which is incremented by 1 until new path is determined
+    Args:
+        star : target.Target
+            root directory (i.e. star.params[star.name]['path']) pipeline target 
+        ext : str
+            name and type of file to be saved
+        count : int
+            starting count, which is incremented by 1 until new path is determined
 
-    Returns
-    -------
-    path : str
-        unused path name
+    Returns:
+        path : str
+            unused path name
+
 
     """
     fn = '%s_%d.%s'%(ext.split('.')[0],count,ext.split('.')[-1])
@@ -1352,34 +1359,30 @@ def _get_next(star, ext, count=1):
     return path
 
 
-#####################################################################
-# DATA MANIPULATION TOOLS 
-#
-# Function to get the highest peaks in an array
-#
-
-def _max_elements(x, y, npeaks, exp_dnu=None):
+def max_elements(x, y, npeaks, exp_dnu=None):
     """
-    Get the x,y values for the n highest peaks in a power
-    spectrum. 
+    Return n max elements
+    
+    Module to obtain the x and y values for the n highest peaks in a power
+    spectrum (or any 2D arrays really) 
 
-    Parameters
-    ----------
-    x : np.ndarray
-        the x values of the data
-    y : np.ndarray
-        the y values of the data
-    npeaks : int
-        the first n peaks
-    exp_dnu : float
-        if not `None`, multiplies y array by Gaussian weighting centered on `exp_dnu`
+    Args:
+        x : numpy.ndarray
+            the x values of the data
+        y : numpy.ndarray
+            the y values of the data
+        npeaks : int
+            the first n peaks
+        exp_dnu : float
+            if not `None`, multiplies y array by Gaussian weighting centered on `exp_dnu`
 
-    Returns
-    -------
-    peaks_x : np.ndarray
-        the x co-ordinates of the first `npeaks`
-    peaks_y : np.ndarray
-        the y co-ordinates of the first `npeaks`
+    Returns:
+        peaks_x : numpy.ndarray
+            the x coordinates of the first `npeaks`
+        peaks_y : numpy.ndarray
+            the y coordinates of the first `npeaks`
+
+
     """
     xc, yc = np.copy(x), np.copy(y)
     weights = np.ones_like(yc)
@@ -1394,42 +1397,35 @@ def _max_elements(x, y, npeaks, exp_dnu=None):
     return peaks_x, peaks_y
 
 
-#####################################################################
-# Function to get the singular maximum in an array
-#
-
-def _return_max(x_array, y_array, exp_dnu=None, index=False):
+def return_max(x, y, exp_dnu=None, index=False, idx=None):
     """
+    
     Return the either the value of peak or the index of the peak corresponding to the most likely dnu given a prior estimate,
     otherwise just the maximum value.
 
-    Parameters
-    ----------
-    x_array : np.ndarray
-        the independent axis (i.e. time, frequency)
-    y_array : np.ndarray
-        the dependent axis
-    method : str
-        which method to use for determing the max elements in an array
-    index : bool
-        if true will return the index of the peak instead otherwise it will return the value. Default value is `False`.
-    dnu : bool
-        if true will choose the peak closest to the expected dnu `exp_dnu`. Default value is `False`.
-    exp_dnu : Required[float]
-        the expected dnu. Default value is `None`.
+    Args:
+        x : numpy.ndarray
+            the independent axis (i.e. time, frequency)
+        y : numpy.ndarray
+            the dependent axis
+        index : bool
+            if true will return the index of the peak instead otherwise it will return the value. Default value is `False`.
+        dnu : bool
+            if true will choose the peak closest to the expected dnu `exp_dnu`. Default value is `False`.
+        exp_dnu : Required[float]
+            the expected dnu. Default value is `None`.
 
-    Returns
-    -------
-    result : Union[int, float]
-        if `index` is `True`, result will be the index of the peak otherwise if `index` is `False` it will instead return the
-        value of the peak.
+    Returns:
+        result : Union[int, float]
+            if `index` is `True`, result will be the index of the peak otherwise if `index` is `False` it will 
+	    instead return the value of the peak.
 
     """
-    idx = None
-    lst = list(y_array)
+
+    lst = list(y)
     if lst != []:
         if exp_dnu is not None:
-            lst = list(np.absolute(x_array-exp_dnu))
+            lst = list(np.absolute(x-exp_dnu))
             idx = lst.index(min(lst))
         else:
             idx = lst.index(max(lst))
@@ -1438,32 +1434,33 @@ def _return_max(x_array, y_array, exp_dnu=None, index=False):
     else:
         if idx is None:
             return [], []
-        return x_array[idx], y_array[idx]
+        return x[idx], y[idx]
 
 
-def _bin_data(x, y, width, log=False, mode='mean'):
+def bin_data(x, y, width, log=False, mode='mean'):
     """
+    Bin data
+    
     Bins a series of data.
 
-    Parameters
-    ----------
-    x : np.ndarray
-        the x values of the data
-    y : np.ndarray
-        the y values of the data
-    width : float
-        bin width in muHz
-    log : bool
-        creates bins by using the log of the min/max values (i.e. not equally spaced in log if `True`)
+    Args:
+        x : numpy.ndarray
+            the x values of the data
+        y : numpy.ndarray
+            the y values of the data
+        width : float
+            bin width in muHz
+        log : bool
+            creates bins by using the log of the min/max values (i.e. not equally spaced in log if `True`)
 
-    Returns
-    -------
-    bin_x : np.ndarray
-        binned frequencies
-    bin_y : np.ndarray
-        binned power
-    bin_yerr : numpy.ndarray
-        standard deviation of the binned y data
+    Returns:
+        bin_x : numpy.ndarray
+            binned frequencies
+        bin_y : numpy.ndarray
+            binned power
+        bin_yerr : numpy.ndarray
+            standard deviation of the binned y data
+
 
     """
     if log:
@@ -1488,30 +1485,25 @@ def _bin_data(x, y, width, log=False, mode='mean'):
     return bin_x, bin_y, bin_yerr
 
 
-#####################################################################
-# Other random tools, including a container class of known (mostly
-# solar) physical values in cgs.
-#
-
 def _ask_int(question, n_trials, max_attempts=10, count=1, special=False):    
     """
-    Ask for an integer user input.
+    
+    Asks for an integer user input
 
-    Parameters
-    ----------
-    question : str
-        the statement and/or question that needs to be answered
-    range : List[float]
-        if not `None`, provides a lower and/or upper bound for the selected integer
-    max_attempts : int
-        the maximum number of tries a user has before breaking
-    count : int
-        the user attempt number
+    Args:
+        question : str
+            the statement and/or question that needs to be answered
+        range : List[float]
+            if not `None`, provides a lower and/or upper bound for the selected integer
+        max_attempts : int
+            the maximum number of tries a user has before breaking
+        count : int
+            the user attempt number
 
-    Returns
-    -------
-    answer : int
-        the user's integer answer or `None` if the number of attempts exceeds the allowed number
+    Returns:
+        result : int
+            the user's integer answer or `None` if the number of attempts exceeds the allowed number
+
 
     """
     while count < max_attempts:
@@ -1540,19 +1532,18 @@ def _ask_int(question, n_trials, max_attempts=10, count=1, special=False):
     return None
 
 
-def _delta_nu(numax):
+def delta_nu(numax):
     """
-    Estimates dnu using numax scaling relation.
+    
+    Estimates the large frequency separation using the numax scaling relation
 
-    Parameters
-    ----------
-    numax : float
-        the estimated numax
+    Args:
+        numax : float
+            the frequency corresponding to maximum power or numax
 
-    Returns
-    -------
-    dnu : float
-        the estimated dnu
+    Returns:
+        dnu : float
+            the approximated frequency spacing, dnu
 
     """
 
@@ -1560,6 +1551,12 @@ def _delta_nu(numax):
 
 
 class Constants:
+    """
+    
+    Container class for constants and known values -- which is
+    primarily solar asteroseismic values here -- in cgs units
+    
+    """
 
     def __init__(self):
         """
