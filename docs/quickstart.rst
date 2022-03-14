@@ -70,16 +70,7 @@ them to just not be used?
 
 However for demonstration purposes, we will switch it up a bit.
 
-``pySYD`` is a `Python`-based implementation of the `IDL`-based ``SYD`` pipeline 
-`(Huber et al. 2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_, 
-which was extensively used to measure :term:`global asteroseismic parameters` for many *Kepler* stars. 
-In addition to ``SYD``, there were also a handful of other closed-source pipelines developed
-around the same time to process and analyze the enormous amounts of data from *Kepler*.
-the during the *Kepler* days Papers based on asteroseismic parameters measured using the ``SYD`` pipeline include 
-`Huber et al. 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H/abstract>`_, 
-`Chaplin et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C/abstract>`_, 
-`Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_ 
-and `Yu et al. 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y/abstract>`_.
+
 
 
 How It Works
@@ -87,13 +78,17 @@ How It Works
 
 When running the software, initialization of ``pySYD`` via command line will look in the following paths:
 
-- ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
+- ``TODODIR`` : '~/path/to/local/pysyd/directory/info/todo.txt'
 - ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
 - ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
 - ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
 
 which by default, is the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
 if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
+
+Should you choose to prefer some other structure, we recommend directly editing the init file
+in the pysyd source directory (wherever pysyd was installed to), so this does not have to be
+provided every time pysyd is run.
 
 A ``pySYD`` pipeline ``Target`` class object has two main function calls:
 
@@ -133,7 +128,21 @@ A ``pySYD`` pipeline ``Target`` class object has two main function calls:
     see :ref:`advanced usage<advanced>` for more details), which will override the value found in the first module. This option 
     is recommended if you think that the value found in the first module is inaccurate, or if you have a visual 
     estimate of numax from the power spectrum.
+ 
+ *****
+ About
+ *****
 
+``pySYD`` is a `Python`-based implementation of the `IDL`-based ``SYD`` pipeline 
+`(Huber et al. 2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_, 
+which was extensively used to measure :term:`global asteroseismic parameters` for many *Kepler* stars. 
+In addition to ``SYD``, there were also a handful of other closed-source pipelines developed
+around the same time to process and analyze the enormous amounts of data from *Kepler*.
+the during the *Kepler* days Papers based on asteroseismic parameters measured using the ``SYD`` pipeline include 
+`Huber et al. 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H/abstract>`_, 
+`Chaplin et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C/abstract>`_, 
+`Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_ 
+and `Yu et al. 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y/abstract>`_.
 
 .. _performance/comparison:
 
