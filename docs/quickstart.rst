@@ -4,16 +4,15 @@
 Quickstart
 **********
 
-**The basic example demonstrated on this page is assuming that the user already has 
-some basic-level `Python` knowledge/experience.**
+The basic example demonstrated on this page is assuming that the user already has 
+some basic-level `Python` experience.
 
 Installing & setting up
 #######################
 
 We recommend creating a local directory to keep all your pysyd-related data, results 
-and information in a single, easy-to-find location. Finally, ``pySYD`` comes with a 
-convenient setup feature (accessed via ``pysyd.pipeline.setup``) that will download 
-data for three example stars so let's start there!
+and information in a single, easy-to-find location. ``pySYD`` also comes with a 
+convenient setup feature that downloads example data so let's start with that!
 
 .. code-block::
 
@@ -55,7 +54,7 @@ data for three example stars so let's start there!
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
     
 As shown using the :term:`--verbose<-v, --verbose>` option, the setup command downloaded 
-example data and some other relevant information from the `public pySYD GitHub repo<https://github.com/ashleychontos/pySYD>`_.
+example data and some other relevant information from the `public pySYD GitHub repo <https://github.com/ashleychontos/pySYD>`_.
 
 Now you are now ready to become an asteroseismologist!
 
@@ -63,8 +62,8 @@ Running your first asteroseismic analysis
 #########################################
 
 Since the intended target audience for ``pySYD`` is non-expert users, we developed 
-the software while keeping in mind that we would prefer it to be as hands-off as possible. 
-**Therefore, ``pySYD`` was initially meant to be strictly a command-line, end-to-end tool.** 
+the software while keeping in mind that it should be as hands-off as possible. 
+**Therefore,** ``pySYD`` **was initially intended to be a strictly command-line, end-to-end tool.** 
 
 You may be asking yourself though, why create and add all these awesome new features for
 them to just not be used?
