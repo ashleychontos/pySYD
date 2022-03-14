@@ -6,45 +6,11 @@ from pysyd.target import Target
 
 
 #####################################################################
-# Main function that assigns functions for different pySYD modes 
-# The original purpose of this script was to be used with CLI but
-# this might be changed in later versions
-#
-
-def _main(args=None):
-    """
-    Main script to run the pySYD pipeline
-
-    Parameters:
-        args : argparse.Namespace
-            the command line arguments
-
-    """
-    # Setup operates quite differently from the other pySYD modes
-    if args.command == 'setup':
-        setup(args)
-    else:
-        # Load in relevant information and data
-        args = load(args)
-        if args.command == 'run':
-            run(args)
-        elif args.command == 'load':
-            pass
-        elif args.command == 'parallel':
-            parallel(args)
-        elif args.command == 'test':
-            test(args)
-        else:
-            pass
-
-
-#####################################################################
 # Loads in information and parameters relevant to all pySYD modes
 # (except for setup)
 # NOTE: this does not load in a target or target data, this is
 #       purely information for running any star successfully
 #
-
 
 def load(args, star=None, verbose=False, command='run'):
     """
@@ -163,7 +129,6 @@ def pipe(group, args, count=0):
 # Run pySYD pipeline in parallel for a large number of stars
 #
 
-
 def parallel(args):
     """
     
@@ -202,7 +167,6 @@ def parallel(args):
 # GOAL: unittest +/- testing developments 
 # NOT CURRENTLY IMPLEMENTED 
 # -> use the hacky, boolean flag -t or --test instead (for now)
-
 
 def test(args):
     """
