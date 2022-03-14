@@ -15,10 +15,6 @@ from pysyd.plots import set_plot_params
 from pysyd.models import *
 
 
-#####################################################################
-# HIGHER-LEVEL FUNCTIONALITY OF THE SOFTWARE
-#
-
 def get_info(args):
     """
     
