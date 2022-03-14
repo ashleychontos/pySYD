@@ -21,7 +21,9 @@ Therefore you can install the latest stable version using `pip`:
 
     pip install pysyd
 
-**This is the recommended way to install the package.** 
+.. important::
+
+    **This is the recommended way to install the package.** 
 
 The ``pysyd`` binary should have been automatically placed in your system's path via the ``pip`` command. 
 If your system can not find the ``pysyd`` executable, change into the top-level ``pysyd`` directory and try 
@@ -74,6 +76,26 @@ which needs to be executed from the top-level directory inside the
 cloned ``pySYD`` repo.
 
 
+.. _installation/dependencies:
+
+Dependencies
+############
+
+This package has the following dependencies:
+
+* `Python <https://www.python.org>`_ (>=3)
+* `Numpy <https://numpy.org>`_
+* `pandas <https://pandas.pydata.org>`_ 
+* `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
+* `Astropy <https://www.astropy.org>`_
+* `scipy <https://docs.scipy.org/doc/>`_
+* `tqdm <https://tqdm.github.io>`_
+
+Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
+and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
+`conda` should install and enforce these versions automatically. 
+
+
 .. _installation/test:
 
 Testing the installation 
@@ -101,26 +123,6 @@ window, which should display the following output:
         run                 Run the main pySYD pipeline
         setup               Easy setup of relevant directories and files
         test                Test different utilities (currently under development)
-
-
-.. _installation/dependencies:
-
-Dependencies
-############
-
-This package has the following dependencies:
-
-* `Python <https://www.python.org>`_ (>=3)
-* `Numpy <https://numpy.org>`_
-* `pandas <https://pandas.pydata.org>`_ 
-* `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
-* `Astropy <https://www.astropy.org>`_
-* `scipy <https://docs.scipy.org/doc/>`_
-* `tqdm <https://tqdm.github.io>`_
-
-Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
-and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
-`conda` should install and enforce these versions automatically. 
 
 
 
