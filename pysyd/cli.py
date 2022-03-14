@@ -488,7 +488,7 @@ def main():
                                         help='Load in data for a given target',  
                                         )
 
-    parser_load.set_defaults(func=pipeline.main)
+    parser_load.set_defaults(func=pipeline.load)
 
 
 #####################################################################
@@ -510,7 +510,7 @@ def main():
                                  default=0,
     )
 
-    parser_parallel.set_defaults(func=pipeline.main)
+    parser_parallel.set_defaults(func=pipeline.parallel)
 
 
 #####################################################################
@@ -525,7 +525,7 @@ def main():
                                        formatter_class=argparse.MetavarTypeHelpFormatter,
                                        )
 
-    parser_run.set_defaults(func=pipeline.main)
+    parser_run.set_defaults(func=pipeline.run)
 
 
 #####################################################################
@@ -567,7 +567,7 @@ def main():
                              action='store_true',
     )
 
-    parser_test.set_defaults(func=pipeline.main)
+    parser_test.set_defaults(func=pipeline.test)
 
     args = parser.parse_args()
     args.func(args)
