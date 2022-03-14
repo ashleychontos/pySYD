@@ -4,101 +4,25 @@
 Quickstart
 **********
 
-The quick example demonstrated on this page is assuming the user has some
-basic `Python` experience.
+**The basic example demonstrated on this page is assuming that the user already has 
+some basic-level `Python` knowledge/experience.**
+
+Installing & setting up
+#######################
+
+We recommend creating a local directory to keep all your pysyd-related data, results 
+and information in a single, easy-to-find location. Finally, ``pySYD`` comes with a 
+convenient setup feature (accessed via ``pysyd.pipeline.setup``) that will download 
+data for three example stars so let's start there!
 
 .. code-block::
 
     $ python -m pip install pysyd
-    
-We recommend creating a local directory to keep all your pysyd-related data, 
-results and information in a single, easy-to-find location. The only thing
-we are missing now is some data to do science!
-
-Fortunately ``pySYD`` comes with a convenient setup feature (accessed via 
-``pysyd.pipeline.setup``) that will download data for three example stars 
-and set up the local directory structure that best works with the package.
-For more information about the ``pySYD`` setup feature, see this (input page) 
-or this (actual pysyd.pipeline page).
-
-.. code-block::
-
     $ mkdir ~/path/to/local/pysyd/directory
     $ cd ~/path/to/local/pysyd/directory
-    $ pysyd setup
-    
-After using these commands, you are now ready to become an asteroseismologist
-(that is, if you weren't one already)!
-
-Running your first asteroseismic analysis
-#########################################
-
-
-
-.. _installation/setup:
-
-Setting up
-###########
-
-Ok now that the software has been successfully installed and tested, there's just 
-one thing missing before we can do the science...
-
-We need some data to do the science with!
-
-Make a local directory
-**********************
-
-While `pip` installed ``pySYD`` to your ``PYTHONPATH``, we recommend that you first 
-create a local pysyd directory before running setup. This way you can keep all your 
-pysyd-related data, results and information in a single, easy-to-find location. *Note:* 
-This is the only reason we didn't include our examples as package data, as it would've put 
-them in your root directory and we realize this can be difficult to locate.
-
-The folder or directory can be whatever is most convenient for you, but for demonstration
-purposes we'll use:
-
-.. code-block::
-    
-    mkdir ~/path/to/local/pysyd/directory
-    
-This way you also don't have to worry about file permissions, restricted access, and
-all that other jazz. 
-
-``pySYD`` setup
-***************
-
-The ``pySYD`` package comes with a convenient setup feature (accessed via
-:ref:`pysyd.pipeline.setup<library/pipeline>`) which can be ran from the command 
-line in a single step. 
-
-We ***strongly encourage*** you to run this step regardless of how you intend to 
-use the software because it:
-
-- downloads data for three example stars
-- provides the example [optional] input files to use with the software *and* 
-- sets up the recommended local directory structure
-
-The only thing you need to do from your end is initiate the command -- which now 
-that you've created a local pysyd directory -- all you have to do now is jump into 
-that directory and run the following command:
-
-.. code-block::
-
-    pysyd setup
-
-and let ``pySYD`` do the rest of the work for you. 
-
-Actually since this step will create a relative directory structure that might be 
-useful to know, let's run the above command again but this time with the :term:`verbose output<-v, --verbose>`
-so you can see what's being downloaded.
-
-::
-
     $ pysyd setup --verbose
     
     Downloading relevant data from source directory:
-     
-     /Users/ashleychontos/Desktop/info
       % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                        Dload  Upload   Total   Spent    Left  Speed
      100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49
@@ -129,41 +53,110 @@ so you can see what's being downloaded.
       - created data directory at /Users/ashleychontos/Desktop/pysyd/data
       - example data saved
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
+    
+As shown using the :term:`--verbose<-v, --verbose>` option, the setup command downloaded 
+example data and some other relevant information from the `public pySYD GitHub repo<https://github.com/ashleychontos/pySYD>`_.
 
+Now you are now ready to become an asteroseismologist!
 
-**Note:** this is another good sanity check to make sure everything is working as intended.
+Running your first asteroseismic analysis
+#########################################
 
+Since the intended target audience for ``pySYD`` is non-expert users, we developed 
+the software while keeping in mind that we would prefer it to be as hands-off as possible. 
+**Therefore, ``pySYD`` was initially meant to be strictly a command-line, end-to-end tool.** 
 
+You may be asking yourself though, why create and add all these awesome new features for
+them to just not be used?
 
+However for demonstration purposes, we will switch it up a bit.
 
-
------
-
-.. _getting_started/overview:
-
-Overview
-########
-
-``pySYD`` is a python-based implementation of the IDL-based ``SYD`` pipeline 
+``pySYD`` is a `Python`-based implementation of the `IDL`-based ``SYD`` pipeline 
 `(Huber et al. 2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_, 
-which was extensively used to measure asteroseismic parameters for Kepler stars. 
-Papers based on asteroseismic parameters measured using the ``SYD`` pipeline include 
+which was extensively used to measure :term:`global asteroseismic parameters` for many *Kepler* stars. 
+In addition to ``SYD``, there were also a handful of other closed-source pipelines developed
+around the same time to process and analyze the enormous amounts of data from *Kepler*.
+the during the *Kepler* days Papers based on asteroseismic parameters measured using the ``SYD`` pipeline include 
 `Huber et al. 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H/abstract>`_, 
 `Chaplin et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C/abstract>`_, 
 `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_ 
 and `Yu et al. 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y/abstract>`_.
 
-``pySYD`` adapts the well-tested methodology from ``SYD`` while also improving these 
-existing analyses and expanding upon numerous new features. Improvements include:
 
-- Automated best-fit background model selection
-- Parallel processing
-- Easily accessible + command-line friendly interface
-- Ability to save samples for further analyses
+How It Works
+===============
 
------
+When running the software, initialization of ``pySYD`` via command line will look in the following paths:
 
-.. _getting_started/structure:
+- ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
+- ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
+- ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
+- ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
+
+which by default, is the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
+if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
+
+A ``pySYD`` pipeline ``Target`` class object has two main function calls:
+
+#. The first module :
+    * **Summary:** a crude, quick way to identify the power excess due to solar-like oscillations
+    * This uses a heavy smoothing filter to divide out the background and then implements a frequency-resolved, collapsed 
+      autocorrelation function (ACF) using 3 different ``box`` sizes
+    * The main purpose for this first module is to provide a good starting point for the
+      second module. The output from this routine provides a rough estimate for numax, which is translated 
+      into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode
+      oscillations
+#. The second module : 
+    * **Summary:** performs a more rigorous analysis to determine both the stellar background contribution
+      as well as the global asteroseismic parameters.
+    * Given the frequency range determined by the first module, this region is masked out to model 
+      the white- and red-noise contributions present in the power spectrum. The fitting procedure will
+      test a series of models and select the best-fit stellar background model based on the BIC.
+    * The power spectrum is corrected by dividing out this contribution, which also saves as an output text file.
+    * Now that the background has been removed, the global parameters can be more accurately estimated. Numax is
+      estimated by using a smoothing filter, where the peak of the heavily smoothed, background-corrected power
+      spectrum is the first and the second fits a Gaussian to this same power spectrum. The smoothed numax has 
+      typically been adopted as the default numax value reported in the literature since it makes no assumptions 
+      about the shape of the power excess.
+    * Using the masked power spectrum in the region centered around numax, an autocorrelation is computed to determine
+      the large frequency spacing.
+
+.. note::
+
+    By default, both modules will run and this is the recommended procedure if no other information 
+    is provided. 
+
+    If stellar parameters like the radius, effective temperature and/or surface gravity are provided in the **info/star_info.csv** file, ``pySYD`` 
+    can estimate a value for numax using a scaling relation. Therefore the first module can be bypassed,
+    and the second module will use the estimated numax as an initial starting point.
+
+    There is also an option to directly provide numax in the **info/star_info.csv** (or via command line, 
+    see :ref:`advanced usage<advanced>` for more details), which will override the value found in the first module. This option 
+    is recommended if you think that the value found in the first module is inaccurate, or if you have a visual 
+    estimate of numax from the power spectrum.
+
+
+.. _performance/comparison:
+
+``pySYD`` vs ``SYD``
+####################
+
+We ran pySYD on ~100 Kepler legacy stars observed in short-cadence and compared the output to IDL SYD results from `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_. The same time series and power spectra were used for both analyses.
+The resulting values are compared for the two methods below for the frequency of maximum power 
+(left) and the large frequency separation (Dnu) on the right. For reference,
+``SYD == pySYD`` and ``IDL == SYD``.
+
+.. image:: figures/performance/comparison.png
+  :width: 680
+  :alt: Comparison of ``pySYD`` and ``SYD``
+
+There residuals show no strong systematics to within <0.5% in Dnu and <~1% in numax, which is smaller than the typical 
+random uncertainties. This confirms that the open-source python package pySYD provides consistent results with the legacy 
+IDL version that has been used extensively in the literature.
+
+*** NOTE **** Add tutorial or jupyter notebook to reproduce this figure.
+
+
 
 Structure
 *********
@@ -228,86 +221,3 @@ text file, for a total of 5 output files. If the monte-carlo sampling is used to
 uncertainties, an additional figure will plot the posterior distributions for the estimated 
 parameters. An optional feature (i.e. ``--samples``) is available to save the samples if desired. 
 See :ref:`examples` for a guide on what the output plots are showing.
-
-
-==========================
-
-
-How It Works
-===============
-
-When running the software, initialization of ``pySYD`` via command line will look in the following paths:
-
-- ``TODODIR`` : '~/path_to_put_pysyd_stuff/info/todo.txt'
-- ``INFODIR`` : '~/path_to_put_pysyd_stuff/info/star_info.csv'
-- ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
-- ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
-
-which by default, is the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
-if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
-
-A ``pySYD`` pipeline ``Target`` class object has two main function calls:
-
-#. The first module :
-    * **Summary:** a crude, quick way to identify the power excess due to solar-like oscillations
-    * This uses a heavy smoothing filter to divide out the background and then implements a frequency-resolved, collapsed 
-      autocorrelation function (ACF) using 3 different ``box`` sizes
-    * The main purpose for this first module is to provide a good starting point for the
-      second module. The output from this routine provides a rough estimate for numax, which is translated 
-      into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode
-      oscillations
-#. The second module : 
-    * **Summary:** performs a more rigorous analysis to determine both the stellar background contribution
-      as well as the global asteroseismic parameters.
-    * Given the frequency range determined by the first module, this region is masked out to model 
-      the white- and red-noise contributions present in the power spectrum. The fitting procedure will
-      test a series of models and select the best-fit stellar background model based on the BIC.
-    * The power spectrum is corrected by dividing out this contribution, which also saves as an output text file.
-    * Now that the background has been removed, the global parameters can be more accurately estimated. Numax is
-      estimated by using a smoothing filter, where the peak of the heavily smoothed, background-corrected power
-      spectrum is the first and the second fits a Gaussian to this same power spectrum. The smoothed numax has 
-      typically been adopted as the default numax value reported in the literature since it makes no assumptions 
-      about the shape of the power excess.
-    * Using the masked power spectrum in the region centered around numax, an autocorrelation is computed to determine
-      the large frequency spacing.
-
-.. note::
-
-    By default, both modules will run and this is the recommended procedure if no other information 
-    is provided. 
-
-    If stellar parameters like the radius, effective temperature and/or surface gravity are provided in the **info/star_info.csv** file, ``pySYD`` 
-    can estimate a value for numax using a scaling relation. Therefore the first module can be bypassed,
-    and the second module will use the estimated numax as an initial starting point.
-
-    There is also an option to directly provide numax in the **info/star_info.csv** (or via command line, 
-    see :ref:`advanced usage<advanced>` for more details), which will override the value found in the first module. This option 
-    is recommended if you think that the value found in the first module is inaccurate, or if you have a visual 
-    estimate of numax from the power spectrum.
-
-.. _performance/comparison:
-
-
-``pySYD`` vs ``SYD``
-***************************
-
-We ran pySYD on ~100 Kepler legacy stars observed in short-cadence and compared the output to IDL SYD results from `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_. The same time series and power spectra were used for both analyses.
-The resulting values are compared for the two methods below for the frequency of maximum power 
-(left) and the large frequency separation (Dnu) on the right. For reference,
-``SYD == pySYD`` and ``IDL == SYD``.
-
-.. image:: figures/performance/comparison.png
-  :width: 680
-  :alt: Comparison of ``pySYD`` and ``SYD``
-
-There residuals show no strong systematics to within <0.5% in Dnu and <~1% in numax, which is smaller than the typical 
-random uncertainties. This confirms that the open-source python package pySYD provides consistent results with the legacy 
-IDL version that has been used extensively in the literature.
-
-*** NOTE **** Add tutorial or jupyter notebook to reproduce this figure.
-
-
-.. _performance/speed:
-
-Speed
-*******
