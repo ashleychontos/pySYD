@@ -21,10 +21,6 @@ Therefore you can install the latest stable version using `pip`:
 
     pip install pysyd
 
-.. important::
-
-    **This is the recommended way to install the package.** 
-
 The ``pysyd`` binary should have been automatically placed in your system's path via the ``pip`` command. 
 If your system can not find the ``pysyd`` executable, change into the top-level ``pysyd`` directory and try 
 running the following command:
@@ -33,6 +29,10 @@ running the following command:
 
     python setup.py install
 
+.. note::
+
+    **The recommended way to install the ``pySYD`` package is from PyPI via `pip`, since**
+    **it will automatically ensure the proper dependencies and versions**
 
 .. _installation/conda:
 
