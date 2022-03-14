@@ -103,6 +103,8 @@ def run(args):
             the command line arguments
 
     """
+    # Load in relevant information and data
+    args = load(args)
     # Run single batch of stars
     count = pipe(args.params['stars'], args)
     # check to make sure that at least one star was successfully run (i.e. there are results)  
@@ -173,6 +175,8 @@ def parallel(args):
     
 
     """
+    # Load in relevant information and data
+    args = load(args)
     # Import relevant (external) python modules
     import numpy as np
     import multiprocessing as mp
@@ -218,7 +222,8 @@ def test(args):
         use the hacky, boolean flag ``-t`` or ``--test`` instead (for now)
     
     """
-
+    # Load in relevant information and data
+    args = load(args)
     dnu_comparison()
 
 
