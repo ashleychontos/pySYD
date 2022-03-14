@@ -24,10 +24,6 @@ def get_info(args):
     Args:
         args : argparse.Namespace
             command-line arguments
-        parallel : bool
-            if pysyd will be running in parallel mode
-        CLI : bool, optional
-            if CLI is not being used (i.e. `False`), the modules draw default values from a different location
 
     Returns:
         args : argparse.Namespace
@@ -38,10 +34,10 @@ def get_info(args):
     args = get_parameters(args)
     # Get invidual/specific star info from csv file (if it exists)
     args = get_csv_info(args)
-    if args.cli:
-        # Check the input variables
-        check_input_args(args)
-        args = get_command_line(args)
+    # Check the input variables
+    check_input_args(args)
+    args = get_command_line(args)
+    # Set plot defaults
     set_plot_params()
 
     return args
@@ -74,8 +70,7 @@ def get_parameters(args):
     return args
 
 
-def get_main_params(args, cli=False, stars=None, excess=True, background=True, globe=True, 
-                    verbose=False, command='run', parallel=False, show=False, testing=False, 
+def get_main_params(args, excess=True, background=True, globe=True, verbose=False, show=False, 
                     save=True, kep_corr=False, of_actual=None, of_new=None, overwrite=True):
     """
     
@@ -134,10 +129,6 @@ def get_main_params(args, cli=False, stars=None, excess=True, background=True, g
     return args
 
 
-#####################################################################
-# Sets up star "groups" -> mostly for parallel processing
-#
-
 def get_groups(args):
     """
     
@@ -170,12 +161,8 @@ def get_groups(args):
     return args
 
 
-#####################################################################
-# Parameters relevant to (optionally) estimate numax 
-#
-
-def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=20.0, 
-                      mode='mean', lower_ex=1.0, upper_ex=8000., ask=False,):
+def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=20.0, mode='mean', 
+                      lower_ex=1.0, upper_ex=8000., ask=False, results={},):
     """
     
     Get the parameters for the find excess routine.
@@ -202,21 +189,14 @@ def get_excess_params(args, n_trials=3, step=0.25, binning=0.005, smooth_width=2
 
     """
     vars = ['step', 'binning', 'mode', 'smooth_width', 'ask', 'n_trials', 'lower_ex', 'upper_ex', 'results']
-    if args.cli:
-        vals = [args.step, args.binning, args.mode, args.smooth_width, args.ask, args.n_trials, args.lower_ex, args.upper_ex, {}]
-    else:
-        vals = [step, binning, mode, smooth_width, ask, n_trials, lower_ex, upper_ex, {}]
+    vals = [args.step, args.binning, args.mode, args.smooth_width, args.ask, args.n_trials, args.lower_ex, args.upper_ex, {}]
     args.excess = dict(zip(vars,vals))
     return args
 
 
-#####################################################################
-# Parameters relevant to background-fitting
-#
-
 def get_background_params(args, ind_width=20.0, box_filter=1.0, n_rms=20, metric='bic', include=False,
                           mc_iter=1, samples=False, n_laws=None, fix_wn=False, basis='tau_sigma',
-                          lower_bg=1.0, upper_bg=8000.,):
+                          lower_bg=1.0, upper_bg=8000., results={},):
     """
     
     Get the parameters for the background-fitting routine.
@@ -251,28 +231,20 @@ def get_background_params(args, ind_width=20.0, box_filter=1.0, n_rms=20, metric
         args.fitbg : Dict[str,object]
             the parameters relevant for the fit background routine
 
+
     """
     vars = ['ind_width', 'box_filter', 'n_rms', 'n_laws', 'fix_wn', 'basis', 'metric', 'include',
             'functions', 'mc_iter', 'samples', 'lower_bg', 'upper_bg', 'results']
-    if args.cli:
-        vals = [args.ind_width, args.box_filter, args.n_rms, args.n_laws, args.fix_wn, args.basis,
-                args.metric, args.include, get_dict(type='functions'), args.mc_iter, args.samples,
-                args.lower_bg, args.upper_bg, {}]
-    else:
-        vals = [ind_width, box_filter, n_rms, n_laws, fix_wn, basis, metric, include, 
-                get_dict(type='functions'), mc_iter, samples, lower_bg, upper_bg, {}]
+    vals = [args.ind_width, args.box_filter, args.n_rms, args.n_laws, args.fix_wn, args.basis,
+            args.metric, args.include, get_dict(type='functions'), args.mc_iter, args.samples,
+            args.lower_bg, args.upper_bg, {}]
     args.background = dict(zip(vars,vals))
     return args
 
 
-#####################################################################
-# Features related to determining numax and dnu
-#
-
-def get_global_params(args, sm_par=None, lower_ps=None, upper_ps=None, width=1.0, 
-                      method='D', smooth_ps=2.5, threshold=1.0, n_peaks=5, cmap='binary', 
-                      clip_value=3.0, smooth_ech=None, interp_ech=False, lower_ech=None, 
-                      upper_ech=None, nox=50, noy=0, notching=False):
+def get_global_params(args, sm_par=None, lower_ps=None, upper_ps=None, width=1.0, method='D', smooth_ps=2.5, 
+                      threshold=1.0, n_peaks=5, cmap='binary', clip_value=3.0, smooth_ech=None, interp_ech=False, 
+                      lower_ech=None, upper_ech=None, nox=50, noy=0, notching=False, results={},):
     """
     
     Get the parameters relevant for finding global asteroseismic parameters numax and dnu.
@@ -321,19 +293,11 @@ def get_global_params(args, sm_par=None, lower_ps=None, upper_ps=None, width=1.0
     """
     vars = ['sm_par', 'width', 'smooth_ps', 'threshold', 'n_peaks', 'method', 'cmap', 'clip_value', 
             'smooth_ech', 'interp_ech', 'nox', 'noy', 'notching', 'results']
-    if args.cli:
-        vals = [args.sm_par, args.width, args.smooth_ps, args.threshold, args.n_peaks, args.method, args.cmap,
-                args.clip_value, args.smooth_ech, args.interp_ech, args.nox, args.noy, args.notching, {}]
-    else:
-        vals = [sm_par, width, smooth_ps, threshold, n_peaks, method, clip_value, cmap, smooth_ech,
-                interp_ech, nox, noy, notching, {}]
+    vals = [args.sm_par, args.width, args.smooth_ps, args.threshold, args.n_peaks, args.method, args.cmap,
+            args.clip_value, args.smooth_ech, args.interp_ech, args.nox, args.noy, args.notching, {}]
     args.globe = dict(zip(vars,vals))
     return args
 
-
-#####################################################################
-# Can store different settings for individual stars
-#
 
 def get_csv_info(args, force=False, guess=None):
     """
@@ -399,10 +363,6 @@ def get_csv_info(args, force=False, guess=None):
                 args.params[star][column] = None
     return args
 
-
-#####################################################################
-# If running from command line, checks input types and array lengths
-#
 
 def check_input_args(args, max_laws=3):
     """ 
@@ -493,10 +453,6 @@ def get_command_line(args, numax=None, dnu=None, lower_ps=None, upper_ps=None,
 
     return args
 
-
-#####################################################################
-# Data and information related to a processed star
-#
 
 def load_data(star, args):
     """
@@ -669,11 +625,6 @@ def load_power_spectrum(args, star, note='', long=10**6):
     return args, star, note
 
 
-#####################################################################
-# Relevant for Kepler (artefact) correction function
-# -> this will save the seed for reproducibiity purposes
-#
-
 def set_seed(star, lower=1, upper=10**7, size=1):
     """
     
@@ -693,7 +644,8 @@ def set_seed(star, lower=1, upper=10**7, size=1):
     Returns:
         star : target.Target
             the pySYD pipeline object
-        
+
+
     """
 
     seed = list(np.random.randint(lower,high=upper,size=size))
@@ -705,12 +657,6 @@ def set_seed(star, lower=1, upper=10**7, size=1):
     df.to_csv(star.params['info'],index=False)
     return star
 
-
-#####################################################################
-# Routine to correct for 1/LC Kepler harmonics, as well as
-# known high frequency artefacts and the low frequency artefacts
-# (primarily in Q0-Q3 data)
-#
 
 def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_upper=[380.0,530.0], 
                     hf_lower = [4530.0,5011.0,5097.0,5575.0,7020.0,7440.0,7864.0],
@@ -747,7 +693,6 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_
 
 
     """
-
     if star.params[star.name]['seed'] is None:
         star = set_seed(star)
     # LC period in Msec -> 1/LC ~muHz
@@ -784,12 +729,6 @@ def remove_artefact(star, lcp=1.0/(29.4244*60*1e-6), lf_lower=[240.0,500.0], lf_
 
     return star
 
-
-#####################################################################
-# For subgiants with mixed modes, this will "whiten" these modes
-# by adding noise (by drawing from a chi-squared distribution with 2 
-# dof) to properly estimate dnu.
-#
 
 def whiten_mixed(star, notching=False):
     """
@@ -888,10 +827,6 @@ def check_input_data(args, star, note):
     return args, star, note
 
 
-#####################################################################
-# Sets data up for first optional module
-#
-
 def get_estimates(star, max_trials=6):
     """
     
@@ -940,10 +875,6 @@ def get_estimates(star, max_trials=6):
         star.boxes = np.logspace(np.log10(50.), np.log10(500.), star.excess['n_trials'])
     return star
 
-#####################################################################
-# Checks if there's an estimate for numax (but no longer requires it)
-# Still needs to be tested: no estimate of numax but global fit
-#
 
 def check_numax(star):
     """
@@ -951,7 +882,7 @@ def check_numax(star):
     Checks if there is a starting value for numax
 
     Returns:
-        bool
+        result : bool
             will return `True` if there is prior value for numax otherwise `False`.
 
     """
@@ -977,10 +908,6 @@ def check_numax(star):
             return False
     return True
 
-
-#####################################################################
-# Sets data up for the derivation of asteroseismic parameters
-#
 
 def get_initial(star, lower_bg=1.0):
     """
@@ -1037,11 +964,6 @@ def get_initial(star, lower_bg=1.0):
     star = solar_scaling(star)
     return star
 
-
-#####################################################################
-# We use scaling relations to estimate initial guesses for 
-# several parameters
-#
 
 def solar_scaling(star, scaling='tau_sun_single', max_laws=3, times=1.5, scale=1.0):
     """
@@ -1208,10 +1130,6 @@ def save_results(star):
         df.to_csv(os.path.join(star.params[star.name]['path'],'samples.csv'), index=False)
 
 
-#####################################################################
-# Optional verbose output function
-#
-
 def verbose_output(star):
     """
     Verbose output
@@ -1241,10 +1159,6 @@ def verbose_output(star):
     note+='\n------------------------------------------------------'
     print(note)
 
-
-#####################################################################
-# Concatenates data for individual stars into a single csv
-#
 
 def scrape_output(args):
     """
@@ -1286,21 +1200,17 @@ def scrape_output(args):
         df.to_csv(os.path.join(args.params['outdir'],'global.csv'), index=False)
 
 
-#####################################################################
-# Read in large python containers (dictionaries) 
-#
-
 def get_dict(type='params'):
     """
     Read dictionary
     
-    Quick function to read in longer python dictionaries, which is primarily used in
+    Quick utility function to read in longer python dictionaries, which is primarily used in
     the utils script (i.e. verbose_output, scrape_output) and in the pipeline script 
     (i.e. setup)
 
     Args:
         type : str
-            which dictionary to read in, choices ~['params','columns']. Default is 'params'.
+            which dictionary to read in, choices ~['params','columns','functions']
 
     Returns:
         result : Dict[str,Dict[,]]
@@ -1337,7 +1247,7 @@ def get_next(star, ext, count=1):
         ext : str
             name and type of file to be saved
         count : int
-            starting count, which is incremented by 1 until new path is determined
+            starting count, which is incremented by 1 until a new path is determined
 
     Returns:
         path : str
@@ -1481,10 +1391,11 @@ def bin_data(x, y, width, log=False, mode='mean'):
     return bin_x, bin_y, bin_yerr
 
 
-def _ask_int(question, n_trials, max_attempts=10, count=1, special=False):    
+def ask_int(question, n_trials, max_attempts=10, count=1, special=False):    
     """
+    Ask integer
     
-    Asks for an integer user input
+    Asks for user input that is of the integer type
 
     Args:
         question : str
