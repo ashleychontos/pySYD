@@ -31,8 +31,8 @@ running the following command:
 
 .. note::
 
-    **The recommended way to install the ``pySYD`` package is from PyPI via `pip`, since**
-    **it will automatically ensure the proper dependencies and versions**
+    **The recommended way to install this package is from PyPI via** `pip`, **since**
+    **it will automatically enforce the proper dependencies and versions**
 
 .. _installation/conda:
 
@@ -178,48 +178,3 @@ that directory and run the following command:
     pysyd setup
 
 and let ``pySYD`` do the rest of the work for you. 
-
-Actually since this step will create a relative directory structure that might be 
-useful to know, let's run the above command again but this time with the :term:`verbose output<-v, --verbose>`
-so you can see what's being downloaded.
-
-::
-
-    $ pysyd setup --verbose
-    
-    Downloading relevant data from source directory:
-     
-     /Users/ashleychontos/Desktop/info
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100   239  100   239    0     0    508      0 --:--:-- --:--:-- --:--:--   508
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 1518k  100 1518k    0     0  1601k      0 --:--:-- --:--:-- --:--:-- 1601k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 3304k  100 3304k    0     0  2958k      0  0:00:01  0:00:01 --:--:-- 2958k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 1679k  100 1679k    0     0  1630k      0  0:00:01  0:00:01 --:--:-- 1630k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 3523k  100 3523k    0     0  3101k      0  0:00:01  0:00:01 --:--:-- 3099k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 1086k  100 1086k    0     0   943k      0  0:00:01  0:00:01 --:--:--  943k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k
-    
-    
-      - created input file directory: /Users/ashleychontos/Desktop/pysyd/info
-      - created data directory at /Users/ashleychontos/Desktop/pysyd/data
-      - example data saved
-      - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
-
-
-**Note:** this is another good sanity check to make sure everything is working as intended.
