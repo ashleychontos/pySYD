@@ -4,7 +4,7 @@
 Quickstart
 **********
 
-The basic example demonstrated on this page is assuming that the user already has 
+The example on this page is assuming that the user already has 
 some basic-level `Python` experience.
 
 Installing & setting up
