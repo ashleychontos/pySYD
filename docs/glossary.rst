@@ -34,7 +34,7 @@ Glossary of documentation terms
 
 .. math::
 
-    P(\nu) = W + \frac{}{}
+    B(\nu) = W + \[ \sum_{i=0}^{n} \frac{4\sigma_{i}^{2}\tau_{i}}{1 + (2\pi\nu\tau_{i})^{2} + (2\pi\nu\tau_{i})^{4}} \]
 
 
 .. glossary::
@@ -123,8 +123,8 @@ Glossary of documentation terms
     granulation
         the smallest (i.e. quickest) scale of convective processes
         
-    Harvey component
-    Harvey model
+    Harvey-like component
+    Harvey-like model
         named after the person who first person who discovered the relation -- and found it did a good 
         job characterizing granulation amplitudes and time scales in the Sun
         
@@ -174,8 +174,16 @@ Glossary of documentation terms
          
 .. math::
 
-    \mathrm{\nu_{nyq}} = \frac{1}{2 \Delta t}
+    \mathrm{\nu_{nyq}} = \frac{1}{2 \Delta t} 
     
+.. glossary::
+
+         * **example:** Kepler short-cadence data has :math:`\Deltat\sim60\mathrm{s}`
+
+.. math::
+
+     \mathrm{\nu_{nyq}} = \frac{10^{6}}{2\times60\,s} \approx 8333 \mu\mathrm{Hz}
+
 .. glossary::
     
     oversampled power spectrum
@@ -193,6 +201,15 @@ Glossary of documentation terms
     degree (:math:`\ell`) and the azimuthal order (:math:`m`).
     
 .. glossary::
+
+    power excess
+        the region in the power spectrum believed to show solar-like oscillations, typically characterized by a
+        Gaussian-like envelope of oscillations
+         * **definition:**
+
+.. math::
+
+    G(\nu) = A \mathrm{exp} \bigg[ - \frac{(\nu-\nu_{\mathrm{max}})^{2}}{2\sigma_{\mathrm{env}}^{2}} \bigg] 
     
     PSD
     power spectral density
@@ -203,7 +220,20 @@ Glossary of documentation terms
     PS
     power spectrum
         any object that varies in time also has a corresponding frequency (or power) spectrum, which here, is computed by taking 
-        the fourier transform of the :term:`light curve`.
+        the fourier transform of the :term:`light curve`. A model to describe characteristics of a power spectrum is generalized
+        by:
+
+.. math::
+
+    P(\nu) = W + R(\nu) [B(\nu) + G(\nu)]
+
+.. glossary::
+
+    PS
+    power spectrum
+        where :math:`W` is a constant (frequency-independent) noise term, primarily due to photon noise. :math:`B` and :math:`G`
+        correspond to the background and Gaussian-like power excess components, respectively. Finally, :math:`R` corresponds to
+        the response function, or the attenuation of signals due to time-averaged observations.
         
     radial order
         in asteroseismology, the radial order (:math:`n`) is the number of nodes from the surface to the center of the star.

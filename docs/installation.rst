@@ -129,38 +129,7 @@ window, which should display the following output:
 .. _installation/setup:
 
 Setting up
-###########
-
-Ok now that the software has been successfully installed and tested, there's just 
-one thing missing before we can do the science...
-
-We need some data to do the science with!
-
-Make a local directory
-**********************
-
-While `pip` installed ``pySYD`` to your ``PYTHONPATH``, we recommend that you first 
-create a local pysyd directory before running setup. This way you can keep all your 
-pysyd-related data, results and information in a single, easy-to-find location. *Note:* 
-This is the only reason we didn't include our examples as package data, as it would've put 
-them in your root directory and we realize this can be difficult to locate.
-
-The folder or directory can be whatever is most convenient for you, but for demonstration
-purposes we'll use:
-
-.. code-block::
-    
-    mkdir ~/path/to/local/pysyd/directory
-    
-This way you also don't have to worry about file permissions, restricted access, and
-all that other jazz. 
-
-``pySYD`` setup
-***************
-
-The ``pySYD`` package comes with a convenient setup feature (accessed via
-:ref:`pysyd.pipeline.setup<library/pipeline>`) which can be ran from the command 
-line in a single step. 
+##########
 
 We ***strongly encourage*** you to run this step regardless of how you intend to 
 use the software because it:
@@ -169,12 +138,33 @@ use the software because it:
 - provides the example [optional] input files to use with the software *and* 
 - sets up the recommended local directory structure
 
-The only thing you need to do from your end is initiate the command -- which now 
-that you've created a local pysyd directory -- all you have to do now is jump into 
-that directory and run the following command:
+*We emphasize the importance of the last bullet because the relative structure
+is both straightforward for the user but is also what works best for running the 
+software.*
+
+Make a local directory
+**********************
+
+Before you do that though, we recommend that you create a new, local directory to keep all 
+your pysyd-related data, information and results in a single, easy-to-find location. This is 
+actually the only reason we didn't include our examples as package data, as it would've put 
+them in your root directory and we realize this can be difficult to locate.
+
+The folder or directory can be whatever is most convenient for you:
+
+.. code-block::
+    
+    mkdir ~/path/to/local/pysyd/directory
+    
+
+Run the setup command
+*********************
+
+Now all you need to do is change into the new directory, run the command
 
 .. code-block::
 
+    cd ~/path/to/local/pysyd/directory
     pysyd setup
 
 and let ``pySYD`` do the rest of the work for you. 

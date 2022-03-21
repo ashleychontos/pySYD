@@ -4,27 +4,20 @@
 ``pySYD`` library
 *****************
 
-We are absolutely *thrilled* that you are eager to learn more about asteroseismology! 
+Thanks for stopping by the ``pySYD`` documentation and showing an interest to
+learn more about how the software (and asteroseismology) works -- we are absolutely 
+*thrilled*! 
 
-Overview
-########
+Since the intended target audience for ``pySYD`` is non-expert users, we developed 
+the software while keeping in mind that it should be as hands-off as possible. 
+**Therefore,** ``pySYD`` **was initially intended to be a strictly command-line, end-to-end tool.** 
 
-``pySYD`` is a `Python`-based implementation of the `IDL`-based ``SYD`` pipeline 
-`(Huber et al. 2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_, 
-which was extensively used to measure asteroseismic parameters for Kepler stars. 
-Papers based on asteroseismic parameters measured using the ``SYD`` pipeline include 
-`Huber et al. 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H/abstract>`_, 
-`Chaplin et al. 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C/abstract>`_, 
-`Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_ 
-and `Yu et al. 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y/abstract>`_.
+However, we have also added so many awesome new features that can be enjoyed by even our
+expert users so we've made sure to add as many examples as possible. 
 
-``pySYD`` adapts the well-tested methodology from ``SYD`` while also improving these 
-existing analyses and expanding upon numerous new (optional) features. Improvements include:
-
-- Automated best-fit background model selection
-- Parallel processing
-- Easily accessible + command-line friendly interface
-- Ability to save samples for further analyses
+Keep in mind that ``pySYD`` was originally intended to be ***solely*** a command-line tool 
+but we are actively developing other channels and compatibilities. So while the :ref:`inputs<input>` 
+and :ref:`outputs<output>` will remain the same, *how you choose to use* ``pySYD`` *is completely up to you!*
 
 .. toctree::
    :titlesonly:
