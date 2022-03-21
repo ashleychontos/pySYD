@@ -171,18 +171,22 @@ Glossary of documentation terms
          * **variable:** :math:`\rm \nu_{nyq}`
          * **units:** :math:`\rm \mu Hz`
          * **definition:**
-         
+ 
+        
 .. math::
 
     \mathrm{\nu_{nyq}} = \frac{1}{2 \Delta t} 
-    
-.. glossary::
 
-         * **example:** Kepler short-cadence data has :math:`\Deltat\sim60\mathrm{s}`
 
-.. math::
+.. topic:: *Kepler* example
 
-     \mathrm{\nu_{nyq}} = \frac{10^{6}}{2\times60\,s} \approx 8333 \mu\mathrm{Hz}
+    *Kepler* short-cadence data has a cadence, :math:`\Deltat\sim60\mathrm{s}`. Therefore,
+    the nyquist frequency for short-cadence *Kepler* data is:
+
+    .. math::
+
+         \mathrm{\nu_{nyq}} = \frac{10^{6}}{2\times60\,s} \approx 8333 \mu\mathrm{Hz}
+
 
 .. glossary::
     
@@ -210,6 +214,8 @@ Glossary of documentation terms
 .. math::
 
     G(\nu) = A \mathrm{exp} \bigg[ - \frac{(\nu-\nu_{\mathrm{max}})^{2}}{2\sigma_{\mathrm{env}}^{2}} \bigg] 
+
+.. glossary::
     
     PSD
     power spectral density
