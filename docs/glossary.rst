@@ -80,6 +80,12 @@ Glossary of documentation terms
 
 .. glossary::
 
+    cadence
+        the median absolute difference between consecutive time series observations
+         * **variable:** :math:`\Delta t`
+         * **units:** :math:`\rm s`
+         * **definition:**
+
     critically-sampled power spectrum
         sfdklja
         
@@ -166,7 +172,7 @@ Glossary of documentation terms
         a process
         
     nyquist frequency
-        the highest frequency that can be sampled, which is set by the cadence of observations 
+        the highest frequency that can be sampled, which is set by the :term:`cadence` of observations 
         (:math:`\Delta t`) 
          * **variable:** :math:`\rm \nu_{nyq}`
          * **units:** :math:`\rm \mu Hz`
@@ -185,7 +191,7 @@ Glossary of documentation terms
 
     .. math::
 
-         \mathrm{\nu_{nyq}} = \frac{1}{2\dot60\,s} \times \frac{10^{6}\,\mu\mathrm{Hz}}{1\,\mathrm{Hz}} \approx 8333 \,\mu\mathrm{Hz}
+         \mathrm{\nu_{nyq}} = \frac{1}{2\cdot60\,\mathrm{s}} \times \frac{10^{6}\,\mu\mathrm{Hz}}{1\,\mathrm{Hz}} \approx 8333 \,\mu\mathrm{Hz}
 
 
 .. glossary::
@@ -209,14 +215,13 @@ Glossary of documentation terms
 .. glossary::
 
     power excess
-        the region in the power spectrum believed to show solar-like oscillations, typically characterized by a
-        Gaussian-like envelope of oscillations
+        the region in the power spectrum believed to show solar-like oscillations is typically characterized by a
+        Gaussian-like envelope of oscillations, :math:`G(\nu)`
          * **definition:**
-
 
 .. math::
 
-    G(\nu) = A \mathrm{exp} \bigg[ - \frac{(\nu-\nu_{\mathrm{max}})^{2}}{2\sigma_{\mathrm{env}}^{2}} \bigg] 
+    G(\nu) = A_{\mathrm{osc}} \,\mathrm{exp} \bigg[ - \frac{(\nu-\nu_{\mathrm{max}})^{2}}{2\sigma_{\mathrm{osc}}^{2}} \bigg] 
 
 
 .. glossary::

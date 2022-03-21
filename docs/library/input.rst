@@ -6,8 +6,8 @@ Getting started
 running the ``pySYD`` setup command. Running the command will provide all of the relevant files 
 that are discussed in detail on this page. 
 
-To read more details about the setup feature, please visit our :ref:`<installation>` or 
-:ref:`<quickstart>` pages.
+To read more details about the setup feature, please visit our :ref:`Installation <../installation>` or 
+:ref:`Quickstart<../quickstart>` pages.
 
 Inputs
 ######
@@ -46,7 +46,8 @@ For a given star, ID, the data :
 .. warning::
 
     It is **critical** that these files are in the proper units in order for ``pySYD`` 
-    to work properly. 
+    to work properly. If you are unsure about any of these units, your best bet is to
+    provide a light curve (in days) and let us calculate the power spectrum for you! 
 
 Optional Input
 ##############
