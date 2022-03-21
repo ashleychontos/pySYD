@@ -34,7 +34,7 @@ Glossary of documentation terms
 
 .. math::
 
-    B(\nu) = W + \[ \sum_{i=0}^{n} \frac{4\sigma_{i}^{2}\tau_{i}}{1 + (2\pi\nu\tau_{i})^{2} + (2\pi\nu\tau_{i})^{4}} \]
+    B(\nu) = W + \sum_{i=0}^{n} \frac{4\sigma_{i}^{2}\tau_{i}}{1 + (2\pi\nu\tau_{i})^{2} + (2\pi\nu\tau_{i})^{4}}
 
 
 .. glossary::
@@ -178,14 +178,14 @@ Glossary of documentation terms
     \mathrm{\nu_{nyq}} = \frac{1}{2 \Delta t} 
 
 
-.. topic:: *Kepler* example
+.. note:: *Kepler* example
 
-    *Kepler* short-cadence data has a cadence, :math:`\Deltat\sim60\mathrm{s}`. Therefore,
+    *Kepler* short-cadence data has a cadence, :math:`\Delta t \sim 60 \mathrm{s}`. Therefore,
     the nyquist frequency for short-cadence *Kepler* data is:
 
     .. math::
 
-         \mathrm{\nu_{nyq}} = \frac{10^{6}}{2\times60\,s} \approx 8333 \mu\mathrm{Hz}
+         \mathrm{\nu_{nyq}} = \frac{1}{2\dot60\,s} \times \frac{10^{6}\,\mu\mathrm{Hz}}{1\,\mathrm{Hz}} \approx 8333 \,\mu\mathrm{Hz}
 
 
 .. glossary::
@@ -198,11 +198,13 @@ Glossary of documentation terms
         implied in the name, these oscillations are driven by the same mechanism as that observed in the Sun, which is
         due to turbulent, near-surface convection. They are also sometimes referred to as **p-mode oscillations**, after the
         pressure-driven (or acoustic sound) waves that are resonating in the stellar cavity.
+
         
 .. note::
 
     Each p-mode can be described by three integers following spherical harmonics. The radial order (:math:`n`), the spherical
     degree (:math:`\ell`) and the azimuthal order (:math:`m`).
+
     
 .. glossary::
 
@@ -211,9 +213,11 @@ Glossary of documentation terms
         Gaussian-like envelope of oscillations
          * **definition:**
 
+
 .. math::
 
     G(\nu) = A \mathrm{exp} \bigg[ - \frac{(\nu-\nu_{\mathrm{max}})^{2}}{2\sigma_{\mathrm{env}}^{2}} \bigg] 
+
 
 .. glossary::
     
@@ -225,13 +229,15 @@ Glossary of documentation terms
     
     PS
     power spectrum
-        any object that varies in time also has a corresponding frequency (or power) spectrum, which here, is computed by taking 
-        the fourier transform of the :term:`light curve`. A model to describe characteristics of a power spectrum is generalized
+        any object that varies in time also has a corresponding frequency (or power) spectrum, which is computed by taking 
+        the :term:`fast fourier transform` of the :term:`light curve`. A general model to describe characteristics of a power spectrum is generalized
         by:
+
 
 .. math::
 
     P(\nu) = W + R(\nu) [B(\nu) + G(\nu)]
+
 
 .. glossary::
 

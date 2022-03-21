@@ -6,7 +6,8 @@ Getting started
 running the ``pySYD`` setup command. Running the command will provide all of the relevant files 
 that are discussed in detail on this page. 
 
-To read more details about the setup feature, visit :ref:`installation` and :ref:`quickstart`.
+To read more details about the setup feature, please visit our :ref:`<installation>` or 
+:ref:`<quickstart>` pages.
 
 Inputs
 ######
@@ -28,14 +29,14 @@ for the non-expert users.
 **Since this is ultimately our target audience, we are currently working on developing and**
 **implementing time-domain utilities so stay tuned!**
 
-Required
-********
+Required Input
+##############
 
 The only thing *required* to successfully run the software and get results is the data 
 in which ``pySYD`` will apply the asteroseismic analyses on! 
 
 Data 
-====
+****
 
 For a given star, ID, the data : 
 
@@ -47,21 +48,21 @@ For a given star, ID, the data :
     It is **critical** that these files are in the proper units in order for ``pySYD`` 
     to work properly. 
 
-Optional
-********
+Optional Input
+##############
 
 There are two main information files which can be provided but both are optional -- whether
 or not you choose to use them ultimately depends on how you will run the software. 
 
 Target list
-============
+***********
 
 For example
 
 * `'./info/todo.txt'` : text file with one star ID per line, which must match the data ID. If no stars are specified via command line, the star(s) listed in the text file will be processed by default. This is recommended when running a large number of stars.
 
 Star info
-=========
+*********
 
 As suggested by the name of the file, this contains star information on an individual basis. Similar to
 the data, target IDs must *exactly* match the given name in order to be successfully crossmatched -- but
