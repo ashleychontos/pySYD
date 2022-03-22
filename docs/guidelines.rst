@@ -1,6 +1,8 @@
 .. role::  raw-html(raw)
     :format: html
 
+.. |smiley| unicode:: U+263A
+
 ************
 Contributing
 ************
@@ -15,7 +17,7 @@ Contributing
 The ``pySYD`` team
 ##################
 
-The ``pySYD`` community continues to grow!
+Our community continues to grow! Keep reading to find out how you can help |smiley|
 
 
 Contributors
@@ -28,7 +30,7 @@ Contributors
     ``pySYD`` was initially the `Python` translation of the `IDL`-based asteroseismology 
     pipeline ``SYD``, which was written by my PhD advisor, Dan Huber, during his PhD in 
     Sydney (hence the name). Therefore none of this would have been possible without his 
-    i) years of hard work during his PhD as well as ii) years of patience during my PhD :)
+    i) years of hard work during his PhD as well as ii) years of patience during my PhD |smiley|
     
     **~A very special shoutout to Dan~**
 
