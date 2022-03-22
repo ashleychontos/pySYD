@@ -1334,12 +1334,21 @@ def delta_nu(numax):
     """
     
     Estimates the large frequency separation using the numax scaling relation
+
     Args:
         numax : float
             the frequency corresponding to maximum power or numax
     Returns:
         dnu : float
             the approximated frequency spacing, dnu
+
+    Examples:
+
+        Let's use the Sun as an example, which has :math:`\rm \nu_{max}=3090 \mu Hz`.
+        >>> numax=3090.
+        >>> delta_nu(numax)
+        133.02081026954923
+
     """
 
     return 0.22*(numax**0.797)

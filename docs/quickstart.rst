@@ -11,8 +11,10 @@ Installation & setup
 ####################
 
 We recommend creating a local directory to keep all your pysyd-related data, results 
-and information in a single, easy-to-find location. ``pySYD`` also comes with a 
-convenient setup feature that downloads example data so let's start with that!
+and information in a single, easy-to-find location. The software package comes with a 
+convenient setup feature that downloads example data so let's start there.
+
+Open up a terminal window and type the following commands in order:
 
 .. code-block::
 
@@ -21,8 +23,8 @@ convenient setup feature that downloads example data so let's start with that!
     cd ~/path/to/local/pysyd/directory
     pysyd setup --verbose
 
-You may have already noticed but we used the optional :term:`--verbose<-v, --verbose>` command, 
-which *should* print the following:
+You may have noticed that, for this last point, we used the optional 
+:term:`--verbose<-v, --verbose>` command, which *should* print the following output:
 
 .. code-block::
     
