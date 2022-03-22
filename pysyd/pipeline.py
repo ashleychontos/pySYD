@@ -53,9 +53,11 @@ def load(args=None, star=None, verbose=False, command='run'):
         command : str, optional
             which of the 5 ``pysyd.pipeline`` modes to execute from
             the notebook
+
     Returns:
         single : target.Target
             current data available for the provided target
+
     """
     # If running from something other than command line
     if args is None:
@@ -73,9 +75,12 @@ def run(args):
     
     Main function to initiate the pySYD pipeline (consecutively, not
     in parallel)
+
     Parameters:
         args : argparse.Namespace
             the command line arguments
+
+
     """
     # Load in relevant information and data
     args = load(args)
@@ -96,6 +101,7 @@ def pipe(group, args, count=0):
     
     This function is called by both ``pysyd.pipeline.run`` and ``pysyd.pipeline.parallel``
     modes to initiate the ``pySYD`` pipeline for a group of stars
+
     Parameters:
         group : List[object]
             list of stars to be processed as a group
@@ -103,6 +109,7 @@ def pipe(group, args, count=0):
             the command line arguments
         count : int
             the number of successful stars processed by the pipeline for a given group (default = `0`)
+
     Returns:
         count : int
             the number of successful stars processed by ``pySYD`` for a given group of stars
@@ -126,6 +133,7 @@ def parallel(args):
     """
     
     Run ``pySYD`` in parallel for a large number of stars
+
     Parameters:
         args : argparse.Namespace
             the command line arguments
@@ -181,6 +189,7 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
     
     Running this after installation will create the appropriate directories in the current working
     directory as well as download example data and files to test your pySYD installation
+
     Parameters:
         args : argparse.Namespace
             the command line arguments
@@ -188,6 +197,7 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
             suppressed (optional) verbose output
         raw : str
             path to download "raw" package data and examples from the ``pySYD`` source directory
+
     """
     # Import relevant (external) python modules
     import pandas as pd
