@@ -2,12 +2,13 @@
 Getting started
 ***************
 
-**ICYMI:** there is a very convenient way for you to immediately get started -- and that is by
-running the ``pySYD`` setup command. Running the command will provide all of the relevant files 
-that are discussed in detail on this page. 
+In case you somehow missed it -- there is a convenient way for you to get started right
+away -- which is by running the ``pySYD`` setup feature. Running the command will provide 
+*all* of the relevant files that are discussed in detail on this page. 
 
-To read more details about the setup feature, please visit our :ref:`Installation <../installation>` or 
-:ref:`Quickstart<../quickstart>` pages.
+To read more details about the setup feature, please visit our :ref:`Installation <..installation>` 
+or :ref:`Quickstart<..quickstart>` pages. You can also see how it works directly by visiting
+:ref:`the API <pipeline>`. 
 
 Inputs
 ######
