@@ -5,8 +5,15 @@
 Contributing
 ************
 
-``pySYD`` team
-##############
+
+.. link-button:: guidelines/index
+    :type: ref
+    :text: Jump to our community guidelines
+    :classes: btn-outline-secondary btn-block
+
+
+The ``pySYD`` team
+##################
 
 The ``pySYD`` community continues to grow!
 
@@ -37,6 +44,8 @@ Many thanks to:
 .. include:: COLLABORATORS.rst
 
 -----
+
+.. _guidelines/index:
 
 Community guidelines
 ####################

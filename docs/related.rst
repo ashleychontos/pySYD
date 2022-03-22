@@ -117,7 +117,7 @@ We have compiled a list of software packages that performs similar or complement
    - requires license: yes
 
 
-.. note:: 
+.. important:: 
 
     If your software is not listed or if something listed is incorrect/missing, please 
     open a pull request to add it, we aim to be inclusive of all *Kepler*-, K2- and TESS-
