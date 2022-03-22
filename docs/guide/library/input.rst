@@ -70,6 +70,13 @@ As suggested by the name of the file, this contains star information on an indiv
 the data, target IDs must *exactly* match the given name in order to be successfully crossmatched -- but
 this also means that the information in this file need not be in any particular order. 
 
+.. csv-table:: `'info/star_info.csv'`
+   :header: "stars", "rs", "logg", "teff", "numax", "lower_ex", "upper_ex", "lower_bg"
+   :widths: 20, 10, 10, 20, 20, 20, 20, 20
+
+   1435467, 1.0, 4.4, 5777.0, 1400.0, 100.0, 5000.0, 100.0
+   2309595, 1.0, 4.4, 5777.0, 1400.0, 100.0, 5000.0, 100.0
+
 However in order to ingest the information properly, the columns must match the following and/or 
 relevant commands:
 

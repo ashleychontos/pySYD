@@ -17,6 +17,14 @@ handful of other closed-source pipelines developed around the same time that per
 similar types of analyses. In fact, there were several papers that compared results from each
 of these pipelines in order to ensure the reproducibility of science results from the :term:`Kepler legacy sample`
 
+``pySYD`` adapts the well-tested methodology from ``SYD`` while also improving these 
+existing analyses and expanding upon numerous new features. Improvements include:
+
+- Automated best-fit background model selection
+- Parallel processing
+- Easily accessible + command-line friendly interface
+- Ability to save samples for further analyses
+
 ``pySYD`` vs ``SYD``
 ####################
 
@@ -41,14 +49,14 @@ used extensively in the literature.
 Overview
 ########
 
-When running the software, initialization of ``pySYD`` via command line will look in the following paths:
+When running the software,  ``pySYD`` will look in the following paths:
 
-- ``INFDIR`` : '~/path_to_put_pysyd_stuff/info'
-- ``INPDIR`` : '~/path_to_put_pysyd_stuff/data'
-- ``OUTDIR`` : '~/path_to_put_pysyd_stuff/results'
+- ``INFDIR`` : '~/path/to/local/pysyd/directory/info'
+- ``INPDIR`` : '~/path/to/local/pysyd/directory/data'
+- ``OUTDIR`` : '~/path/to/local/pysyd/directory/results'
 
-which by default, is the absolute path of the current working directory (or however you choose to set it up). All of these paths should be ready to go
-if you followed the suggestions in :ref:`structure` or used our ``setup`` feature.
+which by default, is the absolute path of the current working directory (think wherever you
+ran setup from).
 
 A ``pySYD`` pipeline ``Target`` class object has two main function calls:
 
