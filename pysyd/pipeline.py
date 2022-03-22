@@ -10,7 +10,29 @@ from pysyd import plots
 from pysyd.target import Target
 
 
-def load(args=None, star=None):
+def display(args=None, stars=None, mode='display'):
+    """
+    
+    This is experimental and meant to be helpful for developers or anyone
+    wanting to contribute to ``pySYD``. Ideally this will test new ``pySYD``
+    functions.
+    
+    Parameters:
+        args : argparse.Namespace
+            the command line arguments
+    
+    Warning:
+        NOT CURRENTLY IMPLEMENTED
+        
+    Note:
+        use the hacky, boolean flag ``-t`` or ``--test`` instead (for now)
+    
+    """
+    # If running from something other than command line
+    args = utils.Parameters(args)
+
+
+def load(args=None, star=None, verbose=False, command='run'):
     """
     
     Module to load in all the relevant information and dictionaries
@@ -21,7 +43,7 @@ def load(args=None, star=None):
         information that is required to run any ``pySYD`` mode successfully
         (with the exception of ``pysyd.pipeline.setup``)
 
-    Args:
+    Parameters:
         args : argparse.Namespace
             the command line arguments
         star : object, optional
@@ -31,22 +53,19 @@ def load(args=None, star=None):
         command : str, optional
             which of the 5 ``pysyd.pipeline`` modes to execute from
             the notebook
-
     Returns:
         single : target.Target
             current data available for the provided target
-
     """
     # If running from something other than command line
-    args = utils.Parameters(args)
-    if star is not None:
-        args.params['stars'] = [star]
-        args.add_stars()
-        # TODO: ALSO ASSERT THAT LENGTH OF STAR OR STARLIST IS ONE
-    assert len(args.params['stars']) == 1, "Only one star can be loaded at a time this way.\nPlease try again."
-    # add star
-    star = Target(args.params['stars'][0], args)
-    return star
+    if args is None:
+        # Use container class as a base to add args to
+        args = utils.Constants()
+        assert star is not None, "If using this method, please provide the 'star' keyword argument \ni.e. the star to be processed and try again."
+        args.stars = [star]
+    # Load relevant pySYD parameters
+    args = utils.get_info(args)
+    return args
 
 
 def run(args):
@@ -54,14 +73,12 @@ def run(args):
     
     Main function to initiate the pySYD pipeline (consecutively, not
     in parallel)
-
-    Args:
+    Parameters:
         args : argparse.Namespace
             the command line arguments
-
     """
     # Load in relevant information and data
-    args = utils.get_info(args)
+    args = load(args)
     # Run single batch of stars
     count = pipe(args.params['stars'], args)
     # check to make sure that at least one star was successfully run (i.e. there are results)  
@@ -79,27 +96,28 @@ def pipe(group, args, count=0):
     
     This function is called by both ``pysyd.pipeline.run`` and ``pysyd.pipeline.parallel``
     modes to initiate the ``pySYD`` pipeline for a group of stars
-
-    Args:
+    Parameters:
         group : List[object]
             list of stars to be processed as a group
         args : argparse.Namespace
             the command line arguments
         count : int
             the number of successful stars processed by the pipeline for a given group (default = `0`)
-
     Returns:
         count : int
             the number of successful stars processed by ``pySYD`` for a given group of stars
-
     """
     # Iterate through and run stars in a given star 'group'
-    for each in group:
-        star = Target()
-        if star.assign_star(each):
-        # Makes sure target data successfully loaded in
+    for star in group:
+        single = Target(star, args)
+        # Makes sure a target has a power spectrum before processing
+        if hasattr(single, 'ps'):
             count+=1
             single.run_syd()
+        else:
+            # Only print data warnings when running pySYD in regular mode (i.e. not in parallel)
+            if args.command != 'parallel':
+                print(' - cannot find data for %s'%single.name)
     # Number of successfully processed stars
     return count
 
@@ -108,15 +126,13 @@ def parallel(args):
     """
     
     Run ``pySYD`` in parallel for a large number of stars
-
     Parameters:
         args : argparse.Namespace
             the command line arguments
     
-
     """
     # Load in relevant information and data
-    args = utils.get_info(args)
+    args = load(args)
     # Import relevant (external) python modules
     import numpy as np
     import multiprocessing as mp
@@ -137,13 +153,7 @@ def parallel(args):
         utils.scrape_output(args)
 
 
-#####################################################################
-# Testing new pySYD functionalities
-# GOAL: unittest +/- testing developments 
-# NOT CURRENTLY IMPLEMENTED 
-# -> use the hacky, boolean flag -t or --test instead (for now)
-
-def Test(args):
+def test(args):
     """
     
     This is experimental and meant to be helpful for developers or anyone
@@ -166,111 +176,65 @@ def Test(args):
     dnu_comparison()
 
 
-def setup(args):
-    pass
-
-
-class Setup:
+def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
     """
     
     Running this after installation will create the appropriate directories in the current working
     directory as well as download example data and files to test your pySYD installation
-
-    Attributes:
-        dir : str
-            path to save setup files and directories to
-        new : bool
-            setup 'new' path in pysyd init file
+    Parameters:
+        args : argparse.Namespace
+            the command line arguments
         note : str, optional
-            suppressed verbose output
+            suppressed (optional) verbose output
         raw : str
-            path to ``pySYD`` source directory to download package data and examples
-
-
+            path to download "raw" package data and examples from the ``pySYD`` source directory
     """
-    def __init__(self, args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
-        """
+    # Import relevant (external) python modules
+    import pandas as pd
+    import os, subprocess
+    # downloading data will generate output in terminal, so include this statement regardless
+    print('\n\nDownloading relevant data from source directory:\n')
 
+    # create info directory
+    if len(os.path.split(args.todo)) != 1:
+        path_info = os.path.split(args.todo)[0]
+        if not os.path.exists(path_info):
+            os.mkdir(path_info)
+            note+=' - created input file directory: %s \n'%path_info
 
-        Args:
-            args : argparse.Namespace
-                the command line arguments
-            note : str, optional
-                suppressed (optional) verbose output
-            raw : str
-                path to download "raw" package data and examples from the ``pySYD`` source directory
-
-        """
-        self.dir, self.note, self.raw = args.dir, note, raw
-        if args.new:
-            self.change_init()
-        self.create_dirs()
-        self.retrieve_info()
-        self.retrieve_data()
-        if args.verbose:
-            print(self.note)
-
-    def create_dirs(self, dirs=['info', 'data', 'results']):
-        """
-
-        Creates the three main directories for pySYD to operate smoothly:
-         #. info
-         #. data
-         #. results
-
-        Args:
-            dirs : List[str]
-                list of directories to create (if they do not already exist)
-
-        """
-        for dir in dirs:
-            if not os.path.exists(os.path.join(self.dir,dir)):
-                os.mkdir(os.path.join(self.dir,dir))
-                self.note += ' - created %s directory\n'%dir
-            else:
-                self.note += ' - %s directory already exists (skipping)\n'%dir
-
-
-    def retrieve_info(self, files=['info/todo.txt', 'info/star_info.csv']):
+    # get example input files
+    infile1='%sinfo/todo.txt'%raw
+    outfile1=os.path.join(path_info,'info.txt')
+    subprocess.call(['curl %s > %s'%(infile1, outfile1)], shell=True)
+    infile2='%sinfo/star_info.csv'%raw
+    outfile2=os.path.join(path_info,os.path.split(args.info)[-1])
+    subprocess.call(['curl %s > %s'%(infile2, outfile2)], shell=True)
     
-        # get example input files
-        for file in files:
-            infile = '%s%s'%(self.raw, file)
-            outfile = os.path.join(self.dir, os.path.split(file)[0], os.path.split(file)[-1])
+    # if not successful, make empty input files for reference
+    if not os.path.exists(outfile1):
+        f = open(args.todo, "w")
+        f.close()
+    if not os.path.exists(outfile2):
+        df = pd.DataFrame(columns=utils.get_dict(type='columns')['csv'])
+        df.to_csv(args.info, index=False)
+        
+    # create data directory
+    if not os.path.exists(args.inpdir):
+        os.mkdir(args.inpdir)
+        note+=' - created data directory at %s \n'%args.inpdir
+        
+    # get example data
+    for target in ['1435467', '2309595', '11618103']:
+        for ext in ['LC', 'PS']:
+            infile='%sdata/%s_%s.txt'%(raw, target, ext)
+            outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
             subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
-        # if not successful, make empty input files for reference
-        if not os.path.exists(outfile1):
-            f = open(args.todo, "w")
-            f.close()
-        if not os.path.exists(outfile2):
-            df = pd.DataFrame(columns=utils.get_dict(type='columns')['csv'])
-            df.to_csv(args.info, index=False)
-
-
-    def retrieve_data(self, targets=['1435467', '2309595', '11618103'], extensions=['LC', 'PS']):
-
-        # downloading data will generate output in terminal, so include this statement regardless
-        print('\n\nDownloading relevant data from source directory:')
-        # get example data
-        for target in targets:
-            for ext in extensions:
-                infile = '%sdata/%s_%s.txt'%(self.raw, target, ext)
-                outfile = os.path.join(self.dir, '%s_%s.txt'%(target, ext))
-                subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
-        print('\n')
-        self.note+=' - example data saved\n'
-
-
-    def change_init(self, match='_ROOT', idx=None):
-
-        fname = os.path.abspath(pysyd.__file__)
-        with open(fname, "r") as f:
-            lines = f.readlines()
-        for l, line in enumerate(lines):
-            if line.startswith(match):
-                idx=l
-        if idx is not None:
-            new_lines = lines[:idx] + ['%s = os.path.abspath(%s)'%(match, self.dir)] + lines[idx+1:]
-            with open(fname, "w") as f:
-                for line in new_lines:
-                    f.write(line)
+    print('\n')
+    note+=' - example data saved\n'
+    
+    # create results directory
+    if not os.path.exists(args.outdir):
+        os.mkdir(args.outdir)
+    note+=' - results will be saved to %s \n\n'%args.outdir
+    if args.verbose:
+        print(note)
