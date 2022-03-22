@@ -39,9 +39,8 @@ Collaborators
 *************
 
 We have many amazing collaborators that have helped with the development of the software, especially with the 
-improvements that have been implemented -- which have ultimately made ``pySYD`` more user-friendly. 
-
-Many thanks to: 
+improvements that have been implemented -- which have ultimately made ``pySYD`` more user-friendly. Many
+thanks to our collaborators!
 
 .. include:: COLLABORATORS.rst
 

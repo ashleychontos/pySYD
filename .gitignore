@@ -6,6 +6,7 @@
 .*
 *~
 build
+copy
 dist
 *.egg-info
 *background.csv

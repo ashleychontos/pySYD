@@ -16,10 +16,15 @@ convenient setup feature that downloads example data so let's start with that!
 
 .. code-block::
 
-    $ python -m pip install pysyd
-    $ mkdir ~/path/to/local/pysyd/directory
-    $ cd ~/path/to/local/pysyd/directory
-    $ pysyd setup --verbose
+    python -m pip install pysyd
+    mkdir ~/path/to/local/pysyd/directory
+    cd ~/path/to/local/pysyd/directory
+    pysyd setup --verbose
+
+You may have already noticed but we used the optional :term:`--verbose<-v, --verbose>` command, 
+which *should* print the following:
+
+.. code-block::
     
     Downloading relevant data from source directory:
       % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -47,16 +52,14 @@ convenient setup feature that downloads example data so let's start with that!
                                        Dload  Upload   Total   Spent    Left  Speed
      100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k
     
-    
       - created input file directory: /Users/ashleychontos/Desktop/pysyd/info
       - created data directory at /Users/ashleychontos/Desktop/pysyd/data
       - example data saved
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
     
-As shown using the :term:`--verbose<-v, --verbose>` option, the setup command downloaded 
-example data and some other relevant information from the `public pySYD GitHub repo <https://github.com/ashleychontos/pySYD>`_.
-
-Now you are now ready to become an asteroseismologist!
+As shown above, the ``pySYD`` setup feature downloaded example data and other relevant 
+information from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_ and
+therefore, you are now ready to become an asteroseismologist!
 
 .. important::
 
