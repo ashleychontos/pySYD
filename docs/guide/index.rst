@@ -13,9 +13,8 @@ different usage.
 
 .. toctree::
    :titlesonly:
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents
    
    library/index
-   As a command-line tool <cli/index>
-   other/index
+   usage/index
