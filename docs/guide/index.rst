@@ -9,8 +9,9 @@ find any errors or stale links -- please let us know!
 
 .. toctree::
    :titlesonly:
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents
    
+   library/index
    As a command-line tool <cli/index>
    other/index

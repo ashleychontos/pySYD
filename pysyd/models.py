@@ -4,7 +4,6 @@ import numpy as np
 def background(frequency, guesses, mode='regular', ab=False, noise=None):
     """
     The main model for the stellar background fitting
-
     Parameters:
         frequency : numpy.ndarray
             the frequency of the power spectrum
@@ -21,7 +20,6 @@ def background(frequency, guesses, mode='regular', ab=False, noise=None):
         noise : None, optional
             If not `None`, it will fix the white noise to this value and not model it, reducing the dimension
             of the problem/model
-
     Returns:
         model : np.ndarray
             the stellar background model
@@ -29,7 +27,6 @@ def background(frequency, guesses, mode='regular', ab=False, noise=None):
     TODO:
         option to fix the white noise (i.e. ``noise`` option)
         option to change the parametrization (i.e. ``ab`` option)
-
     """
     nlaws = int(len(guesses)//2)
     model = np.zeros_like(frequency)
@@ -70,7 +67,6 @@ def gaussian(frequency, offset, amplitude, center, width):
     
     Observed solar-like oscillations have a Gaussian-like profile and
     therefore, detections are modeled as a Gaussian distribution.
-
     Parameters:
         frequency : numpy.ndarray
             the frequency array
@@ -82,11 +78,9 @@ def gaussian(frequency, offset, amplitude, center, width):
             center of the Gaussian
         width : float
             the width of the Gaussian
-
     Returns:
         result : np.ndarray
             the Gaussian distribution
-
     """
 
     model = np.zeros_like(frequency)
@@ -107,17 +101,14 @@ def harvey_none(frequency, white_noise, ab=False):
     
     Warning: 
         check if this is working for null detections
-
     Parameters:
         frequency : numpy.ndarray
             the frequency array
         white_noise : float
             the white noise component
-
     Returns:
         model : numpy.ndarray
             the no-Harvey (white noise) model
-
     """
 
     model = np.zeros_like(frequency)
@@ -131,7 +122,6 @@ def harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
     One Harvey model
     
     Stellar background model consisting of a single Harvey-like component.
-
     Parameters:
         frequency : numpy.ndarray
             the frequency array
@@ -141,7 +131,6 @@ def harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
             amplitude of the first harvey component
         white_noise : float
             the white noise component
-
     Returns:
         model : numpy.ndarray
             the one-Harvey model
@@ -163,7 +152,6 @@ def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False)
     Two Harvey model
     
     Stellar background model consisting of two Harvey-like components.
-
     Parameters:
         frequency : numpy.ndarray
             the frequency array
@@ -177,7 +165,6 @@ def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False)
             amplitude of the second harvey component
         white_noise : float
             the white noise component
-
     Returns:
         model : numpy.ndarray
             the two-Harvey model
@@ -201,7 +188,6 @@ def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, whit
     Three Harvey model
     
     Stellar background model consisting of three Harvey-like components.
-
     Parameters:
         frequency : numpy.ndarray
             the frequency array
@@ -219,7 +205,6 @@ def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, whit
             amplitude of the third harvey component
         white_noise : float
             the white noise component
-
     Returns:
         model : numpy.ndarray
             the three-Harvey model
@@ -244,17 +229,14 @@ def log_likelihood(observations, model):
     """
     Until we figure out a better method, we are computing the likelhood using
     the mean squared error.
-
     Parameters:
         observations : numpy.ndarray
             the observed power spectrum
         model : numpy.ndarray
             model generated at the observed frequencies
-
     Returns:
         LL : float
             the natural logarithm of the likelihood (or the MSE)
-
     """
 
     return -0.5*(np.sum((observations-model)**2.))
@@ -264,7 +246,6 @@ def compute_aic(observations, model, n_parameters):
     """
     Computes the Akaike Information Criterion (AIC) given the 
     background model of the power spectrum.
-
     Parameters:
         observations : numpy.ndarray
             the observed power spectrum
@@ -272,11 +253,9 @@ def compute_aic(observations, model, n_parameters):
             model generated at the observed frequencies
         n_parameters : int
             number of free parameters in the given model
-
     Returns:
         aic : float
             AIC value
-
     """
     N = len(observations)
     LL = log_likelihood(observations, model)
@@ -289,7 +268,6 @@ def compute_bic(observations, model, n_parameters):
     """
     Computes the Bayesian Information Criterion (BIC) given the 
     background model of the power spectrum.
-
     Parameters:
         observations : numpy.ndarray
             the observed power spectrum
@@ -297,11 +275,9 @@ def compute_bic(observations, model, n_parameters):
             model generated at the observed frequencies
         n_parameters : int
             number of free parameters in the given model
-
     Returns:
         bic : float
             BIC value
-
     """
     N = len(observations)
     LL = log_likelihood(observations, model)

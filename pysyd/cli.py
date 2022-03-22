@@ -1,45 +1,32 @@
+import os
 import argparse
 
 import pysyd
 from pysyd import pipeline
-from pysyd import TODODIR, INFODIR, INPDIR, OUTDIR
+from pysyd import INFDIR, INPDIR, OUTDIR
 
 
 
 def main():
 
-#####################################################################
-# Initiate parser
-#
-
     parser = argparse.ArgumentParser(
-                                     description="pySYD: Automated Extraction of Global Asteroseismic Parameters", 
+                                     description="pySYD: automated measurements of global asteroseismic parameters", 
                                      prog='pySYD',
     )
-    parser.add_argument('-version', '--version',
+    parser.add_argument('--version',
                         action='version',
                         version="%(prog)s {}".format(pysyd.__version__),
                         help="Print version number and exit.",
     )
 
-#####################################################################
-# Parent parser contains arguments and options common to all modes
-#
-
     parent_parser = argparse.ArgumentParser(add_help=False)
 
-    parent_parser.add_argument('-c', '--cli', 
-                               dest='cli',
-                               help='This option should not be adjusted for current users',
-                               default=True,
-                               action='store_false',
-    )
     parent_parser.add_argument('--file', '--list', '--todo',
                                metavar='path',
                                dest='todo',
                                help='List of stars to process',
                                type=str,
-                               default=TODODIR,
+                               default='todo.txt',
     )
     parent_parser.add_argument('--in', '--input', '--inpdir', 
                                metavar='path',
@@ -48,12 +35,19 @@ def main():
                                type=str,
                                default=INPDIR,
     )
-    parent_parser.add_argument('--info', '--information',
+    parent_parser.add_argument('--infdir',
+                               metavar='path',
+                               dest='infdir',
+                               help='Path to relevant pySYD information',
+                               type=str,
+                               default=INFDIR,
+    )
+    parent_parser.add_argument('--info', '--information', 
                                metavar='path',
                                dest='info',
-                               help='Path to star info',
+                               help='List of stellar parameters and options',
                                type=str,
-                               default=INFODIR,
+                               default='star_info.csv',
     )
     parent_parser.add_argument('--out', '--outdir', '--output',
                                metavar='path',
@@ -69,16 +63,13 @@ def main():
                                action='store_true',
     )
 
-#####################################################################
-# Initial and/or final data treatment + related processes
-#
 
     main_parser = argparse.ArgumentParser(add_help=False)
 
-    main_parser.add_argument( '-b', '--bg', '--background',
+    main_parser.add_argument('-b', '--bg', '--background',
                              dest='background',
-                             help='Turn off the automated background fitting routine',
-                             default=True, 
+                             help='Turn off the routine that determines the stellar background contribution',
+                             default=True,
                              action='store_false',
     )
     main_parser.add_argument('-d', '--show', '--display',
@@ -87,11 +78,24 @@ def main():
                              default=False, 
                              action='store_true',
     )
-    main_parser.add_argument('-g', '--globe', '--global', 
-                             dest='globe',
-                             help='Do not estimate global asteroseismic parameters (i.e. numax or dnu)',
-                             default=True, 
+    main_parser.add_argument('-e', '--est', '--excess',
+                             dest='excess',
+                             help='Turn off the optional module that estimates numax',
+                             default=True,
                              action='store_false',
+    )
+    main_parser.add_argument('-g', '--globe', '--global',
+                             dest='globe',
+                             help='Turn off the main module that estimates global properties',
+                             default=True,
+                             action='store_false',
+    )
+    main_parser.add_argument('--gap', '--gaps', 
+                             metavar='n',
+                             dest='gap',
+                             help="What constitutes a time series 'gap' (i.e. n x the cadence)",
+                             type=int,
+                             default=20, 
     )
     main_parser.add_argument('-k', '--kc', '--kepcorr', 
                              dest='kep_corr',
@@ -99,30 +103,17 @@ def main():
                              default=False, 
                              action='store_true',
     )
-    main_parser.add_argument('--ofa', '--ofactual',
+    main_parser.add_argument('--of', '--over', '--oversample',
                              metavar='n',
-                             dest='of_actual',
-                             help='The oversampling factor (OF) of the input PS',
+                             dest='oversampling_factor',
+                             help='The oversampling factor (OF) of the input power spectrum',
                              type=int,
                              default=None,
     )
-    main_parser.add_argument('--ofn', '--ofnew',
-                             metavar='n',
-                             dest='of_new',
-                             help='The OF to be used for the first iteration',
-                             type=int,
-                             default=None,
-    )
-    main_parser.add_argument('-o', '--over', '--overwrite',
+    main_parser.add_argument('-o', '--overwrite',
                              dest='overwrite',
                              help='Overwrite existing files with the same name/path',
                              default=False, 
-                             action='store_true',
-    )
-    main_parser.add_argument('-p', '--par', '--parallel', 
-                             dest='parallel',
-                             help='Use parallel processing for data analysis',
-                             default=False,
                              action='store_true',
     )
     main_parser.add_argument('-s', '--save',
@@ -139,23 +130,13 @@ def main():
                              nargs='*',
                              default=None,
     )
-    main_parser.add_argument('-t', '--test', 
-                             dest='testing',
-                             help='Extra verbose output for testing functionality',
-                             default=False, 
+    main_parser.add_argument('-x', '--stitch', '--stitching',
+                             dest='stitch',
+                             help="Correct for large gaps in time series data by 'stitching' the light curve",
+                             default=False,
                              action='store_true',
     )
-    main_parser.add_argument('-x', '--ex', '--excess',
-                             dest='excess',
-                             help='Turn off the find excess routine',
-                             default=True, 
-                             action='store_false',
-    )
 
-#####################################################################
-# CLI options relevant for estimating an approximate numax
-# (optional routine)
-#
 
     excess = main_parser.add_argument_group('Estimate numax')
 
@@ -173,9 +154,9 @@ def main():
                         type=float,
     )
     excess.add_argument('--bm', '--mode', '--bmode',
-                        metavar='mode',
+                        metavar='str',
                         choices=["mean", "median", "gaussian"],
-                        dest='mode',
+                        dest='bin_mode',
                         help='Binning mode',
                         default='mean',
                         type=str,
@@ -210,14 +191,11 @@ def main():
                         metavar='freq', 
                         dest='upper_ex',
                         help='Upper frequency limit of PS',
-                        default=6000.0,
+                        default=8000.0,
                         type=float,
     )
 
 
-#####################################################################
-# CLI options relevant to the background-fitting
-#
 
     background = main_parser.add_argument_group('Background Fit')
 
@@ -240,17 +218,11 @@ def main():
                             default=False,
                             action='store_true',
     )
-    background.add_argument('-i', '--include', 
-                            dest='include', 
-                            help="Include metric values in verbose output, default is `False`.",
-                            default=False, 
-                            action='store_true',
-    )
     background.add_argument('--iw', '--indwidth',
                             metavar='value', 
                             dest='ind_width', 
                             help='Width of binning for PS [in muHz]',
-                            default=20., 
+                            default=20.0, 
                             type=float,
     )
     background.add_argument('--laws', '--nlaws', 
@@ -285,7 +257,7 @@ def main():
                             metavar='freq', 
                             dest='upper_bg',
                             help='Upper frequency limit of PS',
-                            default=6000.0,
+                            default=8000.0,
                             type=float,
     )
 
@@ -297,7 +269,7 @@ def main():
 
     numax.add_argument('--ew', '--exwidth',
                        metavar='value', 
-                       dest='width',
+                       dest='ex_width',
                        help='Fractional value of width to use for power excess, where width is computed using a solar scaling relation.',
                        default=1.0,
                        type=float,
@@ -334,9 +306,6 @@ def main():
                        type=float,
     )
 
-#####################################################################
-# CLI options relevant to characteristic frequency spacing (dnu)
-#
 
     dnu = main_parser.add_argument_group('Deriving dnu')
 
@@ -377,9 +346,6 @@ def main():
                      type=float,
     )
 
-#####################################################################
-# CLI options relevant to the echelle diagram (ED)
-#
 
     echelle = main_parser.add_argument_group('Echelle diagram')
 
@@ -403,7 +369,7 @@ def main():
                          default=False, 
                          action='store_true',
     )
-    echelle.add_argument('-e', '--ie', '-interpech', '--interpech',
+    echelle.add_argument('-i', '--ie', '-interpech', '--interpech',
                          dest='interp_ech',
                          help='Turn on the interpolation of the output ED',
                          default=False,
@@ -453,9 +419,6 @@ def main():
                          type=float,
     )
 
-#####################################################################
-# CLI options relevant to the sampling routine
-#
 
     mcmc = main_parser.add_argument_group('Sampling')
 
@@ -473,13 +436,32 @@ def main():
                       action='store_true',
     )
 
-    sub_parser = parser.add_subparsers(title='pySYD modes', dest='command')
+# Different parsers
 
-#####################################################################
-# pySYD mode loads in data for a single target but does not run
-# -> still under development 
-# idea is to have options to plot data, etc.
-#
+    sub_parser = parser.add_subparsers(title='pySYD modes', dest='mode')
+
+    parser_display = sub_parser.add_parser('display',
+                                           conflict_handler='resolve',
+                                           parents=[parent_parser, main_parser],
+                                           formatter_class=argparse.MetavarTypeHelpFormatter,
+                                           help='Display pertinent information',
+                                        )
+
+    parser_display.add_argument('-c', '--cols', '--columns',
+                                dest='columns',
+                                help='Show columns of interest in a condensed format',
+                                default=False,
+                                action='store_true',
+    )
+    parser_display.add_argument('-d', '--show', '--display',
+                                dest='show',
+                                help='Do not show output figures',
+                                default=True, 
+                                action='store_false',
+    )
+
+    parser_display.set_defaults(func=pipeline.display)
+
 
     parser_load = sub_parser.add_parser('load',
                                         conflict_handler='resolve',
@@ -491,10 +473,6 @@ def main():
     parser_load.set_defaults(func=pipeline.load)
 
 
-#####################################################################
-# Run pySYD in parallel
-#
-
     parser_parallel = sub_parser.add_parser('parallel', 
                                             conflict_handler='resolve',
                                             help='Run pySYD in parallel',
@@ -502,7 +480,7 @@ def main():
                                             formatter_class=argparse.MetavarTypeHelpFormatter,
                                             )
 
-    parser_parallel.add_argument('-n', '--nt', '--nthread', '--nthreads',
+    parser_parallel.add_argument('--nt', '--nthread', '--nthreads',
                                  metavar='n', 
                                  dest='n_threads',
                                  help='Number of processes to run in parallel',
@@ -512,10 +490,6 @@ def main():
 
     parser_parallel.set_defaults(func=pipeline.parallel)
 
-
-#####################################################################
-# Run the main pySYD pipeline on 1 or more targets
-#
 
 
     parser_run = sub_parser.add_parser('run',
@@ -528,24 +502,25 @@ def main():
     parser_run.set_defaults(func=pipeline.run)
 
 
-#####################################################################
-# Download examples and save local files for an easy execution
-# of the software
-#
-
     parser_setup = sub_parser.add_parser('setup', 
                                          parents=[parent_parser], 
                                          formatter_class=argparse.MetavarTypeHelpFormatter,
                                          help='Easy setup of relevant directories and files',
                                          )
+    parser_setup.add_argument('--dir', '--directory',
+                              dest='dir',
+                              help='Path to save setup files to (default=os.getcwd())',
+                              type=str,
+#                              default=os.path.abspath(os.getcwd()),
+    )
+    parser_setup.add_argument('-n', '--newpath', '--path',
+                              dest='new',
+                              help='Set up new path in pysyd init file',
+                              default=False,
+                              action='store_true',
+    )
     parser_setup.set_defaults(func=pipeline.setup)
 
-
-#####################################################################
-# Test new pySYD functionality
-# BRAND NEW: CURRENTLY UNDER DEVELOPMENT
-# (do not use, zero functionality)
-#
 
     parser_test = sub_parser.add_parser('test',
                                         conflict_handler='resolve',
@@ -566,7 +541,6 @@ def main():
                              default=False,
                              action='store_true',
     )
-
     parser_test.set_defaults(func=pipeline.test)
 
     args = parser.parse_args()

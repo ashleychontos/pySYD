@@ -11,6 +11,20 @@ from pysyd import utils
 from pysyd import plots
 
 
+
+import pickle
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import find_peaks
+from scipy.optimize import curve_fit
+from scipy.interpolate import InterpolatedUnivariateSpline
+from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
+
+from pysyd import models
+from pysyd import utils
+from pysyd import plots
+
+
 #####################################################################
 # Each star or "target" that is processed with pySYD
 # -> initialization loads in data for a single star
@@ -56,7 +70,6 @@ class Target:
     def __init__(self, star, args):
         """
         Creates a `pysyd.target.Target` object for each star that is processed.
-
         """
         self.name = star
         self.params, self.excess, self.background, self.globe, self.verbose = \
@@ -74,11 +87,9 @@ class Target:
         1) the find excess module to identify the any solar-like oscillations
         2) estimates the stellar background contributions before estimating the
            global asteroseismic parameters
-
         Returns
         -------
         None
-
         """
         # Run the (optional) estimate numax module
         if self.params[self.name]['excess']:
@@ -108,11 +119,9 @@ class Target:
         """
         Automatically finds power excess due to solar-like oscillations using a
         frequency-resolved, collapsed autocorrelation function (ACF).
-
         Returns
         -------
         None
-
         """
         self = utils.get_estimates(self)
         # Make sure the binning is specified, otherwise it cannot run
@@ -170,7 +179,6 @@ class Target:
     def collapsed_acf(self, b, start=0, max_iterations=5000, max_snr=100.):
         """
         Computes a collapsed autocorrelation function (ACF).
-
         Parameters
         ----------
         b : int
@@ -187,11 +195,9 @@ class Target:
             maximum number of interations to try in curve fitting routine. Default value is `5000`.
         max_snr : float
             maximum SNR corresponding to power excess. Default value is `100.0`.
-
         Returns
         -------
         None
-
         """
         constants = utils.Constants()
         # Computes a collapsed ACF using different "box" (or bin) sizes
@@ -247,11 +253,9 @@ class Target:
         The main pySYD pipeline routine. First it 
         Perform a fit to the granulation background and measures the frequency of maximum power (numax),
         the large frequency separation (dnu) and oscillation amplitude.
-
         Returns
         -------
         None
-
         """
         # Get initial guesses for relevant parameters
         self = utils.get_initial(self)
@@ -305,11 +309,9 @@ class Target:
     def fit_background(self):
         """
         Fits the stellar background contribution due to granulation. 
-
         Returns
         -------
         None
-
         """
         # Bin power spectrum to model stellar background/correlated red noise components
         bin_freq, bin_pow, bin_err = utils.bin_data(self.frequency, self.random_pow, width=self.background['ind_width'], mode=self.excess['mode'])
@@ -341,11 +343,9 @@ class Target:
         """
         Estimate the white noise level (in muHz) by taking the mean of
         the last 10% of the power spectrum.
-
         Returns
         -------
         None
-
         """
         mask = (self.frequency > (max(self.frequency)-0.1*max(self.frequency)))&(self.frequency < max(self.frequency))
         self.noise = np.mean(self.random_pow[mask])
@@ -356,16 +356,13 @@ class Target:
         Estimates amplitude of red noise components by using a smoothed version of the power
         spectrum with the power excess region masked out. This will take the mean of a specified 
         number of points (via -nrms, default=20) for each Harvey-like component.
-
         Parameters
         ----------
         a : List[float]
             initial guesses for the amplitudes of all Harvey components
-
         Returns
         -------
         None
-
         """
         # Exclude region with power excess and smooth to estimate red noise components
         boxkernel = Box1DKernel(int(np.ceil(self.background['box_filter']/self.resolution)))
@@ -394,7 +391,6 @@ class Target:
         Determines the best-fit model for the stellar granulation background in the power spectrum
         by iterating through several models, where the initial guess for the number of Harvey-like 
         component(s) to model is estimated from a solar scaling relation.
-
         Parameters
         ----------
         bounds : list
@@ -405,12 +401,10 @@ class Target:
             the AIC statistic
         paras : list
             the fitted parameters for each model that was explored
-
         Returns
         -------
         again : bool
             will return `True` if fitting failed and the iteration must be repeated, otherwise `False`.
-
         """
         # Get best-fit model
         self.bounds, self.bic, self.aic, self.paras = [], [], [], []
@@ -498,7 +492,6 @@ class Target:
         ----------
         use : str
             which metric to use for model selection, choices ~['bic','aic']. Default is `'bic'`.
-
         """
         if self.background['metric'] == 'bic':
             idx = self.bic.index(min(self.bic))
@@ -541,7 +534,6 @@ class Target:
     def _get_red_noise(self):
         """
         Calculates red noise level, or stellar background contribution, from power spectrum.
-
         Returns
         -------
         result : bool
@@ -582,11 +574,9 @@ class Target:
         The main pySYD pipeline routine. First it 
         Perform a fit to the granulation background and measures the frequency of maximum power (numax),
         the large frequency separation (dnu) and oscillation amplitude.
-
         Returns
         -------
         None
-
         """
         # get numax
         self.get_numax_smooth()
@@ -619,11 +609,9 @@ class Target:
     def get_numax_smooth(self, divide=True):
         """
         Estimate numax by smoothing the power spectrum and taking the peak. 
-
         Returns
         -------
         None
-
         """
         constants = utils.Constants()
         # Smoothing width for determining numax
@@ -659,11 +647,9 @@ class Target:
         ----------
         maxfev : int, optional
             maximum number of attempts for the scipy.curve_fit optimization step
-
         Returns
         -------
         None
-
         """
         guesses = [0.0,max(self.region_pow),self.obs_numax,(max(self.region_freq)-min(self.region_freq))/np.sqrt(8.0*np.log(2.0))]
         bb = ([-np.inf,0.0,min(self.region_freq),0.01],[np.inf,np.inf,max(self.region_freq),max(self.region_freq)-min(self.region_freq)])
@@ -684,16 +670,13 @@ class Target:
     def compute_acf(self, fft=True):
         """
         Compute the ACF of the smooth background corrected power spectrum.
-
         Parameters
         ----------
         fft : bool
             if true will use FFT to compute the ACF. Default value is `True`.
-
         Returns
         -------
         None
-
         """
         # Optional smoothing of PS to remove fine structure before computing ACF
         if int(self.globe['smooth_ps']) != 0:
@@ -724,7 +707,6 @@ class Target:
         different methods. By default, we have been using a Gaussian weighting
         centered on the expected value for dnu (determine from the pipeline).
         One can also "force" or provide a value for dnu.
-
         Parameters
         ----------
         method : str
@@ -734,7 +716,6 @@ class Target:
             - 'D' == Dennis == weighting technique
         guess : Optional[float]
             option to "force" a dnu value, but is `None` by default.
-
         """
         if self.params[self.name]['force']:
             guess = self.params[self.name]['guess']
@@ -773,7 +754,6 @@ class Target:
     def get_acf_cutout(self, threshold=1.0):
         """
         Gets the region in the ACF centered on the correct peak.
-
         Parameters
         ----------
         threshold : float
@@ -783,7 +763,6 @@ class Target:
         Returns
         -------
         None
-
         """
         # Calculate FWHM
         if list(self.lag[(self.lag<self.best_lag)&(self.auto<=self.best_auto/2.)]) != []:
@@ -837,16 +816,13 @@ class Target:
     def _get_ridges(self):
         """
         Create echelle diagram.
-
         Parameters
         ----------
         clip_value : float
             lower limit of distance modulus. Default value is `0.0`.
-
         Returns
         -------
         None
-
         """
         self.echelle()
         copy = self.z.flatten()
@@ -876,7 +852,6 @@ class Target:
     def echelle(self):
         """
         Creates an echelle diagram.
-
         Parameters
         ----------
         nox : int
@@ -885,7 +860,6 @@ class Target:
             number of orders (y-axis) to show in echelle diagram. Default value is `5`.
         startx : float
             lower limit of distance modulus. Default value is `0.0`.
-
         Returns
         -------
         smoothed : numpy.meshgrid
@@ -897,7 +871,6 @@ class Target:
         extent : List[float]
             The bounding box in data coordinates that the image will fill. 
             The image is stretched individually along x and y to fill the box.
-
         """
         if self.globe['smooth_ech'] is not None:
             boxkernel = Box1DKernel(int(np.ceil(self.globe['smooth_ech']/self.resolution)))
