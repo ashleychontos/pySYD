@@ -10,25 +10,6 @@ import multiprocessing as mp
 from astropy.stats import mad_std
 from astropy.timeseries import LombScargle as lomb
 
-from pysyd.plots import set_plot_params
-from pysyd.models import *
-from pysyd import INFDIR, INPDIR, OUTDIR
-
-
-import os
-import ast
-import glob
-import numpy as np
-import pandas as pd
-from tqdm import tqdm
-from itertools import chain
-from astropy.io import ascii
-import multiprocessing as mp
-from astropy.stats import mad_std
-from astropy.timeseries import LombScargle as lomb
-
-from pysyd import __file__
-from pysyd.plots import set_plot_params
 from pysyd.models import *
 
 
