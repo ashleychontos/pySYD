@@ -2,10 +2,14 @@
 User Guide
 **********
 
-Thank you for visiting our user guide and the ``pySYD`` documentation. 
+Thanks for stopping by the ``pySYD`` documentation and showing an interest to
+learn more about how the software (and asteroseismology) works -- we are absolutely 
+*thrilled*! 
 
-This is currently be expanded and developed in case you
-find any errors or stale links -- please let us know!
+The original target audience was for non-expert users and therefore, ``pySYD`` 
+was initially developed to be a strictly command-line, end-to-end (i.e. hands-off) tool.
+However, we have been actively developing other channels and compatibilities for 
+different usage.
 
 .. toctree::
    :titlesonly:

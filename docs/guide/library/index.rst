@@ -25,7 +25,7 @@ and :ref:`outputs<output>` will remain the same, *how you choose to use* ``pySYD
    :caption: How it works
 
    Inputs <input>
-   Main pipeline driver <pipeline>
+   Main pipelines <pipeline>
    Utility functions <utils>
    Target stars <target>
    Frequency distributions <models>	      
