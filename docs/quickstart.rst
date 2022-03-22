@@ -7,8 +7,8 @@ Quickstart
 The example on this page is assuming that the user already has 
 some basic-level `Python` experience.
 
-Installing & setting up
-#######################
+Installation & setup
+####################
 
 We recommend creating a local directory to keep all your pysyd-related data, results 
 and information in a single, easy-to-find location. ``pySYD`` also comes with a 

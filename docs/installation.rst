@@ -98,8 +98,8 @@ and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, us
 
 .. _installation/test:
 
-Testing your installation 
-#########################
+Test your installation 
+######################
 
 You can simply test your installation by using the help command in a terminal
 window, which should display the following output:
@@ -128,8 +128,8 @@ window, which should display the following output:
 
 .. _installation/setup:
 
-Setting up
-##########
+Setup
+#####
 
 We ***strongly encourage*** you to run this step regardless of how you intend to 
 use the software because it:
