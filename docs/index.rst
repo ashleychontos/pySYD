@@ -46,7 +46,7 @@ is too small!
    :maxdepth: 2
    :caption: Community
    :hidden: 
-   
+
    Our Vision <vision>
    attribution
    guidelines

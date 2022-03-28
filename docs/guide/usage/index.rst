@@ -1,6 +1,6 @@
-*****
-Usage
-*****
+***************
+``pySYD`` usage
+***************
 
 We are excited to share the software with you all!
 
@@ -12,5 +12,5 @@ We are excited to share the software with you all!
    :hidden:
 
    Command line <cli/index>
-   Jupyter notebook <nb/index>
+   Notebook tutorials <nb/index>
    Other usage <other/index>
