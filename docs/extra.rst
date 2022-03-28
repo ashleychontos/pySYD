@@ -1,10 +1,60 @@
-.. _faq/index:
+********
+Overview
+********
+
+When running the software,  ``pySYD`` will look in the following paths:
+
+- ``INFDIR`` : '~/path/to/local/pysyd/directory/info'
+- ``INPDIR`` : '~/path/to/local/pysyd/directory/data'
+- ``OUTDIR`` : '~/path/to/local/pysyd/directory/results'
+
+which by default, is the absolute path of the current working directory (think wherever you
+ran setup from).
+
+A ``pySYD`` pipeline ``Target`` class object has two main function calls:
+
+#. The first module :
+    * **Summary:** a crude, quick way to identify the power excess due to solar-like oscillations
+    * This uses a heavy smoothing filter to divide out the background and then implements a frequency-resolved, collapsed 
+      autocorrelation function (ACF) using 3 different ``box`` sizes
+    * The main purpose for this first module is to provide a good starting point for the
+      second module. The output from this routine provides a rough estimate for numax, which is translated 
+      into a frequency range in the power spectrum that is believed to exhibit characteristics of p-mode
+      oscillations
+#. The second module : 
+    * **Summary:** performs a more rigorous analysis to determine both the stellar background contribution
+      as well as the global asteroseismic parameters.
+    * Given the frequency range determined by the first module, this region is masked out to model 
+      the white- and red-noise contributions present in the power spectrum. The fitting procedure will
+      test a series of models and select the best-fit stellar background model based on the BIC.
+    * The power spectrum is corrected by dividing out this contribution, which also saves as an output text file.
+    * Now that the background has been removed, the global parameters can be more accurately estimated. Numax is
+      estimated by using a smoothing filter, where the peak of the heavily smoothed, background-corrected power
+      spectrum is the first and the second fits a Gaussian to this same power spectrum. The smoothed numax has 
+      typically been adopted as the default numax value reported in the literature since it makes no assumptions 
+      about the shape of the power excess.
+    * Using the masked power spectrum in the region centered around numax, an autocorrelation is computed to determine
+      the large frequency spacing.
+
+.. note::
+
+    By default, both modules will run and this is the recommended procedure if no other information 
+    is provided. 
+
+    If stellar parameters like the radius, effective temperature and/or surface gravity are provided in the **info/star_info.csv** file, ``pySYD`` 
+    can estimate a value for numax using a scaling relation. Therefore the first module can be bypassed,
+    and the second module will use the estimated numax as an initial starting point.
+
+    There is also an option to directly provide numax in the **info/star_info.csv** (or via command line, 
+    see :ref:`advanced usage<advanced>` for more details), which will override the value found in the first module. This option 
+    is recommended if you think that the value found in the first module is inaccurate, or if you have a visual 
+    estimate of numax from the power spectrum.
+
+
 
 ****
 FAQs
 ****
-
-
 
 #. I'm getting an error. What do I do?
 	
@@ -54,3 +104,28 @@ FAQs
 #. What can I do to change how the echelle plot looks?
 	
 	To smooth the echelle diagram via interpolation, use the ``--ie`` flag. You can also smooth the echelle diagram by specifying a box filter in muHz using the ``--se`` flag (ie. ``--se 5``). Another option is to change the width (dnu modulus) and height (frequency) of the axes by specifying ``--xe`` and ``--ye``. Lastly, there's also an option to change the clip value with ``--ce``. 
+
+******
+Vision
+******
+
+There has been a growing interest from the broader astronomy community, 
+recognizing the utility in the application of asteroseismology. 
+
+We recognized the very straightforward solution to this problem -- take one of
+the closed-source pipelines that is benchmarked to *Kepler* legacy results and
+translate it to an open-source language, thus killing two birds with one stone.
+We also saw it as an *opportunity* to establish the much-needed connection
+with non-expert astronomers that recognize the utility of asteroseismology.
+
+Therefore the initial vision of this project was intended to be a direct 
+translation of the IDL-based ``SYD`` pipeline, which has been extensively 
+used to measure asteroseismic parameters for many *Kepler* stars and tested 
+against other closed-source pipelines. While many of the resident experts
+are still clinging to their IDL, there was a gap growing between experts 
+and new incoming students, the latter who typically possess some basic
+`Python` knowledge. for mentoring new or younger
+students -- most of them coming in with some basic `Python` knowledge.
+This was actually the best thing that could've happened for us because it
+was basically like having our own beta testers, which has ultimately 
+helped make pySYD even better than it already was!

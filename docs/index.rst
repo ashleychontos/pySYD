@@ -48,7 +48,6 @@ is too small!
    :hidden: 
    
    Our Vision <vision>
-   related
    attribution
    guidelines
 

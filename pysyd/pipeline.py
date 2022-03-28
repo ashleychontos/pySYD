@@ -10,7 +10,7 @@ from pysyd import plots
 from pysyd.target import Target
 
 
-def display(args=None, stars=None, mode='display'):
+def display(args=None, stars=None, mode='display',):
     """
     
     This is experimental and meant to be helpful for developers or anyone
@@ -32,7 +32,7 @@ def display(args=None, stars=None, mode='display'):
     args = utils.Parameters(args)
 
 
-def load(args=None, star=None, verbose=False, command='run'):
+def load(args=None, stars=None, mode='load',):
     """
     
     Module to load in all the relevant information and dictionaries
@@ -70,7 +70,7 @@ def load(args=None, star=None, verbose=False, command='run'):
     return args
 
 
-def run(args):
+def run(args=None, stars=None, mode='run',):
     """
     
     Main function to initiate the pySYD pipeline (consecutively, not
@@ -129,7 +129,7 @@ def pipe(group, args, count=0):
     return count
 
 
-def parallel(args):
+def parallel(args=None, stars=None, mode='parallel',):
     """
     
     Run ``pySYD`` in parallel for a large number of stars
@@ -161,7 +161,7 @@ def parallel(args):
         utils.scrape_output(args)
 
 
-def test(args):
+def test(args=None, stars=None, mode='test',):
     """
     
     This is experimental and meant to be helpful for developers or anyone

@@ -16,11 +16,11 @@ We are excited to share the software with you all!
    intro
    input
    pipeline
-   Utility functions <utils>
    target
    models	      
    plots
    output
+   Utility functions <utils>
 
 
 About

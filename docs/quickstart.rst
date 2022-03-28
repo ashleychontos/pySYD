@@ -59,13 +59,14 @@ You may have noticed that, for this last point, we used the optional
       - example data saved
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
     
-As shown above, the ``pySYD`` setup feature downloaded example data and other relevant 
-information from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_ and
-therefore, you are now ready to become an asteroseismologist!
+As shown above, the feature downloaded example data and other relevant items
+from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_. 
+
+You are now ready to use ``pySYD`` and become an asteroseismologist (if you weren't one already)!
 
 .. important::
 
-    Time and frequency in the time series and power spectrum file **must** be in the specified units (days and muHz) in order for the pipeline 
+    Time and frequency **must** be in the specified units (days and muHz) in order for the pipeline 
     to properly process the data and provide reliable results. 
 
 
