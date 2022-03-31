@@ -15,7 +15,6 @@ dist
 __pycache__
 #*columns.dict
 #*params.dict
-examples
-tutorials/data
-tutorials/results
+#examples
+tutorials
 website
