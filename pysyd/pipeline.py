@@ -1,16 +1,10 @@
-# Import external modules
-import os
-import subprocess
-import pandas as pd
-
 # Import relevant, local pySYD modules
-import pysyd
 from pysyd import utils
 from pysyd import plots
 from pysyd.target import Target
 
 
-def display(args=None, stars=None, mode='display',):
+def display(args):
     """
     
     This is experimental and meant to be helpful for developers or anyone
@@ -32,7 +26,7 @@ def display(args=None, stars=None, mode='display',):
     args = utils.Parameters(args)
 
 
-def load(args=None, stars=None, mode='load',):
+def load(args):
     """
     
     Module to load in all the relevant information and dictionaries
@@ -59,18 +53,12 @@ def load(args=None, stars=None, mode='load',):
             current data available for the provided target
 
     """
-    # If running from something other than command line
-    if args is None:
-        # Use container class as a base to add args to
-        args = utils.Constants()
-        assert star is not None, "If using this method, please provide the 'star' keyword argument \ni.e. the star to be processed and try again."
-        args.stars = [star]
     # Load relevant pySYD parameters
-    args = utils.get_info(args)
+    args = utils.Parameters(args)
     return args
 
 
-def run(args=None, stars=None, mode='run',):
+def run(args):
     """
     
     Main function to initiate the pySYD pipeline (consecutively, not
@@ -82,21 +70,18 @@ def run(args=None, stars=None, mode='run',):
 
 
     """
-    # Load in relevant information and data
-    args = load(args)
+    # Load relevant pySYD parameters
+    args = utils.Parameters(args)
     # Run single batch of stars
-    count = pipe(args.params['stars'], args)
+    pipe(args.params['stars'], args)
     # check to make sure that at least one star was successfully run (i.e. there are results)  
-    if count != 0:
-        if args.verbose:
-            print(' - combining results into single csv file')
-            print('------------------------------------------------------')
-            print()
-        # Concatenates output into two files
-        utils.scrape_output(args)
+    if args.params['verbose']:
+        print(' - combining results into single csv file\n------------------------------------------------------\n')
+    # Concatenates output into two files
+    utils.scrape_output(args)
 
 
-def pipe(group, args, count=0):
+def pipe(group, args):
     """
     
     This function is called by both ``pysyd.pipeline.run`` and ``pysyd.pipeline.parallel``
@@ -115,21 +100,18 @@ def pipe(group, args, count=0):
             the number of successful stars processed by ``pySYD`` for a given group of stars
     """
     # Iterate through and run stars in a given star 'group'
-    for star in group:
-        single = Target(star, args)
-        # Makes sure a target has a power spectrum before processing
-        if hasattr(single, 'ps'):
-            count+=1
-            single.run_syd()
+    for name in group:
+        star = Target(name, args)
+        # Makes sure a target is 'ok' before processing
+        if star.ok:
+            star.process_star()
         else:
             # Only print data warnings when running pySYD in regular mode (i.e. not in parallel)
-            if args.command != 'parallel':
-                print(' - cannot find data for %s'%single.name)
-    # Number of successfully processed stars
-    return count
+            if star.mode != 'parallel':
+                print(' - cannot find data for %s'%star.name)
 
 
-def parallel(args=None, stars=None, mode='parallel',):
+def parallel(args):
     """
     
     Run ``pySYD`` in parallel for a large number of stars
@@ -139,29 +121,25 @@ def parallel(args=None, stars=None, mode='parallel',):
             the command line arguments
     
     """
-    # Load in relevant information and data
-    args = load(args)
     # Import relevant (external) python modules
     import numpy as np
     import multiprocessing as mp
+    # Load relevant pySYD parameters
+    args = utils.Parameters(args)
     # Creates the separate, asyncrhonous (nthread) processes
     pool = mp.Pool(args.n_threads)
     result_objects = [pool.apply_async(pipe, args=(group, args)) for group in args.params['groups']]
     results = [r.get() for r in result_objects]
     pool.close()
     pool.join()               # postpones execution of the next line until all processes finish
-    count = np.sum(results)
       
-    # check to make sure that at least one star was successful (count == the number of successfully processed stars)   
-    if count != 0:
-        if args.verbose:
-            print('Combining results into single csv file.')
-            print()
-        # Concatenates output into two files
-        utils.scrape_output(args)
+    if args.params['verbose']:
+        print('Combining results into single csv file.\n')
+    # Concatenates output into two files
+    utils.scrape_output(args)
 
 
-def test(args=None, stars=None, mode='test',):
+def test(args):
     """
     
     This is experimental and meant to be helpful for developers or anyone
@@ -179,9 +157,8 @@ def test(args=None, stars=None, mode='test',):
         use the hacky, boolean flag ``-t`` or ``--test`` instead (for now)
     
     """
-    # Load in relevant information and data
-    args = load(args)
-    dnu_comparison()
+    # Load relevant pySYD parameters
+    args = utils.Parameters(args)
 
 
 def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
@@ -200,24 +177,23 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
 
     """
     # Import relevant (external) python modules
+    import os
+    import subprocess
     import pandas as pd
-    import os, subprocess
     # downloading data will generate output in terminal, so include this statement regardless
     print('\n\nDownloading relevant data from source directory:\n')
 
     # create info directory
-    if len(os.path.split(args.todo)) != 1:
-        path_info = os.path.split(args.todo)[0]
-        if not os.path.exists(path_info):
-            os.mkdir(path_info)
-            note+=' - created input file directory: %s \n'%path_info
+    if not os.path.exists(args.infdir):
+        os.mkdir(args.infdir)
+        note+=' - created input file directory: %s \n'%args.infdir
 
     # get example input files
-    infile1='%sinfo/todo.txt'%raw
-    outfile1=os.path.join(path_info,'info.txt')
+    infile1 = '%sinfo/todo.txt'%raw
+    outfile1 = os.path.join(args.infdir, args.todo)
     subprocess.call(['curl %s > %s'%(infile1, outfile1)], shell=True)
-    infile2='%sinfo/star_info.csv'%raw
-    outfile2=os.path.join(path_info,os.path.split(args.info)[-1])
+    infile2 = '%sinfo/star_info.csv'%raw
+    outfile2 = os.path.join(args.infdir, args.info)
     subprocess.call(['curl %s > %s'%(infile2, outfile2)], shell=True)
     
     # if not successful, make empty input files for reference
@@ -225,8 +201,8 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
         f = open(args.todo, "w")
         f.close()
     if not os.path.exists(outfile2):
-        df = pd.DataFrame(columns=utils.get_dict(type='columns')['csv'])
-        df.to_csv(args.info, index=False)
+        df = pd.DataFrame(columns=utils.get_dict(type='columns')['all'])
+        df.to_csv(outfile2, index=False)
         
     # create data directory
     if not os.path.exists(args.inpdir):

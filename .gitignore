@@ -5,6 +5,7 @@
 *.pyc
 .*
 *~
+todo
 build
 copy
 dist
@@ -15,4 +16,6 @@ __pycache__
 #*columns.dict
 #*params.dict
 examples
+tutorials/data
+tutorials/results
 website

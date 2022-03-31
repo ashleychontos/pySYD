@@ -1,20 +1,18 @@
 import os
-import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.convolution import convolve, Box1DKernel
 
+
 from pysyd import models
 from pysyd import utils
+
 
 
 def set_plot_params():
     """
     Sets the matplotlib parameters.
 
-    Returns
-    -------
-    None
 
     """
 
@@ -42,88 +40,116 @@ def set_plot_params():
 
 
 
-def plot_estimates(star, block=False):
+def make_plots(star):
+    # set defaults
+    set_plot_params()
+    if 'estimates' in star.params['plotting']:
+        plot_estimates(star)
+    if 'parameters' in star.params['plotting']:
+        plot_parameters(star)
+    if 'samples' in star.params['plotting']:
+        plot_samples(star)
+    if star.params['show']:
+        plt.show(block=False)
+
+
+def plot_estimates(star, ask=False, highlight=True):
     """
     Creates a plot summarizing the results of the find excess routine.
 
-    Parameters
-    ----------
-    star : target.Target
-        the pySYD pipeline object
+    Args:
+        star : target.Target
+            the pySYD pipeline object
 
-    Returns
-    -------
-    None
     
     """
     d = utils.get_dict(type='plots')
-    npanels = 3+star.excess['n_trials']
-    x, y = d[npanels]['x'], d[npanels]['y']
-    fig = plt.figure("Estimate numax results for %s"%star.name, figsize=d[npanels]['size'])
+    n_panels = 3+star.params['n_trials']
+    if not star.lc:
+        n_panels -= 1
+    n = 0
+    x, y = d[n_panels]['x'], d[n_panels]['y']
+    if ask:
+        set_plot_params()
+        fig = plt.figure("Current numax guesses for %s"%star.name, figsize=d[n_panels]['size'])
+    else:
+        fig = plt.figure("Estimate numax results for %s"%star.name, figsize=d[n_panels]['size'])
 
-    # Time series data
-    ax1 = plt.subplot(y, x, 1)
+    params = star.params['plotting']['estimates']
+    n += 1
     if star.lc:
-        ax1.plot(star.time, star.flux, 'w-')
-        ax1.set_xlim([min(star.time), max(star.time)])
-    ax1.set_title(r'$\rm Time \,\, series$')
-    ax1.set_xlabel(r'$\rm Time \,\, [days]$')
-    ax1.set_ylabel(r'$\rm Flux$')
+        # Time series data
+        ax1 = plt.subplot(y, x, n)
+        ax1.plot(params['time'], params['flux'], 'w-')
+        ax1.set_xlim([min(params['time']), max(params['time'])])
+        ax1.set_title(r'$\rm Time \,\, series$')
+        ax1.set_xlabel(r'$\rm Time \,\, [days]$')
+        ax1.set_ylabel(r'$\rm Flux$')
+    else:
+        n -= 1
 
+    n += 1
     # log-log power spectrum with crude background fit
-    ax2 = plt.subplot(y, x, 2)
-    ax2.loglog(star.freq, star.pow, 'w-')
-    ax2.set_xlim([min(star.freq), max(star.freq)])
-    ax2.set_ylim([min(star.pow), max(star.pow)*1.25])
+    ax2 = plt.subplot(y, x, n)
+    ax2.loglog(params['freq'], params['pow'], 'w-')
+    ax2.set_xlim([min(params['freq']), max(params['freq'])])
+    ax2.set_ylim([min(params['pow']), max(params['pow'])*1.25])
     ax2.set_title(r'$\rm Crude \,\, background \,\, fit$')
     ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
-    if star.excess['binning'] is not None:
-        ax2.loglog(star.bin_freq, star.bin_pow, 'r-')
-    ax2.loglog(star.freq, star.interp_pow, color='lime', linestyle='-', lw=2.0)
+    ax2.loglog(params['bin_freq'], params['bin_pow'], 'r-')
+    ax2.loglog(params['freq'], params['interp_pow'], color='lime', linestyle='-', lw=2.0)
 
+    n += 1
     # Crude background-corrected power spectrum
-    ax3 = plt.subplot(y, x, 3)
-    ax3.plot(star.freq, star.bgcorr_pow, 'w-')
-    ax3.set_xlim([min(star.freq), max(star.freq)])
-    ax3.set_ylim([0.0, max(star.bgcorr_pow)*1.25])
+    ax3 = plt.subplot(y, x, n)
+    ax3.plot(params['freq'], params['bgcorr_pow'], 'w-')
+    ax3.set_xlim([min(params['freq']), max(params['freq'])])
+    ax3.set_ylim([0.0, max(params['bgcorr_pow'])*1.25])
     ax3.set_title(r'$\rm Background \,\, corrected \,\, PS$')
     ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax3.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
 
+    n += 1
     # ACF trials to determine numax
-    for i in range(star.excess['n_trials']):
-        ax = plt.subplot(y, x, 4+i)
-        ax.plot(star.excess['results'][star.name][i+1]['x'], star.excess['results'][star.name][i+1]['y'], 'w-')
-        xran = max(star.excess['results'][star.name][i+1]['fitx'])-min(star.excess['results'][star.name][i+1]['fitx'])
-        ymax = star.excess['results'][star.name][i+1]['maxy']
-        ax.axvline(star.excess['results'][star.name][i+1]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
+    for i in range(star.params['n_trials']):
+        ax = plt.subplot(y, x, n+i)
+        ax.plot(params[i]['x'], params[i]['y'], 'w-')
+        xran = max(params[i]['fitx'])-min(params[i]['fitx'])
+        ymax = params[i]['maxy']
+        ax.axvline(params[i]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
         ax.set_title(r'$\rm Collapsed \,\, ACF \,\, [trial \,\, %d]$' % (i+1))
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
-        if star.excess['results'][star.name][i+1]['good_fit']:
-            ax.plot(star.excess['results'][star.name][i+1]['fitx'], star.excess['results'][star.name][i+1]['fity'], color='lime', linestyle='-', linewidth=1.5)
-            if max(star.excess['results'][star.name][i+1]['fity']) > star.excess['results'][star.name][i+1]['maxy']:
-                ymax = max(star.excess['results'][star.name][i+1]['fity'])
-            ax.axvline(star.excess['results'][star.name][i+1]['numax'], color='lime', linestyle='--', linewidth=0.75)
+        if params[i]['good_fit']:
+            ax.plot(params[i]['fitx'], params[i]['fity'], color='lime', linestyle='-', linewidth=1.5)
+            if max(params[i]['fity']) > params[i]['maxy']:
+                ymax = max(params[i]['fity'])
+            ax.axvline(params[i]['numax'], color='lime', linestyle='--', linewidth=0.75)
         yran = np.absolute(ymax)
-        ax.set_xlim([min(star.excess['results'][star.name][i+1]['x']), max(star.excess['results'][star.name][i+1]['x'])])
+        ax.set_xlim([min(params[i]['x']), max(params[i]['x'])])
         ax.set_ylim([-0.05, ymax+0.15*yran])
-        ax.annotate(r'$\rm SNR = %3.2f$' % star.excess['results'][star.name][i+1]['snr'], xy=(min(star.excess['results'][star.name][i+1]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
+        if 'best' in star.params and (i+1) == star.params['best'] and highlight:
+            for spine in ['bottom','left','top','right']:
+                ax.spines[spine].set_linewidth(2.)
+                ax.spines[spine].set_color('lime')
+            ax.tick_params(axis='both', which='both', colors='lime')
+            ax.yaxis.label.set_color('lime')
+            ax.xaxis.label.set_color('lime')
+            ax.title.set_color('lime')
+            ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18, color='lime')
+        else:
+            ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
 
     plt.tight_layout()
     if star.params['save']:
+        path = os.path.join(star.params['path'],'estimate_numax.png')
         if not star.params['overwrite']:
-            plt.savefig(utils.get_next(star,'find_numax.png'), dpi=300)
-        else:
-            plt.savefig(os.path.join(star.params[star.name]['path'],'find_numax.png'), dpi=300)
-    if not star.params['cli']:
-        with open('find_numax.pickle','wb') as f:
-            pickle.dump(fig, f)
-        star.pickles.append('find_numax.pickle')
+            path = utils.get_next(path)
+        plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
-    if block:
+    if ask:
         plt.show(block=False)
 
 
@@ -143,194 +169,203 @@ def plot_parameters(star, n_peaks=10):
     None
 
     """
-    if star.params['background'] and not star.params['global']:
-        npanels=3
+    if star.params['background'] and not star.params['globe']:
+        n_panels=3
     else:
-        npanels=9
+        n_panels=9
+    if not star.lc:
+        n_panels -= 1
+    n = 0
     d = utils.get_dict(type='plots')
-    x, y = d[npanels]['x'], d[npanels]['y']
-    fig = plt.figure("Global fit for %s"%star.name, figsize=d[npanels]['size'])
-    # Time series data
-    ax1 = fig.add_subplot(x, y, 1)
-    if star.lc:
-        ax1.plot(star.time, star.flux, 'w-')
-        ax1.set_xlim([min(star.time), max(star.time)])
-    ax1.set_title(r'$\rm Time \,\, series$')
-    ax1.set_xlabel(r'$\rm Time \,\, [days]$')
-    ax1.set_ylabel(r'$\rm Flux$')
+    x, y = d[n_panels]['x'], d[n_panels]['y']
+    fig = plt.figure("Global fit for %s"%star.name, figsize=d[n_panels]['size'])
 
+    params = star.params['plotting']['parameters']
+
+    n += 1
+    # Time series data
+    if star.lc:
+        ax1 = fig.add_subplot(x, y, n)
+        ax1.plot(params['time'], params['flux'], 'w-')
+        ax1.set_xlim([min(params['time']), max(params['time'])])
+        ax1.set_title(r'$\rm Time \,\, series$')
+        ax1.set_xlabel(r'$\rm Time \,\, [days]$')
+        ax1.set_ylabel(r'$\rm Flux$')
+    else:
+        n -= 1
+
+    n += 1
     # Initial background guesses
-    ax2 = fig.add_subplot(x, y, 2)
-    ax2.plot(star.frequency, star.random_pow, c='lightgrey', zorder=0, alpha=0.5)
-    ax2.plot(star.frequency[star.frequency < star.params[star.name]['ps_mask'][0]], star.random_pow[star.frequency < star.params[star.name]['ps_mask'][0]], 'w-', zorder=1)
-    ax2.plot(star.frequency[star.frequency > star.params[star.name]['ps_mask'][1]], star.random_pow[star.frequency > star.params[star.name]['ps_mask'][1]], 'w-', zorder=1)
-    ax2.plot(star.frequency[star.frequency < star.params[star.name]['ps_mask'][0]], star.smooth_pow[star.frequency < star.params[star.name]['ps_mask'][0]], 'r-', linewidth=0.75, zorder=2)
-    ax2.plot(star.frequency[star.frequency > star.params[star.name]['ps_mask'][1]], star.smooth_pow[star.frequency > star.params[star.name]['ps_mask'][1]], 'r-', linewidth=0.75, zorder=2)
+    ax2 = fig.add_subplot(x, y, n)
+    ax2.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
+    ax2.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['random_pow'][params['frequency'] < star.params['ps_mask'][0]], 'w-', zorder=1)
+    ax2.plot(params['frequency'][params['frequency'] > star.params['ps_mask'][1]], params['random_pow'][params['frequency'] > star.params['ps_mask'][1]], 'w-', zorder=1)
+    ax2.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['smooth_pow'][params['frequency'] < star.params['ps_mask'][0]], 'r-', linewidth=0.75, zorder=2)
+    ax2.plot(params['frequency'][params['frequency'] > star.params['ps_mask'][1]], params['smooth_pow'][params['frequency'] > star.params['ps_mask'][1]], 'r-', linewidth=0.75, zorder=2)
     if star.params['background']:
-        total = np.zeros_like(star.frequency)
-        for r in range(star.nlaws_orig):
-            model = models.background(star.frequency, [star.b_orig[r], star.a_orig[r]])
-            ax2.plot(star.frequency, model, color='blue', linestyle=':', linewidth=1.5, zorder=4)
+        total = np.zeros_like(params['frequency'])
+        for r in range(params['nlaws_orig']):
+            model = models.background(params['frequency'], [params['b_orig'][r], params['a_orig'][r]])
+            ax2.plot(params['frequency'], model, color='blue', linestyle=':', linewidth=1.5, zorder=4)
             total += model
-        total += star.noise
-        ax2.plot(star.frequency, total, color='blue', linewidth=2., zorder=5)
-        ax2.errorbar(star.bin_freq, star.bin_pow, yerr=star.bin_err, color='lime', markersize=0., fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=3)
-    ax2.axvline(star.params[star.name]['ps_mask'][0], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
-    ax2.axvline(star.params[star.name]['ps_mask'][1], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
-    ax2.axhline(star.noise, color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5, 5))
-    ax2.set_xlim([min(star.frequency), max(star.frequency)])
-    ax2.set_ylim([min(star.power), max(star.power)*1.25])
+        total += params['noise']
+        ax2.plot(params['frequency'], total, color='blue', linewidth=2., zorder=5)
+        ax2.errorbar(params['bin_freq'], params['bin_pow'], yerr=params['bin_err'], color='lime', markersize=0., fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=3)
+    ax2.axvline(star.params['ps_mask'][0], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
+    ax2.axvline(star.params['ps_mask'][1], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
+    ax2.axhline(params['noise'], color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5, 5))
+    ax2.set_xlim([min(params['frequency']), max(params['frequency'])])
+    ax2.set_ylim([min(params['random_pow']), max(params['random_pow'])*1.25])
     ax2.set_title(r'$\rm Initial \,\, guesses$')
     ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
     ax2.set_xscale('log')
     ax2.set_yscale('log')
 
-    n = np.logspace(np.log10(min(star.frequency)),np.log10(max(star.frequency)),10)
+    n += 1
     # Fitted background
-    ax3 = fig.add_subplot(x, y, 3)
-    ax3.plot(star.frequency, star.random_pow, c='lightgrey', zorder=0, alpha=0.5)
-    ax3.plot(star.frequency[star.frequency < star.params[star.name]['ps_mask'][0]], star.random_pow[star.frequency < star.params[star.name]['ps_mask'][0]], 'w-', linewidth=0.75, zorder=1)
-    ax3.plot(star.frequency[star.frequency > star.params[star.name]['ps_mask'][1]], star.random_pow[star.frequency > star.params[star.name]['ps_mask'][1]], 'w-', linewidth=0.75, zorder=1)
-    ax3.plot(star.frequency[star.frequency < star.params[star.name]['ps_mask'][0]], star.smooth_pow[star.frequency < star.params[star.name]['ps_mask'][0]], 'r-', linewidth=0.75, zorder=2)
-    ax3.plot(star.frequency[star.frequency > star.params[star.name]['ps_mask'][1]], star.smooth_pow[star.frequency > star.params[star.name]['ps_mask'][1]], 'r-', linewidth=0.75, zorder=2)
+    ax3 = fig.add_subplot(x, y, n)
+    ax3.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
+    ax3.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['random_pow'][params['frequency'] < star.params['ps_mask'][0]], 'w-', zorder=1)
+    ax3.plot(params['frequency'][params['frequency'] > star.params['ps_mask'][1]], params['random_pow'][params['frequency'] > star.params['ps_mask'][1]], 'w-', zorder=1)
+    ax3.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['smooth_pow'][params['frequency'] < star.params['ps_mask'][0]], 'r-', linewidth=0.75, zorder=2)
+    ax3.plot(params['frequency'][params['frequency'] > star.params['ps_mask'][1]], params['smooth_pow'][params['frequency'] > star.params['ps_mask'][1]], 'r-', linewidth=0.75, zorder=2)
     if star.params['background']:
-        total = np.zeros_like(star.frequency)
-        if len(star.pars) > 1:
-            for r in range(len(star.pars)//2):
-                yobs = models.background(star.frequency, [star.pars[r*2], star.pars[r*2+1]])
-                ax3.plot(star.frequency, yobs, color='blue', linestyle=':', linewidth=1.5, zorder=4)
+        total = np.zeros_like(params['frequency'])
+        if len(params['pars']) > 1:
+            for r in range(len(params['pars'])//2):
+                yobs = models.background(params['frequency'], [params['pars'][r*2], params['pars'][r*2+1]])
+                ax3.plot(params['frequency'], yobs, color='blue', linestyle=':', linewidth=1.5, zorder=4)
                 total += yobs
-        if len(star.pars)%2 == 0:
-            total += star.noise
-            ax3.axhline(star.noise, color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5,5))
+        if len(params['pars'])%2 == 0:
+            total += params['noise']
+            ax3.axhline(params['noise'], color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5,5))
         else:
-            total += star.pars[-1]
-            ax3.axhline(star.pars[-1], color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5,5))
-        ax3.plot(star.frequency, total, color='blue', linewidth=2., zorder=5)
-        ax3.errorbar(star.bin_freq, star.bin_pow, yerr=star.bin_err, color='lime', markersize=0.0, fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=3)
+            total += params['pars'][-1]
+            ax3.axhline(params['pars'][-1], color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5,5))
+        ax3.plot(params['frequency'], total, color='blue', linewidth=2., zorder=5)
+        ax3.errorbar(params['bin_freq'], params['bin_pow'], yerr=params['bin_err'], color='lime', markersize=0.0, fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=3)
     else:
-        ax3.axhline(star.noise, color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5,5))
-    ax3.axvline(star.params[star.name]['ps_mask'][0], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
-    ax3.axvline(star.params[star.name]['ps_mask'][1], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
-    if star.params['global']:
-        ax3.plot(star.frequency[(star.frequency >= n[2])&(star.frequency <= n[-2])], star.pssm[(star.frequency >= n[2])&(star.frequency <= n[-2])], color='yellow', linewidth=2.0, linestyle='dashed', zorder=6)
-    ax3.set_xlim([min(star.frequency), max(star.frequency)])
-    ax3.set_ylim([min(star.power), max(star.power)*1.25])
+        ax3.axhline(params['noise'], color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5,5))
+    ax3.axvline(star.params['ps_mask'][0], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
+    ax3.axvline(star.params['ps_mask'][1], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
+    if star.params['globe']:
+        mask = np.ma.getmask(np.ma.masked_inside(params['frequency'], star.params['ps_mask'][0], star.params['ps_mask'][1]))
+        ax3.plot(params['frequency'][mask], params['pssm'][mask], color='yellow', linewidth=2.0, linestyle='dashed', zorder=6)
+    ax3.set_xlim([min(params['frequency']), max(params['frequency'])])
+    ax3.set_ylim([min(params['random_pow']), max(params['random_pow'])*1.25])
     ax3.set_title(r'$\rm Fitted \,\, model$')
     ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax3.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
     ax3.set_xscale('log')
     ax3.set_yscale('log')
 
-    if star.params['background'] and not star.params['global']: 
+    if star.params['background'] and not star.params['globe'] and star.params['save']: 
         plt.tight_layout()
-        if star.params['save']:
-            plt.savefig(os.path.join(star.params[star.name]['path'],'background_only.png'), dpi=300)
-        if not star.params['cli']:
-            with open('background_only.pickle','wb') as f:
-                pickle.dump(fig, f)
-            star.pickles.append('background_only.pickle')
+        path = os.path.join(star.params['path'],'background_only.png')
+        if not star.params['overwrite']:
+            path = utils.get_next(path)
+        plt.savefig(path, dpi=300)
         if not star.params['show']:
             plt.close()
         return
 
+    n += 1
     # Smoothed power excess w/ gaussian
-    ax4 = fig.add_subplot(x, y, 4)
-    ax4.plot(star.region_freq, star.region_pow, 'w-', zorder=0)
-    idx = utils.return_max(star.region_freq, star.region_pow, index=True)
-    ax4.plot([star.region_freq[idx]], [star.region_pow[idx]], color='red', marker='s', markersize=7.5, zorder=0)
-    ax4.axvline([star.region_freq[idx]], color='white', linestyle='--', linewidth=1.5, zorder=0)
-    xx, yy = utils.return_max(star.new_freq, star.numax_fit)
-    ax4.plot(star.new_freq, star.numax_fit, 'b-', zorder=3)
+    ax4 = fig.add_subplot(x, y, n)
+    ax4.plot(params['region_freq'], params['region_pow'], 'w-', zorder=0)
+    idx = utils.return_max(params['region_freq'], params['region_pow'], index=True)
+    ax4.plot([params['region_freq'][idx]], [params['region_pow'][idx]], color='red', marker='s', markersize=7.5, zorder=0)
+    ax4.axvline([params['region_freq'][idx]], color='white', linestyle='--', linewidth=1.5, zorder=0)
+    xx, yy = utils.return_max(params['new_freq'], params['numax_fit'])
+    ax4.plot(params['new_freq'], params['numax_fit'], 'b-', zorder=3)
     ax4.axvline(xx, color='blue', linestyle=':', linewidth=1.5, zorder=2)
     ax4.plot([xx], [yy], color='b', marker='D', markersize=7.5, zorder=1)
-    ax4.axvline(star.exp_numax, color='r', linestyle='--', linewidth=1.5, zorder=1, dashes=(5,5))
+    ax4.axvline(params['exp_numax'], color='r', linestyle='--', linewidth=1.5, zorder=1, dashes=(5,5))
     ax4.set_title(r'$\rm Smoothed \,\, bg$-$\rm corrected \,\, PS$')
     ax4.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
-    ax4.set_xlim([min(star.region_freq), max(star.region_freq)])
+    ax4.set_xlim([min(params['region_freq']), max(params['region_freq'])])
 
+    mask = np.ma.getmask(np.ma.masked_inside(params['frequency'], star.params['ps_mask'][0], star.params['ps_mask'][1]))
+    freq = params['frequency'][mask]
+    psd = params['bgcorr_smooth'][mask]
+    peaks_f, peaks_p = utils.max_elements(freq, psd, star.params['n_peaks'])
+    n += 1
     # Background-corrected power spectrum with n highest peaks
-    mask = np.ma.getmask(np.ma.masked_inside(star.frequency, star.params[star.name]['ps_mask'][0], star.params[star.name]['ps_mask'][1]))
-    star.freq = star.frequency[mask]
-    star.psd = star.bg_corr_smooth[mask]
-    peaks_f, peaks_p = utils.max_elements(star.freq, star.psd, n_peaks)
-    ax5 = fig.add_subplot(x, y, 5)
-    ax5.plot(star.freq, star.psd, 'w-', zorder=0, linewidth=1.0)
+    ax5 = fig.add_subplot(x, y, n)
+    ax5.plot(freq, psd, 'w-', zorder=0, linewidth=1.0)
     ax5.scatter(peaks_f, peaks_p, s=25.0, edgecolor='r', marker='s', facecolor='none', linewidths=1.0)
     ax5.set_title(r'$\rm Bg$-$\rm corrected \,\, PS$')
     ax5.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax5.set_ylabel(r'$\rm Power$')
-    ax5.set_xlim([star.params[star.name]['ps_mask'][0], star.params[star.name]['ps_mask'][1]])
-    ax5.set_ylim([min(star.psd)-0.025*(max(star.psd)-min(star.psd)), max(star.psd)+0.1*(max(star.psd)-min(star.psd))])
+    ax5.set_xlim([star.params['ps_mask'][0], star.params['ps_mask'][1]])
+    ax5.set_ylim([min(psd)-0.025*(max(psd)-min(psd)), max(psd)+0.1*(max(psd)-min(psd))])
 
-    sig = 0.35*star.exp_dnu/2.35482 
-    weights = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(star.lag-star.exp_dnu)**2./(2.*sig**2))
+    sig = 0.35*params['exp_dnu']/2.35482 
+    weights = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(params['lag']-params['exp_dnu'])**2./(2.*sig**2))
     new_weights = weights/max(weights)
-    diff = list(np.absolute(star.lag-star.obs_dnu))
+    diff = list(np.absolute(params['lag']-params['obs_dnu']))
     idx = diff.index(min(diff))
+    n += 1
     # ACF for determining dnu
-    ax6 = fig.add_subplot(x, y, 6)
-    ax6.plot(star.lag, star.auto, 'w-', zorder=0, linewidth=1.)
-    ax6.scatter(star.peaks_l, star.peaks_a, s=30.0, edgecolor='r', marker='^', facecolor='none', linewidths=1.0)
-    ax6.axvline(star.exp_dnu, color='red', linestyle=':', linewidth=1.5, zorder=5)
-    ax6.axvline(star.obs_dnu, color='lime', linestyle='--', linewidth=1.5, zorder=2)
-    ax6.scatter(star.lag[idx], star.auto[idx], s=45.0, edgecolor='lime', marker='s', facecolor='none', linewidths=1.0)
-    ax6.plot(star.zoom_lag, star.zoom_auto, 'r-', zorder=5, linewidth=1.0)
-    ax6.plot(star.lag, new_weights, c='yellow', linestyle=':', zorder = 0, linewidth = 1.0)
+    ax6 = fig.add_subplot(x, y, n)
+    ax6.plot(params['lag'], params['auto'], 'w-', zorder=0, linewidth=1.)
+    ax6.scatter(params['peaks_l'], params['peaks_a'], s=30.0, edgecolor='r', marker='^', facecolor='none', linewidths=1.0)
+    ax6.axvline(params['exp_dnu'], color='red', linestyle=':', linewidth=1.5, zorder=5)
+    ax6.axvline(params['obs_dnu'], color='lime', linestyle='--', linewidth=1.5, zorder=2)
+    ax6.scatter(params['lag'][idx], params['auto'][idx], s=45.0, edgecolor='lime', marker='s', facecolor='none', linewidths=1.0)
+    ax6.plot(params['zoom_lag'], params['zoom_auto'], 'r-', zorder=5, linewidth=1.0)
+    ax6.plot(params['lag'], new_weights, c='yellow', linestyle=':', zorder = 0, linewidth = 1.0)
     ax6.set_title(r'$\rm ACF \,\, for \,\, determining \,\, \Delta\nu$')
     ax6.set_xlabel(r'$\rm Frequency \,\, separation \,\, [\mu Hz]$')
-    ax6.set_xlim([min(star.lag), max(star.lag)])
-    ax6.set_ylim([min(star.auto)-0.05*(max(star.auto)-min(star.auto)), max(star.auto)+0.1*(max(star.auto)-min(star.auto))])
+    ax6.set_xlim([min(params['lag']), max(params['lag'])])
+    ax6.set_ylim([min(params['auto'])-0.05*(max(params['auto'])-min(params['auto'])), max(params['auto'])+0.1*(max(params['auto'])-min(params['auto']))])
 
+    n += 1
     # dnu fit
-    ax7 = fig.add_subplot(x, y, 7)
-    ax7.plot(star.zoom_lag, star.zoom_auto, 'w-', zorder=0, linewidth=1.0)
-    ax7.axvline(star.obs_dnu, color='lime', linestyle='--', linewidth=1.5, zorder=2)
-    ax7.plot(star.new_lag, star.dnu_fit, color='lime', linewidth=1.5)
-    ax7.axvline(star.exp_dnu, color='red', linestyle=':', linewidth=1.5, zorder=5)
+    ax7 = fig.add_subplot(x, y, n)
+    ax7.plot(params['zoom_lag'], params['zoom_auto'], 'w-', zorder=0, linewidth=1.0)
+    ax7.axvline(params['obs_dnu'], color='lime', linestyle='--', linewidth=1.5, zorder=2)
+    ax7.plot(params['new_lag'], params['dnu_fit'], color='lime', linewidth=1.5)
+    ax7.axvline(params['exp_dnu'], color='red', linestyle=':', linewidth=1.5, zorder=5)
     ax7.set_title(r'$\rm \Delta\nu \,\, fit$')
     ax7.set_xlabel(r'$\rm Frequency \,\, separation \,\, [\mu Hz]$')
-    ax7.annotate(r'$\Delta\nu = %.2f$'%star.obs_dnu, xy=(0.025, 0.85), xycoords="axes fraction", fontsize=18, color='lime')
-    ax7.set_xlim([min(star.zoom_lag), max(star.zoom_lag)])
+    ax7.annotate(r'$\Delta\nu = %.2f$'%params['obs_dnu'], xy=(0.025, 0.85), xycoords="axes fraction", fontsize=18, color='lime')
+    ax7.set_xlim([min(params['zoom_lag']), max(params['zoom_lag'])])
 
-    if star.globe['interp_ech']:
+    if star.params['interp_ech']:
         interpolation='bilinear'
     else:
         interpolation='nearest'
+    n += 1
     # echelle diagram
-    ax8 = fig.add_subplot(x, y, 8)
-    ax8.imshow(star.z, extent=star.extent, interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap(star.globe['cmap']))
-    ax8.axvline([star.obs_dnu], color='white', linestyle='--', linewidth=1.5, dashes=(5, 5))
+    ax8 = fig.add_subplot(x, y, n)
+    ax8.imshow(params['z'], extent=params['extent'], interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap(star.params['cmap']))
+    ax8.axvline([params['obs_dnu']], color='white', linestyle='--', linewidth=1.5, dashes=(5, 5))
     ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
-    ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$'%star.obs_dnu)
+    ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % params['obs_dnu'])
     ax8.set_ylabel(r'$\rm \nu \,\, [\mu Hz]$')
-    ax8.set_xlim([star.extent[0], star.extent[1]])
-    ax8.set_ylim([star.extent[2], star.extent[3]])
+    ax8.set_xlim([params['extent'][0], params['extent'][1]])
+    ax8.set_ylim([params['extent'][2], params['extent'][3]])
 
-    yrange = max(star.yax)-min(star.yax)
-    ax9 = fig.add_subplot(x, y, 9)
-    ax9.plot(star.xax, star.yax, color='white', linestyle='-', linewidth=0.75)
+    yrange = max(params['yax'])-min(params['yax'])
+    n += 1
+    ax9 = fig.add_subplot(x, y, n)
+    ax9.plot(params['xax'], params['yax'], color='white', linestyle='-', linewidth=0.75)
     ax9.set_title(r'$\rm Collapsed \,\, \grave{e}chelle \,\, diagram$')
-    ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$'%star.obs_dnu)
+    ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % params['obs_dnu'])
     ax9.set_ylabel(r'$\rm Collapsed \,\, power$')
-    ax9.set_xlim([0.0, 2.0*star.obs_dnu])
-    ax9.set_ylim([min(star.yax)-0.025*(yrange), max(star.yax)+0.05*(yrange)])
+    ax9.set_xlim([0.0, 2.0*params['obs_dnu']])
+    ax9.set_ylim([min(params['yax'])-0.025*(yrange), max(params['yax'])+0.05*(yrange)])
 
     plt.tight_layout()
     if star.params['save']:
+        path = os.path.join(star.params['path'],'global_fit.png')
         if not star.params['overwrite']:
-            plt.savefig(utils.get_next(star,'global_fit.png'), dpi=300)
-        else:
-            plt.savefig(os.path.join(star.params[star.name]['path'],'global_fit.png'), dpi=300)
-    if not star.params['cli']:
-        with open('global_fit.pickle','wb') as f:
-            pickle.dump(fig, f)
-        star.pickles.append('global_fit.pickle')
+            path = utils.get_next(path)
+        plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
-    if star.params['testing']:
-        dnu_comparison(star)
 
 
 def plot_samples(star):
@@ -347,37 +382,36 @@ def plot_samples(star):
     None
     
     """
-    npanels = len(star.df.columns.values.tolist())
+    n_panels = len(star.df.columns.values.tolist())
     d = utils.get_dict(type='plots')
     params = utils.get_dict()
-    x, y = d[npanels]['x'], d[npanels]['y']
-    fig = plt.figure("Posteriors for %s"%star.name, figsize=d[npanels]['size'])
-    for i, col in enumerate(star.df.columns.values.tolist()):
+    x, y = d[n_panels]['x'], d[n_panels]['y']
+    fig = plt.figure("Posteriors for %s"%star.name, figsize=d[n_panels]['size'])
+
+    sample = star.params['plotting']['samples']
+    for i, col in enumerate(sample['df'].columns.values.tolist()):
         ax = plt.subplot(x, y, i+1)
-        ax.hist(star.df[col], bins=20, color='cyan', histtype='step', lw=2.5, facecolor='0.75')
+        ax.hist(sample['df'][col], bins=20, color='cyan', histtype='step', lw=2.5, facecolor='0.75')
         ax.set_yticks([])
         ax.set_yticklabels([])
         ax.set_title(params[col]['label'], fontsize=16)
     plt.tight_layout()
     if star.params['save']:
+        path = os.path.join(star.params['path'],'samples.png')
         if not star.params['overwrite']:
-            plt.savefig(utils.get_next(star,'samples.png'), dpi=300)
-        else:
-            plt.savefig(os.path.join(star.params[star.name]['path'],'samples.png'), dpi=300)
-    if not star.params['cli']:
-        with open('samples.pickle','wb') as f:
-            pickle.dump(fig, f)
-        star.pickles.append('samples.pickle')
+            path = utils.get_next(path)
+        plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 
 
-def _plot_fits(star, color='lime'):
+def plot_fits(star, color='lime'):
 
-    npanels=len(star.models)+1
+    n_panels=len(star.params['models'])+1
     d = utils.get_dict(type='plots')
-    x, y = d[npanels]['x'], d[npanels]['y']
-    fig = plt.figure("Different fits for %s"%star.name, figsize=d[npanels]['size'])
+    x, y = d[n_panels]['x'], d[n_panels]['y']
+    fig = plt.figure("Different fits for %s"%star.name, figsize=d[n_panels]['size'])
+
     ax = fig.add_subplot(x, y, 1)
     ax.plot(star.frequency, star.random_pow, c='lightgrey', zorder=0, alpha=0.5)
     ax.plot(star.frequency[star.frequency < star.params[star.name]['ps_mask'][0]], star.random_pow[star.frequency < star.params[star.name]['ps_mask'][0]], 'w-', zorder=1)
@@ -462,7 +496,7 @@ def _plot_fits(star, color='lime'):
         plt.close()
 
 
-def _time_series(star, npanels=1):
+def time_series(star, npanels=1):
 
     d = utils.get_dict(type='plots')
     x, y = d[npanels]['x'], d[npanels]['y']
@@ -483,7 +517,7 @@ def _time_series(star, npanels=1):
         plt.close()
 
 
-def _frequency_series(star, npanels=1):
+def frequency_series(star, npanels=1):
 
     d = utils.get_dict(type='plots')
     x, y = d[npanels]['x'], d[npanels]['y']
@@ -506,7 +540,7 @@ def _frequency_series(star, npanels=1):
         plt.close()
 
 
-def _dnu_comparison(star, methods=['M','A','D'], markers=['o','D','^'], styles=['--','-.',':'],
+def dnu_comparison(star, methods=['M','A','D'], markers=['o','D','^'], styles=['--','-.',':'],
                    colors=['#FF9408','#00A9E0','g'], names=['Maryum','Ashley','Dennis'], npanels=2):
 
     sig = 0.35*star.exp_dnu/2.35482 

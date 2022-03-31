@@ -73,11 +73,6 @@ Glossary of documentation terms
          * **definition:**
 
 
-.. math::
-
-    \mathrm{BIC} = 2k - 2\mathrm{ln}(\hat{L})
-
-
 .. glossary::
 
     cadence
@@ -114,8 +109,8 @@ Glossary of documentation terms
         scales with evolutionary state, logg, acoustic cutoff
         
     frequency resolution
-        the resolution of a :term:`power spectrum` is set by the reciprocal of the total length of 
-        the time series, :math:`(\Delta T)^{-1}`
+        the resolution of a :term:`power spectrum` is set by the total length of 
+        the time series :math:`(\Delta T^{-1})`
         
     FWHM
     full-width half maximum
@@ -217,7 +212,6 @@ Glossary of documentation terms
     power excess
         the region in the power spectrum believed to show solar-like oscillations is typically characterized by a
         Gaussian-like envelope of oscillations, :math:`G(\nu)`
-         * **definition:**
 
 .. math::
 
@@ -226,6 +220,11 @@ Glossary of documentation terms
 
 .. glossary::
     
+         * **variables:**
+           * :math:`A_{\mathrm{osc}}`: amplitude at frequency of maximum power
+           * :math:`\nu_{\mathrm{max}}`: center of the Gaussian-like envelope
+           * :math:`\rm \sigma_{osc}`: width of Gaussian
+
     PSD
     power spectral density
         when the power of a frequency spectrum is normalized s.t. it satisfies Parseval's theorem (which is just a fancy way of 
@@ -256,6 +255,9 @@ Glossary of documentation terms
         in asteroseismology, the radial order (:math:`n`) is the number of nodes from the surface to the center of the star.
         For solar-like oscillators, modes are typically characterized by high radial orders and low spherical degree. By 
         definition, modes of the same spherical degree and consecutive radial orders are separated by :term:`dnu`.
+
+    response function
+        :math:`R(\nu)`
         
     scaling relations
         empirical relations for fundamental stellar properties that are scaled with respect to the Sun, since it is the star 
