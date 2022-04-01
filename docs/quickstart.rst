@@ -92,25 +92,30 @@ Running your first asteroseismic analysis
 *****************************************
 
 The software is optimized for running many stars and therefore, many of the defaults 
-parameters should be changed in order to understand how the software works. 
+parameters should be changed in order to understand how the software works. We will
+use the command line examples to break everything down in great detail and then use
+the condensed version for the second example.
 
 
-A. Command line example
-#######################
+Command-line example
+####################
 
-For this example, we will display the resulting figures and printed output using the ``-d`` 
-and ``-v`` flags, for display and verbose, respectively. Please see our 
-`complete list <usage/cli/glossary>` of command-line flags.
+The most common way you will likely use ``pySYD`` is in `run` mode, which will process the
+provided star or stars. We can display the resulting figures and printed output using the 
+``-d`` and ``-v`` flags, for display and verbose, respectively. Please see our 
+:ref:`complete list <usage/cli/glossary>` of command-line flags. There are many many options 
+to make your experience as customizable as possible.
 
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-The last option (``--mc``) runs the pipeline for 200 steps, which will allow us to attach
+The last option (``--mc``) runs the pipeline for 200 steps, which will allow us to bootstrap
 uncertainties to the derived parameters. The ``--ux`` is an upper frequency limit for the
-first module that identifies the power Xcess due to solar-like oscillations. For this
-example, there are high frequency artefacts that we want to ignore. If you'd like to learn
-more about this, please see our notebook tutorial that walks through how to fix or ignore this.
+first module that identifies the power e**x**cess due to solar-like oscillations. In this
+case, there are high frequency artefacts that we would like to ignore. *If you'd like to learn
+more about this or are having a similar issue, please see our notebook tutorial that walks 
+through how to fix this problem.*
 
 The printed output for the above command is actually quite long, so we will break it down 
 into four different sections and explain each in more detail. In fact, each of the four sections
