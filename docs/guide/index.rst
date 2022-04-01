@@ -10,7 +10,8 @@ learn more about how the software (and asteroseismology) works -- we are absolut
    :caption: Library
 
    about
-   Getting started <intro>
+   Getting started <input>
+   library/index
    results
 
 

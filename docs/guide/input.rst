@@ -1,5 +1,5 @@
 ***************
-Intro
+Getting started
 ***************
 
 In case you somehow missed it -- there is a convenient way for you to get started right
