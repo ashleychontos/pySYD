@@ -35,20 +35,15 @@ Related Tools
 #############
 
 ``pySYD`` provides general purpose tools for performing asteroseismic analysis in the frequency domain.
-Several tools have been developed to solve related scientific and data analysis problems. On this page we
-list software that may complement ``pySYD``.
+Several tools have been developed to solve related scientific and data analysis problems. We have compiled 
+a list of software packages that performs similar or complementary analyses.
 
-Packages
-########
-
-We have compiled a list of software packages that performs similar or complementary analyses.
-
-* ``A2Z``: determining global parameters of the oscillations of solar-like stars
-   - language: `?`
-   - reference: yes <https://ui.adsabs.harvard.edu/abs/2010A%26A...511A..46M>
-   - documentation: no
-   - publicly available: no
-   - requires license: n/a
+ * ``A2Z``: determining global parameters of the oscillations of solar-like stars
+    - language: `?`
+    - reference: yes <https://ui.adsabs.harvard.edu/abs/2010A%26A...511A..46M>
+    - documentation: no
+    - publicly available: no
+    - requires license: n/a
 
 * ``Background``: an extension of ``DIAMONDS`` that fits the background signal of solar-like oscillators 
    - language: `c++11`

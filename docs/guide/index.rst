@@ -9,10 +9,19 @@ learn more about how the software (and asteroseismology) works -- we are absolut
 .. toctree::
    :titlesonly:
    :maxdepth: 2
-   :caption: Contents
+   :caption: Library
    
+   intro
+   input
    library/index
-   usage/index
+   output
+
+.. toctree::
+   :maxdepth: 2
+   :captions: Usage
+   Command line <cli/index>
+   Notebook tutorials <nb/index>
+   Other usage <other/index>
 
 TL;DR
 #####
