@@ -7,7 +7,8 @@ learn more about how the software (and asteroseismology) works -- we are absolut
 *thrilled*! 
 
 .. toctree::
-   :caption: Library
+   :titlesonly:
+   :caption: Contents
 
    about
    Getting started <input>
@@ -16,6 +17,7 @@ learn more about how the software (and asteroseismology) works -- we are absolut
 
 
 .. toctree::
+   :titlesonly:
    :caption: Usage
 
    Command line <cli/index>
