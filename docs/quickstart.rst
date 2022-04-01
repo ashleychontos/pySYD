@@ -67,8 +67,8 @@ You are now ready to use ``pySYD`` and become an asteroseismologist (if you were
 .. important::
 
     Time and frequency **must** be in the specified units (days and muHz) in order for the pipeline 
-    to properly process the data and provide reliable results. ***If you are unsure about this, we recommend 
-    providing the time series data *only* to let ``pySYD`` calculate the power spectrum for you.***
+    to properly process the data and provide reliable results. **If you are unsure about this, we recommend**
+    **providing the time series data *only* to let** ``pySYD`` **calculate the power spectrum for you.**
 
 
 The 411
@@ -274,7 +274,7 @@ We include a progress bar in the sampling step iff the verbose output is `True` 
 produce a nightmare mess.
 
     
-.. important::
+.. note::
 
     While observations have shown that solar-like oscillations have an approximately 
     Gaussian-like envelope, we have no reason to believe that they should behave exactly 
