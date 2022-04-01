@@ -97,18 +97,17 @@ Running your first asteroseismic analysis
 
 The software is optimized for running many stars and therefore, many of the defaults 
 parameters should be changed in order to understand how the software works. We will
-use the command line examples to break everything down, complete with explanations, and then use
-the second example to show a condensed run.
+use the command line example to break everything down with detailed explanations, and then 
+use the second example to show a condensed version.
 
 
 Command line
 ************
 
-The most common way you will likely use ``pySYD`` is in `run` mode, which will process the
-provided star or stars. We can display the resulting figures and printed output using the 
-``-d`` and ``-v`` flags, for display and verbose, respectively. Please see our 
-:ref:`complete list <guide/usage/cli/glossary>` of command-line flags. There are many many options 
-to make your experience as customizable as possible.
+The most common way you will likely use the software is in `run` mode, which will process a
+ star or stars. We can show the figures and verbose output using the ``-d`` and ``-v`` flags, 
+for display and verbose, respectively. Please see our :ref:`complete list <guide/usage/cli/glossary>` 
+of command-line flags. There are many many options to make your experience as customizable as possible!
 
 .. code-block::
 
