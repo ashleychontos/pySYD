@@ -18,9 +18,9 @@ learn more about how the software (and asteroseismology) works -- we are absolut
    :maxdepth: 2
    :captions: Usage
 
-   Command line <cli/index>
-   Notebook tutorials <nb/index>
-   Other usage <other/index>
+   Command line <guide/cli/index>
+   Notebook tutorials <guide/nb/index>
+   Other usage <guide/other/index>
 
 
 TL;DR
