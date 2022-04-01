@@ -98,6 +98,10 @@ parameters should be changed in order to understand how the software works. We w
 use the command line example to break everything down with detailed explanations, and then 
 use the second example to show a condensed version.
 
+    >>> from pysyd import utils
+    >>> from pysyd import plots
+    >>> from pysyd.target import Target
+
 
 Command line
 ************
@@ -195,7 +199,14 @@ Next it uses a "collapsed" autocorrelation function (ACF) technique with differe
 to identify localized power excess in the power spectrum due to solar-like oscillations. By
 default, this is done three times (or trials) and hence, get three different estimates.
 
-    >>> plots.plot_estimates()  # doctest: +SKIP
+    >>> name = '1435467'
+    >>> args = utils.Parameters(stars=[name])
+    >>> star = Target(name, args)
+    >>> if star.ok:
+    ...    star.estimate_parameters()
+    ...    plots.set_plot_params()
+    ...    plots.plot_estimates()
+
 
 .. plot::
     :align: center
@@ -316,5 +327,8 @@ Interactive mode
 
 A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
 that is processed is initialized as a new target object, which in this case, we'll call star.
+
+    >>> from pysyd import utils
+    >>> from pysyd.target import Target
 
 To learn more about what these results mean, please visit BLANK.
