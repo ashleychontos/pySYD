@@ -195,6 +195,25 @@ Next it uses a "collapsed" autocorrelation function (ACF) technique with differe
 to identify localized power excess in the power spectrum due to solar-like oscillations. By
 default, this is done three times (or trials) and hence, get three different estimates.
 
+    >>> plots.plot_estimates()  # doctest: +SKIP
+
+.. plot::
+    :align: center
+    :context: close-figs
+    :width: 60%
+
+    from pysyd import utils
+    from pysyd import plots
+    from pysyd.target import Target
+    import matplotlib.pyplot as plt
+
+    name='1435467'
+    args = utils.Parameters()
+    star = Target(name, args)
+    star.estimate_parameters()
+    plots.set_plot_params()
+    plots.plot_estimates()
+
 
 .. _stepthree:
 
