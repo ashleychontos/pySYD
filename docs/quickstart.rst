@@ -93,7 +93,7 @@ Each of the steps are discussed in detail below.
 Running your first asteroseismic analyses
 #########################################
 
-The software is optimized for running many stars and therefore, many of the defaults 
+The software is optimized for running many stars and hence, many of the defaults 
 parameters should be changed in order to understand how the software works. We will
 use the command line example to break everything down with detailed explanations, and then 
 use the second example to show a condensed version.
@@ -144,9 +144,9 @@ any further execution of the code.
     -----------------------------------------------------------
 
 
-The example is for a single star but for posterity, the :mod:`pysyd.pipeline` processes 
+The example is for a single star but for posterity, the :mod:`pysyd.pipeline.run` processes 
 stars consecutively in order. It took the star name, along with the command-line arguments and 
-created an instance of the ``pysyd.target.Target`` class. Initialization of this object
+created an instance of the :mod:`pysyd.target.Target` class. Initialization of this object
 will automatically search for and load in data for a star, as shown by the output above.
 
 It appears as though this star, KIC 1435467, was observed in *Kepler* short-cadence (e.g., 
