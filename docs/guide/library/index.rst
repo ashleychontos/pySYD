@@ -1,7 +1,7 @@
 .. module:: pysyd
 
 *****************
-``pySYD`` API
+``pySYD`` library
 *****************
 
 We are excited to share the software with you all!

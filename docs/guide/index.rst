@@ -7,7 +7,6 @@ learn more about how the software (and asteroseismology) works -- we are absolut
 *thrilled*! 
 
 .. toctree::
-   :maxdepth: 2
    :caption: Library
 
    intro
