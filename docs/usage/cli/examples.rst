@@ -84,13 +84,13 @@ based on the BIC statistic.
 
 The first, optional routine that estimates numax creates the following output figure:
 
-.. image:: figures/examples/1435467_numax.png
+.. image:: ../../_static/examples/1435467_numax.png
   :width: 680
   :alt: Numax estimates for KIC 1435467
 
 The derived parameters from the global fit are summarized below:
 
-.. image:: figures/examples/1435467_global.png
+.. image:: ../../_static/examples/1435467_global.png
   :width: 680
   :alt: Global fit of KIC 1435467
 
@@ -162,7 +162,7 @@ bootstrapping technique and typically n=200 is more than sufficient.
 
 Parameter posteriors:
 
-.. image:: figures/examples/1435467_samples.png
+.. image:: ../../_static/examples/1435467_samples.png
   :width: 680
   :alt: Parameter posteriors for KIC 1435467
   

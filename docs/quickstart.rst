@@ -60,15 +60,16 @@ You may have noticed that, for this last point, we used the optional
 As shown above, the feature downloaded example data and other relevant items
 from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_. 
 
-You are now ready to use ``pySYD`` and become an asteroseismologist!
+You are now ready to become an asteroseismologist!
 
-.. important::
+.. warning::
 
-    Time and frequency *must* be in the specified units (days and muHz) in order for the pipeline 
-    to properly process the data and provide reliable results. **If you are unsure about this, we recommend**
+    Time and frequency *must* be in the specified units in order for the pipeline to properly process 
+    the data and provide reliable results. **If you are unsure about this, we recommend**
     **ONLY providing the time series data in order to let** ``pySYD`` **calculate and
     normalize the power spectrum for you.** Again, if you choose to do this, the time series data
-    *must* be in units of days in order for the frequency array to be calculated correctly.
+    *must* be in units of days in order for the frequency array to be calculated correctly. For
+    more information on formatting and inputs, please see :ref:`here <library/input>`.
 
 
 The 411
@@ -102,14 +103,22 @@ use the second example to show a condensed version.
 As a script
 ***********
 
-The most common way you will use the software is in `run` mode, which will process a
-star or stars. We can show the figures and verbose output using the ``-d`` and ``-v`` flags, 
-for display and verbose, respectively. Please see our :ref:`complete list <guide/usage/cli/glossary>` 
-of command-line flags. There are many many options to make your experience as customizable as possible!
+Regardless of how you use the software, the most common way you will likely use `pySYD` is in
+run mode -- which is the mode that processes stars (consecutively, not in parallel). 
+
+We can show the figures and verbose output using the ``-d`` and ``-v`` flags, for display and verbose, 
+respectively. Please see our :ref:`complete list <usage/cli/glossary>` of command-line flags. 
+There are many many options to make your experience as customizable as possible!
+
+Open up a terminal window and enter the following command:
 
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
+
+Ok, let's dissect this. If you indeed used `pip install`, the binary (or executable) for ``pySYD``
+should be available. The entry point for ``pySYD`` is accessed through ``pysyd.cli.main``, which
+is the script where all command line information is available.
 
 The last option (``--mc``) runs the pipeline for 200 steps, which will allow us to bootstrap
 uncertainties to the derived parameters. The ``--ux`` is an upper frequency limit for the
@@ -195,31 +204,9 @@ Next it uses a "collapsed" autocorrelation function (ACF) technique with differe
 to identify localized power excess in the power spectrum due to solar-like oscillations. By
 default, this is done three times (or trials) and hence, get three different estimates.
 
-    >>> name = '1435467'
-    >>> args = utils.Parameters(stars=[name])
-    >>> star = Target(name, args)
-    >>> if star.ok:
-    ...    star.estimate_parameters()
-    ...    plots.set_plot_params()
-    ...    plots.plot_estimates()
-
-
-.. plot::
-    :align: center
-    :context: close-figs
-    :width: 60%
-
-    from pysyd import utils
-    from pysyd import plots
-    from pysyd.target import Target
-    import matplotlib.pyplot as plt
-
-    name='1435467'
-    args = utils.Parameters()
-    star = Target(name, args)
-    star.estimate_parameters()
-    plots.set_plot_params()
-    plots.plot_estimates()
+.. image:: _static/examples/1435467_estimates.png
+  :width: 680
+  :alt: Parameter estimates for KIC 1435467
 
 
 .. csv-table:: 'results/1435467/estimates.csv'
@@ -277,6 +264,10 @@ we have now implemented an automated background model selection. For reference,
 After much trial and error, the :term:`AIC` seems to perform better for our purposes - which
 is why this is now the default metric used.
 
+.. image:: _static/examples/1435467_global.png
+  :width: 680
+  :alt: Global parameters for KIC 1435467
+
 
 .. _stepfour:
 
@@ -309,6 +300,13 @@ would look comparable but with no progress bar and no parameter uncertainties.
      - press RETURN to exit
      - combining results into single csv file
     -----------------------------------------------------------
+
+
+.. image:: _static/examples/1435467_samples.png
+  :width: 680
+  :alt: KIC 1435467 posteriors
+
+^^ posteriors for KIC 1435467
 
 We include a progress bar in the sampling step iff the verbose output is `True` *and*
 ``pySYD`` is not executed in parallel mode. This is hard-wired since the latter would
@@ -354,6 +352,32 @@ that is processed is initialized as a new target object, which in this case, we'
     >>> from pysyd.target import Target
 
 hey
+
+    >>> name = '1435467'
+    >>> args = utils.Parameters(stars=[name])
+    >>> star = Target(name, args)
+    >>> if star.ok:
+    ...    star.estimate_parameters()
+    ...    plots.set_plot_params()
+    ...    plots.plot_estimates()
+
+
+.. plot::
+    :align: center
+    :context: close-figs
+    :width: 60%
+
+    from pysyd import utils
+    from pysyd import plots
+    from pysyd.target import Target
+    import matplotlib.pyplot as plt
+
+    name='1435467'
+    args = utils.Parameters()
+    star = Target(name, args)
+    star.estimate_parameters()
+    plots.set_plot_params()
+    plots.plot_estimates()
 
     >>> from pysyd import plots
 
