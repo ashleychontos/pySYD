@@ -1,5 +1,3 @@
-.. _quickstart/index:
-
 **********
 Quickstart
 **********
