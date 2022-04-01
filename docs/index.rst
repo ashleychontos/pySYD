@@ -32,7 +32,6 @@ is too small!
 .. toctree::
    :maxdepth: 2
    :caption: Getting Started
-   :hidden:
    
    installation
    quickstart
@@ -42,8 +41,7 @@ is too small!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Community
-   :hidden: 
+   :caption: Community 
 
    Our Vision <vision>
    attribution

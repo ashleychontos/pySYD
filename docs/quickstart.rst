@@ -90,8 +90,8 @@ Typically the software operates in four main steps:
 Each of the steps are discussed in detail below.
 
 
-Compute your first seismic parameters
-#####################################
+Compute your first asteroseismic parameters
+###########################################
 
 The software is optimized for running many stars and therefore, many of the defaults 
 parameters should be changed in order to understand how the software works. We will
