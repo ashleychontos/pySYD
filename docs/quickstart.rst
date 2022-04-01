@@ -1,8 +1,8 @@
 .. _quickstart/index:
 
-**********
-Quickstart
-**********
+***************
+Getting started
+***************
 
 The example on this page is assuming that the user already has 
 some basic-level `Python` experience.
@@ -71,8 +71,8 @@ You are now ready to use ``pySYD`` and become an asteroseismologist (if you were
     providing the time series data *only* to let ``pySYD`` calculate the power spectrum for you.***
 
 
-``pySYD`` summary
-#################
+The 411
+#######
 
 The intended audience for ``pySYD`` is for non-expert users. Therefore, the software was
 initially developed as a *strictly* command-line, end-to-end tool. However, recent updates have made 
@@ -80,23 +80,23 @@ initially developed as a *strictly* command-line, end-to-end tool. However, rece
 examples.
 
 In general, the software operates primarily in four steps:
- #. `Loads in parameters and data <stepone>`
- #. `Estimates starting points <steptwo>`
- #. `Fits global parameters <stepthree>`
- #. `Bootstraps uncertainties <stepfour>`
+ #. :ref:`Loads in parameters and data <stepone>`
+ #. :ref:`Estimates starting points <steptwo>`
+ #. :ref:`Fits global parameters <stepthree>`
+ #. :ref:`Estimates uncertainties <stepfour>`
 
 Each of the steps are discussed in more detail below.
 
-
+*****************************************
 Running your first asteroseismic analysis
-#########################################
+*****************************************
 
 The software is optimized for running many stars and therefore, many of the defaults 
 parameters should be changed in order to understand how the software works. 
 
 
 A. Command line example
-***********************
+#######################
 
 For this example, we will display the resulting figures and printed output using the ``-d`` 
 and ``-v`` flags, for display and verbose, respectively. Please see our 
@@ -119,7 +119,7 @@ correspond to the four main ``pySYD`` steps discussed in the summary above.
 .. _stepone:
 
 1. Load in parameters and data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+******************************
 
 If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
 the execution of the software. 
@@ -154,7 +154,7 @@ Since the star and data check out, we can move on.
 .. _steptwo:
 
 2. Estimates starting points
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+****************************
 
 For purposes of the example, we will assume that we do not know anything about its properties. 
 Typically we can provide optional inputs in many different ways but we won't here so it can 
@@ -187,10 +187,11 @@ Next it uses a "collapsed" autocorrelation function (ACF) technique with differe
 to identify localized power excess in the power spectrum due to solar-like oscillations. By
 default, this is done three times (or trials) and hence, get three different estimates.
 
+
 .. _stepthree:
 
 3. Fits global parameters
-^^^^^^^^^^^^^^^^^^^^^^^^^
+*************************
 
 A bulk of the heavy lifting is done in this main fitting routine, which is actually done 
 in two separate steps: 1) modeling and characterizing the stellar background and 2) determining 
@@ -235,10 +236,11 @@ we have now implemented an automated background model selection. For reference,
 After much trial and error, the :term:`AIC` seems to perform better for our purposes - which
 is why this is now the default metric used.
 
+
 .. _stepfour:
 
-4. Bootstraps uncertainties
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+4. Estimates uncertainties
+**************************
 
 If this was run in its default settings (with --mc 1) for a single iteration, the output
 would look comparable but with no progress bar and no parameter uncertainties.
