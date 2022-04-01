@@ -78,8 +78,8 @@ The intended audience for ``pySYD`` is for non-expert users. Therefore, the soft
 initially developed as a *strictly* command-line, end-to-end tool. However, recent updates have 
 ensured compatibility with interactive sessions (e.g., notebooks, IPython, etc.) as well.
 
-We will demonstrate both of these cases in examples below but please see our user guide if 
-you'd like more information on anything. 
+We will demonstrate both of these cases in examples below but please see our user guide for 
+more information. 
 
 Typically the software operates in four main steps:
  #. :ref:`Loads in parameters and data <stepone>`
@@ -90,8 +90,8 @@ Typically the software operates in four main steps:
 Each of the steps are discussed in detail below.
 
 
-Running your first asteroseismic analysis
-#########################################
+Compute your first seismic parameters
+#####################################
 
 The software is optimized for running many stars and therefore, many of the defaults 
 parameters should be changed in order to understand how the software works. We will
@@ -144,7 +144,7 @@ the execution of the software.
     -----------------------------------------------------------
 
 
-The example is for a single star but for posterity, the ``pysyd.pipeline.run`` processes 
+The example is for a single star but for posterity, the :mod:`pysyd.pipeline` processes 
 stars consecutively in order. It took the star name, along with the command-line arguments and 
 created an instance of the ``pysyd.target.Target`` class. Initialization of this object
 will automatically search for and load in data for a star, as shown by the output above.
@@ -152,8 +152,8 @@ will automatically search for and load in data for a star, as shown by the outpu
 It appears as though this star, KIC 1435467, was observed in *Kepler* short-cadence (e.g., 
 1-minute cadence) data - which was used to compute the (oversampled) power spectrum. It
 continued processing, which means that there were no issues finding and storing the data.
-There are some `InputError` exceptions in place here but just in case, there is an ``ok``
-attribute added in this step - literally meaning that the star is 'ok' to be processed.
+There are some `InputError` exceptions in place here but all :mod:`pysyd.target` class instances
+will have an ``ok`` attribute - literally meaning that the star is 'ok' to be processed.
 By default, the pipeline checks this attribute before moving on.
 
 Since the star and data check out, we can move on. 
