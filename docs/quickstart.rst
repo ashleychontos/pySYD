@@ -66,13 +66,13 @@ You are now ready to use ``pySYD`` and become an asteroseismologist!
 
     Time and frequency *must* be in the specified units (days and muHz) in order for the pipeline 
     to properly process the data and provide reliable results. **If you are unsure about this, we recommend**
-    **providing the time series data only in order to let ** ``pySYD`` **calculate and
+    **ONLY providing the time series data in order to let** ``pySYD`` **calculate and
     normalize the power spectrum for you.** Again, if you choose to do this, the time series data
     *must* be in units of days in order for the frequency array to be calculated correctly.
 
 
-The 411
-#######
+The 4-1-1
+#########
 
 The intended audience for ``pySYD`` is for non-expert users. Therefore, the software was
 initially developed as a *strictly* command-line, end-to-end tool. However, recent updates have 
@@ -90,21 +90,17 @@ Typically the software operates in four main steps:
 Each of the steps are discussed in detail below.
 
 
-Compute your first asteroseismic parameters
-###########################################
+Running your first asteroseismic analyses
+#########################################
 
 The software is optimized for running many stars and therefore, many of the defaults 
 parameters should be changed in order to understand how the software works. We will
 use the command line example to break everything down with detailed explanations, and then 
 use the second example to show a condensed version.
 
-    >>> from pysyd import utils
-    >>> from pysyd import plots
-    >>> from pysyd.target import Target
 
-
-Command line
-************
+As a script
+***********
 
 The most common way you will likely use the software is in `run` mode, which will process a
  star or stars. We can show the figures and verbose output using the ``-d`` and ``-v`` flags, 
@@ -322,13 +318,17 @@ produce a nightmare mess.
     the literature and we recommend that you do the same.***
 
 
-Interactive mode
-****************
+As a module
+***********
 
 A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
 that is processed is initialized as a new target object, which in this case, we'll call star.
 
     >>> from pysyd import utils
     >>> from pysyd.target import Target
+
+hey
+
+    >>> from pysyd import plots
 
 To learn more about what these results mean, please visit BLANK.
