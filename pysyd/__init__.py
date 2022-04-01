@@ -9,7 +9,7 @@ import sys
 __all__ = ['cli', 'pipeline', 'models', 'target', 'plots', 'utils']
 __author__ = 'ashley <achontos@hawaii.edu>'
 __package__ = 'pysyd'
-__version__ = '4.6.4'
+__version__ = '4.7.1'
 
 _ROOT = os.path.abspath(os.getcwd())
 INFDIR = os.path.join(_ROOT, 'info')

@@ -35,6 +35,12 @@ def main():
                                type=str,
                                default=INPDIR,
     )
+    parent_parser.add_argument('--cli',
+                               dest='cli',
+                               help='Running from command line (this should not be touched)',
+                               default=True,
+                               action='store_true',
+    )
     parent_parser.add_argument('--infdir',
                                metavar='str',
                                dest='infdir',

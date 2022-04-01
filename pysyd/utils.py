@@ -67,28 +67,19 @@ class Parameters(Constants):
         # makes sure to inherit constants
         super().__init__()
         self.get_defaults()
-        self.get_usage()
-        if self.params['cli']:
+        if not self.is_interactive():
             self.add_cli(args)
-        elif self.params['notebook']:
+        else:
             if stars is None:
                 self.star_list()
             else:
                 self.params['stars'] = stars
-        else:
-            return
         self.assign_stars()
 
 
-    def get_usage(self):
-        try:
-            get_ipython().__class__.__name__
-        except NameError:
-            self.shell = 'terminal'
-            self.params['cli'] = True
-        else:
-            self.shell = 'notebook'
-            self.params['notebook'] = True
+    def is_interactive(self):
+        import __main__ as main
+        return not hasattr(main, '__file__')
 
 
     def get_defaults(self, params={}):
