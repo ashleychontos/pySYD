@@ -1,28 +1,24 @@
-**********
-User Guide
-**********
+.. module:: pysyd
+
+*********************
+The ``pySYD`` library
+*********************
 
 Thanks for stopping by the ``pySYD`` documentation and showing an interest to
 learn more about how the software (and asteroseismology) works -- we are absolutely 
 *thrilled*! 
 
+
 .. toctree::
-   :titlesonly:
-   :caption: Contents
+   :caption: User Guide
 
    about
-   Getting started <input>
-   library/index
+   input
+   pipeline
+   target
+   models	      
+   Utilities <utils>
    output
-
-
-.. toctree::
-   :titlesonly:
-   :caption: Usage
-
-   Command line <cli/index>
-   Notebook tutorials <nb/index>
-   Other usage <other/index>
 
 
 TL;DR

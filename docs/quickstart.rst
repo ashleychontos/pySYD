@@ -129,7 +129,7 @@ correspond to the four main ``pySYD`` steps discussed in the summary above.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
-any further execution of the software. 
+any further execution of the code. 
 
 .. code-block::
 
