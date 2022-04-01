@@ -222,6 +222,13 @@ default, this is done three times (or trials) and hence, get three different est
     plots.plot_estimates()
 
 
+.. csv-table:: 'results/1435467/estimates.csv'
+   :header: "stars", "numax", "dnu", "snr"
+   :widths: 20, 20, 20, 20
+
+   1435467, 1438.27561061044, 72.3140769912867, 12.3801364686659
+
+
 .. _stepthree:
 
 3. Fits global parameters
@@ -306,6 +313,25 @@ would look comparable but with no progress bar and no parameter uncertainties.
 We include a progress bar in the sampling step iff the verbose output is `True` *and*
 ``pySYD`` is not executed in parallel mode. This is hard-wired since the latter would
 produce a nightmare mess.
+
+.. csv-table:: 'results/1435467/global.csv'
+   :header: "parameter", "value", "uncertainty"
+   :widths: 30, 20, 20
+
+   numax_smooth, 1303.82549513, 65.1861645150548
+   A_smooth, 1.6981881189944, 0.208329237417828
+   numax_gauss, 1354.18609943197, 43.0399300425255
+   A_gauss, 1.45587282712706, 0.286045233580998
+   FWHM, 284.631831313442, 64.5689284576161
+   dnu, 70.653293964844, 0.81171745376397
+   tau_1, 1069.91765124738, 2121.15050259705
+   sigma_1, 31.1026782311927, 42.9475567908216
+   tau_2, 218.303624326155, 20.2541392707925
+   sigma_2, 85.4836783903674, 3.68355287162928
+
+* matches expected output for model 4 selection - notice how there is no white noise term
+in the output. this is because the model preferred for this to be fixed
+   
 
     
 .. note::
