@@ -36,7 +36,7 @@ is too small!
    :hidden:
    
    installation
-   Quickstart <quickstart/index>
+   Quickstart <quickstart>
    User Guide <guide/index>
    Glossary <glossary>
 

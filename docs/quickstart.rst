@@ -4,8 +4,8 @@
 Getting started
 ***************
 
-The example on this page is assuming that the user already has 
-some basic-level `Python` experience.
+The examples on this page assumes that the user already has some basic-level knowledge or
+experience with `Python`.
 
 Installation & setup
 ####################
@@ -62,13 +62,13 @@ You may have noticed that, for this last point, we used the optional
 As shown above, the feature downloaded example data and other relevant items
 from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_. 
 
-You are now ready to use ``pySYD`` and become an asteroseismologist (if you weren't one already)!
+You are now ready to use ``pySYD`` and become an asteroseismologist!
 
 .. important::
 
     Time and frequency **must** be in the specified units (days and muHz) in order for the pipeline 
     to properly process the data and provide reliable results. **If you are unsure about this, we recommend**
-    **providing the time series data *only* to let** ``pySYD`` **calculate the power spectrum for you.**
+    **providing the time series data** ***only*** **to let** ``pySYD`` **calculate the power spectrum for you.**
 
 
 The 411
