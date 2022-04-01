@@ -66,9 +66,11 @@ You are now ready to use ``pySYD`` and become an asteroseismologist!
 
 .. important::
 
-    Time and frequency **must** be in the specified units (days and muHz) in order for the pipeline 
+    Time and frequency *must* be in the specified units (days and muHz) in order for the pipeline 
     to properly process the data and provide reliable results. **If you are unsure about this, we recommend**
-    **providing the time series data** ***only*** **to let** ``pySYD`` **calculate the power spectrum for you.**
+    **providing the time series data only in order to let ** ``pySYD`` **calculate and
+    normalize the power spectrum for you.** Again, if you choose to do this, the time series data
+    *must* be in units of days in order for the frequency array to be calculated correctly.
 
 
 The 411
@@ -112,7 +114,7 @@ to make your experience as customizable as possible.
 
 The last option (``--mc``) runs the pipeline for 200 steps, which will allow us to bootstrap
 uncertainties to the derived parameters. The ``--ux`` is an upper frequency limit for the
-first module that identifies the power e**x**cess due to solar-like oscillations. In this
+first module that identifies the power eXcess due to solar-like oscillations. In this
 case, there are high frequency artefacts that we would like to ignore. *If you'd like to learn
 more about this or are having a similar issue, please see our notebook tutorial that walks 
 through how to fix this problem.*
