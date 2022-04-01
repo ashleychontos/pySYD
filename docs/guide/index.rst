@@ -11,7 +11,6 @@ learn more about how the software (and asteroseismology) works -- we are absolut
 
    intro
    input
-   library/index
    output
 
 
