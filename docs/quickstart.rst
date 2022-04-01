@@ -67,9 +67,8 @@ You are now ready to use ``pySYD`` and become an asteroseismologist (if you were
 .. important::
 
     Time and frequency **must** be in the specified units (days and muHz) in order for the pipeline 
-    to properly process the data and provide reliable results. If you are unsure about any of them,
-    we recommend providing the time series data *only* to let ``pySYD`` calculate the power spectrum
-    for you.
+    to properly process the data and provide reliable results. ***If you are unsure about this, we recommend 
+    providing the time series data *only* to let ``pySYD`` calculate the power spectrum for you.***
 
 
 ``pySYD`` summary
@@ -81,10 +80,10 @@ initially developed as a *strictly* command-line, end-to-end tool. However, rece
 examples.
 
 In general, the software operates primarily in four steps:
- #. Loads in parameters and data
- #. Estimates starting points 
- #. Main fitting routine
- #. Multiple iterations
+ #. `Loads in parameters and data<stepone>`
+ #. `Estimates starting points<steptwo>`
+ #. `Fits global parameters<stepthree>`
+ #. `Bootstraps uncertainties<stepfour>`
 
 If there are issues during Step 1, ``pySYD`` will flag this and immediately halt the execution of the 
 software. If everything checks out though, ``pySYD`` can move on to the next step. The significance of 
@@ -127,6 +126,11 @@ The printed output for the above command is actually quite long, so we will brea
 into four different sections and explain each in more detail. In fact, each of the four sections
 correspond to the four main ``pySYD`` steps discussed in the summary above.
 
+.. _stepone:
+
+1. Load in parameters and data
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. code-block::
 
     -----------------------------------------------------------
@@ -152,9 +156,16 @@ There are some `InputError` exceptions in place here but just in case, there is 
 attribute added in this step - literally meaning that the star is 'ok' to be processed.
 By default, the pipeline checks this attribute before moving on.
 
-Since the star and data check out, we can move on. For purposes of the example, we'll 
-assume that we do not know anything about its properties. Typically we can provide optional inputs
-in many different ways but we won't here so it can estimate the properties on its own.
+Since the star and data check out, we can move on. 
+
+.. _steptwo:
+
+2. Estimates starting points
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For purposes of the example, we will assume that we do not know anything about its properties. 
+Typically we can provide optional inputs in many different ways but we won't here so it can 
+estimate the properties on its own.
 
 .. code-block::
 
@@ -178,6 +189,15 @@ starting point for the frequency corresponding to maximum power, or :term:`numax
 It does this by making a very rough approximation of the stellar background by binning the 
 power spectrum in both log and linear spaces (think a very HEAVY smoothing filter) and divides
 this out so that we are left with very little residual slope in the power spectrum.
+
+Next it uses a "collapsed" autocorrelation function (ACF) technique with different bin sizes
+to identify localized power excess in the power spectrum due to solar-like oscillations. By
+default, this is done three times (or trials) and hence, get three different estimates.
+
+.. _stepthree:
+
+3. Fits global parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 .. code-block::
@@ -205,6 +225,15 @@ this out so that we are left with very little residual slope in the power spectr
     Based on AIC statistic: model 4
     -----------------------------------------------------------
 
+
+.. _stepfour:
+
+4. Bootstraps uncertainties
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If this was run in its default settings (with --mc 1) for a single iteration, the output
+would look comparable but with no progress bar and no parameter uncertainties.
+
 .. code-block::
 
     -----------------------------------------------------------
@@ -229,13 +258,19 @@ this out so that we are left with very little residual slope in the power spectr
      - combining results into single csv file
     -----------------------------------------------------------
 
-Since this is a very long output, we will break this up into three different sections.
+We include a progress bar in the sampling step iff the verbose output is `True` *and*
+``pySYD`` is not executed in parallel mode. This is hard-wired since the latter would
+produce a nightmare mess.
+
     
-While observations have shown that solar-like oscillations have an approximately Gaussian-like 
-envelope, we have no reason to believe that they should behave exactly like that. This is why 
-you will see two different estimates for :term:`numax` (:math:`\rm \nu_{max}`) under the output
-parameters. ***In fact for this methodology first demonstrated in Huber+2009, traditionally the
-smoothed numax has been used in the literature and we recommend that you do the same.***
+.. important::
+
+    While observations have shown that solar-like oscillations have an approximately 
+    Gaussian-like envelope, we have no reason to believe that they should behave exactly 
+    like that. This is why you will see two different estimates for :term:`numax` 
+    (:math:`\rm \nu_{max}`) under the output parameters. ***In fact for this methodology 
+    first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
+    the literature and we recommend that you do the same.***
 
 
 B. Interactive example
