@@ -42,6 +42,7 @@ is too small!
 
 
 .. toctree::
+   :titlesonly:
    :caption: Community 
    :hidden:
 
