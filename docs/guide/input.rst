@@ -1,6 +1,6 @@
-***************
-Getting started
-***************
+******
+Inputs
+******
 
 In case you missed it -- there is a convenient way for you to get started right
 away -- which is by running the ``pySYD`` setup feature. Running the command will provide 

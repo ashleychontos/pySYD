@@ -71,8 +71,8 @@ You are now ready to use ``pySYD`` and become an asteroseismologist!
     *must* be in units of days in order for the frequency array to be calculated correctly.
 
 
-The 4-1-1
-#########
+The 411
+#######
 
 The intended audience for ``pySYD`` is for non-expert users. Therefore, the software was
 initially developed as a *strictly* command-line, end-to-end tool. However, recent updates have 
@@ -102,8 +102,8 @@ use the second example to show a condensed version.
 As a script
 ***********
 
-The most common way you will likely use the software is in `run` mode, which will process a
- star or stars. We can show the figures and verbose output using the ``-d`` and ``-v`` flags, 
+The most common way you will use the software is in `run` mode, which will process a
+star or stars. We can show the figures and verbose output using the ``-d`` and ``-v`` flags, 
 for display and verbose, respectively. Please see our :ref:`complete list <guide/usage/cli/glossary>` 
 of command-line flags. There are many many options to make your experience as customizable as possible!
 
@@ -129,7 +129,7 @@ correspond to the four main ``pySYD`` steps discussed in the summary above.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
-the execution of the software. 
+any further execution of the software. 
 
 .. code-block::
 
