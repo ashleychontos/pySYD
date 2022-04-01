@@ -1,6 +1,6 @@
-*******************
-Main pipeline calls
-*******************
+*************
+Main pipeline
+*************
 
 Introduction
 ############
@@ -14,7 +14,7 @@ Imports
 Usage
 #####
 
-There are currently five operational ``pySYD`` modes: 
+There are currently four operational ``pySYD`` modes (and two under development): 
 
 #. ``setup`` : Initializes ``pysyd.pipeline.setup`` for quick and easy setup of directories, files and examples. This mode only
    inherits higher level functionality and has limited CLI (see :ref:`parent parser<parentparse>` below). Using this feature will
@@ -30,6 +30,8 @@ There are currently five operational ``pySYD`` modes:
 #. ``parallel`` : Operates the same way as the previous mode, but processes stars simultaneously in parallel. Based on the number of threads
    available, stars are separated into groups (where the number of groups is exactly equal to the number of threads). This mode uses all CLI
    options, including the number of threads to use for parallelization (:ref:`see here<parallel>`).
+
+#. ``display`` : will primarily be used for development and testing purposes as well, but
 
 #. ``test`` : Currently under development but intended for developers.
 

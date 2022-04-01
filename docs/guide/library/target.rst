@@ -1,6 +1,6 @@
-**************
-Target star(s)
-**************
+*******
+Targets
+*******
 
 The heart & soul of the ``pySYD`` package
 

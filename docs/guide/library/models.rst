@@ -1,6 +1,8 @@
-***********************
+******
+Models
+******
+
 Frequency distributions
-***********************
 
 Introduction
 #############
