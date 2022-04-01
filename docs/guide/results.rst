@@ -1,9 +1,9 @@
-*******
-Results
-*******
+******
+Output
+******
 
 As we've said many times before, the software is optimized for running an ensemble of stars. 
-Therefore, a utility function (``pysyd.utils.scrape_output``) will automatically concatenate the 
+Therefore, the utility function ``pysyd.utils.scrape_output`` will automatically concatenate the 
 results for each of the main modules into a single csv in the parent results directory so that
 it's easy to find and compare.
 

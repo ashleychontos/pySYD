@@ -20,7 +20,7 @@ folks are able to utilize the software.
    about
    Getting started <input>
    library/index
-   results
+   output
 
 
 .. toctree::
