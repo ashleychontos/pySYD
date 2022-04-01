@@ -19,6 +19,7 @@ learn more about how the software (and asteroseismology) works -- we are absolut
 .. toctree::
    :maxdepth: 2
    :captions: Usage
+
    Command line <cli/index>
    Notebook tutorials <nb/index>
    Other usage <other/index>
