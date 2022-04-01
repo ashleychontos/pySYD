@@ -2,12 +2,12 @@
 Getting started
 ***************
 
-In case you somehow missed it -- there is a convenient way for you to get started right
+In case you missed it -- there is a convenient way for you to get started right
 away -- which is by running the ``pySYD`` setup feature. Running the command will provide 
 *all* of the relevant files that are discussed in detail on this page. 
 
-To read more details about the setup feature, please visit our :ref:`Installation <..installation>` 
-or :ref:`Quickstart<..quickstart>` pages. You can also see how it works directly by visiting
+To read more details about the setup feature, please visit our :ref:`Installation <installation>` 
+or :ref:`Quickstart <quickstart>` pages. You can also see how it works directly by visiting
 :ref:`the API <pipeline>`. 
 
 Inputs
@@ -31,13 +31,13 @@ for the non-expert users.
 **implementing time-domain utilities so stay tuned!**
 
 Required Input
-##############
+**************
 
 The only thing *required* to successfully run the software and get results is the data 
 in which ``pySYD`` will apply the asteroseismic analyses on! 
 
 Data 
-****
+^^^^
 
 For a given star, ID, the data : 
 
@@ -51,20 +51,20 @@ For a given star, ID, the data :
     provide a light curve (in days) and let us calculate the power spectrum for you! 
 
 Optional Input
-##############
+**************
 
 There are two main information files which can be provided but both are optional -- whether
 or not you choose to use them ultimately depends on how you will run the software. 
 
 Target list
-***********
+^^^^^^^^^^^
 
 For example
 
 * `'./info/todo.txt'` : text file with one star ID per line, which must match the data ID. If no stars are specified via command line, the star(s) listed in the text file will be processed by default. This is recommended when running a large number of stars.
 
 Star info
-*********
+^^^^^^^^^
 
 As suggested by the name of the file, this contains star information on an individual basis. Similar to
 the data, target IDs must *exactly* match the given name in order to be successfully crossmatched -- but
@@ -93,8 +93,6 @@ relevant commands:
 
 This file is especially helpful for running many stars with different options!
 
-.. TODO::
-
-    Add all the available options (columns) to the csv 
+.. TODO:: Add all the available options (columns) to the csv and documentation
     
 
