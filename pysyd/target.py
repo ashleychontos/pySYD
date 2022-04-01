@@ -91,8 +91,6 @@ class Target(object):
         plots.make_plots(self)
         if self.params['cli']:
             input(' - press RETURN to exit')
-        if not self.params['verbose']:
-            print('')
 
 
 #########################################################################################

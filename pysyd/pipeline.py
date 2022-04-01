@@ -76,7 +76,7 @@ def run(args):
     pipe(args.params['stars'], args)
     # check to make sure that at least one star was successfully run (i.e. there are results)  
     if args.params['verbose']:
-        print(' - combining results into single csv file\n------------------------------------------------------\n')
+        print(' - combining results into single csv file\n-----------------------------------------------------------\n')
     # Concatenates output into two files
     utils.scrape_output(args)
 

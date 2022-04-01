@@ -338,6 +338,14 @@ class Parameters(Constants):
         self.params.update(globe)
 
 
+    def add_stars(self, stars=None):
+        if stars is not None:
+            self.params['stars'] = stars
+        else:
+            raise InputError("ERROR: no star provided")
+        self.assign_stars()
+
+
     def assign_stars(self,):
         """
         Add target stars
@@ -1040,3 +1048,52 @@ def delta_nu(numax):
     return 0.22*(numax**0.797)
 
 
+def save_status(file, section, params):
+    """
+
+    Save pipeline status
+
+    Args:
+        file : str 
+            name of output config file
+        section : str
+            name of section in config file
+        params : Dict() 
+            dictionary of all options to populate in the specified section
+
+
+    """
+    import configparser
+    config = configparser.ConfigParser()
+
+    if os.path.isfile(file):
+        config.read(file)
+
+    if not config.has_section(section):
+        config.add_section(section)
+
+    for key, val in params.items():
+        config.set(section, key, val)
+
+    with open(file, 'w') as f:
+        config.write(f)
+
+
+def load_status(file):
+    """
+
+    Load pipeline status
+
+    Args:
+        file : str
+            name of output config file
+
+    Returns:
+        config : configparser.RawConfigParser
+            config file with pipeline status
+    """
+
+    config = configparser.ConfigParser()
+    gl = config.read(file)
+
+    return config
