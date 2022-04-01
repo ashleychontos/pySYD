@@ -30,7 +30,6 @@ is too small!
 
 
 .. toctree::
-   :titlesonly:
    :maxdepth: 2
    :caption: Getting Started
    :hidden:
@@ -42,13 +41,6 @@ is too small!
 
 
 .. toctree::
-   :caption: Usage
-
-   User Guide <guide/index>
-
-
-.. toctree::
-   :titlesonly:
    :maxdepth: 2
    :caption: Community
    :hidden: 
