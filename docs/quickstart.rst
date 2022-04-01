@@ -154,9 +154,9 @@ It appears as though this star, KIC 1435467, was observed in *Kepler* short-cade
 continued processing, which means that there were no issues finding and storing the data.
 There are some `InputError` exceptions in place here but all :mod:`pysyd.target` class instances
 will have an ``ok`` attribute - literally meaning that the star is 'ok' to be processed.
-By default, the pipeline checks this attribute before moving on.
 
-Since the star and data check out, we can move on. 
+By default, the pipeline checks this attribute before moving on. Since the star and data 
+check out, we can move on. 
 
 
 .. _steptwo:

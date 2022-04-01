@@ -48,8 +48,11 @@ class Target(object):
             args.add_stars(stars=[name])
             self.params = args.params[name]
         self.load_star()
-            
 
+
+    def __repr__(self):
+        return "<Star Object {}>".format(self.name)
+           
 
     def process_star(self,):
         """

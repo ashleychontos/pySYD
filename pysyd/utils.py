@@ -50,6 +50,9 @@ class Constants:
         )
         self.constants.update(params)
 
+    def __repr__(self):
+        return "<Constants>"
+
 
 class Parameters(Constants):
     """
@@ -75,6 +78,9 @@ class Parameters(Constants):
             else:
                 self.params['stars'] = stars
         self.assign_stars()
+
+    def __repr__(self):
+        return "<pysyd Parameters>"
 
 
     def is_interactive(self):
@@ -1089,7 +1095,7 @@ def load_status(file):
             name of output config file
 
     Returns:
-        config : configparser.RawConfigParser
+        config : configparser.ConfigParser
             config file with pipeline status
     """
 
