@@ -77,11 +77,13 @@ The 411
 #######
 
 The intended audience for ``pySYD`` is for non-expert users. Therefore, the software was
-initially developed as a *strictly* command-line, end-to-end tool. However, recent updates have made 
-``pySYD`` compatible with interactive Python sessions as well -- so we'll demonstrate both of these  
-examples.
+initially developed as a *strictly* command-line, end-to-end tool. However, recent updates have 
+ensured compatibility with interactive sessions (e.g., notebooks, IPython, etc.) as well.
 
-In general, the software operates primarily in four steps:
+We will demonstrate both of these cases in examples below but please see our user guide if 
+you'd like more information on anything. 
+
+Typically the software operates in four main steps:
  #. :ref:`Loads in parameters and data <stepone>`
  #. :ref:`Estimates starting points <steptwo>`
  #. :ref:`Fits global parameters <stepthree>`
