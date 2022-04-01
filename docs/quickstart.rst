@@ -1,8 +1,8 @@
 .. _quickstart/index:
 
-***************
-Getting started
-***************
+**********
+Quickstart
+**********
 
 The examples on this page assumes that the user already has some basic-level knowledge or
 experience with `Python`.
@@ -85,11 +85,11 @@ In general, the software operates primarily in four steps:
  #. :ref:`Fits global parameters <stepthree>`
  #. :ref:`Estimates uncertainties <stepfour>`
 
-Each of the steps are discussed in more detail below.
+Each of the steps are discussed in great detail below.
 
-*****************************************
+
 Running your first asteroseismic analysis
-*****************************************
+#########################################
 
 The software is optimized for running many stars and therefore, many of the defaults 
 parameters should be changed in order to understand how the software works. We will
@@ -97,8 +97,8 @@ use the command line examples to break everything down in great detail and then 
 the condensed version for the second example.
 
 
-Command-line example
-####################
+Command line
+************
 
 The most common way you will likely use ``pySYD`` is in `run` mode, which will process the
 provided star or stars. We can display the resulting figures and printed output using the 
@@ -121,10 +121,11 @@ The printed output for the above command is actually quite long, so we will brea
 into four different sections and explain each in more detail. In fact, each of the four sections
 correspond to the four main ``pySYD`` steps discussed in the summary above.
 
+
 .. _stepone:
 
 1. Load in parameters and data
-******************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
 the execution of the software. 
@@ -156,10 +157,11 @@ By default, the pipeline checks this attribute before moving on.
 
 Since the star and data check out, we can move on. 
 
+
 .. _steptwo:
 
 2. Estimates starting points
-****************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For purposes of the example, we will assume that we do not know anything about its properties. 
 Typically we can provide optional inputs in many different ways but we won't here so it can 
@@ -196,7 +198,7 @@ default, this is done three times (or trials) and hence, get three different est
 .. _stepthree:
 
 3. Fits global parameters
-*************************
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A bulk of the heavy lifting is done in this main fitting routine, which is actually done 
 in two separate steps: 1) modeling and characterizing the stellar background and 2) determining 
@@ -245,7 +247,7 @@ is why this is now the default metric used.
 .. _stepfour:
 
 4. Estimates uncertainties
-**************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If this was run in its default settings (with --mc 1) for a single iteration, the output
 would look comparable but with no progress bar and no parameter uncertainties.
@@ -289,8 +291,8 @@ produce a nightmare mess.
     the literature and we recommend that you do the same.***
 
 
-B. Interactive example
-**********************
+Interactive mode
+****************
 
 A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
 that is processed is initialized as a new target object, which in this case, we'll call star.
