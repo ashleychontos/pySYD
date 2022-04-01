@@ -80,22 +80,12 @@ initially developed as a *strictly* command-line, end-to-end tool. However, rece
 examples.
 
 In general, the software operates primarily in four steps:
- #. `Loads in parameters and data<stepone>`
- #. `Estimates starting points<steptwo>`
- #. `Fits global parameters<stepthree>`
- #. `Bootstraps uncertainties<stepfour>`
+ #. `Loads in parameters and data <stepone>`
+ #. `Estimates starting points <steptwo>`
+ #. `Fits global parameters <stepthree>`
+ #. `Bootstraps uncertainties <stepfour>`
 
-If there are issues during Step 1, ``pySYD`` will flag this and immediately halt the execution of the 
-software. If everything checks out though, ``pySYD`` can move on to the next step. The significance of 
-Step 2 is better understood by first recognizing what the following step does.
-
-A bulk of the heavy lifting is done in this main fitting routine, which is actually done in two separate steps: 
-1) modeling and characterizing the stellar background and 2) determining the global asteroseismic parameters. 
-We do this *separately* in two steps because they have fairly different properties and we wouldn't want either 
-of the estimates to be influenced by the other in any way. Ultimately the stellar background has more of a presence 
-in the power spectrum in that it is observed over a wider range of frequencies compared to the solar-like 
-oscillations. Therefore by attempting to identify where the oscillations are in the power spectrum, we can mask 
-them out to better characterize the background.
+Each of the steps are discussed in more detail below.
 
 
 Running your first asteroseismic analysis
@@ -130,6 +120,9 @@ correspond to the four main ``pySYD`` steps discussed in the summary above.
 
 1. Load in parameters and data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
+the execution of the software. 
 
 .. code-block::
 
@@ -199,6 +192,17 @@ default, this is done three times (or trials) and hence, get three different est
 3. Fits global parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
+A bulk of the heavy lifting is done in this main fitting routine, which is actually done 
+in two separate steps: 1) modeling and characterizing the stellar background and 2) determining 
+the global asteroseismic parameters. We do this *separately* in two steps because they have 
+fairly different properties and we wouldn't want either of the estimates to be influenced by 
+the other in any way. 
+
+Ultimately the stellar background has more of a presence in the power spectrum in that it is 
+observed over a wider range of frequencies compared to the solar-like oscillations. Therefore 
+by attempting to identify where the oscillations are in the power spectrum, we can mask 
+them out to better characterize the background.
+
 
 .. code-block::
 
@@ -225,6 +229,11 @@ default, this is done three times (or trials) and hence, get three different est
     Based on AIC statistic: model 4
     -----------------------------------------------------------
 
+Unlike previous versions of this software and previous versions of this software (i.e. `SYD`), 
+we have now implemented an automated background model selection. For reference, 
+
+After much trial and error, the :term:`AIC` seems to perform better for our purposes - which
+is why this is now the default metric used.
 
 .. _stepfour:
 
