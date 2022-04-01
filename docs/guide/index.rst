@@ -24,7 +24,7 @@ folks are able to utilize the software.
 
 
 .. toctree::
-   :captions: Usage
+   :caption: Usage
 
    Command line <cli/index>
    Notebook tutorials <nb/index>
