@@ -8,8 +8,8 @@ topic or tutorial by submitting a pull request!
 
 .. toctree::
    :maxdepth: 1
-   :caption: Examples
+   :caption: Content
    
    Single star <singlestar.ipynb>
    Numax hacks <numaxhacks.ipynb>
-   Other example <example.ipynb>
+   Other odds & ends <example.ipynb>
