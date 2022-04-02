@@ -39,6 +39,15 @@ or power density versus :math:`\rm \mu Hz`.
     to work properly. If you are unsure about any of these units, your best bet is to
     provide a light curve (in days) and let us calculate the power spectrum for you! 
 
+.. warning::
+
+    Time and frequency *must* be in the specified units in order for the pipeline to properly process 
+    the data and provide reliable results. **If you are unsure about this, we recommend**
+    **ONLY providing the time series data in order to let** ``pySYD`` **calculate and
+    normalize the power spectrum for you.** Again, if you choose to do this, the time series data
+    *must* be in units of days in order for the frequency array to be calculated correctly. For
+    more information on formatting and inputs, please see :ref:`here <library/input>`.
+
 
 Optional 
 ########

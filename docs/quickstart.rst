@@ -86,7 +86,7 @@ The first is that the intended userbase for the original `pySYD` release was mea
 non-expert astronomers. Therefore, the software was developed to be as hands-off as possible 
 as a *strictly* command-line end-to-end tool. However since then, the software has become 
 more modular in recent updates, thus enabling broader capabilities that can be used in other 
-applications like Jupyter notebooks. 
+applications (e.g., Jupyter notebooks). 
 
 In addition to being a command-line tool, the software is optimized for running an ensemble
 of stars. This means that many of the options that one would typically use, such as printing 
@@ -124,8 +124,8 @@ Each of the four main steps are discussed in detail below.
 
 .. _script:
 
-As a script
-###########
+I. As a script
+##############
 
 In a terminal window, type the following statement:
 
@@ -257,6 +257,9 @@ Result figure
 .. image:: _static/quickstart/1435467_estimates.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
+
+
+***To learn more about what each panel is showing, please visit :ref:`this page<library/output>`.***
 
 
 Result file
@@ -433,8 +436,8 @@ in the output. this is because the model preferred for this to be fixed
 
 .. _module:
 
-As a module
-***********
+II. As a module
+###############
 
 A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
 that is processed is initialized as a new target object, which in this case, we'll call star.
@@ -472,6 +475,6 @@ hey
 
     >>> from pysyd import plots
 
-To learn more about what these results mean, please visit BLANK.
+
 
 -----
