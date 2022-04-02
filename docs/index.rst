@@ -38,7 +38,7 @@ is too small!
    :hidden:
    
    installation
-   quickstart
+   Crashteroseismology <quickstart>
    library/index
    usage/index
    Glossary <glossary>

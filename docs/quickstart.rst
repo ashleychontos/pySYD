@@ -1,6 +1,6 @@
-***************
-Getting started
-***************
+*********************************************************
+Crashteroseismology == crash course into asteroseismology
+*********************************************************
 
 The examples on this page assume that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the Python website and going through
@@ -13,33 +13,25 @@ ours!
 TL;DR
 #####
 
-Just a quick timeout to go over a couple of general tidbits before walking through the examples. 
+A quick timeout to go over a couple tidbits before walking through the examples. 
 
-The first is that the intended userbase for the original `pySYD` release was meant for 
-non-expert astronomers. Therefore, the software was developed to be as hands-off as possible -- 
-as a *strictly* command-line end-to-end tool. However since then, the software has become 
-more modular in recent updates, thus enabling broader capabilities that can be used in other 
-applications (e.g., Jupyter notebooks). 
+The first is that the userbase for the original `pySYD` release was intended for 
+non-expert astronomers. With this in mind, the software was developed to be as hands-off as
+possible -- as a *strictly* command-line end-to-end tool. However since then, the software has 
+become more modular in recent updates, thus enabling broader capabilities that can be used in 
+other applications (e.g., Jupyter notebooks). 
 
-In addition to being a command-line tool, the software is optimized for running an ensemble
-of stars. This means that many of the options that one would typically use, such as printing 
-output information and displaying figures, is actually `False` by default. For our purposes 
-here though, we will enable them to better understand how the software works. 
-
-We will go through two examples -- each demonstrating a different usage scenario. We will 
-start with the command-line example to break everything down, and then put it back together 
-in a condensed version for the second. 
-
-If you have *any* questions, check out our :ref:`user guide <usage/index>` for more 
-information. If this still does not address your question or problem, please do not hesitate
-to contact `Ashley <achontos@hawaii.edu>`_ directly.
+In addition to being a command-line tool, the software is optimized for running many stars. 
+This means that many of the options that one would typically use or prefer, such as printing 
+output information and displaying figures, is `False` by default. For our purposes 
+here though, we will invoke them to better understand how the software works. 
 
 -----
 
-Pipeline workflow
-#################
+General pipeline workflow
+#########################
 
-In general, the software operates in the following steps:
+The software operates in approximately the following order:
  #. :ref:`Loads in parameters and data <stepone>`
  #. :ref:`Estimates initial values <steptwo>`
  #. :ref:`Fits global parameters <stepthree>`
@@ -54,10 +46,18 @@ Each of the four main steps are discussed in detail below.
     we recommend that you provide the light curve (in days) and then let us compute the power
     spectrum for you! 
 
+If you have *any* questions, check out our :ref:`user guide <usage/index>` for more 
+information. If this still does not address your question or problem, please do not hesitate
+to contact `Ashley <achontos@hawaii.edu>`_ directly.
+
 -----
 
-Running your first asteroseismic analysis
-#########################################
+Running your favorite star
+##########################
+
+We will go through two examples -- each demonstrating a different usage scenario. We will 
+start with the command-line example to break everything down, and then put it all back together 
+in a condensed version for the second. 
 
 .. _script:
 
@@ -70,7 +70,7 @@ When using ``pySYD`` via command line, I would use something similar to that sho
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-the statement which we will now deconstruct first before carrying on.
+the statement which we will now deconstruct before carrying on.
 
  * ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
    file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
@@ -100,10 +100,8 @@ the statement which we will now deconstruct first before carrying on.
    us to bootstrap uncertainties on our derived properties. 
 
 After hitting return, you'll immediately notice that the output for the above command is actually 
-quite long. Not to worry though - we will break it down into the four main ``pySYD`` steps
-mentioned in the summary above.  different sections and explain 
-each in great detail. In fact, each of the four sections correspond to the four main ``pySYD`` 
-steps discussed in the summary above.
+quite long. Not to worry though - we will break it down into the four main steps above.
+
 
 ***Important: when running `pysyd` as a script, there is one positional argument.*** 
 
@@ -370,6 +368,9 @@ in the output. this is because the model preferred for this to be fixed
     the literature and we recommend that you do the same.***
 
 -----
+
+Running your first asteroseismic analysis
+#########################################
 
 .. _module:
 
