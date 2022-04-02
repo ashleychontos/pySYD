@@ -1,6 +1,6 @@
-************
-Installation
-************
+********************
+Installation & setup
+********************
 
 There are three main ways you can install the software:
 
@@ -8,6 +8,7 @@ There are three main ways you can install the software:
 #. :ref:`Creating a conda environment <installation/conda>`
 #. :ref:`Clone directly from GitHub <installation/git>`
 
+-----
 
 .. _installation/pip:
 
@@ -75,6 +76,7 @@ The next step is to build and install the project:
 which needs to be executed from the top-level directory inside the 
 cloned ``pySYD`` repo.
 
+-----
 
 .. _installation/dependencies:
 
@@ -95,6 +97,7 @@ Explicit version requirements are specified in the project `requirements.txt <ht
 and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
 `conda` should install and enforce these versions automatically. 
 
+-----
 
 .. _installation/test:
 
@@ -124,26 +127,27 @@ window, which should display the following output:
         setup               Easy setup of relevant directories and files
         test                Test different utilities (currently under development)
 
-
+-----
 
 .. _installation/setup:
 
 Setup
 #####
 
-We ***strongly encourage*** you to run this step regardless of how you intend to 
-use the software because it:
+The software package comes with a convenient setup feature, which is called through 
+:mod:`pysyd.pipeline.setup`. We **strongly encourage** you to run this step 
+regardless of how you choose to run ``pySYD`` because it:
 
-- downloads data for three example stars
-- provides the example [optional] input files to use with the software *and* 
+- downloads example data for three stars
+- provides the optional input files *and* 
 - sets up the recommended local directory structure
 
-*We emphasize the importance of the last bullet because the relative structure
-is both straightforward for the user but is also what works best for running the 
-software.*
+We'd like to emphasize this last bullet because it establishes a local, relative directory 
+structure that is both straightforward for the pipeline and intuitive to the user.
 
-Make a local directory
-**********************
+
+1. Make a local directory
+*************************
 
 Before you do that though, we recommend that you create a new, local directory to keep all 
 your pysyd-related data, information and results in a single, easy-to-find location. This is 
@@ -157,14 +161,74 @@ The folder or directory can be whatever is most convenient for you:
     mkdir ~/path/to/local/pysyd/directory
     
 
-Run the setup command
-*********************
+2. Run setup
+************
 
-Now all you need to do is change into the new directory, run the command
+Now all you need to do is change into that directory, run the following command:
 
 .. code-block::
 
-    cd ~/path/to/local/pysyd/directory
-    pysyd setup
+    pysyd setup --verbose
 
 and let ``pySYD`` do the rest of the work for you. 
+
+Now you might have noticed that for this last point, we used the optional 
+:term:`--verbose<-v, --verbose>` command, which will print:
+
+.. code-block::
+    
+    Downloading relevant data from source directory:
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100   239  100   239    0     0    508      0 --:--:-- --:--:-- --:--:--   508
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 1518k  100 1518k    0     0  1601k      0 --:--:-- --:--:-- --:--:-- 1601k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 3304k  100 3304k    0     0  2958k      0  0:00:01  0:00:01 --:--:-- 2958k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 1679k  100 1679k    0     0  1630k      0  0:00:01  0:00:01 --:--:-- 1630k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 3523k  100 3523k    0     0  3101k      0  0:00:01  0:00:01 --:--:-- 3099k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 1086k  100 1086k    0     0   943k      0  0:00:01  0:00:01 --:--:--  943k
+      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                       Dload  Upload   Total   Spent    Left  Speed
+     100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k
+    
+      - created input file directory: /Users/ashleychontos/Desktop/pysyd/info
+      - created data directory at /Users/ashleychontos/Desktop/pysyd/data
+      - example data saved
+      - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
+    
+As shown in the verbose output, example data and other relevant files were downloaded
+from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_. 
+
+.. TODO:: add an option to download example data/files as a package in the root directory.
+
+-----
+
+Quickstart
+##########
+
+Enter the following commands to get up and running right away: 
+
+.. code-block::
+
+    python -m pip install pysyd
+    mkdir ~/path/to/local/pysyd/directory
+    cd ~/path/to/local/pysyd/directory
+    pysyd setup 
+
+This is the same steps as above but in a more condensed version.
+
+*You are now ready to become an asteroseismologist!*
+
+-----

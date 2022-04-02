@@ -1,89 +1,23 @@
-**********
-Quickstart
-**********
+***************
+Getting started
+***************
 
 The examples on this page assume that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the Python website and going through
 some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
 our examples.
 
-**Jump to** ``pySYD`` **used:**
- - :ref:`via command line<script>`
- - :ref:`as a module<module>`
-
 -----
 
-Installation & setup
-####################
-
-We recommend creating a local directory to keep all your pysyd-related data, results 
-and information in a single, easy-to-find location. The software package comes with a 
-convenient setup feature that downloads example data so let's start there.
-
-.. TODO:: add an option to download example data/files as a package in the root directory.
-
-Open up a terminal window and enter the following commands:
-
-.. code-block::
-
-    python -m pip install pysyd
-    mkdir ~/path/to/local/pysyd/directory
-    cd ~/path/to/local/pysyd/directory
-    pysyd setup --verbose
-
-You may have noticed that for this last point, we used the optional 
-:term:`--verbose<-v, --verbose>` command, which will print the following:
-
-.. code-block::
-    
-    Downloading relevant data from source directory:
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100    25  100    25    0     0     49      0 --:--:-- --:--:-- --:--:--    49
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100   239  100   239    0     0    508      0 --:--:-- --:--:-- --:--:--   508
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 1518k  100 1518k    0     0  1601k      0 --:--:-- --:--:-- --:--:-- 1601k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 3304k  100 3304k    0     0  2958k      0  0:00:01  0:00:01 --:--:-- 2958k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 1679k  100 1679k    0     0  1630k      0  0:00:01  0:00:01 --:--:-- 1630k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 3523k  100 3523k    0     0  3101k      0  0:00:01  0:00:01 --:--:-- 3099k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 1086k  100 1086k    0     0   943k      0  0:00:01  0:00:01 --:--:--  943k
-      % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                       Dload  Upload   Total   Spent    Left  Speed
-     100 2578k  100 2578k    0     0  2391k      0  0:00:01  0:00:01 --:--:-- 2391k
-    
-      - created input file directory: /Users/ashleychontos/Desktop/pysyd/info
-      - created data directory at /Users/ashleychontos/Desktop/pysyd/data
-      - example data saved
-      - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
-    
-As shown above, :mod:`pysyd.pipeline.setup` downloaded example data and other relevant files
-from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_. It also established
-a local, relative directory structure that is both straightforward for the pipeline and 
-intuitive to the user.
-
-You are now ready to become an asteroseismologist!
-
------
 
 TL;DR
 #####
 
-We wanted to go over a couple general tidbits about the software before going through the
+We wanted to go over a couple of general tidbits about the software before walking through the
 examples. 
 
 The first is that the intended userbase for the original `pySYD` release was meant for 
-non-expert astronomers. Therefore, the software was developed to be as hands-off as possible 
+non-expert astronomers. Therefore, the software was developed to be as hands-off as possible -- 
 as a *strictly* command-line end-to-end tool. However since then, the software has become 
 more modular in recent updates, thus enabling broader capabilities that can be used in other 
 applications (e.g., Jupyter notebooks). 
@@ -93,13 +27,13 @@ of stars. This means that many of the options that one would typically use, such
 output information and displaying figures, is actually `False` by default. For our purposes 
 here though, we will enable them to better understand how the software works. 
 
-Here we will go through two different scenarios -- each demonstrating the two mains ways 
-you can use the software. We will start with the command-line example to break everything 
-down, and then put it back together in a condensed version for the second. 
+We will go through two examples -- each demonstrating a different usage scenario. We will 
+start with the command-line example to break everything down, and then put it back together 
+in a condensed version for the second. 
 
-If you have *any* questions, please check our :ref:`user guide <usage/index>` for more 
-information. If this still does not address your question or problem, feel free to contact 
-`Ashley <achontos@hawaii.edu>`_ directly.
+If you have *any* questions, check out our :ref:`user guide <usage/index>` for more 
+information. If this still does not address your question or problem, please do not hesitate
+to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
 -----
 
@@ -108,10 +42,10 @@ Running your first asteroseismic analyses
 *****************************************
 
 In general, the software operates in the following steps:
- #. :ref:`Load in parameters and data <stepone>`
- #. :ref:`Estimate initial values <steptwo>`
- #. :ref:`Fit global parameters <stepthree>`
- #. :ref:`Extrapolate uncertainties <stepfour>`
+ #. :ref:`Loads in parameters and data <stepone>`
+ #. :ref:`Estimates initial values <steptwo>`
+ #. :ref:`Fits global parameters <stepthree>`
+ #. :ref:`Extrapolates uncertainties <stepfour>`
 
 Each of the four main steps are discussed in detail below.
 
