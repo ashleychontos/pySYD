@@ -2,12 +2,14 @@
 Notebook tutorials
 ******************
 
-If you'd like to request a new topic or tutorial, please submit a pull request.
+If there's something you would like to learn more about, you can request a new 
+topic or tutorial by submitting a pull request!
 
 
 .. toctree::
+   :maxdepth: 1
    :caption: Examples
    
-   example <example.ipynb>
-   singlestar.ipynb
-   numaxhacks.ipynb
+   Single star <singlestar.ipynb>
+   Numax hacks <numaxhacks.ipynb>
+   Other example <example.ipynb>

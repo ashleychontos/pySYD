@@ -8,6 +8,8 @@ for three KIC stars in the input data directory. If so, then you are ready to te
 Below is an example of a high signal-to-noise (SNR) detection for a single *Kepler* star 
 followed by a command-line example for running several stars. 
 
+-----
+
 A single star
 #############
 
@@ -172,8 +174,9 @@ Parameter posteriors:
     The sampling results can be saved by using the boolean flag ``-m`` or ``--samples``,
     which will save the posteriors of the fitted parameters for later use. 
     
-And just like that, you are now an asteroseismologist (if you were not one before)!
+And just like that, you are now an asteroseismologist!
 
+-----
 
 An ensemble of stars
 ####################
@@ -204,3 +207,4 @@ the :term:`--nthreads<--nt, --nthread, --nthreads>` command:
     Remember that by default, the stars to be processed (i.e. todo) will read in from **info/todo.txt**
     if no ``-list`` or ``-todo`` paths are provided.
    
+-----

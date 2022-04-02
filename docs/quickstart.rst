@@ -3,7 +3,10 @@ Quickstart
 **********
 
 The examples on this page assumes that the user already has some basic-level knowledge or
-experience with `Python`.
+experience with `Python`. If not, we recommend visiting the `Python` website and going through
+some of `their tutorials<https://docs.python.org/3/tutorial/>`_ first.
+
+-----
 
 Installation & setup
 ####################
@@ -12,7 +15,7 @@ We recommend creating a local directory to keep all your pysyd-related data, res
 and information in a single, easy-to-find location. The software package comes with a 
 convenient setup feature that downloads example data so let's start there.
 
-Open up a terminal window and type the following commands in order:
+Open up a terminal window and type the following commands:
 
 .. code-block::
 
@@ -58,7 +61,7 @@ You may have noticed that, for this last point, we used the optional
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
     
 As shown above, the feature downloaded example data and other relevant items
-from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_. 
+from the `public GitHub repo<https://github.com/ashleychontos/pySYD>`_. 
 
 You are now ready to become an asteroseismologist!
 
@@ -71,6 +74,7 @@ You are now ready to become an asteroseismologist!
     *must* be in units of days in order for the frequency array to be calculated correctly. For
     more information on formatting and inputs, please see :ref:`here <library/input>`.
 
+-----
 
 The 411
 #######
@@ -91,6 +95,7 @@ In general, the software operates in the following steps:
 
 Each of the four main steps are discussed in detail below.
 
+-----
 
 Running your first asteroseismic analyses
 #########################################
@@ -391,3 +396,5 @@ hey
     >>> from pysyd import plots
 
 To learn more about what these results mean, please visit BLANK.
+
+-----
