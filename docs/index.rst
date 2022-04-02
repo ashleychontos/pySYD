@@ -22,6 +22,8 @@ designed to be a hands-off, end-to-end tool so that even non-expert users can
 reap the benefits of asteroseismology without requiring substantial background 
 knowledge. 
 
+**The main vision of** ``pySYD`` **is accessible asteroseismology.**
+
 This package is being actively developed in 
 `a public repository on GitHub <https://github.com/ashleychontos/pySYD>`_ -- we especially 
 welcome and *encourage* any new contributions to help make ``pySYD`` better! Please see 

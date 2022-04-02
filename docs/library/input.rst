@@ -5,9 +5,9 @@
    have become available -- which is exciting but we are also still furiously working away on 
    this. ***STAY TUNED FOR NEW TOOLS!*** 
 
-******
-Inputs
-******
+***************
+Pipeline inputs
+***************
 
 In case you missed it -- there is a convenient way for you to get started right
 away -- which is by running the ``pySYD`` setup feature. Running the command will provide 
@@ -17,41 +17,62 @@ To read more details about the setup feature, please visit our :ref:`Installatio
 or :ref:`Quickstart <quickstart>` pages. You can also see how it works directly by visiting
 :ref:`the API <pipeline>`. 
 
+-----
 
-Required
-########
+Required input
+##############
 
-The only thing that is really *required* to successfully run the software is the data! 
-
-Data 
-****
+The only thing that is really *required* to successfully run the software is the data for
+a given star, duh! 
 
 For a given star with ID, input data are:
  #. the light curve, and
  #. the power spectrum.
 
-The light curve data should be in units of fractional flux or brightness as a function of
-days (the time unit is very important here). The power spectrum should be in units of power
-or power density versus :math:`\rm \mu Hz`.
+
+Light curve
+***********
+
+The *Kepler*, K2 & TESS missions have provided *billions* of stellar light curves, or a 
+measure of the object's brightness (or flux) in time. Like most other standard photometric 
+data, we require that the time array is in units of days. **This will be really important
+for the processing of the data, which we'll discuss in detail in a little bit.**
+
+For the time series data, the y-axis is less critical here. It can be anything from units 
+of fraction flux or brightness as a function
+of time, along with many other normalization.
+
+Power spectrum
+**************
+
+What *REALLY* matters for asteroseismology is how the time series data looks in frequency space, 
+which is generally calculated by taking the fourier transform (and often referred to as the
+:term:`power spectrum`). Thanks to open-source languages like Python, we have powerful
+community-driven software packages like `astropy` that can fortunately compute these things for us.
+*However*, it is still good to know why this is important to gain more intuition for what we are
+looking for.
+
+By definition, a fourier transform fits a series of sine waves with different frequencies (periods) 
+to time series data. This is still quite wordy and not really intuitive. In other words, we can break 
+this signal up into its dominant frequencies, which is quantified by some power or amplitude
+term.
+
+When I think about this, there is an analogy that absolutely blew my mind when I first learned about
+it. Similar to how every human's fingerprint is unique or every element's spectra are unique -- the 
+frequency spectrum of time series data is also unique to that measure of energy (in time). This is
+*exactly* how the Shazam or song-matching application operates!
 
 .. warning::
 
-    It is **critical** that these files are in the proper units in order for ``pySYD`` 
+    Again, it is **critical** that these files are in the proper units in order for ``pySYD`` 
     to work properly. If you are unsure about any of these units, your best bet is to
     provide a light curve (in days) and let us calculate the power spectrum for you! 
 
-.. warning::
 
-    Time and frequency *must* be in the specified units in order for the pipeline to properly process 
-    the data and provide reliable results. **If you are unsure about this, we recommend**
-    **ONLY providing the time series data in order to let** ``pySYD`` **calculate and
-    normalize the power spectrum for you.** Again, if you choose to do this, the time series data
-    *must* be in units of days in order for the frequency array to be calculated correctly. For
-    more information on formatting and inputs, please see :ref:`here <library/input>`.
+-----
 
-
-Optional 
-########
+Optional input
+##############
 
 There are two main information files which can be provided but both are optional -- whether
 or not you choose to use them ultimately depends on how you will run the software. 
@@ -118,4 +139,4 @@ can make your experience as customized as you'd like!
 
 .. TODO:: Add all the available options (columns) to the csv and documentation
     
-
+-----
