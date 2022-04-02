@@ -22,10 +22,10 @@ learn more about how the software (and asteroseismology) works -- we are absolut
    output
 
 
-TL;DR
-#####
+TL ; DR
+#######
 
 The original target audience was for non-expert users and therefore, ``pySYD`` 
-was initially developed to be a strictly command-line, end-to-end (i.e. hands-off) tool.
-However, we have been actively developing other channels and compatibilities so more
+was initially developed to be as hands-off as possible and ran as a strictly command-line
+tool. However, we have been actively developing other channels and compatibilities so more
 folks are able to utilize the software. 

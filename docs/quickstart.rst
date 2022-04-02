@@ -104,25 +104,33 @@ use the second example to show a condensed version.
 As a script
 ***********
 
-Regardless of how you use the software, the most common way you will likely use `pySYD` is in
-run mode -- which is the mode that processes stars (consecutively, not in parallel). 
-
-We can show the figures and verbose output using the ``-d`` and ``-v`` flags, for display and verbose, 
-respectively. Please see our :ref:`complete list <usage/cli/glossary>` of command-line flags. 
-There are many many options to make your experience as customizable as possible!
-
 Open up a terminal window and enter the following command:
 
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-Ok, let's dissect this. If you indeed used `pip install`, the binary (or executable) for ``pySYD``
-should be available. The entry point for ``pySYD`` is accessed through ``pysyd.cli.main``, which
-is the script where all command line information is available.
+Ok, let's dissect the statement and commands. 
 
-The last option (``--mc``) runs the pipeline for 200 steps, which will allow us to bootstrap
-uncertainties to the derived parameters. The ``--ux`` is an upper frequency limit for the
+If you used `pip` for installation, the binary (or executable) for ``pySYD`` should be available. 
+The entry point for ``pySYD`` is accessed through :mod:`pysyd.cli.main`, which is the script where 
+all the command-line options are made available.
+
+Regardless of how you use the software, the most common way you will likely use the software is in the
+run mode -- which processes stars in the order they were provided via :mod:`pysyd.pipeline.run`.
+Here, we are running a single star, KIC 1435467. You can also provide multiple targets,
+the stars which will be appended to a list and then processed consecutively. On the other 
+hand, if no targets are provided, the program would default to reading in the star or 'todo' 
+list ('info/todo.txt'). Again, this is because the software is optimized for 
+running an ensemble of stars.
+
+We can show the figures and verbose output using the ``-d`` and ``-v`` flags, for display and verbose, 
+respectively. Please see our :ref:`complete list <usage/cli/glossary>` of command-line flags. 
+There are many many options to make your experience as customizable as possible!
+
+The last option, ``--mc``, sets the number of iterations the pipeline will run for. Here,
+the pipeline will run for 200 steps, which allows us to bootstrap uncertainties on our 
+derived properties. The ``--ux`` is an upper frequency limit for the
 first module that identifies the power eXcess due to solar-like oscillations. In this
 case, there are high frequency artefacts that we would like to ignore. *If you'd like to learn
 more about this or are having a similar issue, please see our notebook tutorial that walks 
