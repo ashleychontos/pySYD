@@ -1,6 +1,6 @@
-********************
-Installation & setup
-********************
+************
+Installation
+************
 
 There are three main ways you can install the software:
 
@@ -131,8 +131,9 @@ window, which should display the following output:
 
 .. _installation/setup:
 
+*****
 Setup
-#####
+*****
 
 The software package comes with a convenient setup feature, which is called through 
 :mod:`pysyd.pipeline.setup`. We **strongly encourage** you to run this step 

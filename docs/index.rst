@@ -31,10 +31,11 @@ is too small!
 
 .. toctree::
    :titlesonly:
+   :maxdepth: 1
    :caption: Intro
    :hidden:
    
-   installation
+   Installation & setup <installation>
    quickstart
    library/index
    usage/index
