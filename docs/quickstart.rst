@@ -79,60 +79,70 @@ You are now ready to become an asteroseismologist!
 TL;DR
 #####
 
-The intended audience for ``pySYD`` is for non-expert users and therefore, the software was
-initially developed as a *strictly* command-line, end-to-end tool. However, the software has
-become more modular in recent updates, thus enabling broader capabilities that can be used
-in other applications such as Jupyter notebooks. 
+We wanted to go over a couple general tidbits about the software before going through the
+examples. 
 
-We will demonstrate each of these cases in scenarios on this page but please see our 
-:ref:`user guide <usage/index>` for more information. 
+The first is that the intended userbase for the original `pySYD` release was meant for 
+non-expert astronomers. Therefore, the software was developed to be as hands-off as possible 
+as a *strictly* command-line end-to-end tool. However since then, the software has become 
+more modular in recent updates, thus enabling broader capabilities that can be used in other 
+applications like Jupyter notebooks. 
+
+In addition to being a command-line tool, the software is optimized for running an ensemble
+of stars. This means that many of the options that one would typically use, such as printing 
+output information and displaying figures, is actually `False` by default. For our purposes 
+here though, we will enable them to better understand how the software works. 
+
+Here we will go through two different scenarios -- each demonstrating the two mains ways 
+you can use the software. We will start with the command-line example to break everything 
+down, and then put it back together in a condensed version for the second. 
+
+If you have *any* questions, please check our :ref:`user guide <usage/index>` for more 
+information. If this still does not address your question or problem, feel free to contact 
+`Ashley <achontos@hawaii.edu>`_ directly.
+
+-----
+
+*****************************************
+Running your first asteroseismic analyses
+*****************************************
 
 In general, the software operates in the following steps:
- #. :ref:`Loads in parameters and data <stepone>`
- #. :ref:`Estimates starting points <steptwo>`
- #. :ref:`Fits global parameters <stepthree>`
- #. :ref:`Estimates uncertainties <stepfour>`
+ #. :ref:`Load in parameters and data <stepone>`
+ #. :ref:`Estimate initial values <steptwo>`
+ #. :ref:`Fit global parameters <stepthree>`
+ #. :ref:`Extrapolate uncertainties <stepfour>`
 
 Each of the four main steps are discussed in detail below.
 
 .. warning::
 
-    Time and frequency *must* be in the specified units in order for the pipeline to properly process 
-    the data and provide reliable results. **If you are unsure about this, we recommend**
-    **ONLY providing the time series data in order to let** ``pySYD`` **calculate and
-    normalize the power spectrum for you.** Again, if you choose to do this, the time series data
-    *must* be in units of days in order for the frequency array to be calculated correctly. For
-    more information on formatting and inputs, please see :ref:`here <library/input>`.
-
------
-
-Running your first asteroseismic analyses
-#########################################
-
-The software is optimized for running many stars and hence, many of the defaults 
-parameters need to be changed in order to understand how the software works. We will
-use the command-line example to break everything down, and then put it back together
-in a condensed version for the second.
-
+    It is **critical** that the input data are in the proper units in order for ``pySYD`` 
+    to work properly and provide reliable results. If you are unsure about any of the units, 
+    we recommend that you provide the light curve (in days) and then let us compute the power
+    spectrum for you! 
 
 .. _script:
 
 As a script
-***********
+###########
 
-Open up a terminal window and type the following command:
+In a terminal window, type the following statement:
 
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-Ok, let's dissect the statement.
+which we will now deconstruct. 
 
- * ``pysyd`` : if you used `pip` for installation, the binary (or executable) for ``pySYD`` should be available. 
-   The entry point for ``pySYD`` is accessed through :mod:`pysyd.cli.main`, which is the script where 
-   all the command-line options are made available.
- * ``run`` : Regardless of how you use the software, the most common way you will likely use the software is in the
-   run (i.e. :mod:`pysyd.pipeline.run`) mode -- which processes stars in the order they were provided.
+ * ``pysyd`` : if you used `pip` install, the binary (or executable) ``pysyd`` is available. In fact, the setup
+   file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
+   also where you can find the parser with all the available commands and options.
+ * ``run`` : regardless of how you choose to use the software, the most common way you will likely implement
+   the ``pySYD`` pipeline is in its run (i.e. :mod:`pysyd.pipeline.run`) mode -- which, just as it sounds, will process
+   stars in the order they were provided. This is saved to the argument ``NameSpace`` as the 'mode' as in the 
+   `pysyd` pipeline mode. There are currently five available modes, all which are described in more detail
+   :ref:`here <library/pipeline>`
  * ``--star 1435467`` : here we are running a single star, KIC 1435467. You can also provide multiple targets,
    the stars which will be appended to a list and then processed consecutively. On the other 
    hand if no targets are provided, the program would default to reading in the star or 'todo' 
@@ -153,18 +163,24 @@ Ok, let's dissect the statement.
    us to bootstrap uncertainties on our derived properties. 
 
 After hitting return, you'll immediately notice that the output for the above command is actually 
-quite long. Not to worry though - we will break it down into four different sections and explain 
+quite long. Not to worry though - we will break it down into the four main ``pySYD`` steps
+mentioned in the summary above.  different sections and explain 
 each in great detail. In fact, each of the four sections correspond to the four main ``pySYD`` 
 steps discussed in the summary above.
+
+***Important: when running `pysyd` as a script, there is one positional argument.*** 
 
 
 .. _stepone:
 
 1. Load in parameters and data
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+******************************
 
 If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
 any further execution of the code. 
+
+Verbose output
+^^^^^^^^^^^^^^
 
 .. code-block::
 
@@ -197,12 +213,15 @@ moving on. Since everything checks out, we can move on!
 
 .. _steptwo:
 
-2. Estimates starting points
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2. Estimate initial values
+**************************
 
 For purposes of the example, we will assume that we do not know anything about its properties. 
 Typically we can provide optional inputs in many different ways but we won't here so it can 
 estimate the properties on its own.
+
+Verbose output
+^^^^^^^^^^^^^^
 
 .. code-block::
 
@@ -231,10 +250,17 @@ Next it uses a "collapsed" autocorrelation function (ACF) technique with differe
 to identify localized power excess in the power spectrum due to solar-like oscillations. By
 default, this is done three times (or trials) and hence, get three different estimates.
 
+
+Result figure
+^^^^^^^^^^^^^
+
 .. image:: _static/quickstart/1435467_estimates.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
 
+
+Result file
+^^^^^^^^^^^
 
 .. csv-table:: 1435467 parameter estimates
    :header: "stars", "numax", "dnu", "snr"
@@ -245,8 +271,8 @@ default, this is done three times (or trials) and hence, get three different est
 
 .. _stepthree:
 
-3. Fits global parameters
-^^^^^^^^^^^^^^^^^^^^^^^^^
+3. Fit global parameters
+************************
 
 A bulk of the heavy lifting is done in this main fitting routine, which is actually done 
 in two separate steps: 1) modeling and characterizing the stellar background and 2) determining 
@@ -259,6 +285,9 @@ observed over a wider range of frequencies compared to the solar-like oscillatio
 by attempting to identify where the oscillations are in the power spectrum, we can mask 
 them out to better characterize the background.
 
+
+Verbose output
+^^^^^^^^^^^^^^
 
 .. code-block::
 
@@ -291,18 +320,45 @@ we have now implemented an automated background model selection. For reference,
 After much trial and error, the :term:`AIC` seems to perform better for our purposes - which
 is why this is now the default metric used.
 
+
+Result figure
+^^^^^^^^^^^^^
+
 .. image:: _static/quickstart/1435467_global.png
   :width: 680
   :alt: Global parameters for KIC 1435467
 
 
+Result file
+^^^^^^^^^^^
+
+.. csv-table:: 1435467 global parameters
+   :header: "parameter", "value", "uncertainty"
+   :widths: 20, 20, 20
+
+   numax_smooth, 1303.82549513, --
+   A_smooth, 1.6981881189944,--
+   numax_gauss, 1354.18609943197, --
+   A_gauss, 1.45587282712706, --
+   FWHM, 284.631831313442, --
+   dnu, 70.653293964844, --
+   tau_1, 1069.91765124738, --
+   sigma_1, 31.1026782311927, --
+   tau_2, 218.303624326155, --
+   sigma_2, 85.4836783903674, --
+
+
+
 .. _stepfour:
 
-4. Estimates uncertainties
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+4. Extrapolate uncertainties
+****************************
 
 If this was run in its default settings (with --mc 1) for a single iteration, the output
 would look comparable but with no progress bar and no parameter uncertainties.
+
+Verbose output
+^^^^^^^^^^^^^^
 
 .. code-block::
 
@@ -329,15 +385,22 @@ would look comparable but with no progress bar and no parameter uncertainties.
     -----------------------------------------------------------
 
 
+We include a progress bar in the sampling step iff the verbose output is `True` *and*
+``pySYD`` is not executed in parallel mode. This is hard-wired since the latter would
+produce a nightmare mess.
+
+
+Result figure
+^^^^^^^^^^^^^
+
 .. image:: _static/quickstart/1435467_samples.png
   :width: 680
   :alt: KIC 1435467 posteriors
 
 ^^ posteriors for KIC 1435467
 
-We include a progress bar in the sampling step iff the verbose output is `True` *and*
-``pySYD`` is not executed in parallel mode. This is hard-wired since the latter would
-produce a nightmare mess.
+Result file
+^^^^^^^^^^^
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"

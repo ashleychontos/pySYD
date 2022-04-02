@@ -1,19 +1,8 @@
 .. note::
 
-   The initial ``pySYD`` release required both the time series data and power spectrum
-   because the software was initially a straight translation of `SYD`, which also required
-   those two inputs. The time series data is helpful for plotting to make sure everything
-   looks ok and is also used for checking if the power spectrum is oversampled or critically-
-   samples. *NO data manipulation was done in the initial release.*
-
-   For these reasons and others, we have had requests to drop the requirement for the time 
-   series data -- which is now another way the software can be used. However, this still
-   requires the user to compute their own power spectrum.
-
-   It was not until recently that we realized that frequency analysis tools and even some of 
-   the time-domain tools relevant to asteroseismology are not immediately obvious or known, 
-   especially for our non-expert users. **Since this is ultimately our target audience, we are 
-   currently working on developing and implementing time-domain utilities so stay tuned!**
+   The initial ``pySYD`` release required *both* time series and power spectrum data but
+   has since changed. The time-domain utilities and recent implementations are brand new
+   but we are furiously working away on this so stay tuned for new tools!
 
 ******
 Inputs
