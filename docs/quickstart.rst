@@ -76,12 +76,12 @@ The 411
 #######
 
 The intended audience for ``pySYD`` is for non-expert users and therefore, the software was
-initially developed as a *strictly* command-line, end-to-end tool. However, more recent updates  
-has made the software more modular and thus enabled compatibility with interactive sessions 
-(e.g., notebooks, IPython, etc.) as well.
+initially developed as a *strictly* command-line, end-to-end tool. However, the software has
+become more modular in recent updates and thus enabling compatibility with other interactive 
+sessions such as `Python` notebooks.
 
-We will demonstrate each of these cases in examples below. Please see our :ref:`user guide <usage/index>` 
-for more information. 
+We will demonstrate each of these cases in examples on this page but please see our 
+:ref:`user guide <usage/index>` for more information. 
 
 In general, the software operates in the following steps:
  #. :ref:`Loads in parameters and data <stepone>`
@@ -96,10 +96,9 @@ Running your first asteroseismic analyses
 #########################################
 
 The software is optimized for running many stars and hence, many of the defaults 
-parameters should be changed in order to understand how the software works. We will
-use the command line example to break everything down with detailed explanations, and then 
-use the second example to show a condensed version.
-
+parameters need to be changed in order to understand how the software works. We will
+use the command-line example to break everything down, and then put it all together
+in a condensed version for the second.
 
 As a script
 ***********
@@ -110,33 +109,33 @@ Open up a terminal window and enter the following command:
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-Ok, let's dissect the statement and commands. 
+Ok, let's dissect the statement.
 
-If you used `pip` for installation, the binary (or executable) for ``pySYD`` should be available. 
-The entry point for ``pySYD`` is accessed through :mod:`pysyd.cli.main`, which is the script where 
-all the command-line options are made available.
+ * If you used `pip` for installation, the binary (or executable) for ``pySYD`` should be available. 
+   The entry point for ``pySYD`` is accessed through :mod:`pysyd.cli.main`, which is the script where 
+   all the command-line options are made available.
+ * Regardless of how you use the software, the most common way you will likely use the software is in the
+   run (i.e. :mod:`pysyd.pipeline.run`) mode -- which processes stars in the order they were provided.
+   Here, we are running a single star, KIC 1435467. You can also provide multiple targets,
+   the stars which will be appended to a list and then processed consecutively. On the other 
+   hand if no targets are provided, the program would default to reading in the star or 'todo' 
+   list (via 'info/todo.txt'). Again, this is because the software is optimized for 
+   running an ensemble of stars.
+ * Adapting Linux-like features, we reserved the single hash options for booleans, which as shown above,
+   can be all grouped together. The ``-d`` and ``-v`` are short for display and verbose, 
+   respectively, and show the figures and verbose output. For a full list of options available
+   in command line, please see our glossary.:ref:`complete list <usage/cli/glossary>`. 
+   There are dozens of options to make your experience as customizable as possible!
+ * The ``--ux`` is an upper frequency limit for the first module that identifies the power eXcess 
+   due to solar-like oscillations. In this case, there are high frequency artefacts that we would 
+   like to ignore. *We actually made a special notebook tutorial specifically on how to address
+   and fix this problem.* If you'd like to learn more about this or are having a similar issue, 
+   please visit :ref:`this page <usage/nb/estimatenumax.ipynb>`.
+ * Finally, the last option, ``--mc``, sets the number of iterations the pipeline will run for. Here,
+   the pipeline will run for 200 steps, which allows us to bootstrap uncertainties on our 
+   derived properties. 
 
-Regardless of how you use the software, the most common way you will likely use the software is in the
-run mode -- which processes stars in the order they were provided via :mod:`pysyd.pipeline.run`.
-Here, we are running a single star, KIC 1435467. You can also provide multiple targets,
-the stars which will be appended to a list and then processed consecutively. On the other 
-hand, if no targets are provided, the program would default to reading in the star or 'todo' 
-list ('info/todo.txt'). Again, this is because the software is optimized for 
-running an ensemble of stars.
-
-We can show the figures and verbose output using the ``-d`` and ``-v`` flags, for display and verbose, 
-respectively. Please see our :ref:`complete list <usage/cli/glossary>` of command-line flags. 
-There are many many options to make your experience as customizable as possible!
-
-The last option, ``--mc``, sets the number of iterations the pipeline will run for. Here,
-the pipeline will run for 200 steps, which allows us to bootstrap uncertainties on our 
-derived properties. The ``--ux`` is an upper frequency limit for the
-first module that identifies the power eXcess due to solar-like oscillations. In this
-case, there are high frequency artefacts that we would like to ignore. *If you'd like to learn
-more about this or are having a similar issue, please see our notebook tutorial that walks 
-through how to fix this problem.*
-
-The printed output for the above command is actually quite long, so we will break it down 
+Now the printed output for the above command is actually quite long, so we will break it down 
 into four different sections and explain each in more detail. In fact, each of the four sections
 correspond to the four main ``pySYD`` steps discussed in the summary above.
 
@@ -162,19 +161,20 @@ any further execution of the code.
     -----------------------------------------------------------
 
 
-The example is for a single star but for posterity, the :mod:`pysyd.pipeline.run` processes 
-stars consecutively in order. It took the star name, along with the command-line arguments and 
-created an instance of the :mod:`pysyd.target.Target` class. Initialization of this object
-will automatically search for and load in data for a star, as shown by the output above.
+During this step, it will take the star name along with the command-line arguments and 
+created an instance of the :mod:`pysyd.target.Target` object. Initialization of this class
+will automatically search for and load in data for a given star, as shown in the output above.
 
 It appears as though this star, KIC 1435467, was observed in *Kepler* short-cadence (e.g., 
-1-minute cadence) data - which was used to compute the (oversampled) power spectrum. It
-continued processing, which means that there were no issues finding and storing the data.
-There are some `InputError` exceptions in place here but all :mod:`pysyd.target` class instances
-will have an ``ok`` attribute - literally meaning that the star is 'ok' to be processed.
+1-minute cadence) data - which was used to compute the (oversampled) power spectrum. 
+There are many exceptions in place during this step that will flag anything that does not 
+seem right. If something seems questionable during this step but is not fatal, it will only 
+return some warnings. Since none of this happened, we can assume that there were no issues
+accessing and storing the data.
 
-By default, the pipeline checks this attribute before moving on. Since the star and data 
-check out, we can move on. 
+All :mod:`pysyd.target` class instances will have an ``ok`` attribute - literally meaning 
+that the star is 'ok' to be processed. By default, the pipeline checks this attribute before 
+moving on. Since everything checks out, we can move on!
 
 
 .. _steptwo:
