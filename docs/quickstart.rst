@@ -64,13 +64,13 @@ Running your first asteroseismic analysis
 As a script
 ***********
 
-In a terminal window, type the following statement:
+When using ``pySYD`` via command line, I would use something similar to that shown below:
 
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-which we will now deconstruct. 
+the statement which we will now deconstruct first before carrying on.
 
  * ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
    file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
