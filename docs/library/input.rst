@@ -1,8 +1,9 @@
 .. note::
 
-   The initial ``pySYD`` release required *both* time series and power spectrum data but
-   has since changed. The time-domain utilities and recent implementations are brand new
-   but we are furiously working away on this so stay tuned for new tools!
+   The initial ``pySYD`` release required *both* the light curve and power spectrum. *However,*
+   this has since changed! For example, time-domain utilities in more recent implementations 
+   have become available -- which is exciting but we are also still furiously working away on 
+   this. ***STAY TUNED FOR NEW TOOLS!*** 
 
 ******
 Inputs
@@ -20,7 +21,7 @@ or :ref:`Quickstart <quickstart>` pages. You can also see how it works directly 
 Required
 ########
 
-The only thing *required* to successfully run the software and obtain results is the data! 
+The only thing that is really *required* to successfully run the software is the data! 
 
 Data 
 ****

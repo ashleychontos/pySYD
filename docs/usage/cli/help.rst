@@ -326,5 +326,5 @@ All CLI options relevant for the Monte-Carlo sampling in order to estimate uncer
 
 In the next topic, we will show some examples using these options.
 
-Additionally, we have examples of some put to use in :ref:`advanced usage<advanced>` 
+We have additional examples for some of these options in action to in :ref:`advanced usage<advanced>` 
 and also have included a brief :ref:`tutorial` below that describes some of these commands.
