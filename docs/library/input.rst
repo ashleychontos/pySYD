@@ -89,12 +89,16 @@ this also means that the information in this file need not be in any particular 
    1435467, 1.0, 4.4, 5777.0, 1400.0, 100.0, 5000.0, 100.0
    2309595, 1.0, 4.4, 5777.0, 1400.0, 100.0, 5000.0, 100.0
 
-Just like the input data, the `stars` *must* match their ID but also, the following commands
-must adhere to the following format(s). In fact, the columns in this csv are exactly equal to
-the value (or `destination`) that the command-line parser saves each option to.
+Just like the input data, the `stars` *must* match their ID but also, the commands
+must adhere to a special format. In fact, the columns in this csv are exactly equal to
+the value (or `destination`) that the command-line parser saves each option to. Since
+there are a ton of available columns, we won't list them all here but there are a few ways
+you can view the columns for yourself.
 
-Since there are a ton of available columns, we won't list them all. You can directly import
-the columns dictionary to see them for yourself:
+The first is by visiting our special :ref:`command-line glossary<usage/cli/glossary>`, 
+which explicitly states how each of the variables is defined. You can also see
+them fairly easily by importing the :mod:`pysyd.utils.get_dict` module and doing a
+basic `print` statement.
 
     >>> from pysyd import utils
     >>> columns = utils.get_dict('columns')

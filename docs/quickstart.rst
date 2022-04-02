@@ -2,9 +2,10 @@
 Quickstart
 **********
 
-The examples on this page assumes that the user already has some basic-level knowledge or
-experience with `Python`. If not, we recommend visiting the `Python` website and going through
-some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first.
+The examples on this page assume that the user already has some basic-level knowledge or
+experience with `Python`. If not, we recommend visiting the Python website and going through
+some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting some
+of our examples.
 
 **Jump to** ``pySYD`` **used:**
  - :ref:`via command line<script>`
@@ -80,8 +81,8 @@ You are now ready to become an asteroseismologist!
 
 -----
 
-The 411
-#######
+TL;DR
+#####
 
 The intended audience for ``pySYD`` is for non-expert users and therefore, the software was
 initially developed as a *strictly* command-line, end-to-end tool. However, the software has
@@ -115,7 +116,7 @@ in a condensed version for the second.
 As a script
 ***********
 
-Open up a terminal window and enter the following command:
+Open up a terminal window and type the following command:
 
 .. code-block::
 
@@ -147,9 +148,10 @@ Ok, let's dissect the statement.
    of iterations the pipeline will run for. In this case, the pipeline will run for 200 steps, which allows 
    us to bootstrap uncertainties on our derived properties. 
 
-Now, the output for the above command is actually quite long, so we will break it down 
-into four different sections and explain each in more detail. In fact, each of the four sections
-correspond to the four main ``pySYD`` steps discussed in the summary above.
+After hitting return, you'll immediately notice that the output for the above command is actually 
+quite long. Not to worry though - we will break it down into four different sections and explain 
+each in great detail. In fact, each of the four sections correspond to the four main ``pySYD`` 
+steps discussed in the summary above.
 
 
 .. _stepone:
