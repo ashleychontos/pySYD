@@ -13,8 +13,8 @@ our examples.
 TL;DR
 #####
 
-We wanted to go over a couple of general tidbits about the software before walking through the
-examples. 
+Just a quick timeout to go over a couple of general tidbits before walking through the
+detailed examples. 
 
 The first is that the intended userbase for the original `pySYD` release was meant for 
 non-expert astronomers. Therefore, the software was developed to be as hands-off as possible -- 
@@ -37,9 +37,9 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
 -----
 
-*****************************************
-Running your first asteroseismic analyses
-*****************************************
+*******************
+Crashteroseismology
+*******************
 
 In general, the software operates in the following steps:
  #. :ref:`Loads in parameters and data <stepone>`
