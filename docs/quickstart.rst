@@ -4,8 +4,8 @@ Quickstart
 
 The examples on this page assume that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the Python website and going through
-some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting some
-of our examples.
+some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
+our examples.
 
 **Jump to** ``pySYD`` **used:**
  - :ref:`via command line<script>`
@@ -68,7 +68,7 @@ You may have noticed that for this last point, we used the optional
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
     
 As shown above, :mod:`pysyd.pipeline.setup` downloaded example data and other relevant files
-from the `public GitHub repo<https://github.com/ashleychontos/pySYD>`_. It also established
+from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_. It also established
 a local, relative directory structure that is both straightforward for the pipeline and 
 intuitive to the user.
 
@@ -81,10 +81,10 @@ TL;DR
 
 The intended audience for ``pySYD`` is for non-expert users and therefore, the software was
 initially developed as a *strictly* command-line, end-to-end tool. However, the software has
-become more modular in recent updates and thus enabling compatibility with other interactive 
-sessions such as `Python` notebooks.
+become more modular in recent updates, thus enabling broader capabilities that can be used
+in other applications such as Jupyter notebooks. 
 
-We will demonstrate each of these cases in examples on this page but please see our 
+We will demonstrate each of these cases in scenarios on this page but please see our 
 :ref:`user guide <usage/index>` for more information. 
 
 In general, the software operates in the following steps:
@@ -111,7 +111,7 @@ Running your first asteroseismic analyses
 
 The software is optimized for running many stars and hence, many of the defaults 
 parameters need to be changed in order to understand how the software works. We will
-use the command-line example to break everything down, and then put it all together
+use the command-line example to break everything down, and then put it back together
 in a condensed version for the second.
 
 
