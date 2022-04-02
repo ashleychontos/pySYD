@@ -5,7 +5,7 @@ Getting started
 The examples on this page assume that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the Python website and going through
 some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
-our examples.
+ours!
 
 -----
 
@@ -13,8 +13,7 @@ our examples.
 TL;DR
 #####
 
-Just a quick timeout to go over a couple of general tidbits before walking through the
-detailed examples. 
+Just a quick timeout to go over a couple of general tidbits before walking through the examples. 
 
 The first is that the intended userbase for the original `pySYD` release was meant for 
 non-expert astronomers. Therefore, the software was developed to be as hands-off as possible -- 
@@ -69,7 +68,7 @@ In a terminal window, type the following statement:
 
 which we will now deconstruct. 
 
- * ``pysyd`` : if you used `pip` install, the binary (or executable) ``pysyd`` is available. In fact, the setup
+ * ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
    file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
    also where you can find the parser with all the available commands and options.
  * ``run`` : regardless of how you choose to use the software, the most common way you will likely implement
