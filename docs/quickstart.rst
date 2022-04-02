@@ -4,7 +4,11 @@ Quickstart
 
 The examples on this page assumes that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the `Python` website and going through
-some of `their tutorials<https://docs.python.org/3/tutorial/>`_ first.
+some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first.
+
+**Jump to** ``pySYD`` **used:**
+ - :ref:`via command line<script>`
+ - :ref:`as a module<module>`
 
 -----
 
@@ -105,6 +109,9 @@ parameters need to be changed in order to understand how the software works. We 
 use the command-line example to break everything down, and then put it all together
 in a condensed version for the second.
 
+
+.. _script:
+
 As a script
 ***********
 
@@ -116,31 +123,31 @@ Open up a terminal window and enter the following command:
 
 Ok, let's dissect the statement.
 
- * If you used `pip` for installation, the binary (or executable) for ``pySYD`` should be available. 
+ * ``pysyd`` : if you used `pip` for installation, the binary (or executable) for ``pySYD`` should be available. 
    The entry point for ``pySYD`` is accessed through :mod:`pysyd.cli.main`, which is the script where 
    all the command-line options are made available.
- * Regardless of how you use the software, the most common way you will likely use the software is in the
+ * ``run`` : Regardless of how you use the software, the most common way you will likely use the software is in the
    run (i.e. :mod:`pysyd.pipeline.run`) mode -- which processes stars in the order they were provided.
-   Here, we are running a single star, KIC 1435467. You can also provide multiple targets,
+ * ``--star 1435467`` : here we are running a single star, KIC 1435467. You can also provide multiple targets,
    the stars which will be appended to a list and then processed consecutively. On the other 
    hand if no targets are provided, the program would default to reading in the star or 'todo' 
    list (via 'info/todo.txt'). Again, this is because the software is optimized for 
    running an ensemble of stars.
- * Adapting Linux-like features, we reserved the single hash options for booleans, which as shown above,
-   can be all grouped together. The ``-d`` and ``-v`` are short for display and verbose, 
-   respectively, and show the figures and verbose output. For a full list of options available
-   in command line, please see our glossary.:ref:`complete list <usage/cli/glossary>`. 
-   There are dozens of options to make your experience as customizable as possible!
- * The ``--ux`` is an upper frequency limit for the first module that identifies the power eXcess 
+ * ``-dv`` : adapting Linux-like features, we reserved the single hash options for booleans which
+   can all be grouped together, as shown above. The ``-d`` and ``-v`` are short for display and verbose, 
+   respectively, and show the figures and verbose output. For a full list of options available, please 
+   see our :ref:`command-line glossary <usage/cli/glossary>`. There are dozens of options to make your 
+   experience as customized as you'd like!
+ * ``--ux 5000`` : this is an upper frequency limit for the first module that identifies the power eXcess 
    due to solar-like oscillations. In this case, there are high frequency artefacts that we would 
    like to ignore. *We actually made a special notebook tutorial specifically on how to address
    and fix this problem.* If you'd like to learn more about this or are having a similar issue, 
    please visit :ref:`this page <usage/nb/estimatenumax.ipynb>`.
- * Finally, the last option, ``--mc``, sets the number of iterations the pipeline will run for. Here,
-   the pipeline will run for 200 steps, which allows us to bootstrap uncertainties on our 
-   derived properties. 
+ * ``--mc 200`` : last but certainly not least - the ``mc`` (for Monte Carlo-like) option sets the number 
+   of iterations the pipeline will run for. In this case, the pipeline will run for 200 steps, which allows 
+   us to bootstrap uncertainties on our derived properties. 
 
-Now the printed output for the above command is actually quite long, so we will break it down 
+Now, the output for the above command is actually quite long, so we will break it down 
 into four different sections and explain each in more detail. In fact, each of the four sections
 correspond to the four main ``pySYD`` steps discussed in the summary above.
 
@@ -355,6 +362,7 @@ in the output. this is because the model preferred for this to be fixed
     first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
     the literature and we recommend that you do the same.***
 
+.. _module:
 
 As a module
 ***********
