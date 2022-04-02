@@ -60,7 +60,7 @@ Jump to:
 .. _cli/help/high:
 
 High-level functions
-********************
+####################
 
 Below is the first part of the output, which is primarily related to the higher level functionality.
 Within the software, these are defined by the parent and main parsers, which are inevitably inherited
@@ -95,7 +95,7 @@ used very sparingly.
 .. _cli/help/data:
 
 Initial data analyses
-*********************
+#####################
 
 The following features are primarily related to the initial and final treatment of
 data products, including information about the input data, how to process and save
@@ -140,8 +140,8 @@ the data as well as which modules to run.
 
 .. _cli/help/est:
 
-Estimating :math:`\nu_{\mathrm{max}}`
-*************************************
+Estimating numax
+################
 
 The following options are relevant for the first, optional module that is designed
 to estimate numax if it is not known: 
@@ -174,7 +174,7 @@ to estimate numax if it is not known:
 .. _cli/help/bg:
 
 Background fit
-**************
+##############
 
 Below is a complete list of parameters relevant to the background-fitting routine:
 
@@ -211,8 +211,8 @@ Below is a complete list of parameters relevant to the background-fitting routin
 
 .. _cli/help/numax:
 
-Deriving :math:`\nu_{\mathrm{max}}`
-***********************************
+Deriving numax
+##############
 
 All of the following parameters are related to deriving numax, or the frequency
 corresponding to maximum power:
@@ -241,8 +241,8 @@ corresponding to maximum power:
 
 .. _cli/help/dnu:
 
-Deriving :math:`\Delta\nu`
-**************************
+Deriving dnu
+############
 
 Below are all options related to the characteristic frequency spacing (dnu):
 
@@ -267,7 +267,7 @@ Below are all options related to the characteristic frequency spacing (dnu):
 .. _cli/help/ech:
 
 Echelle diagram
-***************
+###############
 
 All customizable options relevant for the echelle diagram output:
 
@@ -309,7 +309,7 @@ All customizable options relevant for the echelle diagram output:
 .. _cli/help/mc:
 
 Sampling
-*********
+########
 
 All CLI options relevant for the Monte-Carlo sampling in order to estimate uncertainties:
 
