@@ -61,8 +61,8 @@ Running your first asteroseismic analysis
 
 .. _script:
 
-Example 1: Command-line example
-*******************************
+As a script
+***********
 
 In a terminal window, type the following statement:
 
@@ -373,8 +373,8 @@ in the output. this is because the model preferred for this to be fixed
 
 .. _module:
 
-Example 2. Importing ``pySYD``
-******************************
+As a module
+***********
 
 A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
 that is processed is initialized as a new target object, which in this case, we'll call star.

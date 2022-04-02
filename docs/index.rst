@@ -2,9 +2,9 @@
 
    <br />
 
-****************************************************************************
-`pySYD`: |br| automated measurements |br| of global asteroseismic parameters
-****************************************************************************
+**************************************************************************
+pySYD: |br| automated measurements |br| of global asteroseismic parameters
+**************************************************************************
 
 Asteroseismology, or the study of stellar oscillations, is a powerful tool
 for studying the internal structure of stars and determining their fundamental 
@@ -22,7 +22,7 @@ designed to be a hands-off, end-to-end tool so that even non-expert users can
 reap the benefits of asteroseismology without requiring substantial background 
 knowledge. 
 
-**The main vision of** ``pySYD`` **is accessible asteroseismology.**
+**~~ The main vision of** ``pySYD`` **is accessible asteroseismology ~~**
 
 This package is being actively developed in 
 `a public repository on GitHub <https://github.com/ashleychontos/pySYD>`_ -- we especially 
@@ -33,7 +33,7 @@ is too small!
 
 .. toctree::
    :titlesonly:
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: Contents
    :hidden:
    
@@ -46,6 +46,7 @@ is too small!
 
 .. toctree::
    :titlesonly:
+   :maxdepth: 2
    :caption: Community 
    :hidden:
 
@@ -54,7 +55,7 @@ is too small!
    guidelines
 
 
-.. link-button:: quickstart
+.. link-button:: install/quickstart
     :type: ref
     :text: Skip the introductory stuff and get started right away!
     :classes: btn-outline-secondary btn-block
