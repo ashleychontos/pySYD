@@ -38,7 +38,7 @@ is too small!
    quickstart
    library/index
    usage/index
-   glossary
+   Glossary <glossary>
 
 
 .. toctree::

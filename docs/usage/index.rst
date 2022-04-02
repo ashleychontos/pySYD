@@ -9,8 +9,9 @@ share the software with you!
 
 
 .. toctree::
+   :titlesonly:
    :caption: Usage
 
-   cli/index
-   nb/index
+   Command line <cli/index>
+   Notebook tutorials <nb/index>
    other/index

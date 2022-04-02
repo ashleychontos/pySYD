@@ -1,8 +1,8 @@
 .. module:: pysyd
 
-*********************
-The ``pySYD`` library
-*********************
+*****************
+``pySYD`` library
+*****************
 
 Thanks for stopping by the ``pySYD`` documentation and showing an interest to
 learn more about how the software (and asteroseismology) works -- we are absolutely 
@@ -10,6 +10,7 @@ learn more about how the software (and asteroseismology) works -- we are absolut
 
 
 .. toctree::
+   :titlesonly:
    :caption: User Guide
 
    about

@@ -177,7 +177,7 @@ html_theme = 'sphinx_rtd_theme'
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 
-html_logo = "_static/mpysyd_logo_rtd.png"
+html_logo = "_static/pysyd_logo_rtd.png"
 
 #html_theme_options = {
 #    "logo_link": "index",

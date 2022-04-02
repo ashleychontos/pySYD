@@ -204,12 +204,12 @@ Next it uses a "collapsed" autocorrelation function (ACF) technique with differe
 to identify localized power excess in the power spectrum due to solar-like oscillations. By
 default, this is done three times (or trials) and hence, get three different estimates.
 
-.. image:: _static/examples/1435467_estimates.png
+.. image:: _static/quickstart/1435467_estimates.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
 
 
-.. csv-table:: 'results/1435467/estimates.csv'
+.. csv-table:: 1435467 parameter estimates
    :header: "stars", "numax", "dnu", "snr"
    :widths: 20, 20, 20, 20
 
@@ -264,7 +264,7 @@ we have now implemented an automated background model selection. For reference,
 After much trial and error, the :term:`AIC` seems to perform better for our purposes - which
 is why this is now the default metric used.
 
-.. image:: _static/examples/1435467_global.png
+.. image:: _static/quickstart/1435467_global.png
   :width: 680
   :alt: Global parameters for KIC 1435467
 
@@ -302,7 +302,7 @@ would look comparable but with no progress bar and no parameter uncertainties.
     -----------------------------------------------------------
 
 
-.. image:: _static/examples/1435467_samples.png
+.. image:: _static/quickstart/1435467_samples.png
   :width: 680
   :alt: KIC 1435467 posteriors
 
@@ -312,9 +312,9 @@ We include a progress bar in the sampling step iff the verbose output is `True` 
 ``pySYD`` is not executed in parallel mode. This is hard-wired since the latter would
 produce a nightmare mess.
 
-.. csv-table:: 'results/1435467/global.csv'
+.. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"
-   :widths: 30, 20, 20
+   :widths: 20, 20, 20
 
    numax_smooth, 1303.82549513, 65.1861645150548
    A_smooth, 1.6981881189944, 0.208329237417828
