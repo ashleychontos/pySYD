@@ -1,6 +1,6 @@
-*********************************************************
-Crashteroseismology == crash course into asteroseismology
-*********************************************************
+********************************************************
+Crashteroseismology = crash course into asteroseismology
+********************************************************
 
 The examples on this page assume that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the Python website and going through

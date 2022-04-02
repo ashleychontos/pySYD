@@ -70,8 +70,8 @@ functions compatible with `Python` notebooks as well. This is still a work in pr
 Imports
 #######
 
-Usage
-#####
+Pipeline modes
+##############
 
 There are currently four operational ``pySYD`` modes (and two under development): 
 
