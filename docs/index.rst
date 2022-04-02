@@ -37,7 +37,7 @@ is too small!
    :caption: Contents
    :hidden:
    
-   Installation & setup <installation>
+   installation
    quickstart
    library/index
    usage/index

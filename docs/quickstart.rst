@@ -36,9 +36,8 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
 -----
 
-*******************
-Crashteroseismology
-*******************
+Pipeline workflow
+#################
 
 In general, the software operates in the following steps:
  #. :ref:`Loads in parameters and data <stepone>`
@@ -55,10 +54,15 @@ Each of the four main steps are discussed in detail below.
     we recommend that you provide the light curve (in days) and then let us compute the power
     spectrum for you! 
 
+-----
+
+Running your first asteroseismic analysis
+#########################################
+
 .. _script:
 
-I. As a script
-##############
+Example 1: Command-line example
+*******************************
 
 In a terminal window, type the following statement:
 
@@ -107,7 +111,7 @@ steps discussed in the summary above.
 .. _stepone:
 
 1. Load in parameters and data
-******************************
+++++++++++++++++++++++++++++++
 
 If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
 any further execution of the code. 
@@ -147,7 +151,7 @@ moving on. Since everything checks out, we can move on!
 .. _steptwo:
 
 2. Estimate initial values
-**************************
+++++++++++++++++++++++++++
 
 For purposes of the example, we will assume that we do not know anything about its properties. 
 Typically we can provide optional inputs in many different ways but we won't here so it can 
@@ -208,7 +212,7 @@ Result file
 .. _stepthree:
 
 3. Fit global parameters
-************************
+++++++++++++++++++++++++
 
 A bulk of the heavy lifting is done in this main fitting routine, which is actually done 
 in two separate steps: 1) modeling and characterizing the stellar background and 2) determining 
@@ -288,7 +292,7 @@ Result file
 .. _stepfour:
 
 4. Extrapolate uncertainties
-****************************
+++++++++++++++++++++++++++++
 
 If this was run in its default settings (with --mc 1) for a single iteration, the output
 would look comparable but with no progress bar and no parameter uncertainties.
@@ -356,8 +360,6 @@ Result file
 * matches expected output for model 4 selection - notice how there is no white noise term
 in the output. this is because the model preferred for this to be fixed
    
-
-    
 .. note::
 
     While observations have shown that solar-like oscillations have an approximately 
@@ -367,10 +369,12 @@ in the output. this is because the model preferred for this to be fixed
     first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
     the literature and we recommend that you do the same.***
 
+-----
+
 .. _module:
 
-II. As a module
-###############
+Example 2. Importing ``pySYD``
+******************************
 
 A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
 that is processed is initialized as a new target object, which in this case, we'll call star.
