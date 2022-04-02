@@ -140,15 +140,15 @@ The software package comes with a convenient setup feature, which is called thro
 regardless of how you choose to run ``pySYD`` because it:
 
 - downloads example data for three stars
-- provides the optional input files *and* 
-- sets up the recommended local directory structure
+- provides the properly-formatted [optional] input files *and* 
+- sets up the relative local directory structure
 
 We'd like to emphasize this last bullet because it establishes a local, relative directory 
 structure that is both straightforward for the pipeline and intuitive to the user.
 
 
-1. Make a local directory
-*************************
+Make a local directory
+**********************
 
 Before you do that though, we recommend that you create a new, local directory to keep all 
 your pysyd-related data, information and results in a single, easy-to-find location. This is 
@@ -162,16 +162,15 @@ The folder or directory can be whatever is most convenient for you:
     mkdir ~/path/to/local/pysyd/directory
     
 
-2. Run setup
-************
+Execute setup
+*************
 
-Now all you need to do is change into that directory, run the following command:
+Now all you need to do is change into that directory, run the following command and let
+``pySYD`` do the rest of the work for you!
 
 .. code-block::
 
     pysyd setup --verbose
-
-and let ``pySYD`` do the rest of the work for you. 
 
 Now you might have noticed that for this last point, we used the optional 
 :term:`--verbose<-v, --verbose>` command, which will print:
@@ -216,6 +215,8 @@ from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_.
 
 -----
 
+.. _install/quickstart:
+
 Quickstart
 ##########
 
@@ -228,7 +229,7 @@ Enter the following commands to get up and running right away:
     cd ~/path/to/local/pysyd/directory
     pysyd setup 
 
-This is the same steps as above but in a more condensed version.
+This is the same as the steps discussed in detail above but just shown in a more condensed version.
 
 *You are now ready to become an asteroseismologist!*
 

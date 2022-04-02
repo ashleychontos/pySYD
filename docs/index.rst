@@ -30,8 +30,9 @@ is too small!
 
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Intro
+   :titlesonly:
+   :maxdepth: 3
+   :caption: Contents
    :hidden:
    
    Installation & setup <installation>

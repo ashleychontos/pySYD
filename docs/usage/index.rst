@@ -10,7 +10,7 @@ share the software with you!
 
 .. toctree::
    :titlesonly:
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents
 
    Command line <cli/index>
