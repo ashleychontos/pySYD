@@ -20,7 +20,9 @@ We recommend creating a local directory to keep all your pysyd-related data, res
 and information in a single, easy-to-find location. The software package comes with a 
 convenient setup feature that downloads example data so let's start there.
 
-Open up a terminal window and type the following commands:
+.. TODO:: add an option to download example data/files as a package in the root directory.
+
+Open up a terminal window and enter the following commands:
 
 .. code-block::
 
@@ -29,8 +31,8 @@ Open up a terminal window and type the following commands:
     cd ~/path/to/local/pysyd/directory
     pysyd setup --verbose
 
-You may have noticed that, for this last point, we used the optional 
-:term:`--verbose<-v, --verbose>` command, which *should* print the following output:
+You may have noticed that for this last point, we used the optional 
+:term:`--verbose<-v, --verbose>` command, which will print the following:
 
 .. code-block::
     
@@ -65,19 +67,12 @@ You may have noticed that, for this last point, we used the optional
       - example data saved
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
     
-As shown above, the feature downloaded example data and other relevant items
-from the `public GitHub repo<https://github.com/ashleychontos/pySYD>`_. 
+As shown above, :mod:`pysyd.pipeline.setup` downloaded example data and other relevant files
+from the `public GitHub repo<https://github.com/ashleychontos/pySYD>`_. It also established
+a local, relative directory structure that is both straightforward for the pipeline and 
+intuitive to the user.
 
 You are now ready to become an asteroseismologist!
-
-.. warning::
-
-    Time and frequency *must* be in the specified units in order for the pipeline to properly process 
-    the data and provide reliable results. **If you are unsure about this, we recommend**
-    **ONLY providing the time series data in order to let** ``pySYD`` **calculate and
-    normalize the power spectrum for you.** Again, if you choose to do this, the time series data
-    *must* be in units of days in order for the frequency array to be calculated correctly. For
-    more information on formatting and inputs, please see :ref:`here <library/input>`.
 
 -----
 
@@ -99,6 +94,15 @@ In general, the software operates in the following steps:
  #. :ref:`Estimates uncertainties <stepfour>`
 
 Each of the four main steps are discussed in detail below.
+
+.. warning::
+
+    Time and frequency *must* be in the specified units in order for the pipeline to properly process 
+    the data and provide reliable results. **If you are unsure about this, we recommend**
+    **ONLY providing the time series data in order to let** ``pySYD`` **calculate and
+    normalize the power spectrum for you.** Again, if you choose to do this, the time series data
+    *must* be in units of days in order for the frequency array to be calculated correctly. For
+    more information on formatting and inputs, please see :ref:`here <library/input>`.
 
 -----
 
