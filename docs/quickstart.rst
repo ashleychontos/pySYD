@@ -75,20 +75,21 @@ You are now ready to become an asteroseismologist!
 The 411
 #######
 
-The intended audience for ``pySYD`` is for non-expert users. Therefore, the software was
-initially developed as a *strictly* command-line, end-to-end tool. However, recent updates have 
-ensured compatibility with interactive sessions (e.g., notebooks, IPython, etc.) as well.
+The intended audience for ``pySYD`` is for non-expert users and therefore, the software was
+initially developed as a *strictly* command-line, end-to-end tool. However, more recent updates  
+has made the software more modular and thus enabled compatibility with interactive sessions 
+(e.g., notebooks, IPython, etc.) as well.
 
-We will demonstrate both of these cases in examples below but please see our user guide for 
-more information. 
+We will demonstrate each of these cases in examples below. Please see our :ref:`user guide <usage/index>` 
+for more information. 
 
-Typically the software operates in four main steps:
+In general, the software operates in the following steps:
  #. :ref:`Loads in parameters and data <stepone>`
  #. :ref:`Estimates starting points <steptwo>`
  #. :ref:`Fits global parameters <stepthree>`
  #. :ref:`Estimates uncertainties <stepfour>`
 
-Each of the steps are discussed in detail below.
+Each of the four main steps are discussed in detail below.
 
 
 Running your first asteroseismic analyses

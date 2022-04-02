@@ -1,8 +1,8 @@
 .. module:: pysyd
 
-***************
-``pySYD`` usage
-***************
+**********
+User guide
+**********
 
 We have been actively developing these broader capabilities so we are very excited to
 share the software with you! 
@@ -10,8 +10,9 @@ share the software with you!
 
 .. toctree::
    :titlesonly:
-   :caption: Usage
+   :maxdepth: 2
+   :caption: Contents
 
    Command line <cli/index>
    Notebook tutorials <nb/index>
-   other/index
+   Other usage <other/index>

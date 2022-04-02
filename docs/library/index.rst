@@ -11,7 +11,7 @@ learn more about how the software (and asteroseismology) works -- we are absolut
 
 .. toctree::
    :titlesonly:
-   :caption: User Guide
+   :caption: Contents
 
    about
    input
