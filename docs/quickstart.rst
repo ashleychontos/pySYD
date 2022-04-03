@@ -41,7 +41,7 @@ a couple of important tidbits.
 
 -----
 
-crashteroseismology
+CRASHTEROSEISMOLOGY
 ###################
 :raw-html:`&rightarrow;` **crash course into asteroseismology**
 
@@ -81,7 +81,7 @@ Now let's deconstruct the above statement!
    the ``pySYD`` pipeline is in run mode -- which, just as it sounds, will process stars in the order 
    they were provided. This is saved to the argument ``NameSpace`` as the ``mode`` which will run
    the pipeline by calling :mod:`pysyd.pipeline.run`. There are currently five available 
-   modes, all which are described in more detail :ref:`here <library/pipeline>`
+   modes, all which are described in more detail :ref:`here <library-pipeline>`
 
 ``--star 1435467``
    here we are running a single star, KIC 1435467. You can also provide multiple targets,
@@ -94,7 +94,7 @@ Now let's deconstruct the above statement!
    adapting Linux-like features, we reserved the single hash options for booleans which
    can all be grouped together, as shown above. The ``-d`` and ``-v`` are short for display and verbose, 
    respectively, and show the figures and verbose output. For a full list of options available, please 
-   see our :ref:`command-line glossary <usage/cli/glossary>`. There are dozens of options to make your 
+   see our :ref:`command-line glossary <usage-cli-glossary>`. There are dozens of options to make your 
    experience as customized as you'd like!
 
 ``--ux 5000``
@@ -102,7 +102,7 @@ Now let's deconstruct the above statement!
    due to solar-like oscillations. In this case, there are high frequency artefacts that we would 
    like to ignore. *We actually made a special notebook tutorial specifically on how to address
    and fix this problem.* If you'd like to learn more about this or are having a similar issue, 
-   please visit :ref:`this page <usage/nb/estimatenumax.ipynb>`.
+   please visit :ref:`this page <tutorials/numaxhacks.ipynb>`.
 
 ``--mc 200``
    last but certainly not least - the ``mc`` (for Monte Carlo-like) option sets the number 
@@ -110,7 +110,7 @@ Now let's deconstruct the above statement!
    which allows us to bootstrap uncertainties on our derived properties. 
 
 **Note:** For a *complete* list of options which are currently available via command-line interface (CLI), 
-see our special CLI :ref:`glossary<usage/cli/glossary>`.
+see our special CLI :ref:`glossary <usage-cli-glossary>`.
 
 -----
 
@@ -209,7 +209,7 @@ default, this is done three times (or trials) and hence, provides three differen
 The bottom row in the above figure shows these three trials, highlighting the one that was 
 selected -- which is based on the signal-to-noise (S/N) of the detection.
 
-Finally, it saves this best estimate in a basic csv:
+Finally, it saves this best estimate in a basic csv file:
 
 
 .. csv-table:: 1435467 parameter estimates
