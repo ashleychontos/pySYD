@@ -1,6 +1,6 @@
-********
-CLI help
-********
+***************
+CLI information
+***************
 
 Running the help command 
 ########################

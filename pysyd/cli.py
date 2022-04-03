@@ -367,7 +367,7 @@ def main():
                          default=False, 
                          action='store_true',
     )
-    echelle.add_argument('-i', '--ie', '-interpech', '--interpech',
+    echelle.add_argument('-i', '--ie', '--interpech',
                          dest='interp_ech',
                          help='Turn on the interpolation of the output ED',
                          default=False,

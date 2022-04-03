@@ -146,13 +146,13 @@ During this step, it will take the star name along with the command-line argumen
 created an instance of the :mod:`pysyd.target.Target` object. Initialization of this class
 will automatically search for and load in data for a given star, as shown in the output above.
 
-We provided both the light curve and power spectrum for KIC 1435467, where it automatically
-calculated an oversampling factor of 5. **Note:** it will process the pipeline on oversampled spectra for 
+For this target, KIC 1435467, both the light curve and power spectrum were available and it automatically
+calculated the oversampling factor. **Note:** it will process the pipeline on oversampled spectra for 
 single iterations but will *always* switch to critically-sampled spectra for estimating uncertainties. 
 **Calculating uncertainties with oversampled spectra can produce unreliable results and uncertainties!**
 
-**If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
-any further execution of the code.** If something seems questionable during this step but 
+*If there are issues during the first step,* ``pySYD`` *will flag this and immediately halt 
+any further execution of the code.* If something seems questionable during this step but 
 is not fatal for executing the pipeline, it will only return some warnings. In fact, all 
 :mod:`pysyd.target` class instances will have an ``ok`` attribute - literally meaning 
 that the star is 'ok' to be processed. By default, the pipeline checks this attribute before 

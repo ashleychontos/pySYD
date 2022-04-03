@@ -67,14 +67,12 @@ List of options
          * default = `3.0`
          * unit = fractional psd
     
-    ``-c, --cli``
-        while in the list of commands, this option should not be tinkered with for current
-        users. The purpose of adding this was to extend it to beyond the basic command-line
-        usage -- therefore, this triggers to ``False`` when calling functions from a notebook
+    ``--cli``
+        this should never be touched - for internal workings on how to retrieve and save parameters
          * dest = ``args.cli``
          * type = `bool`
          * default = `True`
-         * action = ``store_false``
+         * action = ``store_true``
 
     ``-d, --show, --display``
         show output figures, which is 
@@ -92,16 +90,15 @@ List of options
          * nargs = `'*'`
          * default = `None`
          * **REQUIRES:** :term:`--le<--le, --lowere>`/:term:`--lowere<--le, --lowere>` *and* :term:`--ue<--ue, --uppere>`/:term:`--uppere<--ue, --uppere>`
-    
-    ``-e, --ie, --interpech``
-        turn on the bilinear interpolation 
-        of the plotted echelle diagram
-         * dest = ``args.interp_ech``
-         * type = `bool`
-         * default = `False`
-         * action = ``store_true``
-         * **see also:** :term:`--se<--se, --smoothech>`, :term:`--smoothech<--se, --smoothech>`
 
+    ``-e, --est, --excess``
+        turn off the find excess module -- this will automatically happen if :term:`numax`
+        is provided **I think this has been deprecated**
+         * dest = ``args.excess``
+         * type = `bool`
+         * default = `True`
+         * action = ``store_false``
+    
     ``--ew, --exwidth``
         the fractional value of the width to use surrounding the power excess, which is computed using a solar
         scaling relation (and then centered on the estimated :math:`\nu_{\mathrm{max}}`)
@@ -135,15 +132,22 @@ List of options
          * type = `bool`
          * default = `True`
          * action = ``store_false``
-    
-    ``-i, --include``
-        include metric (i.e. BIC, AIC) values in verbose output during the background
-        fitting procedure
-         * dest = ``args.include``
+
+    ``--gap, --gaps``
+        what constitutes a time series gap (i.e. how many cadences)
+         * dest = ``args.gap``
+         * type = `int`
+         * default = `20`
+         * **see also:** :term:`-x<-x, --stitch, --stitching>`, :term:`--stitch<-x, --stitch, --stitching>`, :term:`--stitching<-x, --stitch, --stitching>`
+
+    ``-i, --ie, --interpech``
+        turn on the bilinear interpolation 
+        of the plotted echelle diagram
+         * dest = ``args.interp_ech``
          * type = `bool`
          * default = `False`
          * action = ``store_true``
-         * **see also:** :term:`--metric`
+         * **see also:** :term:`--se<--se, --smoothech>`, :term:`--smoothech<--se, --smoothech>`
 
     ``--in, --input, --inpdir``
         path to the input data
@@ -151,12 +155,19 @@ List of options
          * type = `str`
          * default = ``INPDIR``
 
+    ``--infdir``
+        path to relevant `pySYD` information (defined in init file)
+         * dest = ``args.infdir``
+         * type = `str`
+         * default = ``INFDIR``
+         * **see also:** :term:`--file<--file, --list, --todo>`, :term:`--info<--info, --information>`, :term:`--information<--info, --information>`, :term:`--list<--file, --list, --todo>`, :term:`--todo<--file, --list, --todo>`
+
     ``--info, --information``
         path to the csv containing all the stellar information 
         (although *not* required)
          * dest = ``args.info``
          * type = `str`
-         * default = ``INFODIR``
+         * default = ``star_info.csv``
     
     ``--iw, --indwidth``
         width of binning for the power spectrum used in the first module 
@@ -253,7 +264,7 @@ List of options
         ~[`'bic'`, `'aic'`] but **still being developed and tested**
          * dest = ``args.metric``
          * type = `str`
-         * default = `'bic'`
+         * default = `'aic'`
     
     ``-n, --notch``
         use notching technique to reduce effects from mixes modes (pretty sure this is not
@@ -276,8 +287,7 @@ List of options
     
     ``--noy, --ndown, --norders``
         similar to :term:`nox`, this specifies the number of bins (i.e. orders) to use on the
-        y-axis of the echelle diagram. **TODO:** check how it is automatically calculating the
-        number of orders since there cannot be `0`.
+        y-axis of the echelle diagram
          * dest = ``args.noy``
          * type = `int`
          * default = `0`
@@ -301,7 +311,7 @@ List of options
         * default = `None`
         * unit = :math:`\mu \mathrm{Hz}`
     
-    ``-o, --over, --overwrite``
+    ``-o, --overwrite``
         newer option to overwrite existing files with the same name/path since it will now add extensions
         with numbers to avoid overwriting these files
          * dest = ``args.overwrite``
@@ -309,21 +319,12 @@ List of options
          * default = `False`
          * action = ``store_true``
     
-    ``--ofa, --ofactual``
+    ``--of, --over, --oversample``
         the oversampling factor of the provided power spectrum. Default is `0`, which means it is calculated from
         the time series data. **Note:** this needs to be provided if there is no time series data!
          * dest = ``args.of_actual``
          * type = `int`
-         * default = `0`
-         * **see also:** :term:`--ofn<--ofn, --ofnew>`, :term:`--ofnew<--ofn, --ofnew>`
-    
-    ``--ofn, --ofnew``
-        the new oversampling factor to use in the first iteration of 
-        both modules ** see performance for more details?
-         * dest = ``args.of_new``
-         * type = `int`
-         * default = `5`
-         * **see also:** :term:`--ofa<--ofa, --ofactual>`, :term:`--ofactual<--ofa, --ofactual>`
+         * default = `None`
          
     ``--out, --output, --outdir``
         path to save 
@@ -423,15 +424,6 @@ List of options
 
 
 .. glossary::
-    
-    ``-t, --test``
-        extra verbose output for testing functionality 
-        (not currently implemented)
-        **NEED TO DO**
-         * dest = ``args.test``
-         * type = `bool`
-         * default = `False`
-         * action = ``store_true``
 
     ``--thresh, --threshold``
         the fractional value of the autocorrelation function's full width at half
@@ -495,14 +487,14 @@ List of options
          * type = `bool`
          * default = `False`
          * action = ``store_true``
-    
-    ``-x, --ex, --excess``
-        turn off the find excess module -- this will automatically happen if :term:`numax`
-        is provided **I think this has been deprecated**
-         * dest = ``args.excess``
+
+    ``-x, --stitch, --stitching``
+        correct for large gaps in time series data by 'stitching' the light curve
+         * dest = ``args.stitch``
          * type = `bool`
-         * default = `True`
-         * action = ``store_false``
+         * default = `False`
+         * action = ``store_true``
+         * **see also:** :term:`--gap<--gap, --gaps>`, :term:`--gaps<--gap, --gaps>`
     
     ``-y, --hey``
         plugin for Daniel Hey's interactive echelle 
