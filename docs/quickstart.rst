@@ -1,5 +1,8 @@
+.. role::  raw-html(raw)
+    :format: html
+
 ********************************************************
-Crashteroseismology = crash course into asteroseismology
+Crashteroseismology: crash course into asteroseismology
 ********************************************************
 
 The examples on this page assume that the user already has some basic-level knowledge or
@@ -75,35 +78,38 @@ When using ``pySYD`` via command line, I would use something similar to that sho
 
 the statement which we will now deconstruct before carrying on.
 
- * ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
+ :raw-html:`&rightarrow;` ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
    file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
    also where you can find the parser with all the available commands and options.
- * ``run`` : regardless of how you choose to use the software, the most common way you will likely implement
+ :raw-html:`&rightarrow;` ``run`` : regardless of how you choose to use the software, the most common way you will likely implement
    the ``pySYD`` pipeline is in its run (i.e. :mod:`pysyd.pipeline.run`) mode -- which, just as it sounds, will process
    stars in the order they were provided. This is saved to the argument ``NameSpace`` as the 'mode' as in the 
    `pysyd` pipeline mode. There are currently five available modes, all which are described in more detail
    :ref:`here <library/pipeline>`
- * ``--star 1435467`` : here we are running a single star, KIC 1435467. You can also provide multiple targets,
+ :raw-html:`&rightarrow;` ``--star 1435467`` : here we are running a single star, KIC 1435467. You can also provide multiple targets,
    the stars which will be appended to a list and then processed consecutively. On the other 
    hand if no targets are provided, the program would default to reading in the star or 'todo' 
    list (via 'info/todo.txt'). Again, this is because the software is optimized for 
    running an ensemble of stars.
- * ``-dv`` : adapting Linux-like features, we reserved the single hash options for booleans which
+ :raw-html:`&rightarrow;` ``-dv`` : adapting Linux-like features, we reserved the single hash options for booleans which
    can all be grouped together, as shown above. The ``-d`` and ``-v`` are short for display and verbose, 
    respectively, and show the figures and verbose output. For a full list of options available, please 
    see our :ref:`command-line glossary <usage/cli/glossary>`. There are dozens of options to make your 
    experience as customized as you'd like!
- * ``--ux 5000`` : this is an upper frequency limit for the first module that identifies the power eXcess 
+ :raw-html:`&rightarrow;` ``--ux 5000`` : this is an upper frequency limit for the first module that identifies the power eXcess 
    due to solar-like oscillations. In this case, there are high frequency artefacts that we would 
    like to ignore. *We actually made a special notebook tutorial specifically on how to address
    and fix this problem.* If you'd like to learn more about this or are having a similar issue, 
    please visit :ref:`this page <usage/nb/estimatenumax.ipynb>`.
- * ``--mc 200`` : last but certainly not least - the ``mc`` (for Monte Carlo-like) option sets the number 
+ :raw-html:`&rightarrow;` ``--mc 200`` : last but certainly not least - the ``mc`` (for Monte Carlo-like) option sets the number 
    of iterations the pipeline will run for. In this case, the pipeline will run for 200 steps, which allows 
    us to bootstrap uncertainties on our derived properties. 
 
-After hitting return, you'll immediately notice that the output for the above command is actually 
-quite long. Not to worry though - we will break it down into the four main steps above.
+**Note:** For a *complete* list of options which are currently available via command-line interface (CLI), 
+see our special CLI glossary.
+
+If you haven't already, execute the above command -- for which you will immediately notice that the printed
+output is actually quite long. Not to worry though as we will break it down into the four main steps mentioned before.
 
 
 ***Important: when running `pysyd` as a script, there is one positional argument.*** 
