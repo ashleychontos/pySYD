@@ -68,8 +68,8 @@ in a more condensed version for the other.
 
 .. _script:
 
-...as a script
-###################
+from the command line
+#####################
 
 When using ``pySYD`` via command line, I would use something similar to that shown below:
 
@@ -80,8 +80,8 @@ When using ``pySYD`` via command line, I would use something similar to that sho
 the statement which we will now deconstruct before carrying on.
 
 :raw-html:`&rightarrow;` ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
-   file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
-   also where you can find the parser with all the available commands and options.
+                         file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
+                         also where you can find the parser with all the available commands and options.
 
 :raw-html:`&rightarrow;` ``run`` : regardless of how you choose to use the software, the most common way you will likely implement
    the ``pySYD`` pipeline is in its run (i.e. :mod:`pysyd.pipeline.run`) mode -- which, just as it sounds, will process
