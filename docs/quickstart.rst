@@ -10,10 +10,6 @@ experience with `Python`. If not, we recommend visiting the Python website and g
 some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
 ours!
 
-We will go through two examples -- each demonstrating a different usage scenario. We will 
-start with the command-line example to break everything down and then put it all back together 
-in a more condensed version for the other application.
-
 If you have *any* questions, check out our :ref:`user guide <usage/index>` for more 
 information. If this still does not address your question or problem, please do not hesitate
 to contact `Ashley <achontos@hawaii.edu>`_ directly.
@@ -48,6 +44,10 @@ here though, we will invoke them to better understand how the software works.
 
 Running your first asteroseismic analysis
 #########################################
+
+We will go through two examples -- each demonstrating a different usage scenario. We will 
+start with the command-line example to break everything down and then put it all back together 
+in a more condensed version for the other application.
 
 For purposes of this example, we will assume that we do not know anything about the star or
 its properties. I say this because typically we can provide optional inputs that can save 
@@ -115,7 +115,7 @@ which we will now deconstruct.
 see our special CLI :ref:`glossary<usage/cli/glossary>`.
 
 If you haven't already, execute the above command -- you will immediately notice that the printed
-output is actually quite long. Not to worry though as we will break it down into the four main steps mentioned before.
+output is actually quite long. Not to worry though as we will break it down by sections.
 
 
 ***Important: when running `pysyd` as a script, there is one positional argument.*** 
@@ -205,19 +205,12 @@ to identify localized power excess in the power spectrum due to solar-like oscil
 default, this is done three times (or trials) and hence, get three different estimates.
 
 
-Result figure
-^^^^^^^^^^^^^
+**Results:**
 
 .. image:: _static/quickstart/1435467_estimates.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
 
-
-***To learn more about what each panel is showing, please visit :ref:`this page<library/output>`.***
-
-
-Result file
-^^^^^^^^^^^
 
 .. csv-table:: 1435467 parameter estimates
    :header: "stars", "numax", "dnu", "snr"
@@ -226,27 +219,16 @@ Result file
    1435467, 1438.27561061044, 72.3140769912867, 12.3801364686659
 
 
+.. note::
+
+   To learn more about what each panel is showing, please visit :ref:`this page<library/output>`.
+
 -----
 
 .. _stepthree:
 
 3. Fit global parameters
 ++++++++++++++++++++++++
-
-A bulk of the heavy lifting is done in this main fitting routine, which is actually done 
-in two separate steps: 1) modeling and characterizing the stellar background and 2) determining 
-the global asteroseismic parameters. We do this *separately* in two steps because they have 
-fairly different properties and we wouldn't want either of the estimates to be influenced by 
-the other in any way. 
-
-Ultimately the stellar background has more of a presence in the power spectrum in that it is 
-observed over a wider range of frequencies compared to the solar-like oscillations. Therefore 
-by attempting to identify where the oscillations are in the power spectrum, we can mask 
-them out to better characterize the background.
-
-
-Verbose output
-^^^^^^^^^^^^^^
 
 .. code-block::
 
@@ -273,23 +255,29 @@ Verbose output
     Based on AIC statistic: model 4
     -----------------------------------------------------------
 
+A bulk of the heavy lifting is done in this main fitting routine, which is actually done 
+in two separate steps: 1) modeling and characterizing the stellar background and 2) determining 
+the global asteroseismic parameters. We do this *separately* in two steps because they have 
+fairly different properties and we wouldn't want either of the estimates to be influenced by 
+the other in any way. 
+
+Ultimately the stellar background has more of a presence in the power spectrum in that it is 
+observed over a wider range of frequencies compared to the solar-like oscillations. Therefore 
+by attempting to identify where the oscillations are in the power spectrum, we can mask 
+them out to better characterize the background.
+
 Unlike previous versions of this software and previous versions of this software (i.e. `SYD`), 
 we have now implemented an automated background model selection. For reference, 
 
 After much trial and error, the :term:`AIC` seems to perform better for our purposes - which
 is why this is now the default metric used.
 
-
-Result figure
-^^^^^^^^^^^^^
+**Results:**
 
 .. image:: _static/quickstart/1435467_global.png
   :width: 680
   :alt: Global parameters for KIC 1435467
 
-
-Result file
-^^^^^^^^^^^
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"
@@ -312,12 +300,6 @@ Result file
 
 4. Extrapolate uncertainties
 ++++++++++++++++++++++++++++
-
-If this was run in its default settings (with --mc 1) for a single iteration, the output
-would look comparable but with no progress bar and no parameter uncertainties.
-
-Verbose output
-^^^^^^^^^^^^^^
 
 .. code-block::
 
@@ -343,23 +325,18 @@ Verbose output
      - combining results into single csv file
     -----------------------------------------------------------
 
+If this was run in its default settings (with --mc 1) for a single iteration, the output
+would look comparable but with no progress bar or parameter uncertainties. We include the 
+progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
+executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
 
-We include a progress bar in the sampling step iff the verbose output is `True` *and*
-``pySYD`` is not executed in parallel mode. This is hard-wired since the latter would
-produce a nightmare mess.
-
-
-Result figure
-^^^^^^^^^^^^^
+**Results:**
 
 .. image:: _static/quickstart/1435467_samples.png
   :width: 680
   :alt: KIC 1435467 posteriors
 
 ^^ posteriors for KIC 1435467
-
-Result file
-^^^^^^^^^^^
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"
