@@ -36,7 +36,7 @@ here though, we will invoke them to better understand how the software works.
 -----
 
 General software workflow
-#########################
+*************************
 
 The software operates in approximately the following order:
  #. :ref:`Loads in parameters and data <stepone>`
@@ -68,7 +68,7 @@ in a more condensed version for the other.
 
 .. _script:
 
-...via command line
+...as a script
 ###################
 
 When using ``pySYD`` via command line, I would use something similar to that shown below:
@@ -82,26 +82,31 @@ the statement which we will now deconstruct before carrying on.
 :raw-html:`&rightarrow;` ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
    file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
    also where you can find the parser with all the available commands and options.
+
 :raw-html:`&rightarrow;` ``run`` : regardless of how you choose to use the software, the most common way you will likely implement
    the ``pySYD`` pipeline is in its run (i.e. :mod:`pysyd.pipeline.run`) mode -- which, just as it sounds, will process
    stars in the order they were provided. This is saved to the argument ``NameSpace`` as the 'mode' as in the 
    `pysyd` pipeline mode. There are currently five available modes, all which are described in more detail
    :ref:`here <library/pipeline>`
+
 :raw-html:`&rightarrow;` ``--star 1435467`` : here we are running a single star, KIC 1435467. You can also provide multiple targets,
    the stars which will be appended to a list and then processed consecutively. On the other 
    hand if no targets are provided, the program would default to reading in the star or 'todo' 
    list (via 'info/todo.txt'). Again, this is because the software is optimized for 
    running an ensemble of stars.
+
 :raw-html:`&rightarrow;` ``-dv`` : adapting Linux-like features, we reserved the single hash options for booleans which
    can all be grouped together, as shown above. The ``-d`` and ``-v`` are short for display and verbose, 
    respectively, and show the figures and verbose output. For a full list of options available, please 
    see our :ref:`command-line glossary <usage/cli/glossary>`. There are dozens of options to make your 
    experience as customized as you'd like!
+
 :raw-html:`&rightarrow;` ``--ux 5000`` : this is an upper frequency limit for the first module that identifies the power eXcess 
    due to solar-like oscillations. In this case, there are high frequency artefacts that we would 
    like to ignore. *We actually made a special notebook tutorial specifically on how to address
    and fix this problem.* If you'd like to learn more about this or are having a similar issue, 
    please visit :ref:`this page <usage/nb/estimatenumax.ipynb>`.
+
 :raw-html:`&rightarrow;` ``--mc 200`` : last but certainly not least - the ``mc`` (for Monte Carlo-like) option sets the number 
    of iterations the pipeline will run for. In this case, the pipeline will run for 200 steps, which allows 
    us to bootstrap uncertainties on our derived properties. 
@@ -115,6 +120,7 @@ output is actually quite long. Not to worry though as we will break it down into
 
 ***Important: when running `pysyd` as a script, there is one positional argument.*** 
 
+-----
 
 .. _stepone:
 
@@ -155,6 +161,7 @@ All :mod:`pysyd.target` class instances will have an ``ok`` attribute - literall
 that the star is 'ok' to be processed. By default, the pipeline checks this attribute before 
 moving on. Since everything checks out, we can move on!
 
+-----
 
 .. _steptwo:
 
@@ -216,6 +223,8 @@ Result file
 
    1435467, 1438.27561061044, 72.3140769912867, 12.3801364686659
 
+
+-----
 
 .. _stepthree:
 
@@ -295,7 +304,7 @@ Result file
    tau_2, 218.303624326155, --
    sigma_2, 85.4836783903674, --
 
-
+-----
 
 .. _stepfour:
 
@@ -379,13 +388,13 @@ in the output. this is because the model preferred for this to be fixed
 
 -----
 
-Running your first asteroseismic analysis
-#########################################
+Running your favorite star...
+#############################
 
 .. _module:
 
-As a module
-***********
+...by importing the module
+###########################
 
 A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
 that is processed is initialized as a new target object, which in this case, we'll call star.
