@@ -8,13 +8,6 @@ Thanks for stopping by the ``pySYD`` documentation and taking an interest in
 learning more about how the software and asteroseismology works -- we are so 
 *thrilled*! 
 
-How it works
-############
-
- - About ``pySYD``
- - Pipeline inputs
- - 
-
 -----
 
 About
@@ -45,6 +38,8 @@ existing analyses and expanding upon numerous new features. Some of the improvem
 
 .. TODO:: implement seeds for any random parts of the pipeline for reproducibility purposes
 
+-----
+
 Benchmarking Kepler results
 ###########################
 
@@ -65,17 +60,16 @@ used extensively in the literature.
 
 .. TODO:: Add script or jupyter notebook to reproduce this figure.
 
-
-How it works
-############
+-----
 
 .. toctree::
    :maxdepth: 2
+   :caption: Content
 
    input
    pipeline
-   target
-   models	      
-   Utilities <utils>
+   target	      
+   utils
    output
 
+-----

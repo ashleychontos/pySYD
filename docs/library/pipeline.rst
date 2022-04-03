@@ -1,9 +1,6 @@
-*************
-Main pipeline
-*************
-
-Overview
-########
+**************
+Main execution
+**************
 
 When running the software,  `pySYD` will look in the following paths:
 
@@ -11,8 +8,10 @@ When running the software,  `pySYD` will look in the following paths:
 - ``INPDIR`` : '~/path/to/local/pysyd/directory/data'
 - ``OUTDIR`` : '~/path/to/local/pysyd/directory/results'
 
-which by default, is the absolute path of the current working directory (i.e. wherever you
+which by default, is the absolute path of the current working directory (or wherever you
 ran setup from).
+
+-----
 
 The software generally operates in four main steps:
  #. :ref:`Loads in parameters and data <stepone>`
