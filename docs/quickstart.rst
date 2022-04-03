@@ -42,7 +42,7 @@ here though, we will invoke them to better understand how the software works.
 
 -----
 
-Crashteroseismology == crash course into asteroseismology
+crashteroseismology == crash course into asteroseismology
 ###########################################################
 
 We will go through two examples -- each demonstrating a different usage scenario. We will 
@@ -53,17 +53,19 @@ in a more condensed version for the other application.
 *******************
 
 For purposes of this example, we will assume that we do not know anything about the star or
-its properties. I say this because typically we can provide optional inputs that can save 
-time and bypass some of the unnecessary steps (in many different ways) but we won't here so 
-that the software can run from start to finish on its own.
+its properties. I say this because typically we can provide optional inputs (e.g., the center
+of the frequency range with the oscillations, or :term:`numax` :math:`\rm \nu_{max}`) 
+that can save time and bypass some of the extra steps but we won't do that here so the software 
+can run from start to finish on its own.
 
-When using ``pySYD`` via command line, you will likely use a statement similar to that shown below:
+When using ``pySYD`` this way, the command you use will typically look similar to the
+following statement, which we will deconstruct after. 
 
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-which we will now deconstruct.
+**Breaking down the arguments:**
 
 ``pysyd``
    if you used `pip` install, the binary (or executable) should be available. In fact, the setup
@@ -106,24 +108,23 @@ which we will now deconstruct.
 **Note:** For a *complete* list of options which are currently available via command-line interface (CLI), 
 see our special CLI :ref:`glossary<usage/cli/glossary>`.
 
-If you haven't already, execute the above command -- you will immediately notice that the printed
-output is actually quite long. Not to worry though as we will break it down by sections.
-
-
-***Important: when running `pysyd` as a script, there is one positional argument.*** 
+***Important: when running `pysyd` as a script, there is one positional argument for the pysyd "mode".*** 
 
 
 How it works
 ++++++++++++
 
-The software operates in approximately the following order:
+So in case you haven't already, execute the command. You will immediately notice that the printed
+output is actually quite long but not to worry though, as we will break it down by four main 
+sections (corresponding to the approximate pipeline workflow):
  #. :ref:`Loads in parameters and data <stepone>`
  #. :ref:`Estimates initial values <steptwo>`
  #. :ref:`Fits global parameters <stepthree>`
  #. :ref:`Extrapolates uncertainties <stepfour>`
 
-Each of the four main steps are discussed in detail below.
-
+For each step, we will first show the relevant block of printed (or verbose) output, then
+describe what the software is actually doing and if applicable, conclude with the section-
+specific results (i.e. files, figures, etc.).
 
 .. _stepone:
 
