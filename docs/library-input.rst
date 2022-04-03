@@ -15,7 +15,7 @@ away -- which is by running the ``pySYD`` setup feature. Running the command wil
 
 To read more details about the setup feature, please visit our :ref:`Installation <installation>` 
 or :ref:`Quickstart <quickstart>` pages. You can also see how it works directly by visiting
-:ref:`the API <pipeline>`. 
+:ref:`the API <library-pipeline>`. 
 
 -----
 

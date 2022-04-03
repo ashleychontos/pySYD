@@ -13,6 +13,5 @@ share the software with you!
    :maxdepth: 3
    :caption: Contents
 
-   Command line <cli/index>
-   Notebook tutorials <nb/index>
-   Other usage <other/index>
+   Command line <usage-cli-index>
+   Notebook tutorials <usage-nb-index>

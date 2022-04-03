@@ -12,9 +12,9 @@ with you!
    :maxdepth: 2
    :caption: User Guide
 
-   about
-   input
-   pipeline
-   target	      
-   utils
-   output
+   library-about
+   library-input
+   library-pipeline
+   library-target	      
+   library-utils
+   library-output

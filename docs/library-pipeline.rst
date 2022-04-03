@@ -9,13 +9,17 @@ When running the software,  `pySYD` will look in the following paths:
 - ``OUTDIR`` : '~/path/to/local/pysyd/directory/results'
 
 which by default, is the absolute path of the current working directory (or wherever you
-ran setup from).
+ran setup from). We will eventually add an option to save the example data and files as
+package data (since it is easier to load in)
 
 -----
 
+Pipeline overview
+#################
+
 The software generally operates in four main steps:
  #. :ref:`Loads in parameters and data <stepone>`
- #. :ref:`Estimates starting points <steptwo>`
+ #. :ref:`Gets initial values <steptwo>`
  #. :ref:`Fits global parameters <stepthree>`
  #. :ref:`Estimates uncertainties <stepfour>`
 

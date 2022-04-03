@@ -30,7 +30,7 @@ a couple of important tidbits.
  - In addition to being a command-line tool, the software is optimized for running many stars. 
    This means that many of the options that one would typically use or prefer, such as printing 
    output information and displaying figures, is `False` by default. For our purposes 
-   here though, we will invoke them to better understand how the software works. 
+   here though, we will invoke them to better understand how the software operates. 
 
 .. warning::
 
@@ -43,7 +43,7 @@ a couple of important tidbits.
 
 crashteroseismology
 ###################
-:raw-html:`&rightarrow;`**crash course into asteroseismology**
+:raw-html:`&rightarrow;` **crash course into asteroseismology**
 
 We will go through two examples -- each demonstrating a different usage scenario. We will 
 start with the command-line example to break everything down and then put it all together 

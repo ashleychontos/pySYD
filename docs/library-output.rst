@@ -1,6 +1,6 @@
-******
-Output
-******
+****************
+Pipeline results
+****************
 
 As we've said many times before, the software is optimized for running an ensemble of stars. 
 Therefore, the utility function ``pysyd.utils.scrape_output`` will automatically concatenate the 
@@ -58,19 +58,19 @@ KIC 2309595 is a subgiant, with numax ~650 muHz.
 Estimating numax:
 
 .. image:: figures/examples/2309595_excess.png
-  :width: 600
+  :width: 680
   :alt: Find excess output plot for KIC 2309595.
 
 The global fit:
 
 .. image:: figures/examples/2309595_background.png
-  :width: 600
+  :width: 680
   :alt: Fit background output plot for KIC 2309595.
 
 Sampling results:
 
 .. image:: figures/examples/2309595_samples.png
-  :width: 600
+  :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 2309595.
 
 ====================
@@ -84,19 +84,19 @@ KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 Estimate for numax:
 
 .. image:: figures/examples/11618103_excess.png
-  :width: 600
+  :width: 680
   :alt: Find excess output plot for KIC 11618103.
 
 Global fit:
 
 .. image:: figures/examples/11618103_background.png
-  :width: 600
+  :width: 680
   :alt: Fit background output plot for KIC 11618103.
 
 Sampling results:
 
 .. image:: figures/examples/11618103_samples.png
-  :width: 600
+  :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
 ====================
