@@ -20,7 +20,7 @@ TL;DR
 #####
 
 If you (understandably) do not have time to go through the user guide, we have summarized 
-a couple of important tidbits about the software before walking through the examples. 
+a couple of important tidbits about the software. 
 
 The first is that the userbase for the initial `pySYD` release was intended for non-expert 
 astronomers. **With this in mind, the software was originally developed to be as hands-off as
@@ -56,16 +56,17 @@ For purposes of this first example, we will assume that we do not know anything 
 its properties. I say this because typically we can provide optional inputs (e.g., the center
 of the frequency range with the oscillations, or :term:`numax` :math:`\rm \nu_{max}`) 
 that can save time and bypass some of the extra steps but we won't do that here so the software 
-can run from start to finish on its own.
+will run from start to finish on its own.
 
-When using ``pySYD`` this way, the command you use will typically look similar to the
+When using ``pySYD`` this way, the command you will typically use will probably look similar to the
 following statement, which we will deconstruct after. 
 
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-**Breaking down the arguments:**
+Breaking down the arguments
++++++++++++++++++++++++++++
 
 ``pysyd``
    if you used `pip` install, the binary (or executable) should be available. In fact, the setup
@@ -74,17 +75,17 @@ following statement, which we will deconstruct after.
 
 ``run`` 
    regardless of how you choose to use the software, the most common way you will likely implement
-   the ``pySYD`` pipeline is in its run (i.e. :mod:`pysyd.pipeline.run`) mode -- which, just as it 
-   sounds, will process stars in the order they were provided. This is saved to the argument 
-   ``NameSpace`` as the 'mode' as in the `pysyd` pipeline mode. There are currently five available 
+   the ``pySYD`` pipeline is in run mode -- which, just as it sounds, will process stars in the order 
+   they were provided. This is saved to the argument ``NameSpace`` as the ``mode`` which will run
+   the pipeline by calling :mod:`pysyd.pipeline.run`. There are currently five available 
    modes, all which are described in more detail :ref:`here <library/pipeline>`
 
 ``--star 1435467``
    here we are running a single star, KIC 1435467. You can also provide multiple targets,
-   the stars which will be appended to a list and then processed consecutively. On the other 
+   where the stars will append to a list and then be processed consecutively. On the other 
    hand if no targets are provided, the program would default to reading in the star or 'todo' 
    list (via 'info/todo.txt'). Again, this is because the software is optimized for 
-   running an ensemble of stars.
+   running many stars.
 
 ``-dv``
    adapting Linux-like features, we reserved the single hash options for booleans which
@@ -128,8 +129,8 @@ specific results (i.e. files, figures, etc.).
 
 .. _stepone:
 
-1. Load in parameters and data
-++++++++++++++++++++++++++++++
+Load in parameters and data
++++++++++++++++++++++++++++
 
 .. code-block::
 
@@ -147,25 +148,25 @@ During this step, it will take the star name along with the command-line argumen
 created an instance of the :mod:`pysyd.target.Target` object. Initialization of this class
 will automatically search for and load in data for a given star, as shown in the output above.
 
-It appears as though this star, KIC 1435467, was observed in *Kepler* short-cadence (e.g., 
-1-minute cadence) data - which was used to compute the (oversampled) power spectrum. 
-There are many exceptions in place during this step that will flag anything that does not 
-seem right. If something seems questionable during this step but is not fatal, it will only 
-return some warnings. Since none of this happened, we can assume that there were no issues
-accessing and storing the data.
-
-All :mod:`pysyd.target` class instances will have an ``ok`` attribute - literally meaning 
-that the star is 'ok' to be processed. By default, the pipeline checks this attribute before 
-moving on. Since everything checks out, we can move on!
+We provided both the light curve and power spectrum for KIC 1435467, where it automatically
+calculated an oversampling factor of 5. **Note:** it will process the pipeline on oversampled spectra for 
+single iterations but will *always* switch to critically-sampled spectra for estimating uncertainties. 
+**Calculating uncertainties with oversampled spectra can produce unreliable results and uncertainties!**
 
 **If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
-any further execution of the code.**
+any further execution of the code.** If something seems questionable during this step but 
+is not fatal for executing the pipeline, it will only return some warnings. In fact, all 
+:mod:`pysyd.target` class instances will have an ``ok`` attribute - literally meaning 
+that the star is 'ok' to be processed. By default, the pipeline checks this attribute before 
+moving on. 
+
+Since none of this happened, we can move on to the next step.
 
 
 .. _steptwo:
 
-2. Estimate initial values
-++++++++++++++++++++++++++
+Estimate initial values
++++++++++++++++++++++++
 
 .. code-block::
 
@@ -195,8 +196,6 @@ to identify localized power excess in the power spectrum due to solar-like oscil
 default, this is done three times (or trials) and hence, get three different estimates.
 
 
-**Results:**
-
 .. image:: _static/quickstart/1435467_estimates.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
@@ -216,8 +215,8 @@ default, this is done three times (or trials) and hence, get three different est
 
 .. _stepthree:
 
-3. Fit global parameters
-++++++++++++++++++++++++
+Fit global parameters
++++++++++++++++++++++
 
 .. code-block::
 
@@ -261,11 +260,13 @@ we have now implemented an automated background model selection. For reference,
 After much trial and error, the :term:`AIC` seems to perform better for our purposes - which
 is why this is now the default metric used.
 
-**Results:**
-
 .. image:: _static/quickstart/1435467_global.png
   :width: 680
   :alt: Global parameters for KIC 1435467
+
+If this was run in its default setting, with ``--mc`` = `1`, for a single iteration, the output
+parameters would look like that below. **We urge folks to run new stars for a single step first 
+(ALWAYS) before running it several iterations to make sure everything looks ok.**
 
 
 .. csv-table:: 1435467 global parameters
@@ -286,8 +287,8 @@ is why this is now the default metric used.
 
 .. _stepfour:
 
-4. Extrapolate uncertainties
-++++++++++++++++++++++++++++
+Extrapolate uncertainties
++++++++++++++++++++++++++
 
 .. code-block::
 
@@ -313,18 +314,17 @@ is why this is now the default metric used.
      - combining results into single csv file
     -----------------------------------------------------------
 
-If this was run in its default settings (with --mc 1) for a single iteration, the output
-would look comparable but with no progress bar or parameter uncertainties. We include the 
+ We include the 
 progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
 executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
-
-**Results:**
 
 .. image:: _static/quickstart/1435467_samples.png
   :width: 680
   :alt: KIC 1435467 posteriors
 
 ^^ posteriors for KIC 1435467
+
+Now, notice the difference in the output parameters this time... they have uncertainties!
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"
