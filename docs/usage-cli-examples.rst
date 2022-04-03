@@ -1,3 +1,6 @@
+.. role:: bash(code)
+   :language: bash
+
 **************
 Basic examples
 **************
@@ -23,15 +26,15 @@ High SNR: KIC 11618103
 
 KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
-.. image:: ../_static/examples/11618103_excess.png
+.. image:: _static/examples/11618103_excess.png
   :width: 680
   :alt: Find excess output plot for KIC 11618103.
 
-.. image:: ../_static/examples/11618103_background.png
+.. image:: _static/examples/11618103_background.png
   :width: 680
   :alt: Fit background output plot for KIC 11618103.
 
-.. image:: ../_static/examples/11618103_samples.png
+.. image:: _static/examples/11618103_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
@@ -61,11 +64,11 @@ As if asteroseismology wasn't hard enough, let's make it even more difficult for
 
 KIC 8801316 is a subgiant with a numax ~1100 muHz, shown in the figures below. 
 
-.. image:: ../_static/examples/8801316_excess.png
+.. image:: _static/examples/8801316_excess.png
   :width: 680
   :alt: Numax estimate KIC 8801316.
 
-.. image:: ../_static/examples/8801316_background.png
+.. image:: _static/examples/8801316_background.png
   :width: 680
   :alt: Global fit for KIC 8801316.
 
@@ -83,15 +86,15 @@ No SNR: KIC 6278992
 
 KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
-.. image:: ../_static/examples/6278992_excess.png
+.. image:: _static/examples/6278992_excess.png
   :width: 680
   :alt: Find excess output plot for KIC 6278992.
 
-.. image:: ../_static/examples/6278992_background.png
+.. image:: _static/examples/6278992_background.png
   :width: 680
   :alt: Fit background output plot for KIC 6278992.
 
-.. image:: ../_static/examples/6278992_samples.png
+.. image:: _static/examples/6278992_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 6278992.
 
@@ -149,7 +152,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +-------------------------------------------------------+---------------------------------------------------------+
 |:bash:`pysyd run --star 9512063 --numax 843`           |:bash:`pysyd run --star 9512063 --numax 843 --dnu 49.54` |
 +-------------------------------------------------------+---------------------------------------------------------+
-| .. figure:: ../_static/advanced/9512063_before.png    | .. figure:: ../_static/advanced/9512063_after.png       |
+| .. figure:: _static/advanced/9512063_before.png       | .. figure:: _static/advanced/9512063_after.png          |
 |    :width: 680                                        |    :width: 680                                          |
 +-------------------------------------------------------+---------------------------------------------------------+
 
@@ -165,7 +168,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +------------------------------------------------------------------+------------------------------------------------------------------+
 | :bash:`pysyd run --star 9542776 --numax 900`                     | :bash:`pysyd run --star 9542776 --numax 900 --ew 1.5`            |
 +------------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: ../_static/advanced/9542776_before.png               | .. figure:: ../_static/advanced/9542776_after.png                |
+| .. figure:: _static/advanced/9542776_before.png                  | .. figure:: _static/advanced/9542776_after.png                   |
 |    :width: 680                                                   |    :width: 680                                                   |
 +------------------------------------------------------------------+------------------------------------------------------------------+
 
@@ -181,7 +184,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +------------------------------------------------------------------+------------------------------------------------------------------+
 | :bash:`pysyd run 3112889 --numax 871.52 --dnu 53.2`              | :bash:`pysyd run --star 3112889 --numax 871.52 --dnu 53.2 --ie`  |
 +------------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: ../_static/advanced/3112889_before.png               | .. figure:: ../_static/advanced/3112889_after.png                |
+| .. figure:: _static/advanced/3112889_before.png                  | .. figure:: _static/advanced/3112889_after.png                   |
 |    :width: 680                                                   |    :width: 680                                                   |
 +------------------------------------------------------------------+------------------------------------------------------------------+
 
@@ -197,7 +200,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +---------------------------------------------------------------+------------------------------------------------------------------+
 | :bash:`pysyd run --star 8045442 --numax 550`                  | :bash:`pysyd run --star 8045442 --numax 550 --kc`                |
 +---------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: ../_static/advanced/8045442_before.png            | .. figure:: ../_static/advanced/8045442_after.png                |
+| .. figure:: _static/advanced/8045442_before.png               | .. figure:: _static/advanced/8045442_after.png                   |
 |    :width: 680                                                |    :width: 680                                                   |
 +---------------------------------------------------------------+------------------------------------------------------------------+
 
@@ -213,7 +216,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 | :bash:`pysyd run --star 10731424 --numax 750`                            | :bash:`pysyd run --star 10731424 --numax 750 --lp 490`                   |
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| .. figure:: ../_static/advanced/10731424_before.png                      | .. figure:: ../_static/advanced/10731424_after.png                       |
+| .. figure:: _static/advanced/10731424_before.png                         | .. figure:: _static/advanced/10731424_after.png                          |
 |    :width: 680                                                           |    :width: 680                                                           |
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 
@@ -229,7 +232,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 | :bash:`pysyd run --star 9455860`                                         | :bash:`pysyd run --star 9455860 --npeaks 10`                             |
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| .. figure:: ../_static/advanced/9455860_before.png                       | .. figure:: ../_static/advanced/9455860_after.png                        |
+| .. figure:: _static/advanced/9455860_before.png                          | .. figure:: _static/advanced/9455860_after.png                           |
 |    :width: 680                                                           |    :width: 680                                                           |
 +--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 
@@ -245,7 +248,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +--------------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 5791521`                       | :bash:`pysyd run --star 5791521 --numax 670`          |
 +--------------------------------------------------------+-------------------------------------------------------+
-| .. figure:: ../_static/advanced/5791521_before.png     | .. figure:: ../_static/advanced/5791521_after.png     |
+| .. figure:: _static/advanced/5791521_before.png        | .. figure:: _static/advanced/5791521_after.png        |
 |    :width: 680                                         |    :width: 680                                        |
 +--------------------------------------------------------+-------------------------------------------------------+
 
@@ -262,7 +265,7 @@ Below are examples of how to use specific ``pySYD`` features, as well as plots s
 +-----------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 11769801`                   | :bash:`pysyd run --star 11769801 -ux 3500`            |
 +-----------------------------------------------------+-------------------------------------------------------+
-| .. figure:: ../_static/advanced/11769801_before.png | .. figure:: ../_static/advanced/11769801_after.png    |
+| .. figure:: _static/advanced/11769801_before.png    | .. figure:: _static/advanced/11769801_after.png       |
 |    :width: 680                                      |    :width: 680                                        |
 +-----------------------------------------------------+-------------------------------------------------------+
 

@@ -40,7 +40,7 @@ The same time series and power spectra were used for both analyses. The resultin
 are compared for the two methods below for :term:`numax` (:math:`\rm \nu_{max}`, left) and 
 :term:`dnu` (:math:`\Delta\nu`, right). 
 
-.. image:: ../_static/comparison.png
+.. image:: _static/comparison.png
   :width: 680
   :alt: Comparison of the `pySYD` and `SYD` pipelines
 

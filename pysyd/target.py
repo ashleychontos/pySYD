@@ -72,7 +72,7 @@ class Target:
         Run the ``pySYD`` pipeline on a given star
 
         Parameters
-            results : Dict
+            results : Dict[]
                 dictionary containing the results from the pipeline, with keys corresponding
                 to each of the steps (i.e. 'estimates', 'parameters', 'samples')
             plotting : Dict
@@ -177,7 +177,7 @@ class Target:
 
     def estimate_parameters(self, excess=True,):
         """
-        Estimate :math:`\rm \nu_{max}`
+        Estimate :math:`\\rm \\nu_{max}`
 
         Estimates the initial starting values for parameters before performing the global
         fit. First it quantifies a crude background model by binning the power spectrum in 
@@ -465,9 +465,9 @@ class Target:
 
         Returns
             frequency : numpy.ndarray
-                the calculated frequency array in :math:`\rm \mu Hz`
+                the calculated frequency array in :math:`\\rm \\mu Hz`
             power : numpy.ndarray
-                the calculated power density in :math:`\rm ppm^{2} \mu Hz^{-1}`
+                the calculated power density in :math:`\\rm ppm^{2} \\mu Hz^{-1}`
 
         .. important::
 
