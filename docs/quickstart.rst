@@ -12,7 +12,7 @@ ours!
 
 We will go through two examples -- each demonstrating a different usage scenario. We will 
 start with the command-line example to break everything down and then put it all back together 
-in a more condensed version for the other. 
+in a more condensed version for the other application.
 
 If you have *any* questions, check out our :ref:`user guide <usage/index>` for more 
 information. If this still does not address your question or problem, please do not hesitate
@@ -52,12 +52,14 @@ Running your first asteroseismic analysis
 For purposes of this example, we will assume that we do not know anything about the star or
 its properties. I say this because typically we can provide optional inputs that can save 
 time and bypass some of the unnecessary steps (in many different ways) but we won't here so 
-it can estimate the properties on its own.
+that the software can run from start to finish on its own.
+
+-----
 
 The command
 ***********
 
-When using ``pySYD`` via command line, I would use a statement similar to that shown below:
+When using ``pySYD`` via command line, you will likely use a statement similar to that shown below:
 
 .. code-block::
 
@@ -65,15 +67,17 @@ When using ``pySYD`` via command line, I would use a statement similar to that s
 
 which we will now deconstruct.
 
-:raw-html:`&rightarrow;` ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
-                         file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
-                         also where you can find the parser with all the available commands and options.
+:raw-html:`&rightarrow;` ``pysyd``
+   > if you used `pip` install, the binary (or executable) should be available. In fact, the setup
+   > file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
+   > also where you can find the parser with all the available commands and options.
 
-:raw-html:`&rightarrow;` ``run`` : regardless of how you choose to use the software, the most common way you will likely implement
-   the ``pySYD`` pipeline is in its run (i.e. :mod:`pysyd.pipeline.run`) mode -- which, just as it sounds, will process
-   stars in the order they were provided. This is saved to the argument ``NameSpace`` as the 'mode' as in the 
-   `pysyd` pipeline mode. There are currently five available modes, all which are described in more detail
-   :ref:`here <library/pipeline>`
+:raw-html:`&rightarrow;` ``run``
+   > regardless of how you choose to use the software, the most common way you will likely implement
+   > the ``pySYD`` pipeline is in its run (i.e. :mod:`pysyd.pipeline.run`) mode -- which, just as it sounds, will process
+   > stars in the order they were provided. This is saved to the argument ``NameSpace`` as the 'mode' as in the 
+   > `pysyd` pipeline mode. There are currently five available modes, all which are described in more detail
+   > :ref:`here <library/pipeline>`
 
 :raw-html:`&rightarrow;` ``--star 1435467`` : here we are running a single star, KIC 1435467. You can also provide multiple targets,
    the stars which will be appended to a list and then processed consecutively. On the other 
@@ -107,6 +111,9 @@ output is actually quite long. Not to worry though as we will break it down into
 ***Important: when running `pysyd` as a script, there is one positional argument.*** 
 
 -----
+
+How it works
+************
 
 The software operates in approximately the following order:
  #. :ref:`Loads in parameters and data <stepone>`

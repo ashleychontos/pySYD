@@ -17,9 +17,8 @@ How it works
 
 -----
 
-*****
 About
-*****
+#####
 
 ``pySYD`` was initially established as a pure translation of the `IDL`-based ``SYD`` pipeline 
 `(Huber et al. 2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H/abstract>`_.
@@ -46,8 +45,8 @@ existing analyses and expanding upon numerous new features. Some of the improvem
 
 .. TODO:: implement seeds for any random parts of the pipeline for reproducibility purposes
 
-``pySYD`` vs ``SYD``
-####################
+Benchmarking Kepler results
+###########################
 
 We ran `pySYD` on ~100 *Kepler* legacy stars (defined :term:`here <Kepler legacy sample>`) observed in short-cadence and compared 
 the output to ``SYD`` results from `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_. 
