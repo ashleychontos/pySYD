@@ -317,7 +317,7 @@ class Parameters(Constants):
             nox : int
                 x-axis resolution on the echelle diagram. Default value is `50`. (NOT CURRENTLY IMPLEMENTED YET)
             noy : int
-                how many radial orders to plot on the echelle diagram. Default value is `5`. (NOT CURRENTLY IMPLEMENTED YET)
+                how many radial orders to plot on the echelle diagram (default = `5`)
             hey : bool
                 plugin for Daniel Hey's echelle package (NOT CURRENTLY IMPLEMENTED YET)
 
@@ -571,7 +571,7 @@ def get_dict(type='params'):
 
     Parameters
         type : str
-            which dictionary to read in, choices ~['params','columns','functions']
+            which dictionary to read in - *MUST* match dict files - choices ~['params','columns','functions']
 
     Returns
         result : Dict[str,Dict[,]]
@@ -662,9 +662,14 @@ def save_estimates(star, variables=['star', 'numax', 'dnu', 'snr']):
     Saves the estimate for numax (from first module)
 
     Parameters
+        star : pysyd.target.Target
+            processed pipeline target
         variables : List[str]
             list of estimated variables to save (e.g., :math:`\rm \nu_{max}`, :math:`\Delta\nu`)
 
+    Returns
+        star : pysyd.target.Target
+            updated pipeline target
 
     """
     if 'best' in star.params:
@@ -679,6 +684,21 @@ def save_estimates(star, variables=['star', 'numax', 'dnu', 'snr']):
 
 
 def save_plotting(star):
+    """
+    
+    Saves all the relevant information for plotting (from the first iteration) so that it can 
+    be done at the end now, opposed to interrupting the workflow like it did before.
+
+    Parameters
+        star : pysyd.target.Target
+            processed pipeline target
+        star.params['plotting'] : Dict[str,Dict[str,...]]
+            constructs parameter plotting dictionary using the star instance
+    Returns
+        star : pysyd.target.Target
+            updated pipeline target
+
+    """
 
     if star.module == 'estimates':
         params = dict(
@@ -738,8 +758,12 @@ def save_parameters(star, results={}, cols=['parameter', 'value', 'uncertainty']
     Saves the derived global asteroseismic parameters (from the main module)
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             pipeline target with the results of the global fit
+        results : Dict[str,float]
+            parameter estimates from the pipeline
+        cols : List[str]
+            columns used to construct a pandas dataframe
 
     """
     results = star.params['results']['parameters']

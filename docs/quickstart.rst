@@ -42,15 +42,13 @@ here though, we will invoke them to better understand how the software works.
 
 -----
 
-crashteroseismology == crash course into asteroseismology
-###########################################################
+crashteroseismology
+###################
+**== crash course into asteroseismology**
 
 We will go through two examples -- each demonstrating a different usage scenario. We will 
-start with the command-line example to break everything down and then put it all back together 
-in a more condensed version for the other application.
-
-`pySYD` as a script
-*******************
+start with the command-line example to break everything down and then put it all together 
+in a condensed version for the other application.
 
 For purposes of this first example, we will assume that we do not know anything about the star or
 its properties. I say this because typically we can provide optional inputs (e.g., the center
@@ -64,6 +62,8 @@ following statement, which we will deconstruct after.
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
+
+**Important: when running** `pysyd` **as a script, there is one positional argument for the pipeline "mode".** 
 
 Breaking down the arguments
 +++++++++++++++++++++++++++
@@ -108,8 +108,6 @@ Breaking down the arguments
 
 **Note:** For a *complete* list of options which are currently available via command-line interface (CLI), 
 see our special CLI :ref:`glossary<usage/cli/glossary>`.
-
-***Important: when running `pysyd` as a script, there is one positional argument for the pysyd "mode".*** 
 
 
 How it works
@@ -380,8 +378,8 @@ in the output. this is because the model preferred for this to be fixed
     the literature and we recommend that you do the same.***
 
 
-`pySYD` as an import
-********************
+Running your favorite star
+##########################
 
 A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
 that is processed is initialized as a new target object, which in this case, we'll call star.

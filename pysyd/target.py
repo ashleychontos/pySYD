@@ -429,6 +429,10 @@ class Target:
             gap : int
                 how many consecutive missing cadences are considered a 'gap'
 
+        Return
+            warning : str
+                prints a warning when using this method
+
         .. warning::
             USE THIS WITH CAUTION. This is technically not a great thing to do for primarily
             two reasons:
