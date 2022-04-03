@@ -52,7 +52,7 @@ in a more condensed version for the other application.
 `pySYD` as a script
 *******************
 
-For purposes of this example, we will assume that we do not know anything about the star or
+For purposes of this first example, we will assume that we do not know anything about the star or
 its properties. I say this because typically we can provide optional inputs (e.g., the center
 of the frequency range with the oscillations, or :term:`numax` :math:`\rm \nu_{max}`) 
 that can save time and bypass some of the extra steps but we won't do that here so the software 
