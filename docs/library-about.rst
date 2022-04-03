@@ -19,7 +19,7 @@ In order to process and analyze the enormous amounts of data from *Kepler* in re
 similar types of analyses. In fact, there were several papers that compared results from each
 of these pipelines in order to ensure the reproducibility of science results from the :term:`Kepler legacy sample`.
 
-``pySYD`` adapts the well-tested methodology from ``SYD`` while also improving these 
+`pySYD` adapts the well-tested methodology from `SYD` while also improving these 
 existing analyses and expanding upon numerous new features. Some of the improvements include:
 
 - Automated best-fit background model selection
@@ -31,8 +31,8 @@ existing analyses and expanding upon numerous new features. Some of the improvem
 
 -----
 
-Ensuring reproducible results for the future
-############################################
+Reproducible results in the future
+##################################
 
 We ran `pySYD` on ~100 *Kepler* legacy stars (defined :term:`here <Kepler legacy sample>`) observed in short-cadence and compared 
 the output to ``SYD`` results from `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_. 

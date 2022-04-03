@@ -10,6 +10,6 @@ topic or tutorial by submitting a pull request!
    :maxdepth: 1
    :caption: Content
    
-   Single star <singlestar.ipynb>
-   Numax hacks <numaxhacks.ipynb>
-   Other odds & ends <example.ipynb>
+   Single star <tutorials/singlestar.ipynb>
+   Numax hacks <tutorials/numaxhacks.ipynb>
+   Other odds & ends <tutorials/example.ipynb>
