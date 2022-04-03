@@ -55,8 +55,8 @@ in a more condensed version for the other application.
 
 -----
 
-``pySYD`` as a script
-*********************
+`pySYD` as a script
+*******************
 
 For purposes of this example, we will assume that we do not know anything about the star or
 its properties. I say this because typically we can provide optional inputs that can save 
@@ -365,8 +365,8 @@ in the output. this is because the model preferred for this to be fixed
 
 -----
 
-Importing ``pySYD``
-*******************
+`pySYD` as an import
+********************
 
 A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
 that is processed is initialized as a new target object, which in this case, we'll call star.
