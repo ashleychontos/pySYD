@@ -49,8 +49,6 @@ We will go through two examples -- each demonstrating a different usage scenario
 start with the command-line example to break everything down and then put it all back together 
 in a more condensed version for the other application.
 
------
-
 `pySYD` as a script
 *******************
 
@@ -114,7 +112,6 @@ output is actually quite long. Not to worry though as we will break it down by s
 
 ***Important: when running `pysyd` as a script, there is one positional argument.*** 
 
------
 
 How it works
 ++++++++++++
@@ -127,7 +124,6 @@ The software operates in approximately the following order:
 
 Each of the four main steps are discussed in detail below.
 
------
 
 .. _stepone:
 
@@ -164,7 +160,6 @@ moving on. Since everything checks out, we can move on!
 **If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
 any further execution of the code.**
 
------
 
 .. _steptwo:
 
@@ -217,7 +212,6 @@ default, this is done three times (or trials) and hence, get three different est
 
    To learn more about what each panel is showing, please visit :ref:`this page<library/output>`.
 
------
 
 .. _stepthree:
 
@@ -288,7 +282,6 @@ is why this is now the default metric used.
    tau_2, 218.303624326155, --
    sigma_2, 85.4836783903674, --
 
------
 
 .. _stepfour:
 
@@ -359,7 +352,6 @@ in the output. this is because the model preferred for this to be fixed
     first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
     the literature and we recommend that you do the same.***
 
------
 
 `pySYD` as an import
 ********************
