@@ -71,6 +71,11 @@ in a more condensed version for the other.
 from the command line
 #####################
 
+For purposes of this example, we will assume that we do not know anything about the star or
+its properties. I say this because typically we can provide optional inputs that can save 
+time and bypass some of the unnecessary steps (in many different ways) but we won't here so 
+it can estimate the properties on its own.
+
 When using ``pySYD`` via command line, I would use something similar to that shown below:
 
 .. code-block::
@@ -127,12 +132,6 @@ output is actually quite long. Not to worry though as we will break it down into
 1. Load in parameters and data
 ++++++++++++++++++++++++++++++
 
-If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
-any further execution of the code. 
-
-Verbose output
-^^^^^^^^^^^^^^
-
 .. code-block::
 
     -----------------------------------------------------------
@@ -144,7 +143,6 @@ Verbose output
     # PS oversampled by a factor of 5
     # PS resolution: 0.426868 muHz
     -----------------------------------------------------------
-
 
 During this step, it will take the star name along with the command-line arguments and 
 created an instance of the :mod:`pysyd.target.Target` object. Initialization of this class
@@ -161,19 +159,15 @@ All :mod:`pysyd.target` class instances will have an ``ok`` attribute - literall
 that the star is 'ok' to be processed. By default, the pipeline checks this attribute before 
 moving on. Since everything checks out, we can move on!
 
+**If there are issues during the first step, ``pySYD`` will flag this and immediately halt 
+any further execution of the code.**
+
 -----
 
 .. _steptwo:
 
 2. Estimate initial values
 ++++++++++++++++++++++++++
-
-For purposes of the example, we will assume that we do not know anything about its properties. 
-Typically we can provide optional inputs in many different ways but we won't here so it can 
-estimate the properties on its own.
-
-Verbose output
-^^^^^^^^^^^^^^
 
 .. code-block::
 
