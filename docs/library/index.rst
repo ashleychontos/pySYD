@@ -10,7 +10,7 @@ with you!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Content
+   :caption: Contents
 
    about
    input

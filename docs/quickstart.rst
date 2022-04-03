@@ -184,21 +184,27 @@ Estimate initial values
     Selecting model 3
     -----------------------------------------------------------
 
-As discussed above, the main thing we need to know before doing the global fit is a rough 
-starting point for the frequency corresponding to maximum power, or :term:`numax` (:math:`\rm \nu_{max}`).
+The main thing we need to know before performing a global fit is a rough starting point 
+for the frequency corresponding to maximum power, or :term:`numax` (:math:`\rm \nu_{max}`).
+Please read the next section for more information about this.
 
 It does this by making a very rough approximation of the stellar background by binning the 
 power spectrum in both log and linear spaces (think a very HEAVY smoothing filter) and divides
-this out so that we are left with very little residual slope in the power spectrum.
-
-Next it uses a "collapsed" autocorrelation function (ACF) technique with different bin sizes
-to identify localized power excess in the power spectrum due to solar-like oscillations. By
-default, this is done three times (or trials) and hence, get three different estimates.
-
+this out so that we are left with very little residual slope in the power spectrum. The 'Crude
+Background Fit' is shown below in the second panel by the lime green line. Then we have our
+background-divided power spectrum directly to the right of this panel.
 
 .. image:: _static/quickstart/1435467_estimates.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
+
+Next it uses a "collapsed" autocorrelation function (ACF) technique with different bin sizes
+to identify localized power excess in the power spectrum due to solar-like oscillations. By
+default, this is done three times (or trials) and hence, provides three different estimates.
+The bottom row in the above figure shows these three trials, highlighting the one that was 
+selected -- which is based on the signal-to-noise (S/N) of the detection.
+
+Finally, it saves this best estimate in a basic csv:
 
 
 .. csv-table:: 1435467 parameter estimates
@@ -206,11 +212,6 @@ default, this is done three times (or trials) and hence, get three different est
    :widths: 20, 20, 20, 20
 
    1435467, 1438.27561061044, 72.3140769912867, 12.3801364686659
-
-
-.. note::
-
-   To learn more about what each panel is showing, please visit :ref:`this page<library/output>`.
 
 
 .. _stepthree:
@@ -255,14 +256,39 @@ by attempting to identify where the oscillations are in the power spectrum, we c
 them out to better characterize the background.
 
 Unlike previous versions of this software and previous versions of this software (i.e. `SYD`), 
-we have now implemented an automated background model selection. For reference, 
+we have now implemented an automated background model selection. After much trial and error, 
+the :term:`AIC` seems to perform better for our purposes - which is now the default metric used.
 
-After much trial and error, the :term:`AIC` seems to perform better for our purposes - which
-is why this is now the default metric used.
+We should take a sidestep to explain something happening behind the scenes here. The reason why
+`SYD` was so successful is because it assumed that the estimated numax and granulation timescales
+could be scaled with the Sun -- a fact that was not known at the time but greatly improved the 
+ability to quickly and efficiently process stars.
+
+Of course measuring these time scales is limited by the total duration of the time series but
+in general, we can resolve 3 Harvey-like components (or laws) at best (for now anyway). We use 
+all this information to guess how many we should be able to resolve and over what time scales.
+In fact for a given star, we end up with
+
+.. math::
+
+    n_{\mathrm{models}} = 2 \cdot (n_{\mathrm{laws}}+1)
+
+The fact of 2 is because we give the options to fix the white noise or for it to also be a free
+parameter. The +1 is because we also consider the model where we are not able to resolve any.
+From our perspective, the main purpose of implementing this was to try to identify null detections,
+since we do not expect to see oscillations in every star we observe. Ultimately this has not
+worked for this purpose yet but you have an idea, please reach out and let us know!
+
+Model 4 was selected for our example, consisting of two Harvey-like components, each with their characteristic
+time scale and amplitude. In this case, the white noise was *not* a free parameter.
 
 .. image:: _static/quickstart/1435467_global.png
   :width: 680
   :alt: Global parameters for KIC 1435467
+
+.. note::
+
+   To learn more about what each panel is showing, please visit :ref:`this page<library/output>`.
 
 If this was run in its default setting, with ``--mc`` = `1`, for a single iteration, the output
 parameters would look like that below. **We urge folks to run new stars for a single step first 

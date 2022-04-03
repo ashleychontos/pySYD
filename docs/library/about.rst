@@ -31,8 +31,8 @@ existing analyses and expanding upon numerous new features. Some of the improvem
 
 -----
 
-Benchmarking Kepler results
-###########################
+Ensuring reproducible results for the future
+############################################
 
 We ran `pySYD` on ~100 *Kepler* legacy stars (defined :term:`here <Kepler legacy sample>`) observed in short-cadence and compared 
 the output to ``SYD`` results from `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_. 
