@@ -230,7 +230,7 @@ class Parameters(Constants):
 
     def get_background(self, ind_width=20.0, box_filter=1.0, n_rms=20, metric='bic', mc_iter=1, 
                        samples=False, n_laws=None, fix_wn=False, basis='tau_sigma', lower_bg=1.0, 
-                       upper_bg=8000.0, n_threads=0,):
+                       upper_bg=8000.0, n_threads=0, showall=False,):
         """
     
         Get the parameters for the background-fitting routine.
@@ -254,6 +254,8 @@ class Parameters(Constants):
                 number of samples used to estimate uncertainty (default = `1`)
             samples : bool
                 if `True`, will save the monte carlo samples to a csv (default = `False`)
+            showall : bool
+                if `True`, will make the plot that comparisons all background models
 
         Attributes
             params : Dict[str,Dict[,]]
@@ -275,6 +277,7 @@ class Parameters(Constants):
             n_threads = n_threads,
             lower_bg = lower_bg,
             upper_bg = upper_bg,
+            showall = showall,
         )
         self.params.update(background)
 
@@ -744,6 +747,11 @@ def save_plotting(star):
             exp_dnu = star.params['exp_dnu'],
             noise = star.params['noise'],
             pars = star.params['pars'],
+            models = star.params['models'],
+            paras = star.params['paras'],
+            model = star.params['selected'],
+            aic = star.params['aic'],
+            bic = star.params['bic'],
             )
     else:
         pass

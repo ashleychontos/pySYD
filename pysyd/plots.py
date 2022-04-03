@@ -47,6 +47,8 @@ def make_plots(star):
         plot_estimates(star)
     if 'parameters' in star.params['plotting']:
         plot_parameters(star)
+        if star.params['showall']:
+            plot_bgfits(star)
     if 'samples' in star.params['plotting']:
         plot_samples(star)
     if star.params['show']:
@@ -60,6 +62,8 @@ def plot_estimates(star, ask=False, highlight=True):
     Parameters
         star : target.Target
             the pySYD pipeline object
+        highlight : bool, optional
+            if `True`, highlights the selected estimate
 
     
     """
@@ -278,7 +282,7 @@ def plot_parameters(star, n_peaks=10):
     ax4.axvline(xx, color='blue', linestyle=':', linewidth=1.5, zorder=2)
     ax4.plot([xx], [yy], color='b', marker='D', markersize=7.5, zorder=1)
     ax4.axvline(params['exp_numax'], color='r', linestyle='--', linewidth=1.5, zorder=1, dashes=(5,5))
-    ax4.set_title(r'$\rm Smoothed \,\, bg$-$\rm corrected \,\, PS$')
+    ax4.set_title(r'$\rm Smoothed \,\, PS$')
     ax4.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax4.set_xlim([min(params['region_freq']), max(params['region_freq'])])
 
@@ -312,7 +316,7 @@ def plot_parameters(star, n_peaks=10):
     ax6.scatter(params['lag'][idx], params['auto'][idx], s=45.0, edgecolor='lime', marker='s', facecolor='none', linewidths=1.0)
     ax6.plot(params['zoom_lag'], params['zoom_auto'], 'r-', zorder=5, linewidth=1.0)
     ax6.plot(params['lag'], new_weights, c='yellow', linestyle=':', zorder = 0, linewidth = 1.0)
-    ax6.set_title(r'$\rm ACF \,\, for \,\, determining \,\, \Delta\nu$')
+    ax6.set_title(r'$\rm Autocorrelation \,\, function$')
     ax6.set_xlabel(r'$\rm Frequency \,\, separation \,\, [\mu Hz]$')
     ax6.set_xlim([min(params['lag']), max(params['lag'])])
     ax6.set_ylim([min(params['auto'])-0.05*(max(params['auto'])-min(params['auto'])), max(params['auto'])+0.1*(max(params['auto'])-min(params['auto']))])
@@ -348,7 +352,7 @@ def plot_parameters(star, n_peaks=10):
     n += 1
     ax9 = fig.add_subplot(x, y, n)
     ax9.plot(params['xax'], params['yax'], color='white', linestyle='-', linewidth=0.75)
-    ax9.set_title(r'$\rm Collapsed \,\, \grave{e}chelle \,\, diagram$')
+    ax9.set_title(r'$\rm Collapsed \,\, ED$')
     ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % params['obs_dnu'])
     ax9.set_ylabel(r'$\rm Collapsed \,\, power$')
     ax9.set_xlim([0.0, 2.0*params['obs_dnu']])
@@ -396,93 +400,106 @@ def plot_samples(star):
         plt.close()
 
 
-def plot_fits(star, color='lime'):
+def plot_bgfits(star, highlight=True):
+    """
+    Comparison of the background model fits 
 
-    n_panels=len(star.params['models'])+1
+    Parameters
+        star : target.Target
+            the pySYD pipeline object
+        highlight : bool, optional
+            if `True`, highlights the selected model
+    
+    """
+    params = star.params['plotting']['parameters']
+    n_panels = len(params['models'])+1
     d = utils.get_dict(type='plots')
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Different fits for %s"%star.name, figsize=d[n_panels]['size'])
+    fig = plt.figure("Background model comparison for %s"%star.name, figsize=d[n_panels]['size'])
 
-    ax = fig.add_subplot(x, y, 1)
-    ax.plot(star.frequency, star.random_pow, c='lightgrey', zorder=0, alpha=0.5)
-    ax.plot(star.frequency[star.frequency < star.params[star.name]['ps_mask'][0]], star.random_pow[star.frequency < star.params[star.name]['ps_mask'][0]], 'w-', zorder=1)
-    ax.plot(star.frequency[star.frequency > star.params[star.name]['ps_mask'][1]], star.random_pow[star.frequency > star.params[star.name]['ps_mask'][1]], 'w-', zorder=1)
-    ax.plot(star.frequency[star.frequency < star.params[star.name]['ps_mask'][0]], star.smooth_pow[star.frequency < star.params[star.name]['ps_mask'][0]], 'r-', linewidth=0.75, zorder=2)
-    ax.plot(star.frequency[star.frequency > star.params[star.name]['ps_mask'][1]], star.smooth_pow[star.frequency > star.params[star.name]['ps_mask'][1]], 'r-', linewidth=0.75, zorder=2)
-    total = np.zeros_like(star.frequency)
-    for r in range(star.nlaws_orig):
-        model = models.background(star.frequency, [star.b_orig[r], star.a_orig[r]])
-        ax.plot(star.frequency, model, color='blue', linestyle=':', linewidth=1.5, zorder=4)
-        total += model
-    total += star.noise
-    ax.plot(star.frequency, total, color='blue', linewidth=2., zorder=5)
-    ax.errorbar(star.bin_freq, star.bin_pow, yerr=star.bin_err, color='lime', markersize=0., fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=3)
-    ax.axvline(star.params[star.name]['ps_mask'][0], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
-    ax.axvline(star.params[star.name]['ps_mask'][1], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
-    ax.axhline(star.noise, color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5, 5))
-    ax.set_xlim([min(star.frequency), max(star.frequency)])
-    ax.set_ylim([min(star.power), max(star.power)*1.25])
-    ax.set_title(r'$\rm Initial \,\, guesses$')
-    ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
-    ax.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
-    ax.set_xscale('log')
-    ax.set_yscale('log')
+    # Initial background guesses
+    ax1 = fig.add_subplot(x, y, n)
+    ax1.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
+    ax1.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['random_pow'][params['frequency'] < star.params['ps_mask'][0]], 'w-', zorder=1)
+    ax1.plot(params['frequency'][params['frequency'] > star.params['ps_mask'][1]], params['random_pow'][params['frequency'] > star.params['ps_mask'][1]], 'w-', zorder=1)
+    ax1.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['smooth_pow'][params['frequency'] < star.params['ps_mask'][0]], 'r-', linewidth=0.75, zorder=2)
+    ax1.plot(params['frequency'][params['frequency'] > star.params['ps_mask'][1]], params['smooth_pow'][params['frequency'] > star.params['ps_mask'][1]], 'r-', linewidth=0.75, zorder=2)
+    if star.params['background']:
+        total = np.zeros_like(params['frequency'])
+        for r in range(params['nlaws_orig']):
+            model = models.background(params['frequency'], [params['b_orig'][r], params['a_orig'][r]])
+            ax1.plot(params['frequency'], model, color='blue', linestyle=':', linewidth=1.5, zorder=4)
+            total += model
+        total += params['noise']
+        ax1.plot(params['frequency'], total, color='blue', linewidth=2., zorder=5)
+        ax1.errorbar(params['bin_freq'], params['bin_pow'], yerr=params['bin_err'], color='lime', markersize=0., fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=3)
+    ax1.axvline(star.params['ps_mask'][0], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
+    ax1.axvline(star.params['ps_mask'][1], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
+    ax1.axhline(params['noise'], color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5, 5))
+    ax1.set_xlim([min(params['frequency']), max(params['frequency'])])
+    ax1.set_ylim([min(params['random_pow']), max(params['random_pow'])*1.25])
+    ax1.set_title(r'$\rm Initial \,\, guesses$')
+    ax1.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
+    ax1.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
+    ax1.set_xscale('log')
+    ax1.set_yscale('log')
 
-    for n, mm in enumerate(star.models):
+    # Plot background models
+    for n, mm in enumerate(params['models']):
         ax = fig.add_subplot(x, y, n+2)
-        ax.plot(star.frequency, star.random_pow, c='lightgrey', zorder=0, alpha=0.5)
-        ax.plot(star.frequency[star.frequency < star.params[star.name]['ps_mask'][0]], star.random_pow[star.frequency < star.params[star.name]['ps_mask'][0]], 'w-', zorder=1)
-        ax.plot(star.frequency[star.frequency > star.params[star.name]['ps_mask'][1]], star.random_pow[star.frequency > star.params[star.name]['ps_mask'][1]], 'w-', zorder=1)
-        ax.plot(star.frequency[star.frequency < star.params[star.name]['ps_mask'][0]], star.smooth_pow[star.frequency < star.params[star.name]['ps_mask'][0]], 'r-', linewidth=0.75, zorder=2)
-        ax.plot(star.frequency[star.frequency > star.params[star.name]['ps_mask'][1]], star.smooth_pow[star.frequency > star.params[star.name]['ps_mask'][1]], 'r-', linewidth=0.75, zorder=2)
-        pars = star.paras[n]
-        total = np.zeros_like(star.frequency)
+        ax.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
+        ax.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['random_pow'][params['frequency'] < star.params['ps_mask'][0]], 'w-', zorder=1)
+        ax.plot(params['frequency'][params['frequency'] > star.params['ps_mask'][1]], params['random_pow'][params['frequency'] > star.params['ps_mask'][1]], 'w-', zorder=1)
+        ax.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['smooth_pow'][params['frequency'] < star.params['ps_mask'][0]], 'r-', linewidth=0.75, zorder=2)
+        ax.plot(params['frequency'][params['frequency'] > star.params['ps_mask'][1]], params['smooth_pow'][params['frequency'] > star.params['ps_mask'][1]], 'r-', linewidth=0.75, zorder=2)
+        pars = params['paras'][n]
+        total = np.zeros_like(params['frequency'])
         if len(pars) > 1:
-            for r in range(mm//2):
-                yobs = models.background(star.frequency, [pars[r*2], pars[r*2+1]])
-                ax.plot(star.frequency, yobs, color='blue', linestyle=':', linewidth=1.5, zorder=4)
+            for r in range(len(pars)//2):
+                yobs = models.background(params['frequency'], [pars[r*2], pars[r*2+1]])
+                ax.plot(params['frequency'], yobs, color='blue', linestyle=':', linewidth=1.5, zorder=4)
                 total += yobs
         if len(pars)%2 == 0:
-            total += star.noise
-            ax.axhline(star.noise, color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5,5))
+            total += params['noise']
+            ax.axhline(params['noise'], color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5,5))
         else:
             total += pars[-1]
             ax.axhline(pars[-1], color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5,5))
-        ax.plot(star.frequency, total, color='blue', linewidth=2., zorder=5)
-        ax.errorbar(star.bin_freq, star.bin_pow, yerr=star.bin_err, color='lime', markersize=0., fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=3)
-        ax.axvline(star.params[star.name]['ps_mask'][0], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
-        ax.axvline(star.params[star.name]['ps_mask'][1], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
-        ax.set_xlim([min(star.frequency), max(star.frequency)])
-        ax.set_ylim([min(star.power), max(star.power)*1.25])
+        ax.plot(params['frequency'], total, color='blue', linewidth=2., zorder=5)
+        ax.errorbar(params['bin_freq'], params['bin_pow'], yerr=params['bin_err'], color='lime', markersize=0.0, fillstyle='none', ls='None', marker='D', capsize=3, ecolor='lime', elinewidth=1, capthick=2, zorder=3)
+        ax.axvline(star.params['ps_mask'][0], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
+        ax.axvline(star.params['ps_mask'][1], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
+        if star.params['globe']:
+            mask = np.ma.getmask(np.ma.masked_inside(params['frequency'], star.params['ps_mask'][0], star.params['ps_mask'][1]))
+            ax.plot(params['frequency'][mask], params['pssm'][mask], color='yellow', linewidth=2.0, linestyle='dashed', zorder=6)
+        ax.set_xlim([min(params['frequency']), max(params['frequency'])])
+        ax.set_ylim([min(params['random_pow']), max(params['random_pow'])*1.25])
         if mm%2 == 0:
             wn='fixed'
         else:
             wn='free'
-        ax.set_title(r'$\rm nlaws=%s \,\, | \,\, wn=%s $'%(str(int(mm//2)),wn))
+        ax.set_title(r'$\rm nlaws=%s \,\, | \,\, wn=%s \,\, | \,\, AIC = %.2f \,\, | \,\, BIC = %.2f$'%(str(int(mm//2)),wn,params['aic'][n],params['bic'][n]))
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
         ax.set_xscale('log')
         ax.set_yscale('log')
         # Highlight selected model
-        if mm == star.model:
-            ax.spines['bottom'].set_color(color)
-            ax.spines['top'].set_color(color) 
-            ax.spines['right'].set_color(color)
-            ax.spines['left'].set_color(color)
-            ax.tick_params(axis='both', which='both', colors=color)
-            ax.yaxis.label.set_color(color)
-            ax.xaxis.label.set_color(color)
-            ax.title.set_color(color)
+        if highlight and mm == params['model']:
+            ax.spines['bottom'].set_color('lime')
+            ax.spines['top'].set_color('lime') 
+            ax.spines['right'].set_color('lime')
+            ax.spines['left'].set_color('lime')
+            ax.tick_params(axis='both', which='both', colors='lime')
+            ax.yaxis.label.set_color('lime')
+            ax.xaxis.label.set_color('lime')
+            ax.title.set_color('lime')
+
     plt.tight_layout()
     if star.params['save']:
+        path = os.path.join(star.params['path'],'model_fits.png')
         if not star.params['overwrite']:
-            plt.savefig(utils.get_next(star,'model_fits.png'), dpi=300)
-        else:
-            plt.savefig(os.path.join(star.params[star.name]['path'],'model_fits.png'), dpi=300)
-    if not star.params['cli']:
-        with open('model_fits.pickle','wb') as f:
-            pickle.dump(fig, f)
-        star.pickles.append('model_fits.pickle')
+            path = utils.get_next(path)
+        plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 

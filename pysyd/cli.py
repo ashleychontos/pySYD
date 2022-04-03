@@ -194,6 +194,12 @@ def main():
 
     background = main_parser.add_argument_group('Background Fit')
 
+    background.add_argument('--all', '--showall',
+                            dest='showall',
+                            help='Plot background comparison figure',
+                            default=False,
+                            action='store_true',
+    )
     background.add_argument('--basis', 
                             metavar='str',
                             dest='basis',

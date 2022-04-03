@@ -347,8 +347,7 @@ Estimate uncertainties
      - combining results into single csv file
     -----------------------------------------------------------
 
- We include the 
-progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
+We include the progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
 executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
 
 .. image:: _static/quickstart/1435467_samples.png
@@ -382,9 +381,9 @@ in the output. this is because the model preferred for this to be fixed
     While observations have shown that solar-like oscillations have an approximately 
     Gaussian-like envelope, we have no reason to believe that they should behave exactly 
     like that. This is why you will see two different estimates for :term:`numax` 
-    (:math:`\rm \nu_{max}`) under the output parameters. ***In fact for this methodology 
+    (:math:`\rm \nu_{max}`) under the output parameters. **In fact for this methodology 
     first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
-    the literature and we recommend that you do the same.***
+    the literature and we recommend that you do the same.**
 
 -----
 

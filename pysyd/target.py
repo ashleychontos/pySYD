@@ -1276,7 +1276,7 @@ class Target:
             self.params['pars'] = ([self.params['noise']])
 
 
-    def correct_background(self, metric='bic'):
+    def correct_background(self, metric='aic'):
         """
         Saves information re: the selected best-fit model (for the stellar background).
         
