@@ -1,6 +1,6 @@
 .. note::
 
-   The initial ``pySYD`` release required *both* the light curve and power spectrum. *However,*
+   The initial ``pySYD`` release required *both* the light curve and power spectrum *but*
    this has since changed! For example, time-domain utilities in more recent implementations 
    have become available -- which is exciting but we are also still furiously working away on 
    this. ***STAY TUNED FOR NEW TOOLS!*** 
@@ -22,8 +22,7 @@ or :ref:`Quickstart <quickstart>` pages. You can also see how it works directly 
 Required input
 ##############
 
-The only thing that is really *required* to successfully run the software is the data for
-a given star, duh! 
+The only thing that is really *required* to successfully run the software is the data! 
 
 For a given star with ID, input data are:
  #. the light curve, and
@@ -39,8 +38,7 @@ data, we require that the time array is in units of days. **This will be really 
 for the processing of the data, which we'll discuss in detail in a little bit.**
 
 For the time series data, the y-axis is less critical here. It can be anything from units 
-of fraction flux or brightness as a function
-of time, along with many other normalization.
+of fraction flux or brightness as a function of time, along with any other normalization(s).
 
 Power spectrum
 **************
@@ -102,6 +100,8 @@ As suggested by the name of the file, this contains star information on an indiv
 the data, target IDs must *exactly* match the given name in order to be successfully crossmatched -- but
 this also means that the information in this file need not be in any particular order. 
 
+Below is a snippet of what the csv would look like:
+
 .. csv-table:: Star info
    :header: "stars", "rs", "logg", "teff", "numax", "lower_ex", "upper_ex", "lower_bg"
    :widths: 20, 10, 10, 20, 20, 20, 20, 20
@@ -115,7 +115,7 @@ the value (or `destination`) that the command-line parser saves each option to. 
 there are a ton of available columns, we won't list them all here but there are a few ways
 you can view the columns for yourself.
 
-The first is by visiting our special :ref:`command-line glossary<usage/cli/glossary>`, 
+The first is by visiting our special :ref:`command-line glossary <usage/cli/glossary>`, 
 which explicitly states how each of the variables is defined. You can also see
 them fairly easily by importing the :mod:`pysyd.utils.get_dict` module and doing a
 basic `print` statement.

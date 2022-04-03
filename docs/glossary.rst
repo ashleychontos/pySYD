@@ -82,13 +82,14 @@ Glossary of documentation terms
          * **definition:**
 
     critically-sampled power spectrum
-        sfdklja
+        when the frequency resolution of the power spectrum is exactly equal to the inverse of
+        the total duration of the time series data it was calculated from
         
     ED
     echelle diagram
         a diagnostic tool to confirm that :term:`dnu` is correct. This is done by folding the power spectrum (:term:`FPS`)
         using :term:`dnu` (you can think of it as the PS modulo the spacing) -- which if the :term:`large frequency separation`
-        is correct -- the different oscillation modes will form straight ridges. **Fun fact:** the word :math:`\rm \'{e}chelle`
+        is correct -- the different oscillation modes will form straight ridges. **Fun fact:** the word 'echelle'
         is actually French for ladder
         
     FFT
@@ -164,7 +165,8 @@ Glossary of documentation terms
         for measuring the :term:`large frequency separation`
     
     notching
-        a process
+        a process used to mitigate features in the frequency domain (e.g., mixed modes) by setting
+        specific values to the minimum power in the array
         
     nyquist frequency
         the highest frequency that can be sampled, which is set by the :term:`cadence` of observations 
@@ -172,8 +174,7 @@ Glossary of documentation terms
          * **variable:** :math:`\rm \nu_{nyq}`
          * **units:** :math:`\rm \mu Hz`
          * **definition:**
- 
-        
+   
 .. math::
 
     \mathrm{\nu_{nyq}} = \frac{1}{2 \Delta t} 
@@ -199,12 +200,6 @@ Glossary of documentation terms
         implied in the name, these oscillations are driven by the same mechanism as that observed in the Sun, which is
         due to turbulent, near-surface convection. They are also sometimes referred to as **p-mode oscillations**, after the
         pressure-driven (or acoustic sound) waves that are resonating in the stellar cavity.
-
-        
-.. note::
-
-    Each p-mode can be described by three integers following spherical harmonics. The radial order (:math:`n`), the spherical
-    degree (:math:`\ell`) and the azimuthal order (:math:`m`).
 
     
 .. glossary::
@@ -235,8 +230,9 @@ Glossary of documentation terms
     power spectrum
         any object that varies in time also has a corresponding frequency (or power) spectrum, which is computed by taking 
         the :term:`fast fourier transform` of the :term:`light curve`. A general model to describe characteristics of a power spectrum is generalized
-        by:
-
+        by the equation below, where :math:`W` is a constant (frequency-independent) noise term, primarily due to photon noise. :math:`B` and :math:`G`
+        correspond to the background and Gaussian-like power excess components, respectively. Finally, :math:`R` corresponds to
+        the response function, or the attenuation of signals due to time-averaged observations.
 
 .. math::
 
@@ -244,20 +240,6 @@ Glossary of documentation terms
 
 
 .. glossary::
-
-    PS
-    power spectrum
-        where :math:`W` is a constant (frequency-independent) noise term, primarily due to photon noise. :math:`B` and :math:`G`
-        correspond to the background and Gaussian-like power excess components, respectively. Finally, :math:`R` corresponds to
-        the response function, or the attenuation of signals due to time-averaged observations.
-        
-    radial order
-        in asteroseismology, the radial order (:math:`n`) is the number of nodes from the surface to the center of the star.
-        For solar-like oscillators, modes are typically characterized by high radial orders and low spherical degree. By 
-        definition, modes of the same spherical degree and consecutive radial orders are separated by :term:`dnu`.
-
-    response function
-        :math:`R(\nu)`
         
     scaling relations
         empirical relations for fundamental stellar properties that are scaled with respect to the Sun, since it is the star 
@@ -273,10 +255,6 @@ Glossary of documentation terms
     \frac{M_{\star}}{M_{\odot}} = \bigg( \frac{\nu_{\mathrm{max}}}{\nu_{\mathrm{max,\odot}}} \bigg)^{3} \bigg( \frac{\Delta\nu}{\Delta\nu_{\odot}} \bigg)^{-4} \bigg( \frac{T_{\mathrm{eff}}}{T_{\mathrm{eff,\odot}}} \bigg)^{3/2}
     
 .. glossary::
-        
-    spherical degree
-        the spherical degree (:math:`\ell`) is the number of nodal lines on the surface of the star, which for unresolved 
-        distant stars, has only been possible for up to a spherical degree of :math:`\ell = 3`
 
     whiten
     whitening

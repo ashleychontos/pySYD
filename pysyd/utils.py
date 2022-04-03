@@ -11,8 +11,11 @@ from astropy.timeseries import LombScargle as lomb
 from pysyd.models import *
 
 
+
 class InputError(Exception):
-    pass
+    def __repr__(self):
+        return "InputError"
+    __str__ = __repr__
 
 
 class Constants:

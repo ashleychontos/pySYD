@@ -16,16 +16,8 @@ from pysyd import plots
 
 
 
-class InputError(Exception):
-    pass
-
-
-class ProcessingError(Exception):
-    pass
-
 
 class Target(object):
-
 
     def __init__(self, name, args):
         """
@@ -1672,3 +1664,15 @@ class Target(object):
         gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'])
         # the center of that Gaussian is our estimate for Dnu
         self.params['results']['parameters']['dnu'].append(gauss[2]) 
+
+
+class InputError(Exception):
+    def __repr__(self):
+        return "InputError"
+    __str__ = __repr__
+
+
+class InputError(Exception):
+    def __repr__(self):
+        return "ProcessingError"
+    __str__ = __repr__
