@@ -1,9 +1,13 @@
 .. role::  raw-html(raw)
     :format: html
 
-********************************************************
-Crashteroseismology: crash course into asteroseismology
-********************************************************
+.. |br| raw:: html
+
+   <br />
+
+**************************************************************
+Crashteroseismology == |br| crash course into asteroseismology
+**************************************************************
 
 The examples on this page assume that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the Python website and going through
@@ -31,7 +35,7 @@ here though, we will invoke them to better understand how the software works.
 
 -----
 
-General pipeline workflow
+General software workflow
 #########################
 
 The software operates in approximately the following order:
@@ -65,9 +69,6 @@ in a more condensed version for the other.
 .. _script:
 
 ...via command line
-*******************
-
-...via command line
 ###################
 
 When using ``pySYD`` via command line, I would use something similar to that shown below:
@@ -78,30 +79,30 @@ When using ``pySYD`` via command line, I would use something similar to that sho
 
 the statement which we will now deconstruct before carrying on.
 
- :raw-html:`&rightarrow;` ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
+:raw-html:`&rightarrow;` ``pysyd`` : if you used `pip` install, the binary (or executable) should be available. In fact, the setup
    file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` script -- which is
    also where you can find the parser with all the available commands and options.
- :raw-html:`&rightarrow;` ``run`` : regardless of how you choose to use the software, the most common way you will likely implement
+:raw-html:`&rightarrow;` ``run`` : regardless of how you choose to use the software, the most common way you will likely implement
    the ``pySYD`` pipeline is in its run (i.e. :mod:`pysyd.pipeline.run`) mode -- which, just as it sounds, will process
    stars in the order they were provided. This is saved to the argument ``NameSpace`` as the 'mode' as in the 
    `pysyd` pipeline mode. There are currently five available modes, all which are described in more detail
    :ref:`here <library/pipeline>`
- :raw-html:`&rightarrow;` ``--star 1435467`` : here we are running a single star, KIC 1435467. You can also provide multiple targets,
+:raw-html:`&rightarrow;` ``--star 1435467`` : here we are running a single star, KIC 1435467. You can also provide multiple targets,
    the stars which will be appended to a list and then processed consecutively. On the other 
    hand if no targets are provided, the program would default to reading in the star or 'todo' 
    list (via 'info/todo.txt'). Again, this is because the software is optimized for 
    running an ensemble of stars.
- :raw-html:`&rightarrow;` ``-dv`` : adapting Linux-like features, we reserved the single hash options for booleans which
+:raw-html:`&rightarrow;` ``-dv`` : adapting Linux-like features, we reserved the single hash options for booleans which
    can all be grouped together, as shown above. The ``-d`` and ``-v`` are short for display and verbose, 
    respectively, and show the figures and verbose output. For a full list of options available, please 
    see our :ref:`command-line glossary <usage/cli/glossary>`. There are dozens of options to make your 
    experience as customized as you'd like!
- :raw-html:`&rightarrow;` ``--ux 5000`` : this is an upper frequency limit for the first module that identifies the power eXcess 
+:raw-html:`&rightarrow;` ``--ux 5000`` : this is an upper frequency limit for the first module that identifies the power eXcess 
    due to solar-like oscillations. In this case, there are high frequency artefacts that we would 
    like to ignore. *We actually made a special notebook tutorial specifically on how to address
    and fix this problem.* If you'd like to learn more about this or are having a similar issue, 
    please visit :ref:`this page <usage/nb/estimatenumax.ipynb>`.
- :raw-html:`&rightarrow;` ``--mc 200`` : last but certainly not least - the ``mc`` (for Monte Carlo-like) option sets the number 
+:raw-html:`&rightarrow;` ``--mc 200`` : last but certainly not least - the ``mc`` (for Monte Carlo-like) option sets the number 
    of iterations the pipeline will run for. In this case, the pipeline will run for 200 steps, which allows 
    us to bootstrap uncertainties on our derived properties. 
 
