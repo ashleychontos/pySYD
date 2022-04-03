@@ -36,6 +36,9 @@ running the following command:
     **The recommended way to install this package is from PyPI via** `pip`, **since**
     **it will automatically enforce the proper dependencies and versions**
 
+
+-----
+
 .. _installation/conda:
 
 Create an environment
@@ -55,6 +58,8 @@ Then activate the environment and install ``pySYD``:
     conda activate astero
     pip install git+https://github.com/ashleychontos/pySYD
 
+
+-----
 
 .. _installation/git:
 
@@ -220,7 +225,7 @@ from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_.
 Quickstart
 ##########
 
-Enter the following commands to get up and running right away: 
+Use the following to get up and running right away: 
 
 .. code-block::
 
@@ -229,7 +234,7 @@ Enter the following commands to get up and running right away:
     cd ~/path/to/local/pysyd/directory
     pysyd setup 
 
-This is the same as the steps discussed in detail above but just shown in a more condensed version.
+This is essentially the same as the steps discussed above but shown in a more condensed version.
 
 *You are now ready to become an asteroseismologist!*
 

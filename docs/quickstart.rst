@@ -13,7 +13,7 @@ ours!
 TL;DR
 #####
 
-A quick timeout to go over a couple tidbits before walking through the examples. 
+A brief timeout to go over a couple tidbits before walking through the examples. 
 
 The first is that the userbase for the original `pySYD` release was intended for 
 non-expert astronomers. With this in mind, the software was developed to be as hands-off as
@@ -52,17 +52,20 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
 -----
 
-Running your favorite star
-##########################
+Running your favorite star...
+#############################
 
 We will go through two examples -- each demonstrating a different usage scenario. We will 
-start with the command-line example to break everything down, and then put it all back together 
-in a condensed version for the second. 
+start with the command-line example to break everything down and then put it all back together 
+in a more condensed version for the other. 
 
 .. _script:
 
-As a script
-***********
+...via command line
+*******************
+
+...via command line
+###################
 
 When using ``pySYD`` via command line, I would use something similar to that shown below:
 
