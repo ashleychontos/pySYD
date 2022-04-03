@@ -2,6 +2,16 @@
 Installation & setup
 ********************
 
+.. link-button:: install/quickstart
+    :type: ref
+    :text: Jump down to our quickstart version!
+    :classes: btn-outline-secondary btn-block
+
+-----
+
+Installation
+############
+
 There are three main ways you can install the software:
 
 #. :ref:`Install from the Python Package Index <installation/pip>`
@@ -13,8 +23,7 @@ There are three main ways you can install the software:
 .. _installation/pip:
 
 Install from PyPI
-#################
-
+*****************
 
 The ``pySYD`` package is available on the Python Package Index (`PyPI <https://pypi.org/project/pysyd/>`_)
 and therefore you can install the latest stable version directly using `pip`:
@@ -42,7 +51,7 @@ running the following command:
 .. _installation/conda:
 
 Create an environment
-#####################
+*********************
 
 You can also use `conda` to create an environment. For this example, I'll call it 'astero'.
 
@@ -64,7 +73,7 @@ Then activate the environment and install ``pySYD``:
 .. _installation/git:
 
 Clone from GitHub
-#################
+*****************
 
 If you are wanting to contribute, you can clone the latest development
 version from `GitHub <https://github.com/ashleychontos/pySYD>`_ using `git`.
@@ -107,10 +116,10 @@ and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, us
 
 .. _installation/test:
 
-Testing the installation 
-########################
+Testing 
+#######
 
-You can simply test your installation by using the help command in a terminal
+You can test your installation by simply using the help command in a terminal
 window, which should display the following output:
 
 ::
@@ -137,8 +146,8 @@ window, which should display the following output:
 
 .. _installation/setup:
 
-Setup the package
-#################
+Setup
+#####
 
 The software package comes with a convenient setup feature, which is called through 
 :mod:`pysyd.pipeline.setup`. We **strongly encourage** you to run this step 
@@ -167,8 +176,8 @@ The folder or directory can be whatever is most convenient for you:
     mkdir ~/path/to/local/pysyd/directory
     
 
-Execute setup
-*************
+Initialize setup
+****************
 
 Now all you need to do is change into that directory, run the following command and let
 ``pySYD`` do the rest of the work for you!
