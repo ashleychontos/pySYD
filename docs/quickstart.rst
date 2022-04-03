@@ -19,19 +19,18 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 TL;DR
 #####
 
-If you (understandably) do not have time to go through the user guide, we have summarized 
-a couple of important tidbits about the software. 
+If you (understandably) do not have time to go through the entire user guide, we have summarized 
+a couple of important tidbits. 
 
-The first is that the userbase for the initial `pySYD` release was intended for non-expert 
-astronomers. **With this in mind, the software was originally developed to be as hands-off as
-possible -- as a *strictly* command-line end-to-end tool.** However since then, the software has 
-become more modular in recent updates, thus enabling broader capabilities that can be used across 
-other applications (e.g., Jupyter notebooks). 
-
-In addition to being a command-line tool, the software is optimized for running many stars. 
-This means that many of the options that one would typically use or prefer, such as printing 
-output information and displaying figures, is `False` by default. For our purposes 
-here though, we will invoke them to better understand how the software works. 
+ - The first is that the userbase for the initial `pySYD` release was intended for non-expert 
+   astronomers. **With this in mind, the software was originally developed to be as hands-off as
+   possible -- as a *strictly* command-line end-to-end tool.** However since then, the software has 
+   become more modular in recent updates, thus enabling broader capabilities that can be used across 
+   other applications (e.g., Jupyter notebooks). 
+ - In addition to being a command-line tool, the software is optimized for running many stars. 
+   This means that many of the options that one would typically use or prefer, such as printing 
+   output information and displaying figures, is `False` by default. For our purposes 
+   here though, we will invoke them to better understand how the software works. 
 
 .. warning::
 
@@ -44,7 +43,7 @@ here though, we will invoke them to better understand how the software works.
 
 crashteroseismology
 ###################
-**== crash course into asteroseismology**
+:raw-html:`&rightarrow;`**crash course into asteroseismology**
 
 We will go through two examples -- each demonstrating a different usage scenario. We will 
 start with the command-line example to break everything down and then put it all together 
@@ -56,8 +55,10 @@ of the frequency range with the oscillations, or :term:`numax` :math:`\rm \nu_{m
 that can save time and bypass some of the extra steps but we won't do that here so the software 
 will run from start to finish on its own.
 
-When using ``pySYD`` this way, the command you will typically use will probably look similar to the
-following statement, which we will deconstruct after. 
+-----
+
+When running ``pySYD`` from command line, you will like use something similar to the following 
+statement: 
 
 .. code-block::
 
@@ -67,6 +68,8 @@ following statement, which we will deconstruct after.
 
 Breaking down the arguments
 +++++++++++++++++++++++++++
+
+Now let's deconstruct the above statement!
 
 ``pysyd``
    if you used `pip` install, the binary (or executable) should be available. In fact, the setup
@@ -109,6 +112,7 @@ Breaking down the arguments
 **Note:** For a *complete* list of options which are currently available via command-line interface (CLI), 
 see our special CLI :ref:`glossary<usage/cli/glossary>`.
 
+-----
 
 How it works
 ++++++++++++
@@ -117,13 +121,15 @@ So in case you haven't already, execute the command. You will immediately notice
 output is actually quite long but not to worry though, as we will break it down by four main 
 sections (corresponding to the approximate pipeline workflow):
  #. :ref:`Loads in parameters and data <stepone>`
- #. :ref:`Estimates initial values <steptwo>`
+ #. :ref:`Gets initial values <steptwo>`
  #. :ref:`Fits global parameters <stepthree>`
- #. :ref:`Extrapolates uncertainties <stepfour>`
+ #. :ref:`Estimates uncertainties <stepfour>`
 
 For each step, we will first show the relevant block of printed (or verbose) output, then
 describe what the software is actually doing and if applicable, conclude with the section-
 specific results (i.e. files, figures, etc.).
+
+-----
 
 .. _stepone:
 
@@ -160,11 +166,12 @@ moving on.
 
 Since none of this happened, we can move on to the next step.
 
+-----
 
 .. _steptwo:
 
-Estimate initial values
-+++++++++++++++++++++++
+Get initial values
+++++++++++++++++++
 
 .. code-block::
 
@@ -211,6 +218,7 @@ Finally, it saves this best estimate in a basic csv:
 
    1435467, 1438.27561061044, 72.3140769912867, 12.3801364686659
 
+-----
 
 .. _stepthree:
 
@@ -308,11 +316,12 @@ parameters would look like that below. **We urge folks to run new stars for a si
    tau_2, 218.303624326155, --
    sigma_2, 85.4836783903674, --
 
+-----
 
 .. _stepfour:
 
-Extrapolate uncertainties
-+++++++++++++++++++++++++
+Estimate uncertainties
+++++++++++++++++++++++
 
 .. code-block::
 
@@ -377,6 +386,7 @@ in the output. this is because the model preferred for this to be fixed
     first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
     the literature and we recommend that you do the same.***
 
+-----
 
 Running your favorite star
 ##########################

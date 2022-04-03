@@ -1,8 +1,8 @@
 .. module:: pysyd
 
-**********
-User guide
-**********
+*****************
+Usage & tutorials
+*****************
 
 We have been actively developing these broader capabilities so we are very excited to
 share the software with you! 
