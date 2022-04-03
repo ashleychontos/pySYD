@@ -54,7 +54,6 @@ is too small!
    attribution
    guidelines
 
-
 .. link-button:: install/quickstart
     :type: ref
     :text: Skip the introductory stuff and get started right away!

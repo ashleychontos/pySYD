@@ -57,7 +57,7 @@ def plot_estimates(star, ask=False, highlight=True):
     """
     Creates a plot summarizing the results of the find excess routine.
 
-    Args:
+    Parameters
         star : target.Target
             the pySYD pipeline object
 
@@ -158,15 +158,11 @@ def plot_parameters(star, n_peaks=10):
     Creates a plot summarizing the results of the fit background routine.
 
     Parameters
-    ----------
-    star : target.Target
-        the main pipeline Target class object
-    n_peaks : int
-        the number of peaks to highlight in the zoomed-in power spectrum
+        star : target.Target
+            the main pipeline Target class object
+        n_peaks : int
+            the number of peaks to highlight in the zoomed-in power spectrum
 
-    Results
-    -------
-    None
 
     """
     if star.params['background'] and not star.params['globe']:
@@ -370,16 +366,11 @@ def plot_parameters(star, n_peaks=10):
 
 def plot_samples(star):
     """
-    Plot results of the Monte-Carlo sampling.
+    Plot results of the Monte-Carlo sampling
 
     Parameters
-    ----------
-    star : target.Target
-        the pySYD pipeline object
-
-    Returns
-    -------
-    None
+        star : target.Target
+            the pySYD pipeline object
     
     """
     n_panels = len(star.df.columns.values.tolist())

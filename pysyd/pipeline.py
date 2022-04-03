@@ -11,14 +11,14 @@ def display(args):
     wanting to contribute to ``pySYD``. Ideally this will test new ``pySYD``
     functions.
     
-    Parameters:
+    Parameters
         args : argparse.Namespace
             the command line arguments
     
-    Warning:
+    .. warning::
         NOT CURRENTLY IMPLEMENTED
         
-    Note:
+    .. note::
         use the hacky, boolean flag ``-t`` or ``--test`` instead (for now)
     
     """
@@ -32,12 +32,12 @@ def load(args):
     Module to load in all the relevant information and dictionaries
     that is required to run the pipeline on a given target.
     
-    Note:
+    .. note::
         this does *not* load in a target or target data, this is purely
         information that is required to run any ``pySYD`` mode successfully
         (with the exception of ``pysyd.pipeline.setup``)
 
-    Parameters:
+    Parameters
         args : argparse.Namespace
             the command line arguments
         star : object, optional
@@ -48,7 +48,7 @@ def load(args):
             which of the 5 ``pysyd.pipeline`` modes to execute from
             the notebook
 
-    Returns:
+    Returns
         single : target.Target
             current data available for the provided target
 
@@ -64,7 +64,7 @@ def run(args):
     Main function to initiate the pySYD pipeline (consecutively, not
     in parallel)
 
-    Parameters:
+    Parameters
         args : argparse.Namespace
             the command line arguments
 
@@ -87,7 +87,7 @@ def pipe(group, args):
     This function is called by both ``pysyd.pipeline.run`` and ``pysyd.pipeline.parallel``
     modes to initiate the ``pySYD`` pipeline for a group of stars
 
-    Parameters:
+    Parameters
         group : List[object]
             list of stars to be processed as a group
         args : argparse.Namespace
@@ -95,7 +95,7 @@ def pipe(group, args):
         count : int
             the number of successful stars processed by the pipeline for a given group (default = `0`)
 
-    Returns:
+    Returns
         count : int
             the number of successful stars processed by ``pySYD`` for a given group of stars
     """
@@ -116,7 +116,7 @@ def parallel(args):
     
     Run ``pySYD`` in parallel for a large number of stars
 
-    Parameters:
+    Parameters
         args : argparse.Namespace
             the command line arguments
     
@@ -146,11 +146,11 @@ def test(args):
     wanting to contribute to ``pySYD``. Ideally this will test new ``pySYD``
     functions.
     
-    Parameters:
+    Parameters
         args : argparse.Namespace
             the command line arguments
     
-    Warning:
+    .. important::
         NOT CURRENTLY IMPLEMENTED
         
     Note:
@@ -167,7 +167,7 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
     Running this after installation will create the appropriate directories in the current working
     directory as well as download example data and files to test your pySYD installation
 
-    Parameters:
+    Parameters
         args : argparse.Namespace
             the command line arguments
         note : str, optional

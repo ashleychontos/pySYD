@@ -19,18 +19,20 @@ or :ref:`Quickstart <quickstart>` pages. You can also see how it works directly 
 
 -----
 
-Required input
-##############
+Required 
+########
 
 The only thing that is really *required* to successfully run the software is the data! 
+
+Data types
+**********
 
 For a given star with ID, input data are:
  #. the light curve, and
  #. the power spectrum.
 
-
 Light curve
-***********
+^^^^^^^^^^^
 
 The *Kepler*, K2 & TESS missions have provided *billions* of stellar light curves, or a 
 measure of the object's brightness (or flux) in time. Like most other standard photometric 
@@ -41,24 +43,12 @@ For the time series data, the y-axis is less critical here. It can be anything f
 of fraction flux or brightness as a function of time, along with any other normalization(s).
 
 Power spectrum
-**************
+^^^^^^^^^^^^^^
 
 What *REALLY* matters for asteroseismology is how the time series data looks in frequency space, 
 which is generally calculated by taking the fourier transform (and often referred to as the
 :term:`power spectrum`). Thanks to open-source languages like Python, we have powerful
 community-driven software packages like `astropy` that can fortunately compute these things for us.
-*However*, it is still good to know why this is important to gain more intuition for what we are
-looking for.
-
-By definition, a fourier transform fits a series of sine waves with different frequencies (periods) 
-to time series data. This is still quite wordy and not really intuitive. In other words, we can break 
-this signal up into its dominant frequencies, which is quantified by some power or amplitude
-term.
-
-When I think about this, there is an analogy that absolutely blew my mind when I first learned about
-it. Similar to how every human's fingerprint is unique or every element's spectra are unique -- the 
-frequency spectrum of time series data is also unique to that measure of energy (in time). This is
-*exactly* how the Shazam or song-matching application operates!
 
 .. warning::
 
@@ -69,8 +59,8 @@ frequency spectrum of time series data is also unique to that measure of energy 
 
 -----
 
-Optional input
-##############
+Optional
+########
 
 There are two main information files which can be provided but both are optional -- whether
 or not you choose to use them ultimately depends on how you will run the software. 

@@ -67,7 +67,10 @@ class Parameters(Constants):
     def __init__(self, args=None, stars=None):
         """
 
-        Inherits all relevant constants and default values for all parameters
+        Calls super method to inherit all relevant constants and then
+        stores the default values for all pysyd modules
+
+        Methods
 
         """
         # makes sure to inherit constants
@@ -97,7 +100,7 @@ class Parameters(Constants):
     
         Loads in all the default parameters for pysyd to run
 
-        Attributes:
+        Attributes
             params : Dict[str[Dict[,]]]
                 container class for ``pySYD`` parameters
 
@@ -122,7 +125,7 @@ class Parameters(Constants):
    
         Get the parameters for higher-level functionality
 
-        Args:
+        Parameters
             stars : List[str], optional
                 list of targets to process. If `None`, will read in from `info/todo.txt` (default).
             excess : bool, optional
@@ -156,7 +159,7 @@ class Parameters(Constants):
             info : str
                 path to star csv info (default='info/star_info.csv')
 
-        Attributes:
+        Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
 
@@ -193,7 +196,7 @@ class Parameters(Constants):
     
         Get the parameters for the find excess routine.
 
-        Args:
+        Parameters
             step : float, optional
                 TODO: Write description. Default value is `0.25`.
             binning : float, optional
@@ -207,7 +210,7 @@ class Parameters(Constants):
             bin_mode : {'mean', 'median', 'gaussian'}
                 mode to use when binning
 
-        Attributes:
+        Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
 
@@ -232,7 +235,7 @@ class Parameters(Constants):
     
         Get the parameters for the background-fitting routine.
 
-        Args:
+        Parameters
             box_filter : float
                 the size of the 1D box smoothing filter (default = `1.0` :math:`\rm \mu Hz`)
             ind_width : float
@@ -252,7 +255,7 @@ class Parameters(Constants):
             samples : bool
                 if `True`, will save the monte carlo samples to a csv (default = `False`)
 
-        Attributes:
+        Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
 
@@ -284,7 +287,7 @@ class Parameters(Constants):
         Get the parameters relevant for finding global asteroseismic parameters :math:`\rm \nu_{max}` 
         and :math:`\Delta\nu`
 
-        Args:
+        Parameters
             sm_par : float
                 Gaussian filter width for determining smoothed numax (values are typically between 1-4)
             method : str
@@ -318,7 +321,7 @@ class Parameters(Constants):
             hey : bool
                 plugin for Daniel Hey's echelle package (NOT CURRENTLY IMPLEMENTED YET)
 
-        Attributes:
+        Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
 
@@ -362,7 +365,7 @@ class Parameters(Constants):
         This routine will load in target stars, sets up "groups" (relevant for parallel
         processing) and then load in the relevant information
 
-        Args:
+        Parameters
             stars : List[str]
                 list of stars to process
             todo : str, optional
@@ -505,7 +508,7 @@ class Parameters(Constants):
         this skips over the "override" columns since those are star
         specific and we haven't saved any of the star information yet
 
-        Args:
+        Parameters
             args : argparse.Namespace
                 the command line arguments
 
@@ -527,13 +530,13 @@ class Parameters(Constants):
     
         Make sure that any command-line inputs are the proper lengths, types, etc.
 
-        Args:
+        Parameters
             args : argparse.Namespace
                 the command line arguments
             max_laws : int
                 maximum number of resolvable Harvey components
 
-        Yields:
+        Yields
             ??? (what's the thing for asserting)
 
         """
@@ -566,11 +569,11 @@ def get_dict(type='params'):
     the utils script (i.e. verbose_output, scrape_output) and in the pipeline script 
     (i.e. setup)
 
-    Args:
+    Parameters
         type : str
             which dictionary to read in, choices ~['params','columns','functions']
 
-    Returns:
+    Returns
         result : Dict[str,Dict[,]]
             the loaded, relevant dictionary
 
@@ -599,7 +602,7 @@ def save_file(x, y, path, overwrite=False, formats=[">15.8f", ">18.10e"]):
     After determining the best-fit stellar background model, this module
     saved the background-subtracted power spectrum
 
-    Args:
+    Parameters
         x : numpy.ndarray
             the independent variable i.e. the time or frequency array 
         y : numpy.ndarray
@@ -630,13 +633,13 @@ def get_next(path, count=1):
     When the overwriting of files is disabled, this module determines what
     the last saved file was 
 
-    Args:
+    Parameters
         path : str
             absolute path to file name that already exists
         count : int
             starting count, which is incremented by 1 until a new path is determined
 
-    Returns:
+    Returns
         new_path : str
             unused path name
 
@@ -658,7 +661,7 @@ def save_estimates(star, variables=['star', 'numax', 'dnu', 'snr']):
     
     Saves the estimate for numax (from first module)
 
-    Args:
+    Parameters
         variables : List[str]
             list of estimated variables to save (e.g., :math:`\rm \nu_{max}`, :math:`\Delta\nu`)
 
@@ -734,7 +737,7 @@ def save_parameters(star, results={}, cols=['parameter', 'value', 'uncertainty']
     
     Saves the derived global asteroseismic parameters (from the main module)
 
-    Args:
+    Parameters
         star : target.Target
             pipeline target with the results of the global fit
 
@@ -872,7 +875,7 @@ def max_elements(x, y, npeaks, exp_dnu=None):
     Module to obtain the x and y values for the n highest peaks in a power
     spectrum (or any 2D arrays really) 
 
-    Args:
+    Parameters
         x : numpy.ndarray
             the x values of the data
         y : numpy.ndarray
@@ -882,7 +885,7 @@ def max_elements(x, y, npeaks, exp_dnu=None):
         exp_dnu : float
             if not `None`, multiplies y array by Gaussian weighting centered on `exp_dnu`
 
-    Returns:
+    Returns
         peaks_x : numpy.ndarray
             the x coordinates of the first `npeaks`
         peaks_y : numpy.ndarray
@@ -909,7 +912,7 @@ def return_max(x, y, exp_dnu=None, index=False, idx=None):
     Return the either the value of peak or the index of the peak corresponding to the most likely dnu given a prior estimate,
     otherwise just the maximum value.
 
-    Args:
+    Parameters
         x : numpy.ndarray
             the independent axis (i.e. time, frequency)
         y : numpy.ndarray
@@ -921,10 +924,10 @@ def return_max(x, y, exp_dnu=None, index=False, idx=None):
         exp_dnu : Required[float]
             the expected dnu. Default value is `None`.
 
-    Returns:
+    Returns
         result : Union[int, float]
             if `index` is `True`, result will be the index of the peak otherwise if `index` is `False` it will 
-	    instead return the value of the peak.
+	        instead return the value of the peak
 
     """
 
@@ -949,7 +952,7 @@ def bin_data(x, y, width, log=False, mode='mean'):
     
     Bins a series of data
 
-    Args:
+    Parameters
         x : numpy.ndarray
             the x values of the data
         y : numpy.ndarray
@@ -959,7 +962,7 @@ def bin_data(x, y, width, log=False, mode='mean'):
         log : bool
             creates bins by using the log of the min/max values (i.e. not equally spaced in log if `True`)
 
-    Returns:
+    Returns
         bin_x : numpy.ndarray
             binned frequencies
         bin_y : numpy.ndarray
@@ -996,7 +999,7 @@ def ask_int(question, n_trials, max_attempts=10, count=1, special=False):
     
     Asks for an integer user input
 
-    Args:
+    Parameters
         question : str
             the statement and/or question that needs to be answered
         range : List[float]
@@ -1006,7 +1009,7 @@ def ask_int(question, n_trials, max_attempts=10, count=1, special=False):
         count : int
             the user attempt number
 
-    Returns:
+    Returns
         result : int
             the user's integer answer or `None` if the number of attempts exceeds the allowed number
 
@@ -1044,11 +1047,11 @@ def delta_nu(numax):
     
     Estimates the large frequency separation using the numax scaling relation
 
-    Args:
+    Parameters
         numax : float
             the frequency corresponding to maximum power or numax
 
-    Returns:
+    Returns
         dnu : float
             the approximated frequency spacing, dnu
 
@@ -1062,7 +1065,7 @@ def save_status(file, section, params):
 
     Save pipeline status
 
-    Args:
+    Parameters
         file : str 
             name of output config file
         section : str
@@ -1093,13 +1096,14 @@ def load_status(file):
 
     Load pipeline status
 
-    Args:
+    Parameters
         file : str
             name of output config file
 
-    Returns:
+    Returns
         config : configparser.ConfigParser
             config file with pipeline status
+
     """
 
     config = configparser.ConfigParser()

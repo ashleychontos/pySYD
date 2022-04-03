@@ -17,12 +17,32 @@ from pysyd import plots
 
 
 
-class Target(object):
+class Target:
+
+    """
+
+    Main pipeline target object
+
+    """
 
     def __init__(self, name, args):
         """
+        
+        A new instance (or star) is created for each target that is processed.
+        Initialization copies the relevant star dictionary and then will try to
+        load in data for the given star name.
 
-        Args:
+        Deprecated
+            Before it used to check for data and then check the Target.ok attribute
+            before processing the star but now it will raise an exception (InputError)
+            and therefore, there is no need to check the attribute anymore. This can
+            be updated.
+
+        Attributes
+            ok : bool
+                is the star 'ok' to proceed (i.e. does it pass the initial checks)
+
+        Parameters
             name : str
                 which target to load in and/or process
             args : utilities.Parameters
@@ -49,9 +69,9 @@ class Target(object):
     def process_star(self,):
         """
 
-        Run the ``pySYD`` pipeline on a given star.
+        Run the ``pySYD`` pipeline on a given star
 
-        Args:
+        Parameters
             results : Dict
                 dictionary containing the results from the pipeline, with keys corresponding
                 to each of the steps (i.e. 'estimates', 'parameters', 'samples')
@@ -69,7 +89,7 @@ class Target(object):
     def show_results(self, show=False, verbose=False,):
         """
 
-        Args:
+        Parameters
             show : bool, optional
                 show output figures and text
             verbose : bool, optional
@@ -105,7 +125,7 @@ class Target(object):
         spectrum and then the time series data, which will compute a power spectrum in the
         event that there is not one.
 
-        Attributes:
+        Attributes
             note : str, optional
                 verbose output
             lc : bool
@@ -165,7 +185,7 @@ class Target(object):
         then use a collapsed autocorrelation technique to identify the power excess due to
         solar-like oscillations.
 
-        Args:
+        Parameters
             excess : bool, optional
                 if numax is already known, this can be changed to `False`
 
@@ -192,7 +212,7 @@ class Target(object):
         then use a collapsed autocorrelation technique to identify the power excess due to
         solar-like oscillations.
 
-        Args:
+        Parameters
             background : bool, optional
                 if numax is already known, this can be changed to `False`
             globe : bool, optional
@@ -233,7 +253,7 @@ class Target(object):
         which will return `False` if unsuccessful and therefore, not run the rest
         of the pipeline
 
-        Args:
+        Parameters
             oversampling_factor : int, optional
                 oversampling factor of input power spectrum
 
@@ -270,7 +290,7 @@ class Target(object):
         frequency. If time series data is not provided, either the
         cadence or nyquist frequency must be provided via CLI
 
-        Args:
+        Parameters
             save : bool, optional
                 save all data products
             kep_corr : bool, optional
@@ -340,11 +360,11 @@ class Target(object):
         and stores the data into the `x` (independent variable) and `y`
         (dependent variable) arrays, where N is the length of the series.
 
-        Args:
+        Parameters
             path : str
                 the file path of the data file
 
-        Returns:
+        Returns
             x : numpy.array
                 the independent variable i.e. the time or frequency array 
             y : numpy.array
@@ -365,14 +385,14 @@ class Target(object):
         """
         Check input data
 
-        Args:
+        Parameters
             note : str, optional
                 verbose output
             long : int
                 arbitrary number to let user know if a "long" PS was given, as it will
                 take pySYD longer to process
 
-        Attributes:
+        Attributes
             resolution : float
                 frequency resolution of input power spectrum
 
@@ -399,13 +419,13 @@ class Target(object):
         this module 'stitches' a light curve together for time series data with large gaps. For stochastic p-mode
         oscillations, this is justified if the lifetimes of the modes are smaller than the gap. 
       
-        Attributes:
+        Attributes
             time : numpy.ndarray
                 original time series array
             new_time : numpy.ndarray
                 corrected time series array
 
-        Args:
+        Parameters
             gap : int
                 how many consecutive missing cadences are considered a 'gap'
 
@@ -435,11 +455,11 @@ class Target(object):
         NEW function to compute a power spectrum given time series data, which will
         normalize the power spectrum to spectral density according to Parseval's theorem
 
-        Args:
+        Parameters
             oversampling_factor : int
                 the oversampling factor to compute for the power spectrum 
 
-        Returns:
+        Returns
             frequency : numpy.ndarray
                 the calculated frequency array in :math:`\rm \mu Hz`
             power : numpy.ndarray
@@ -470,13 +490,13 @@ class Target(object):
         white_mixed(). If neither of these options are used, it will return a copy
         of the original arrays
 
-        Args:
+        Parameters
             frequency : numpy.ndarray
                 input frequency array to correct
             power : numpy.ndarray
                 input power spectrum to correct
 	    
-        Returns:
+        Returns
             frequency : numpy.ndarray
                 copy of the corrected frequency array 
             power : numpy.ndarray
@@ -501,7 +521,7 @@ class Target(object):
         For Kepler targets that require a correction via CLI (--kc), a random seed is generated
         from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
 
-        Args:
+        Parameters
             lower : int 
                 lower limit for random seed value (default=`1`)
             upper : int
@@ -528,7 +548,7 @@ class Target(object):
         Module to remove artefacts found in Kepler power spectra by replacing them with noise 
         (using linear interpolation) following a chi-squared distribution. 
 
-        Args:
+        Parameters
             freq : numpy.ndarray
                 input frequency array to correct
             pow : numpy.ndarray
@@ -544,7 +564,7 @@ class Target(object):
             hf_upper : List[float]
                 upper limit of high frequency artefact
 	    
-        Returns:
+        Returns
             frequency : numpy.ndarray
                 copy of the corrected frequency array 
             power : numpy.ndarray
@@ -602,7 +622,7 @@ class Target(object):
         :math:`\ell=1` for subgiants with mixed modes to better constrain the large 
         frequency separation
 
-        Args:
+        Parameters
             freq : numpy.ndarray
                 input frequency array to correct
             pow : numpy.ndarray
@@ -616,7 +636,7 @@ class Target(object):
             notching : bool, optional
                 if `True`, uses notching instead of generating white noise
 
-        Returns:
+        Returns
             frequency : numpy.ndarray
                 copy of the corrected frequency array 
             power : numpy.ndarray
@@ -660,7 +680,7 @@ class Target(object):
         to identify power excess due to solar-like oscillations and then estimate
         the center of that region
 
-        Args:
+        Parameters
             lower_ex : float, optional
                 the lower frequency limit of the PS used to estimate numax
             upper_ex : float, optional
@@ -703,7 +723,7 @@ class Target(object):
         Automatically finds power excess due to solar-like oscillations using a
         frequency-resolved, collapsed autocorrelation function (ACF)
 
-        Args:
+        Parameters
             n_trials : int, optional
                 the number of trials. Default value is `3`.
             binning : float, optional
@@ -715,7 +735,7 @@ class Target(object):
             ask : bool, optional
                 If `True`, it will ask which trial to use as the estimate for numax.
 
-        Attributes:
+        Attributes
             bin_freq
             bin_pow
             bin_pow_err
@@ -766,13 +786,13 @@ class Target(object):
 
         Computes a collapsed autocorrelation function (ACF).
 
-        Args:
+        Parameters
             b : int
                 the trial number
             step : float
                 fractional step size to use for the collapsed ACF calculation
 
-        Attributes:
+        Attributes
             compare : List[float]
                 list of SNR results from the different trials
 
@@ -826,11 +846,11 @@ class Target(object):
     
         Checks if there is a starting value for numax
 
-        Args:
+        Parameters
             columns : List[str]
                 saved columns if the estimate_numax() function was run
 
-        Returns:
+        Returns
             return : bool
                 will return `True` if there is prior value for numax otherwise `False`.
 
@@ -870,7 +890,7 @@ class Target(object):
         solar scaling relations. This resets the power spectrum and has its own independent
         filter (i.e. [lower,upper] mask) to use for this subroutine.
 
-        Args:
+        Parameters
             lower_bg : float, optional
                 minimum frequency to use for the background-fitting 
             upper_bg : float, optional
@@ -921,7 +941,7 @@ class Target(object):
          #. estimate the width of the region of oscillations using numax
          #. guess starting values for granulation time scales
 
-        Args:
+        Parameters
 	           scaling : str
 	               which scaling relation to use
             max_laws : int
@@ -929,7 +949,7 @@ class Target(object):
            	ex_width : float
                 fractional width of the power excess to use (w.r.t. solar)
 
-        Attributes:
+        Attributes
             b : List[float]
                 list of starting points for
             b_orig : List[float]
@@ -1060,11 +1080,11 @@ class Target(object):
 
         Estimates initial guesses for the stellar background 
 
-        Args:
+        Parameters
             ind_width : float
                 the independent average smoothing width (default = `20.0` :math:`\rm \mu Hz`)
 
-        Attributes:
+        Attributes
             bin_freq : numpy.ndarray
                 binned frequency array 
             bin_pow : numpy.ndarray
@@ -1072,7 +1092,7 @@ class Target(object):
             bin_err : numpy.ndarray
                 binned power error array 
 
-        Returns:
+        Returns
             return : bool
                 will return `True` if the model converged
 
@@ -1095,7 +1115,7 @@ class Target(object):
         Estimate the white noise level (in muHz) by taking the mean of
         the last 10% of the power spectrum.
 
-        Attributes:
+        Attributes
             noise : float
                 estimate of white or frequency-independent noise level
 
@@ -1112,13 +1132,13 @@ class Target(object):
         spectrum with the power excess region masked out. This will take the mean of a specified 
         number of points (via -nrms, default=20) for each Harvey-like component.
 
-        Args:
+        Parameters
             box_filter : float
                 the size of the 1D box smoothing filter (default = `1.0` :math:`\rm \mu Hz`)
             n_rms : int
                 number of data points to estimate red noise contributions (default = `20`)
 
-        Attributes:
+        Attributes
             smooth_pow : numpy.ndarray
                 smoothed power spectrum after applying the box filter
             guesses : numpy.ndarray
@@ -1157,7 +1177,7 @@ class Target(object):
         by iterating through several models, where the initial guess for the number of Harvey-like 
         component(s) to model is estimated from a solar scaling relation.
 
-        Args:
+        Parameters
             n_laws : int
                 force number of Harvey-like components in background fit (default = `None`)
             fix_wn : bool
@@ -1165,7 +1185,7 @@ class Target(object):
             basis : str
                 which basis to use for background fitting, e.g. {a,b} parametrization (default = `tau_sigma`)
 
-        Attributes:
+        Attributes
             bounds : list
                 the bounds on the Harvey parameters for a given model
             bic : list
@@ -1175,7 +1195,7 @@ class Target(object):
             paras : list
                 the fitted parameters for each model that was explored
 
-        Returns:
+        Returns
             return : bool
                 will return `True` if fitting failed and the iteration must be repeated, otherwise `False`.
 
@@ -1256,11 +1276,11 @@ class Target(object):
         """
         Saves information re: the selected best-fit model (for the stellar background).
         
-        Args:
+        Parameters
             metric : str
                 which metric to use (i.e. bic or aic) for model selection (default = `'bic'`)
 
-        Attributes:
+        Attributes
             bg_corr : numpy.ndarray
                 background-corrected power spectrum -> currently background-DIVIDED
             model : int
@@ -1310,7 +1330,7 @@ class Target(object):
         Calculates the red noise levels in a power spectrum due to the background 
         stellar contribution
 
-        Returns:
+        Returns
             return : bool
                 returns `True` if model converges
    
@@ -1347,7 +1367,7 @@ class Target(object):
 
         Estimate numax taking the peak of the smoothed power spectrum
 
-        Attributes:
+        Attributes
             pssm
             pssm_bgcorr
             obs_numax
@@ -1381,7 +1401,7 @@ class Target(object):
 
         Estimate numax by fitting a Gaussian to the power spectrum and adopting the center value
     
-        Attributes:
+        Attributes
             new_freq
             numax_fit
 
@@ -1404,14 +1424,14 @@ class Target(object):
         """
         Compute the ACF of the smooth background corrected power spectrum.
 
-        Args:
+        Parameters
             fft : bool
                 if `True`, uses FFTs to compute the ACF, otherwise it will use
                 ``numpy.correlate`` (default = `True`)
             smooth_ps : float, optional
                 convolve the background-corrected PS with a box filter of this width (:math:`\rm \mu Hz`)
 
-        Attributes:
+        Attributes
             bgcorr_smooth : numpy.ndarray
                 
             lag
@@ -1451,7 +1471,7 @@ class Target(object):
         centered on the expected value for dnu (determine from the pipeline).
         One can also "force" or provide a value for dnu.
 
-        Args:
+        Parameters
             method : str
                 which method to use, where: 
                  - 'M' == Maryum == scipy's find_peaks module
@@ -1462,7 +1482,7 @@ class Target(object):
             force : float, optional
                 option to "force" a dnu value, but is `None` by default.
 
-        Attributes:
+        Attributes
             peaks_l
             peaks_a
             best_lag
@@ -1494,14 +1514,14 @@ class Target(object):
         Gets the region in the ACF centered on the correct peak to prevent pySYD
         from getting stuck in a local maximum (i.e. fractional harmonics)
 
-        Args:
+        Parameters
             threshold : float
                 the threshold is multiplied by the full-width half-maximum value, centered on the peak 
                 in the ACF to determine the width of the cutout region
             acf_mask : List[float,float]
                 limits (i.e. lower, upper) to use for ACF "cutout"
 
-        Attributes:
+        Attributes
             zoom_lag
             zoom_auto
             acf_guesses
@@ -1549,11 +1569,11 @@ class Target(object):
         Determine the best frequency spacing by determining which forms the "best"
         ridges -- TODO: still under development
 
-        Args:
+        Parameters
             clip_value : float
                 lower limit of distance modulus. Default value is `0.0`
 
-        Attributes:
+        Attributes
             xax
             yax
             zz
@@ -1592,7 +1612,7 @@ class Target(object):
 
         Creates required arrays to plot an echelle diagram in the final figure
 
-        Args:
+        Parameters
             smooth_ech : float, optional
                 value to smooth (i.e. convolve) ED by
             nox : int
@@ -1602,7 +1622,7 @@ class Target(object):
             hey : bool, optional
                 plugin for Dan Hey's echelle package (not currently implemented)
 
-        Attributes:
+        Attributes
             x : numpy.ndarray
                 folded frequencies (x-axis) for echelle diagram
             y : numpy.ndarray
@@ -1612,7 +1632,7 @@ class Target(object):
             extent : List[float]
                 extent == [min(x), max(x), min(y), max(y)]
 
-        Returns:
+        Returns
             smoothed : numpy.meshgrid
                 resulting echelle diagram based on the observed $\delta \nu$ 
             gridx : numpy.ndarray
