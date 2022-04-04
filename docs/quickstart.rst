@@ -66,8 +66,8 @@ General workflow
  #. :ref:`Estimates uncertainties <stepfour>`
 
 For each step, we will first show the relevant block of printed (or verbose) output, then
-describe what the software is actually doing and if applicable, conclude with the section-
-specific results (i.e. files, figures, etc.).
+describe what the software is actually doing and if applicable, conclude with the section-specific 
+results (i.e. files, figures, etc.).
 
 -----
 
@@ -135,8 +135,8 @@ Of course first we need to get some data!
 
 .. _stepone:
 
-Load in parameters and data
-+++++++++++++++++++++++++++
+1. Load in parameters and data
+++++++++++++++++++++++++++++++
 
 .. code-block::
 
@@ -168,12 +168,10 @@ moving on.
 
 Since none of this happened, we can move on to the next step.
 
------
-
 .. _steptwo:
 
-Get initial values
-++++++++++++++++++
+2. Get initial values
++++++++++++++++++++++
 
 .. code-block::
 
@@ -220,12 +218,11 @@ Finally, it saves this best estimate in a basic csv file:
 
    1435467, 1438.27561061044, 72.3140769912867, 12.3801364686659
 
------
 
 .. _stepthree:
 
-Fit global parameters
-+++++++++++++++++++++
+3. Fit global parameters
+++++++++++++++++++++++++
 
 .. code-block::
 
@@ -328,12 +325,11 @@ parameters would look like that below. **We urge folks to run new stars for a si
     first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
     the literature and we recommend that you do the same.**
 
------
 
 .. _stepfour:
 
-Estimate uncertainties
-++++++++++++++++++++++
+4. Estimate uncertainties
++++++++++++++++++++++++++
 
 .. code-block::
 
@@ -359,6 +355,8 @@ Estimate uncertainties
      - combining results into single csv file
     -----------------------------------------------------------
 
+Notice the difference in the printed parameters this time - they now have uncertainties!
+
 We include the progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
 executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
 
@@ -367,8 +365,6 @@ executed in parallel mode. This is hard-wired since the latter would produce a n
   :alt: KIC 1435467 posteriors
 
 ^^ posteriors for KIC 1435467
-
-Now, notice the difference in the output parameters this time... they have uncertainties!
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"

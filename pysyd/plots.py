@@ -40,7 +40,19 @@ def set_plot_params():
 
 
 
-def make_plots(star):
+def make_plots(star, showall=False,):
+    """
+    Function that establishes the default plotting parameters and then calls each
+    of the relevant plotting routines
+
+    Parameters
+        star : target.Target
+            the pySYD pipeline object
+        showall : bool, optional
+            option to plot, save and show the different background models (default=`False`)
+
+    
+    """
     # set defaults
     set_plot_params()
     if 'estimates' in star.params['plotting']:
@@ -55,13 +67,15 @@ def make_plots(star):
         plt.show(block=False)
 
 
-def plot_estimates(star, ask=False, highlight=True):
+def plot_estimates(star, filename='numax_estimates.png', ask=False, highlight=True):
     """
     Creates a plot summarizing the results of the find excess routine.
 
     Parameters
         star : target.Target
             the pySYD pipeline object
+        filename : str
+            the path or extension to save the figure to
         highlight : bool, optional
             if `True`, highlights the selected estimate
 
@@ -147,7 +161,7 @@ def plot_estimates(star, ask=False, highlight=True):
 
     plt.tight_layout()
     if star.params['save']:
-        path = os.path.join(star.params['path'],'estimate_numax.png')
+        path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils.get_next(path)
         plt.savefig(path, dpi=300)
@@ -157,13 +171,17 @@ def plot_estimates(star, ask=False, highlight=True):
         plt.show(block=False)
 
 
-def plot_parameters(star, n_peaks=10):
+def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10):
     """
     Creates a plot summarizing the results of the fit background routine.
 
     Parameters
         star : target.Target
             the main pipeline Target class object
+        subfilename : str
+            separate filename in the event that only the background is being fit
+        filename : str
+            the path or extension to save the figure to
         n_peaks : int
             the number of peaks to highlight in the zoomed-in power spectrum
 
@@ -260,9 +278,9 @@ def plot_parameters(star, n_peaks=10):
     ax3.set_xscale('log')
     ax3.set_yscale('log')
 
-    if star.params['background'] and not star.params['globe'] and star.params['save']: 
+    if star.params['background'] and not star.params['globe'] and star.params['save']:
         plt.tight_layout()
-        path = os.path.join(star.params['path'],'background_only.png')
+        path = os.path.join(star.params['path'],subfilename)
         if not star.params['overwrite']:
             path = utils.get_next(path)
         plt.savefig(path, dpi=300)
@@ -360,7 +378,7 @@ def plot_parameters(star, n_peaks=10):
 
     plt.tight_layout()
     if star.params['save']:
-        path = os.path.join(star.params['path'],'global_fit.png')
+        path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils.get_next(path)
         plt.savefig(path, dpi=300)
@@ -368,13 +386,15 @@ def plot_parameters(star, n_peaks=10):
         plt.close()
 
 
-def plot_samples(star):
+def plot_samples(star, filename='samples.png'):
     """
     Plot results of the Monte-Carlo sampling
 
     Parameters
         star : target.Target
             the pySYD pipeline object
+        filename : str
+            the path or extension to save the figure to
     
     """
     n_panels = len(star.df.columns.values.tolist())
@@ -392,7 +412,7 @@ def plot_samples(star):
         ax.set_title(params[col]['label'], fontsize=16)
     plt.tight_layout()
     if star.params['save']:
-        path = os.path.join(star.params['path'],'samples.png')
+        path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils.get_next(path)
         plt.savefig(path, dpi=300)
@@ -400,13 +420,15 @@ def plot_samples(star):
         plt.close()
 
 
-def plot_bgfits(star, highlight=True):
+def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
     """
     Comparison of the background model fits 
 
     Parameters
         star : target.Target
             the pySYD pipeline object
+        filename : str
+            the path or extension to save the figure to
         highlight : bool, optional
             if `True`, highlights the selected model
     
@@ -496,7 +518,7 @@ def plot_bgfits(star, highlight=True):
 
     plt.tight_layout()
     if star.params['save']:
-        path = os.path.join(star.params['path'],'model_fits.png')
+        path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils.get_next(path)
         plt.savefig(path, dpi=300)
@@ -504,8 +526,20 @@ def plot_bgfits(star, highlight=True):
         plt.close()
 
 
-def time_series(star, npanels=1):
+def plot_light_curve(star, filename='time_series.png', npanels=1):
+    """
+    Plot the light curve data
 
+    Parameters
+        star : target.Target
+            the pySYD pipeline object
+        filename : str
+            the path or extension to save the figure to
+        npanels : int
+            number of panels in this figure (default=`1`)
+
+    
+    """
     d = utils.get_dict(type='plots')
     x, y = d[npanels]['x'], d[npanels]['y']
     fig = plt.figure("%s time series"%star.name, figsize=d[npanels]['size'])
@@ -517,16 +551,31 @@ def time_series(star, npanels=1):
     ax.tick_params(labelsize=22)
     plt.xlabel(r'$\rm Time \,\, [days]$', fontsize=28)
     plt.ylabel(r'$\rm Normalized \,\, flux$', fontsize=28)
+
     plt.tight_layout()
-    if not star.params['cli']:
-        with open('lc.pickle','wb') as f:
-            pickle.dump(fig, f)
+    if star.params['save']:
+        path = os.path.join(star.params['path'],filename)
+        if not star.params['overwrite']:
+            path = utils.get_next(path)
+        plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 
 
-def frequency_series(star, npanels=1):
+def plot_power_spectrum(star, filename='power_spectrum.png', npanels=1):
+    """
+    Plot the power spectrum data
 
+    Parameters
+        star : target.Target
+            the pySYD pipeline object
+        filename : str
+            the path or extension to save the figure to
+        npanels : int
+            number of panels in this figure (default=`1`)
+
+    
+    """
     d = utils.get_dict(type='plots')
     x, y = d[npanels]['x'], d[npanels]['y']
     fig = plt.figure("%s power spectrum"%star.name, figsize=d[npanels]['size'])
@@ -540,15 +589,18 @@ def frequency_series(star, npanels=1):
     ax.set_yscale('log')
     plt.xlabel(r'$\rm Frequency \,\, [\mu Hz]$', fontsize=28)
     plt.ylabel(r'$\rm Power \,\, [ppm^2 \, \mu Hz^{-1}]$', fontsize=28)
+
     plt.tight_layout()
-    if not star.params['cli']:
-        with open('ps.pickle','wb') as f:
-            pickle.dump(fig, f)
+    if star.params['save']:
+        path = os.path.join(star.params['path'],filename)
+        if not star.params['overwrite']:
+            path = utils.get_next(path)
+        plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 
 
-def dnu_comparison(star, methods=['M','A','D'], markers=['o','D','^'], styles=['--','-.',':'],
+def _dnu_comparison(star, methods=['M','A','D'], markers=['o','D','^'], styles=['--','-.',':'],
                    colors=['#FF9408','#00A9E0','g'], names=['Maryum','Ashley','Dennis'], npanels=2):
 
     sig = 0.35*star.exp_dnu/2.35482 
