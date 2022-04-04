@@ -14,7 +14,7 @@ span#logotext2 {
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Garamond', serif;
   color:#4A4A4A; /* numpy.org body color */
 }
 
@@ -39,7 +39,7 @@ div.output_area div[class*=highlight] pre {
 }
 
 h1 {
-  font-family: "Lato", sans-serif;
+  font-family: "Garamond", serif;
   color: #013243; /* warm black */
   letter-spacing: -.02em;
 }
@@ -51,8 +51,11 @@ h2 {
 }
 
 h3 {
-  color: #b8b6b2; /* warm black */
-  letter-spacing: -.02em;
+  color: #666666; /* dark gray */
+}
+
+h4 {
+  color: #b8b6b2; /* light gray */
 }
 
 /* Override some aspects of the pydata-sphinx-theme: taken from Pandas */
