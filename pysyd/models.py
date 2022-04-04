@@ -29,6 +29,7 @@ def background(frequency, guesses, mode='regular', ab=False, noise=None):
     TODO
         option to fix the white noise (i.e. ``noise`` option)
         option to change the parametrization (i.e. ``ab`` option)
+        option to add power law
 
     """
     nlaws = int(len(guesses)//2)
