@@ -10,6 +10,11 @@ experience with `Python`. If not, we recommend visiting the Python website and g
 some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
 ours!
 
+We will go through two examples -- each demonstrating a different usage scenario. We will 
+start with a command-line example to break everything down in a lesson we refer to as 
+crashteroseismology. Then, once we are all expert asteroseismologists, we will put it back 
+together in its condensed form and import and use ``pySYD`` as a module.
+
 If you have *any* questions, check out our :ref:`user guide <usage/index>` for more 
 information. If this still does not address your question or problem, please do not hesitate
 to contact `Ashley <achontos@hawaii.edu>`_ directly.
@@ -45,22 +50,34 @@ Crashteroseismology
 ###################
 :raw-html:`&rightarrow;` **care for a crash course in asteroseismology?**
 
-We will go through two examples -- each demonstrating a different usage scenario. We will 
-start with the command-line example to break everything down and then put it all together 
-in a condensed version for the other application.
-
 For purposes of this first example, we will assume that we do not know anything about the star or
 its properties. I say this because typically we can provide optional inputs (e.g., the center
 of the frequency range with the oscillations, or :term:`numax` :math:`\rm \nu_{max}`) 
-that can save time and bypass some of the extra steps but we won't do that here so the software 
-will run from start to finish on its own.
+that can save time and bypass some of the extra steps but we won't do that here so that the 
+software can run from start to finish on its own.
 
+General workflow
+****************
+
+``pySYD`` roughly operates in the following steps:
+ #. :ref:`Loads in parameters and data <stepone>`
+ #. :ref:`Gets initial values <steptwo>`
+ #. :ref:`Fits global parameters <stepthree>`
+ #. :ref:`Estimates uncertainties <stepfour>`
+
+For each step, we will first show the relevant block of printed (or verbose) output, then
+describe what the software is actually doing and if applicable, conclude with the section-
+specific results (i.e. files, figures, etc.).
+
+-----
 
 The command
 ***********
 
-When running ``pySYD`` from command line, you will likely use something similar to the following 
-statement: 
+Well, first we need to run the command before any of this will happen. 
+
+When running ``pySYD`` from command line, you will likely use something similar to the 
+following statement: 
 
 .. code-block::
 
@@ -111,23 +128,10 @@ see our special CLI :ref:`glossary <usage-cli-glossary>`.
 
 -----
 
-How it works
-++++++++++++
+The steps
+*********
 
-If you've already ran the above command, you would've quickly noticed that the output is actually
-quite long (and if you didn't, you'll just have to take our word for it). Not to worry though, as
-we will break it down into four main sections, each of them corresponding to a primary step
-in the pipeline. ``pySYD`` roughly operates in the following steps:
- #. :ref:`Loads in parameters and data <stepone>`
- #. :ref:`Gets initial values <steptwo>`
- #. :ref:`Fits global parameters <stepthree>`
- #. :ref:`Estimates uncertainties <stepfour>`
-
-For each step, we will first show the relevant block of printed (or verbose) output, then
-describe what the software is actually doing and if applicable, conclude with the section-
-specific results (i.e. files, figures, etc.).
-
------
+Of course first we need to get some data!
 
 .. _stepone:
 
@@ -314,6 +318,16 @@ parameters would look like that below. **We urge folks to run new stars for a si
    tau_2, 218.303624326155, --
    sigma_2, 85.4836783903674, --
 
+
+.. note::
+
+    While observations have shown that solar-like oscillations have an approximately 
+    Gaussian-like envelope, we have no reason to believe that they should behave exactly 
+    like that. This is why you will see two different estimates for :term:`numax` 
+    (:math:`\rm \nu_{max}`) under the output parameters. **In fact for this methodology 
+    first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
+    the literature and we recommend that you do the same.**
+
 -----
 
 .. _stepfour:
@@ -374,14 +388,7 @@ Now, notice the difference in the output parameters this time... they have uncer
 * matches expected output for model 4 selection - notice how there is no white noise term
 in the output. this is because the model preferred for this to be fixed
    
-.. note::
 
-    While observations have shown that solar-like oscillations have an approximately 
-    Gaussian-like envelope, we have no reason to believe that they should behave exactly 
-    like that. This is why you will see two different estimates for :term:`numax` 
-    (:math:`\rm \nu_{max}`) under the output parameters. **In fact for this methodology 
-    first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
-    the literature and we recommend that you do the same.**
 
 -----
 
