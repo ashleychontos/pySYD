@@ -502,7 +502,8 @@ def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
             wn='fixed'
         else:
             wn='free'
-        ax.set_title(r'$\rm nlaws=%s \,\, | \,\, wn=%s \,\, | \,\, AIC = %.2f \,\, | \,\, BIC = %.2f$'%(str(int(mm//2)),wn,params['aic'][n],params['bic'][n]))
+#        ax.set_title(r'$\rm nlaws=%s \,\, | \,\, wn=%s \,\, | \,\, AIC = %.2f \,\, | \,\, BIC = %.2f$'%(str(int(mm//2)),wn,params['aic'][n],params['bic'][n]))
+        ax.set_title(r'$\rm nlaws=%s \,\, | \,\, wn=%s $'%(str(int(mm//2)),wn))
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
         ax.set_xscale('log')

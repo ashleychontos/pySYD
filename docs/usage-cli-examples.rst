@@ -140,8 +140,9 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 .. _example/many-stars:
 
-An ensemble of stars
-####################
+*******************
+Parallel processing
+*******************
 
 There is a parallel processing option included in the software, which is helpful for
 running many stars. This can be accessed through the following command:

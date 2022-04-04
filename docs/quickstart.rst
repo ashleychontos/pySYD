@@ -8,12 +8,15 @@ Getting started
 The examples on this page assume that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the Python website and going through
 some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
-ours!
+ours.
 
-We will go through two examples -- each demonstrating a different usage scenario. We will 
-start with a command-line example to break everything down in a lesson we refer to as 
-crashteroseismology. Then, once we are all expert asteroseismologists, we will put it back 
-together in its condensed form and import and use ``pySYD`` as a module.
+On this page we will work through two examples -- each demonstrating a different way to
+use the software. Since the software was initially intended to be a hands-off command-line tool,
+the first example will run ``pySYD`` as a script to introduce both the software *and* science 
+in a crash course to asteroseismology -- what we like to refer to as crashteroseismology.
+We'll break everything down to be sure everyone is on the same page and then once we are all
+expert asteroseismologists, we will reconstruct it in a condensed form by using ``pySYD``
+as a module.
 
 If you have *any* questions, check out our :ref:`user guide <usage/index>` for more 
 information. If this still does not address your question or problem, please do not hesitate
