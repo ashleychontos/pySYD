@@ -178,7 +178,7 @@ def main():
                         metavar='float', 
                         dest='smooth_width',
                         help='Box filter width (in muHz) for smoothing the PS',
-                        default=20.0,
+                        default=10.0,
                         type=float,
     )
     excess.add_argument('--ux', '--upperx', 

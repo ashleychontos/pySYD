@@ -190,7 +190,7 @@ class Parameters(Constants):
         self.params.update(main)
 
 
-    def get_excess(self, n_trials=3, step=0.25, binning=0.005, smooth_width=20.0, bin_mode='mean', 
+    def get_excess(self, n_trials=3, step=0.25, binning=0.005, smooth_width=10.0, bin_mode='mean', 
                    lower_ex=1.0, upper_ex=8000.0, ask=False,):
         """
     

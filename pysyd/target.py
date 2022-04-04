@@ -757,8 +757,10 @@ class Target:
         self.smooth_freq, self.smooth_pow, self.smooth_pow_err = utils.bin_data(self.bin_freq, self.bin_pow, width=self.params['smooth_width'])
         if self.params['verbose']:
             print('-----------------------------------------------------------\nPS binned to %d datapoints\n\nNumax estimates\n---------------' % len(self.smooth_freq))
+        # Mask out frequency values that are lower than the smoothing width to avoid weird looking fits
+        mask = (self.smooth_freq >= (min(self.freq)+self.params['smooth_width'])) & (self.smooth_freq <= (max(self.freq)-self.params['smooth_width']))
+        s = InterpolatedUnivariateSpline(self.smooth_freq[mask], self.smooth_pow[mask], k=2)
         # Interpolate and divide to get a crude background-corrected power spectrum
-        s = InterpolatedUnivariateSpline(self.smooth_freq, self.smooth_pow, k=1)
         self.interp_pow = s(self.freq)
         self.bgcorr_pow = self.pow/self.interp_pow
         # Collapsed ACF to find numax

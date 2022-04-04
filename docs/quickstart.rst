@@ -25,7 +25,7 @@ TL;DR
 #####
 
 If you (understandably) do not have time to go through the entire user guide, we have summarized 
-a couple of important tidbits. 
+a couple important tidbits that we think you should know before using the software.
 
  - The first is that the userbase for the initial `pySYD` release was intended for non-expert 
    astronomers. **With this in mind, the software was originally developed to be as hands-off as
