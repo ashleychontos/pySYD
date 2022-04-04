@@ -1,9 +1,9 @@
 .. role:: bash(code)
    :language: bash
 
-**************
-Basic examples
-**************
+*************
+More examples
+*************
 
 If the pysyd setup feature was successfully executed, there should now be light curves and power spectra 
 for three KIC stars in the input data directory. 
@@ -175,7 +175,7 @@ the :term:`--nthreads<--nt, --nthread, --nthreads>` command:
 .. _example/advanced:
 
 **************
-Advanced Usage
+Advanced usage
 **************
 
 

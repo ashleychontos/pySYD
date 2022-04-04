@@ -14,4 +14,5 @@ share the software with you!
    :caption: Contents
 
    Command line <usage-cli-index>
-   Notebook tutorials <tutorials/index>
+   Notebook tutorials <usage-nb-index>
+   Other usage <usage-other-index>

@@ -7,8 +7,9 @@ intended as a command-line tool. Of course that means that it is best-suited for
 and have the best default options already all set up for us this way. 
 
 .. toctree::
+   :titlesonly:
    :caption: Contents
    
    usage-cli-help
    usage-cli-examples
-   usage-cli-glossary
+   CLI glossary <usage-cli-glossary>

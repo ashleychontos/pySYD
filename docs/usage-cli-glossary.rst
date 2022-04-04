@@ -1,5 +1,6 @@
-List of options
-###############
+******************
+List of CL options
+******************
 
 .. glossary::
 
