@@ -131,15 +131,16 @@ def plot_estimates(star, filename='numax_estimates.png', ask=False, highlight=Tr
     n += 1
     # ACF trials to determine numax
     for i in range(star.params['n_trials']):
+
         ax = plt.subplot(y, x, n+i)
         ax.plot(params[i]['x'], params[i]['y'], 'w-')
-        xran = max(params[i]['fitx'])-min(params[i]['fitx'])
         ymax = params[i]['maxy']
         ax.axvline(params[i]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
         ax.set_title(r'$\rm Collapsed \,\, ACF \,\, [trial \,\, %d]$' % (i+1))
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
         if params[i]['good_fit']:
+            xran = max(params[i]['fitx'])-min(params[i]['fitx'])
             ax.plot(params[i]['fitx'], params[i]['fity'], color='lime', linestyle='-', linewidth=1.5)
             if max(params[i]['fity']) > params[i]['maxy']:
                 ymax = max(params[i]['fity'])
@@ -157,7 +158,8 @@ def plot_estimates(star, filename='numax_estimates.png', ask=False, highlight=Tr
             ax.title.set_color('lime')
             ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18, color='lime')
         else:
-            ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
+            if params[i]['good_fit']:
+                ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
 
     plt.tight_layout()
     if star.params['save']:
@@ -440,7 +442,7 @@ def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
     fig = plt.figure("Background model comparison for %s"%star.name, figsize=d[n_panels]['size'])
 
     # Initial background guesses
-    ax1 = fig.add_subplot(x, y, n)
+    ax1 = fig.add_subplot(x, y, 1)
     ax1.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
     ax1.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['random_pow'][params['frequency'] < star.params['ps_mask'][0]], 'w-', zorder=1)
     ax1.plot(params['frequency'][params['frequency'] > star.params['ps_mask'][1]], params['random_pow'][params['frequency'] > star.params['ps_mask'][1]], 'w-', zorder=1)
