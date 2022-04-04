@@ -7,7 +7,8 @@ topic or tutorial by submitting a pull request!
 
 
 .. toctree::
-   :maxdepth: 1
+   :titlesonly:
+   :maxdepth: 2
    :caption: Content
    
    Single star <tutorials/singlestar.ipynb>

@@ -56,6 +56,6 @@ is too small!
 
 .. link-button:: install/quickstart
     :type: ref
-    :text: Skip the introductory stuff and get started right away!
+    :text: Click here to immediately get started!
     :classes: btn-outline-secondary btn-block
 

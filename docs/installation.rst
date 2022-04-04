@@ -4,7 +4,7 @@ Installation & setup
 
 .. link-button:: install/quickstart
     :type: ref
-    :text: Jump down to our quickstart version!
+    :text: Jump to quickstart
     :classes: btn-outline-secondary btn-block
 
 -----
@@ -17,6 +17,11 @@ There are three main ways you can install the software:
 #. :ref:`Install from the Python Package Index <installation/pip>`
 #. :ref:`Create an environment <installation/conda>`
 #. :ref:`Clone directly from GitHub <installation/git>`
+
+.. note::
+
+    **The recommended way to install this package is from PyPI via** `pip`, **since**
+    **it will automatically enforce the proper dependencies and versions**
 
 -----
 
@@ -39,11 +44,6 @@ running the following command:
 .. code-block::
 
     python setup.py install
-
-.. note::
-
-    **The recommended way to install this package is from PyPI via** `pip`, **since**
-    **it will automatically enforce the proper dependencies and versions**
 
 
 -----

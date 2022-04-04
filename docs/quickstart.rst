@@ -41,9 +41,9 @@ a couple of important tidbits.
 
 -----
 
-CRASHTEROSEISMOLOGY
+Crashteroseismology
 ###################
-:raw-html:`&rightarrow;` **crash course into asteroseismology**
+:raw-html:`&rightarrow;` **care for a crash course in asteroseismology?**
 
 We will go through two examples -- each demonstrating a different usage scenario. We will 
 start with the command-line example to break everything down and then put it all together 
@@ -57,7 +57,7 @@ will run from start to finish on its own.
 
 -----
 
-When running ``pySYD`` from command line, you will like use something similar to the following 
+When running ``pySYD`` from command line, you will likely use something similar to the following 
 statement: 
 
 .. code-block::
@@ -69,7 +69,7 @@ statement:
 Breaking down the arguments
 +++++++++++++++++++++++++++
 
-Now let's deconstruct the above statement!
+Now let's dissect this statement.
 
 ``pysyd``
    if you used `pip` install, the binary (or executable) should be available. In fact, the setup
@@ -117,9 +117,10 @@ see our special CLI :ref:`glossary <usage-cli-glossary>`.
 How it works
 ++++++++++++
 
-So in case you haven't already, execute the command. You will immediately notice that the printed
-output is actually quite long but not to worry though, as we will break it down by four main 
-sections (corresponding to the approximate pipeline workflow):
+If you've already ran the above command, you would've quickly noticed that the output is actually
+quite long (and if you didn't, you'll just have to take our word for it). Not to worry though, as
+we will break it down into four main sections, each of them corresponding to a primary step
+in the pipeline. ``pySYD`` roughly operates in the following steps:
  #. :ref:`Loads in parameters and data <stepone>`
  #. :ref:`Gets initial values <steptwo>`
  #. :ref:`Fits global parameters <stepthree>`
