@@ -2,6 +2,19 @@
 Main execution
 **************
 
+The software generally operates in four main steps:
+ #. :ref:`Loads in parameters and data <stepone>`
+ #. :ref:`Gets initial values <steptwo>`
+ #. :ref:`Fits global parameters <stepthree>`
+ #. :ref:`Estimates uncertainties <stepfour>`
+
+but also depends on how you run `pySYD`.
+
+-----
+
+Running as a script
+###################
+
 When running the software,  `pySYD` will look in the following paths:
 
 - `INFDIR` : '~/path/to/local/pysyd/directory/info'
@@ -11,6 +24,11 @@ When running the software,  `pySYD` will look in the following paths:
 which by default, is the absolute path of the current working directory (or wherever you
 ran setup from). We will eventually add an option to save the example data and files as
 package data (since it is easier to load in)
+
+**Important: when running** `pysyd` **as a script, there is one positional argument for the pipeline "mode".** 
+
+Importing as a module
+#####################
 
 -----
 
@@ -22,6 +40,8 @@ The software generally operates in four main steps:
  #. :ref:`Gets initial values <steptwo>`
  #. :ref:`Fits global parameters <stepthree>`
  #. :ref:`Estimates uncertainties <stepfour>`
+
+-----
 
 A ``pySYD`` pipeline ``Target`` class object has two main function calls:
 

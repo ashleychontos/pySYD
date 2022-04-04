@@ -55,7 +55,9 @@ of the frequency range with the oscillations, or :term:`numax` :math:`\rm \nu_{m
 that can save time and bypass some of the extra steps but we won't do that here so the software 
 will run from start to finish on its own.
 
------
+
+The command
+***********
 
 When running ``pySYD`` from command line, you will likely use something similar to the following 
 statement: 
@@ -63,11 +65,6 @@ statement:
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
-
-**Important: when running** `pysyd` **as a script, there is one positional argument for the pipeline "mode".** 
-
-Breaking down the arguments
-+++++++++++++++++++++++++++
 
 Now let's dissect this statement.
 
