@@ -46,16 +46,19 @@ h1 {
 
 
 h2 {
+  font-family: "Garamond", serif;
   color: #4d77cf; /* han blue */
   letter-spacing: -.02em;
 }
 
 h3 {
+  font-family: "Garamond", serif;
   color: #666666; /* dark gray */
 }
 
 h4 {
-  color: #b8b6b2; /* light gray */
+  font-family: "Garamond", serif;
+  color: #673d82; /* light gray */
 }
 
 /* Override some aspects of the pydata-sphinx-theme: taken from Pandas */
