@@ -133,6 +133,7 @@ def plot_estimates(star, filename='numax_estimates.png', ask=False, highlight=Tr
     for i in range(star.params['n_trials']):
         ax = plt.subplot(y, x, n+i)
         ax.plot(params[i]['x'], params[i]['y'], 'w-')
+        xran = max(params[i]['fitx'])-min(params[i]['fitx'])
         ymax = params[i]['maxy']
         ax.axvline(params[i]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
         ax.set_title(r'$\rm Collapsed \,\, ACF \,\, [trial \,\, %d]$' % (i+1))
