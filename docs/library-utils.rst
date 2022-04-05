@@ -28,8 +28,13 @@ Models
 .. automodule:: pysyd.models
    :members:
 
+.. automodule:: pysyd.utils
+   :members:
+
 Utilities
 #########
 
-.. automodule:: pysyd.utils
-   :members:
+.. autoclass:: pysyd.utils.Parameters
+   :inherited-members:
+
+

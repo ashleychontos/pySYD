@@ -12,19 +12,17 @@ from pysyd.target import Target
 def check(args):
     """
     
-    This is experimental and meant to be helpful for developers or anyone
-    wanting to contribute to ``pySYD``. Ideally this will test new ``pySYD``
-    functions.
+    This is intended to be a way to check a target before running it by plotting the
+    times series data and/or power spectrum. This works in the most basic way  but has
+    not been tested otherwise
     
     Parameters
         args : argparse.Namespace
             the command line arguments
     
-    .. warning::
-        NOT CURRENTLY IMPLEMENTED
-        
-    .. note::
-        use the hacky, boolean flag ``-t`` or ``--test`` instead (for now)
+    .. important::
+        has not been extensively tested
+
     
     """
     if args.data:
@@ -46,8 +44,8 @@ def check(args):
 def load(args):
     """
     
-    Module to load in all the relevant information and dictionaries
-    that is required to run the pipeline on a given target.
+    Module to load in all relevant information and dictionaries
+    required to run the pipeline
     
     .. note::
         this does *not* load in a target or target data, this is purely
@@ -55,17 +53,18 @@ def load(args):
         (with the exception of ``pysyd.pipeline.setup``)
 
     Parameters
-        args : argparse.Namespace
-            the command line arguments
-        star : object, optional
-            pretty sure this is only used from jupyter notebook
-        verbose : bool, optional
-            again, this is only used if not using command line
-        command : str, optional
-            which of the 5 ``pysyd.pipeline`` modes to execute from
-            the notebook
+    ----------
+    args : argparse.Namespace
+        the command line arguments
+    star : object, optional
+        pretty sure this is only used from jupyter notebook
+    verbose : bool, optional
+        again, this is only used if not using command line
+    command : str, optional
+        which of the 5 ``pysyd.pipeline`` modes to execute from the notebook
 
     Returns
+    -------
         single : target.Target
             current data available for the provided target
 
@@ -168,10 +167,8 @@ def test(args):
             the command line arguments
     
     .. important::
-        NOT CURRENTLY IMPLEMENTED
+        has not been extensively tested
         
-    Note:
-        use the hacky, boolean flag ``-t`` or ``--test`` instead (for now)
     
     """
     # Load relevant pySYD parameters

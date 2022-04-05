@@ -14,9 +14,9 @@ Installation
 
 There are three main ways you can install the software:
 
-#. :ref:`Install from the Python Package Index <installation/pip>`
-#. :ref:`Create an environment <installation/conda>`
-#. :ref:`Clone directly from GitHub <installation/git>`
+#. :ref:`Install from the Python Package Index <install/pip>`
+#. :ref:`Create an environment <install/conda>`
+#. :ref:`Clone directly from GitHub <install/git>`
 
 .. note::
 
@@ -25,7 +25,7 @@ There are three main ways you can install the software:
 
 -----
 
-.. _installation/pip:
+.. _install/pip:
 
 Install from PyPI
 *****************
@@ -48,7 +48,7 @@ running the following command:
 
 -----
 
-.. _installation/conda:
+.. _install/conda:
 
 Create an environment
 *********************
@@ -70,7 +70,7 @@ Then activate the environment and install ``pySYD``:
 
 -----
 
-.. _installation/git:
+.. _install/git:
 
 Clone from GitHub
 *****************
@@ -93,7 +93,7 @@ cloned ``pySYD`` repo.
 
 -----
 
-.. _installation/dependencies:
+.. _install/dependencies:
 
 Dependencies
 ############
@@ -114,7 +114,7 @@ and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, us
 
 -----
 
-.. _installation/test:
+.. _install/test:
 
 Testing 
 #######
@@ -126,25 +126,27 @@ window, which should display the following output:
 
     $ pysyd --help
 
-    usage: pySYD [-h] [-version] {load,parallel,run,setup,test} ...
-    
-    pySYD: Automated Extraction of Global Asteroseismic Parameters
-    
+    usage: pySYD [-h] [--version] {check,load,parallel,run,setup,test} ...
+
+    pySYD: automated measurements of global asteroseismic parameters
+
     optional arguments:
       -h, --help            show this help message and exit
-      -version, --version   Print version number and exit.
-     
+      --version             Print version number and exit.
+
     pySYD modes:
-      {load,parallel,run,setup,test}
+      {check,load,parallel,run,setup,test}
+        check               Check data for a target or other relevant information
         load                Load in data for a given target
         parallel            Run pySYD in parallel
         run                 Run the main pySYD pipeline
         setup               Easy setup of relevant directories and files
         test                Test different utilities (currently under development)
 
+
 -----
 
-.. _installation/setup:
+.. _install/setup:
 
 Setup
 #####
@@ -184,10 +186,10 @@ Now all you need to do is change into that directory, run the following command 
 
 .. code-block::
 
-    pysyd setup --verbose
+    pysyd setup
 
-Now you might have noticed that for this last point, we used the optional 
-:term:`--verbose<-v, --verbose>` command, which will print:
+In setup 'mode', the :term:`verbose<-v, --verbose>` output is `True` by default -- this way you can see what is
+being downloaded and where it can be found:
 
 .. code-block::
     
@@ -222,8 +224,8 @@ Now you might have noticed that for this last point, we used the optional
       - example data saved
       - results will be saved to /Users/ashleychontos/Desktop/pysyd/results
     
-As shown in the verbose output, example data and other relevant files were downloaded
-from the `public GitHub repo <https://github.com/ashleychontos/pySYD>`_. 
+As shown above, example data and other relevant files were downloaded from the 
+`public GitHub repo <https://github.com/ashleychontos/pySYD>`_. 
 
 .. TODO:: add an option to download example data/files as a package in the root directory.
 
