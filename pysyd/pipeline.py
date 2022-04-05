@@ -52,34 +52,23 @@ def load(args):
         information that is required to run any ``pySYD`` mode successfully
         (with the exception of ``pysyd.pipeline.setup``)
 
-    Parameters
-    ----------
+    **Parameters**
+        args : argparse.Namespace
+            the command line arguments
+        star : object, optional
+            pretty sure this is only used from jupyter notebook
+        verbose : bool, optional
+            again, this is only used if not using command line
+        command : str, optional
+            which of the 5 ``pysyd.pipeline`` modes to execute from the notebook
 
-    args : argparse.Namespace
-        the command line arguments
-    star : object, optional
-        pretty sure this is only used from jupyter notebook
-    verbose : bool, optional
-        again, this is only used if not using command line
-    command : str, optional
-        which of the 5 ``pysyd.pipeline`` modes to execute from the notebook
-
-    Returns
-    -------
-
+    **Returns**
         single : target.Target
             current data available for the provided target
 
-    Yields
-    ------
-
-    single : target.Target
-        current data available for the provided target
-
-    **YAYAYA**
-
-    single : target.Target
-        current data available for the provided target
+    **Deprecated**
+        single : target.Target
+            current data available for the provided target
 
     """
     # Load relevant pySYD parameters
