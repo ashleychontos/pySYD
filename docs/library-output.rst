@@ -2,45 +2,122 @@
 Pipeline results
 ****************
 
-As we've said many times before, the software is optimized for running an ensemble of stars. 
-Therefore, the utility function ``pysyd.utils.scrape_output`` will automatically concatenate the 
-results for each of the main modules into a single csv in the parent results directory so that
-it's easy to find and compare.
+Although saving things are optional, we will assume you are running the software to learn more
+about the star -- which can only be done by saving and interpreting the results. So what do
+you do with all this information?
 
-Introduction
-############
+Since we have already shown many examples for different stellar types, we will not include 
+any additional examples on this page but instead, list and describe each of the output files. 
+We refer the reader to this page or that page for more examples.
 
-Although it is optional, subdirectories are automatically created for each star that is processed.
-A single star will yield one summary figure (png) and one data product (csv) for each of the two
-main modules, i.e. the estimation and derivation of parameters. 
-
-Additionally, the background-corrected power spectrum is saved as a basic text file for later use.
- for a total of 5 output files. If the monte-carlo sampling is used to calculate 
-uncertainties, an additional figure will plot the posterior distributions for the estimated 
-parameters. An optional feature (i.e. ``--samples``) is available to save the samples if desired. 
-See :ref:`examples` for a guide on what the output plots are showing.
-
-Imports
-#######
-
-Usage
-#####
-
-Examples
-########
+-----
 
 Output
 ######
 
-While this is not yet implemented, our goal is to have a config file that will print the 
-verbose output to a file so that everything is reproducible. This will include which modules
-were ran, if any random seed was used and what the results were.
+Subdirectories are automatically created for each star that is processed. Based on the way
+you use ``pySYD``, there are a number of different outputs which are saved by default. Here
+we will list them and describe them all.
+
+.. todo::
+
+    While this is not yet implemented, our goal is to have a config file that will print the 
+    verbose output to a file so that everything is reproducible. This will include which modules
+    were ran, if any random seed was used and what the results were.
 
 Printed
 *******
 
 Files
-*****
+#####
+
+Listed are the extensions to all possible output files from the software: 
+ #. starname_PS.txt
+ #. starname_bg_corr.txt
+ #. estimates.csv
+ #. global.csv
+ #. samples.csv
+
+and we describe each in more detail, including the likely scenarios they arise from.
+
+Text files
+**********
+
+1. `starname_PS.txt`
+++++++++++++++++++++
+**(special cases)**
+
+This file is created in the case where *only* the time series data was provided for a target and
+``pySYD`` computed a power spectrum. This optional, extra step is important to make sure that
+the power spectrum the software analyzes is both normalized correctly and has arrays with
+the proper units -- this *ensures* accurate and reliable results. 
+
+**Note:** unlike every other output file, this is instead saved to the data (or input directory)
+so that the software can find it in later runs, which will save some time down the road. Of course
+you can always copy and paste it to the specific star's result directory if you'd like.
+
+.. important::
+
+    For the saved power spectrum, the frequency array has units of :math:`\rm \mu Hz` and the
+    power array is power density, which has units of :math:`\rm ppm^{2} \, \mu Hz^{-1}`. We 
+    normalize the power spectrum according to Parseval's Theorem, which loosely means that the 
+    fourier transform is unitary. This last bit is incredibly important for two main reasons,
+    but both that tie to the noise properties in the power spectrum: 1) different instruments
+    (e.g., *Kepler*, TESS) have different systematics and hence, noise properties, and 2) the 
+    amplitude of the noise becomes smaller as your time series gets longer. Therefore when we 
+    normalize the power spectrum, we can make direct comparisons between power spectra of not
+    only different stars, but from different instruments as well!
+
+
+2. `starname_bg_corr.txt`
++++++++++++++++++++++++++
+**(all cases)**
+
+After the best-fit background model is selected and saved, the model is generated and then
+subtracted from the power spectrum to remove all noise components present in a power spectrum.
+Therefore, there should be little to no residual slope left in the power spectrum after this
+step. This is saved as a basic text file in the star's output directory, where the first column 
+is frequency (in :math:`\rm \mu Hz`) and the second column is power density, with units of 
+:math:`\rm ppm^{2} \, \mu Hz^{-1}` (i.e. this file has the same units as the power spectrum).
+
+In fact to take a step back, it might be helpful to understand the application and importance of the 
+background-corrected power spectrum (:term:`BCPS`). The BCPS is used in subsequent steps such as
+computing global parameters (:math:`\rm \nu_{max}` and :math:`\Delta\nu`) and for constructing
+the :term:`echelle diagram`. Therefore, we thought it might be useful to have a copy of this!
+
+CSV files
+*********
+
+3. `estimates.csv`
+++++++++++++++++++
+**(most cases)**
+
+By default, a module will run to estimate an initial value for the frequency corresponding to 
+maximum power, or :math:`\rm \nu_{max}`. The module selects the trial with the highest 
+signal-to-noise (SNR) and saves the comma-separated values for three basic variables
+associated with the selected trial: :term:`numax`, :term:`dnu`, and the SNR. 
+
+The file is saved to the star's output directory, where both numax and dnu have frequency
+units in :math:`\rm \mu Hz` and the SNR is unitless. Remember, these are just estimates
+though and adapted results should come from the other csv file called `global.csv`.
+
+This module can be bypassed a few different ways, primarily by directly providing the estimate 
+yourself. In the cases where this estimating routine is skipped, this file will not be saved.
+
+**Note:** The numax estimate is *important* for the main fitting routine. 
+
+4. `global.csv`
++++++++++++++++
+**(all cases)**
+
+5. `samples.csv`
+++++++++++++++++
+**(special cases)**
+
+If the monte-carlo sampling is used to calculate 
+uncertainties, an additional figure will plot the posterior distributions for the estimated 
+parameters. An optional feature (i.e. ``--samples``) is available to save the samples if desired. 
+See :ref:`examples` for a guide on what the output plots are showing.
 
 Required
 ++++++++
@@ -51,7 +128,11 @@ Optional
 Figures
 #######
 
-The are three main figures 
+The are primariliy three figures which are automatically created and saved for a single star 
+that is processed. The extensions for the three files are:
+- estimates.png
+- global.png
+- samples.png
 
 Figure descriptions
 *******************
@@ -86,6 +167,13 @@ Parameter posteriors
 
 Each panel shows the samples of parameter estimates from Monte-Carlo simulations. Reported uncertainties on each parameter are calculated by taking the robust standard deviation of each distribution.
 
+Takeaway
+########
+
+As we've said many times before, the software is optimized for running an ensemble of stars. 
+Therefore, the utility function ``pysyd.utils.scrape_output`` will automatically concatenate the 
+results for each of the main modules into a single csv in the parent results directory so that
+it's easy to find and compare.
 
 API
 ###

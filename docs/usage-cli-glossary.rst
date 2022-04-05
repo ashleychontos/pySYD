@@ -6,7 +6,6 @@ List of CL options
 
     ``-a, --ask``
         the option to select which trial (or estimate) of numax to use from the first module
-        **TODO: this is not yet operational**
          * dest = ``args.ask``
          * type = `bool`
          * default = `False`
@@ -126,9 +125,9 @@ List of CL options
          * **see also:** :term:`--star<--star, --stars>`, :term:`--stars<--star, --stars>`
 
     ``-g, --globe, --global``
-        do not estimate the global asteroseismic parameter numax and dnu (although
-        I'm not sure why you would want to do that because that's exactly what this
-        software is intended for)
+        do not estimate the global asteroseismic parameter numax and dnu. **This is helpful for the
+        application to cool dwarfs, where detecting solar-like oscillations is quite difficult
+        but you'd still like to characterize the granulation components.**
          * dest = ``args.globe``
          * type = `bool`
          * default = `True`

@@ -60,8 +60,6 @@ results (i.e. files, figures, etc.).
 The command
 ***********
 
-Well, first we need to run the command before any of this will happen. 
-
 When running ``pySYD`` from command line, you will likely use something similar to the 
 following statement: 
 
@@ -69,7 +67,7 @@ following statement:
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-Now let's dissect this statement.
+Now let's deconstruct this statement.
 
 ``pysyd``
    if you used `pip` install, the binary (or executable) should be available. In fact, the setup
