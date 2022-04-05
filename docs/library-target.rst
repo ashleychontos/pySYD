@@ -1,6 +1,6 @@
-*******
-Targets
-*******
+**************
+Target objects
+**************
 
 The heart & soul of the ``pySYD`` package
 
