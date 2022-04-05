@@ -54,6 +54,7 @@ def load(args):
 
     Parameters
     ----------
+
     args : argparse.Namespace
         the command line arguments
     star : object, optional
@@ -65,8 +66,20 @@ def load(args):
 
     Returns
     -------
+
         single : target.Target
             current data available for the provided target
+
+    Yields
+    ------
+
+    single : target.Target
+        current data available for the provided target
+
+    **YAYAYA**
+
+    single : target.Target
+        current data available for the provided target
 
     """
     # Load relevant pySYD parameters
