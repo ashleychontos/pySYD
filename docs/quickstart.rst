@@ -34,31 +34,19 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
 Crashteroseismology
 ###################
-:raw-html:`&rightarrow;` **care for a crash course in asteroseismology?**
+**crash course in asteroseismology**
 
 For purposes of this first example, we will assume that we do not know anything about the star or
-its properties. I say this because typically we can provide optional inputs (e.g., the center
-of the frequency range with the oscillations, or :term:`numax` :math:`\rm \nu_{max}`) 
-that can save time and bypass some of the extra steps but we won't do that here so that the 
-software can run from start to finish on its own.
-
-General workflow
-****************
-
-``pySYD`` roughly operates in the following steps:
- #. :ref:`Loads in parameters and data <stepone>`
- #. :ref:`Gets initial values <steptwo>`
- #. :ref:`Fits global parameters <stepthree>`
- #. :ref:`Estimates uncertainties <stepfour>`
-
-For each step, we will first show the relevant block of printed (or verbose) output, then
-describe what the software is actually doing and if applicable, conclude with the section-specific 
-results (i.e. files, figures, etc.).
+its properties so that the software runs from start to finish. In any typical circumstance,
+however,  we can provide optional inputs (e.g., the center of the frequency range with the 
+oscillations, or :term:`numax` :math:`\rm \nu_{max}`) that can bypass some additionally steps
+and save time. 
 
 -----
 
-The command
-***********
+
+Initialize script
+*****************
 
 When running ``pySYD`` from command line, you will likely use something similar to the 
 following statement: 
@@ -112,10 +100,19 @@ see our special CLI :ref:`glossary <usage-cli-glossary>`.
 
 -----
 
-The steps
-*********
+Typical workflow
+****************
 
-Of course first we need to get some data!
+The software operates in roughly the following steps:
+ #. :ref:`Load in parameters and data <stepone>`
+ #. :ref:`Get initial values <steptwo>`
+ #. :ref:`Fit global parameters <stepthree>`
+ #. :ref:`Estimate uncertainties <stepfour>`
+
+For each step, we will first show the relevant block of printed (or :term:`verbose<-v, --verbose>`) output, then
+describe what the software is doing behind the scenes and if applicable, conclude with the section-specific 
+results (i.e. files, figures, etc.).
+
 
 .. _stepone:
 
@@ -375,22 +372,54 @@ in the output. this is because the model preferred for this to be fixed
 Running your favorite star
 ##########################
 
-A majority of the heavy lifting is done in the ``pySYD.target.Target`` class. Each star
-that is processed is initialized as a new target object, which in this case, we'll call star.
+The two primary pieces to the `pySYD` puzzle are the 1) parameters and 2) target(s). Initially
+all defaults were set and saved from the command line parser but we recently extended the 
+software capabilities -- which means that it is more user-friendly now! 
 
-    >>> from pysyd import utils
-    >>> from pysyd.target import Target
+Analogous to the command-line arguments, we have a container class :mod:`pysyd.utils.Parameters`
+that can easily be loaded in and modified to the user's needs. Initialization of a `pysyd.utils.Parameters` 
+class object also automatically inherits all attributes from the :mod:`pysyd.utils.Constants` class.
 
-hey
+There are two keyword arguments that the Parameter class object accepts -- `args` and `stars` --
+both which are `None` by default. This is convenient for this case, since we do not have any 
+parameter (i.e. argument) information *yet*. In fact, the :mod:`pysyd.utils.Parameters` 
+class was also initialized in the first example but immediately knew it was executed as a script 
+because `args` was *not* `None`.
 
+If we are going through these steps, there's probably a decent chance that we know what star we want
+to process. Therefore, we can at least provide the star name in this first step.
+
+    >>> from pysyd import utils 
     >>> name = '1435467'
     >>> args = utils.Parameters(stars=[name])
-    >>> star = Target(name, args)
-    >>> if star.ok:
-    ...    star.estimate_parameters()
-    ...    plots.set_plot_params()
-    ...    plots.plot_estimates()
+    >>> args
+    <pysyd Parameters>
 
+As shown in the third line, we put the star list in list form **even though we are only processing 
+a single star**. This is because both ``pySYD`` `run` and `parallel` modes iterate through stars, so 
+we need something that is iterable. Now that we have our parameters, we need a star. Well *technically*
+we already have our star but we need to load in the data by creating an instance of the 
+:mod:`pysyd.target.Target`.
+
+    >>> from pysyd.target import Target
+    >>> star = Target(name, args)
+    >>> star
+    <Star Object 1435467>
+
+Typically this step will flag anything that doesn't seem right in the event that data is missing or
+the path is not correct *but just in case*, there is also an `ok` attribute -- which literally means 
+the star is o-k to go! `Target.ok` is simply a boolean flag but let's check it for good practice:
+
+    >>> star.ok
+    True
+
+Oh yeah, one last thing before we process the star. As we said in the first example, the displaying
+of output and figures is `False` by default -- so let's change that again.
+
+    >>> star.params['verbose']=True
+    >>> star.params['show']=True
+
+Ok, now that we have our desired settings and target, we can go ahead and process the star!
 
 .. plot::
     :align: center

@@ -256,7 +256,7 @@ def main():
                             metavar='str', 
                             dest='metric', 
                             help="Which model metric to use, choices=['bic','aic']",
-                            default='aic', 
+                            default='bic', 
                             type=str,
     )
     background.add_argument('--rms', '--nrms', 

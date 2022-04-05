@@ -104,8 +104,9 @@ class Target:
         else:
             print('')
         plots.make_plots(self)
-        if self.params['cli']:
+        if self.params['cli'] or (not self.params['cli'] and not self.params['notebook']):
             input(' - press RETURN to exit')
+            print('')
 
 
 #########################################################################################
@@ -1416,15 +1417,22 @@ class Target:
         """
         guesses = [0.0, np.absolute(max(self.region_pow)), self.params['obs_numax'], (max(self.region_freq)-min(self.region_freq))/np.sqrt(8.0*np.log(2.0))]
         bb = ([-np.inf,0.0,0.01,0.01],[np.inf,np.inf,np.inf,np.inf])
-        gauss, _ = curve_fit(models.gaussian, self.region_freq, self.region_pow, p0=guesses, bounds=bb, maxfev=5000)
-        # Save values
-        self.params['results']['parameters']['numax_gauss'].append(gauss[2])
-        self.params['results']['parameters']['A_gauss'].append(gauss[1])
-        self.params['results']['parameters']['FWHM'].append(gauss[3])
-        if self.i == 0:
-            # Create an array with finer resolution for plotting
-            new_freq = np.linspace(min(self.region_freq), max(self.region_freq), 10000)
-            self.params['plotting']['parameters'].update({'new_freq':new_freq, 'numax_fit':models.gaussian(new_freq, *gauss)})
+        try:
+            gauss, _ = curve_fit(models.gaussian, self.region_freq, self.region_pow, p0=guesses, bounds=bb, maxfev=5000)
+        except RuntimeError as _:
+            if self.i == 0:
+                raise ProcessingError("Gaussian fit for numax failed to converge.\n\nPlease check your power spectrum and try again.")
+            else:
+                pass
+        else:
+            # Save values
+            self.params['results']['parameters']['numax_gauss'].append(gauss[2])
+            self.params['results']['parameters']['A_gauss'].append(gauss[1])
+            self.params['results']['parameters']['FWHM'].append(gauss[3])
+            if self.i == 0:
+                # Create an array with finer resolution for plotting
+                new_freq = np.linspace(min(self.region_freq), max(self.region_freq), 10000)
+                self.params['plotting']['parameters'].update({'new_freq':new_freq, 'numax_fit':models.gaussian(new_freq, *gauss)})
 
 
     def compute_acf(self, fft=True, smooth_ps=2.5, ps_mask=None,):
@@ -1561,13 +1569,17 @@ class Target:
         self.params['acf_guesses'] = [np.mean(self.zoom_auto), self.params['best_auto'], self.params['best_lag'], self.params['best_lag']*0.01*2.]
         self.params['acf_bb'] = ([-np.inf,0.,min(self.zoom_lag),10**-2.],[np.inf,np.inf,max(self.zoom_lag),2.*(max(self.zoom_lag)-min(self.zoom_lag))]) 
         # Fit a Gaussian function to the selected peak in the ACF to get dnu
-        gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'])
-        self.params['results']['parameters']['dnu'].append(gauss[2])
-        self.params['obs_dnu'] = gauss[2]
-        # Save for plotting
-        self.params['plotting']['parameters'].update({'obs_dnu':gauss[2], 
-          'new_lag':np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), 
-          'dnu_fit':models.gaussian(np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), *gauss),})
+        try:
+            gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'], maxfev=1000)
+        except RuntimeError as _:
+            raise ProcessingError("Gaussian fit for dnu failed to converge.\n\nPlease check your power spectrum and try again.")
+        else:
+            self.params['results']['parameters']['dnu'].append(gauss[2])
+            self.params['obs_dnu'] = gauss[2]
+            # Save for plotting
+            self.params['plotting']['parameters'].update({'obs_dnu':gauss[2], 
+              'new_lag':np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), 
+              'dnu_fit':models.gaussian(np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), *gauss),})
 
 
     def get_ridges(self, clip_value=3.0,):
@@ -1688,9 +1700,13 @@ class Target:
         self.zoom_lag = self.lag[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
         self.zoom_auto = self.auto[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
         # fit a Gaussian function to the selected peak in the ACF
-        gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'])
-        # the center of that Gaussian is our estimate for Dnu
-        self.params['results']['parameters']['dnu'].append(gauss[2]) 
+        try:
+            gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'], maxfev=1000)
+        except RuntimeError:
+            pass
+        else:
+            # the center of that Gaussian is our estimate for Dnu
+            self.params['results']['parameters']['dnu'].append(gauss[2]) 
 
 
 class InputError(Exception):
@@ -1699,7 +1715,7 @@ class InputError(Exception):
     __str__ = __repr__
 
 
-class InputError(Exception):
+class ProcessingError(Exception):
     def __repr__(self):
         return "ProcessingError"
     __str__ = __repr__

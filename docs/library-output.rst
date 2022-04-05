@@ -3,8 +3,7 @@ Pipeline results
 ****************
 
 Although saving things are optional, we will assume you are running the software to learn more
-about the star -- which can only be done by saving and interpreting the results. So what do
-you do with all this information?
+about the star -- which can only be done by saving and interpreting the results. 
 
 Since we have already shown many examples for different stellar types, we will not include 
 any additional examples on this page but instead, list and describe each of the output files. 
@@ -17,7 +16,10 @@ Output
 
 Subdirectories are automatically created for each star that is processed. Based on the way
 you use ``pySYD``, there are a number of different outputs which are saved by default. Here
-we will list them and describe them all.
+we will list and describe them all.
+
+We will reserve this page solely for saved outputs and hence, please see our crashteroseismology
+example if you'd like more information about the printed `verbose` output
 
 .. todo::
 
@@ -25,8 +27,7 @@ we will list them and describe them all.
     verbose output to a file so that everything is reproducible. This will include which modules
     were ran, if any random seed was used and what the results were.
 
-Printed
-*******
+-----
 
 Files
 #####
@@ -42,6 +43,8 @@ and we describe each in more detail, including the likely scenarios they arise f
 
 Text files
 **********
+
+.. _output-txt-ps:
 
 1. `starname_PS.txt`
 ++++++++++++++++++++
@@ -68,6 +71,7 @@ you can always copy and paste it to the specific star's result directory if you'
     normalize the power spectrum, we can make direct comparisons between power spectra of not
     only different stars, but from different instruments as well!
 
+.. _output-txt-bgcorr:
 
 2. `starname_bg_corr.txt`
 +++++++++++++++++++++++++
@@ -88,6 +92,8 @@ the :term:`echelle diagram`. Therefore, we thought it might be useful to have a 
 CSV files
 *********
 
+.. _output-csv-estimates:
+
 3. `estimates.csv`
 ++++++++++++++++++
 **(most cases)**
@@ -106,9 +112,13 @@ yourself. In the cases where this estimating routine is skipped, this file will 
 
 **Note:** The numax estimate is *important* for the main fitting routine. 
 
+.. _output-csv-global:
+
 4. `global.csv`
 +++++++++++++++
 **(all cases)**
+
+.. _output-csv-samples:
 
 5. `samples.csv`
 ++++++++++++++++
@@ -119,26 +129,23 @@ uncertainties, an additional figure will plot the posterior distributions for th
 parameters. An optional feature (i.e. ``--samples``) is available to save the samples if desired. 
 See :ref:`examples` for a guide on what the output plots are showing.
 
-Required
-++++++++
-
-Optional
-++++++++
+-----
 
 Figures
 #######
 
-The are primariliy three figures which are automatically created and saved for a single star 
-that is processed. The extensions for the three files are:
-- estimates.png
-- global.png
-- samples.png
+Listed are the extensions to all possible output figures from the software: 
+ #. numax_estimates.png
+ #. global_fit.png
+ #. samples.png
 
-Figure descriptions
-*******************
+and we describe each in more detail, including the likely scenarios they arise from.
 
-Initial estimates
-+++++++++++++++++
+PNG files
+*********
+
+1. `numax_estimates.png`
+++++++++++++++++++++++++
 
 | **Top left:** Original time series.  
 | **Top middle:** Original power spectrum (white) and heavily smoothed power spectrum (green). The latter is used as an initial (crude) background fit to search for oscillations.  
@@ -148,8 +155,8 @@ Initial estimates
 | **Bottom right:** Same as bottom left but for the large step size (optimized for main-sequence stars).
 
 
-Global fit
-++++++++++
+2. `global_fit.png`
++++++++++++++++++++
 
 | **Top left:** Original time series. 
 | **Top middle:** Original power spectrum (white), lightly smoothed power spectrum (red), and binned power spectrum (green). Blue lines show initial guesses of the fit to the granulation background. The grey region is excluded from the background fit based on the numax estimate provided to the module.
@@ -162,8 +169,8 @@ Global fit
 | **Bottom right:** Echelle diagram collapsed along the frequency direction.
 
 
-Parameter posteriors
-++++++++++++++++++++
+3. `samples.png`
+++++++++++++++++
 
 Each panel shows the samples of parameter estimates from Monte-Carlo simulations. Reported uncertainties on each parameter are calculated by taking the robust standard deviation of each distribution.
 
@@ -185,9 +192,8 @@ API
 What next?
 **********
 
-You may be asking yourself, well what do I do with this information? That's a perfectly reasonable
-question to be asking!
-
+You may be asking yourself, well what do I do with this information? (and that is a totally
+valid question to be asking)
 
 
 

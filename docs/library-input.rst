@@ -113,14 +113,15 @@ basic `print` statement.
     >>> from pysyd import utils
     >>> columns = utils.get_dict('columns')
     >>> print(columns['all'])
-    ['stars', 'rs', 'rs_err', 'teff', 'teff_err', 'logg', 'logg_err', 'show', 'save', 'verbose', 
-     'overwrite', 'stitch', 'gap', 'kep_corr', 'oversampling_factor', 'excess', 'numax', 'dnu', 
-     'binning', 'bin_mode', 'lower_ex', 'upper_ex', 'step', 'smooth_width', 'n_trials', 'ask', 
-     'background', 'basis', 'box_filter', 'fix_wn', 'n_laws', 'ind_width', 'lower_bg', 'upper_bg', 
-     'metric', 'n_rms', 'globe', 'ex_width', 'lower_ps', 'upper_ps', 'numax', 'sm_par', 'dnu', 
-     'method', 'n_peaks', 'smooth_ps', 'threshold', 'hey', 'cmap', 'clip_value', 'interp_ech', 
-     'notching', 'lower_ech', 'upper_ech', 'seed', 'nox', 'noy', 'smooth_ech', 'mc_iter', 'samples', 
-     'n_threads', 'inpdir', 'infdir', 'outdir', 'todo', 'info', 'functions']
+    ['stars', 'rs', 'rs_err', 'teff', 'teff_err', 'logg', 'logg_err', 'show', 'save',  
+     'verbose', 'overwrite', 'stitch', 'gap', 'kep_corr', 'oversampling_factor', 
+     'excess', 'numax', 'dnu', 'binning', 'bin_mode', 'lower_ex', 'upper_ex', 'step', 
+     'smooth_width', 'n_trials', 'ask', 'background', 'basis', 'box_filter', 'fix_wn', 
+     'n_laws', 'ind_width', 'lower_bg', 'upper_bg', 'metric', 'n_rms', 'globe', 'ex_width',  
+     'lower_ps', 'upper_ps', 'numax', 'sm_par', 'dnu', 'method', 'n_peaks', 'smooth_ps',  
+     'threshold', 'hey', 'cmap', 'clip_value', 'interp_ech', 'notching', 'lower_ech', 
+     'upper_ech', 'seed', 'nox', 'noy', 'smooth_ech', 'mc_iter', 'samples', 'n_threads',
+     'inpdir', 'infdir', 'outdir', 'todo', 'info', 'functions']
     >>> len(columns['all'])
     67
 
