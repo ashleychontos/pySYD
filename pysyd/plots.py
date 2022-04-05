@@ -545,6 +545,7 @@ def check_data(star, args, show=True):
     if star.params['show']:
         plt.show(block=False)
         input(' - press any key to exit')
+        print('\n\n')
     plt.close()
 
 

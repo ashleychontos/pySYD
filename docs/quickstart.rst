@@ -15,37 +15,20 @@ use the software. Since the software was initially intended to be a hands-off co
 the first example will run ``pySYD`` as a script to introduce both the software *and* science 
 in a crash course to asteroseismology -- what we like to refer to as crashteroseismology.
 We'll break everything down to be sure everyone is on the same page and then once we are all
-expert asteroseismologists, we will reconstruct it in a condensed form by using ``pySYD``
+expert asteroseismologists, we will reconstruct it in a condensed form by importing ``pySYD``
 as a module.
 
 If you have *any* questions, check out our :ref:`user guide <usage/index>` for more 
 information. If this still does not address your question or problem, please do not hesitate
 to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
------
-
-TL;DR
-#####
-
-If you (understandably) do not have time to go through the entire user guide, we have summarized 
-a couple important tidbits that we think you should know before using the software.
-
- - The first is that the userbase for the initial `pySYD` release was intended for non-expert 
-   astronomers. **With this in mind, the software was originally developed to be as hands-off as
-   possible -- as a *strictly* command-line end-to-end tool.** However since then, the software has 
-   become more modular in recent updates, thus enabling broader capabilities that can be used across 
-   other applications (e.g., Jupyter notebooks). 
- - In addition to being a command-line tool, the software is optimized for running many stars. 
-   This means that many of the options that one would typically use or prefer, such as printing 
-   output information and displaying figures, is `False` by default. For our purposes 
-   here though, we will invoke them to better understand how the software operates. 
-
 .. warning::
 
     It is **critical** that the input data are in the proper units in order for ``pySYD`` 
     to work properly and provide reliable results. If you are unsure about any of the units, 
     we recommend that you provide the light curve (in days) and then let us compute the power
-    spectrum for you! 
+    spectrum for you! For more information about formatting and input data, please visit
+    :ref:`this page <library-input>`.
 
 -----
 

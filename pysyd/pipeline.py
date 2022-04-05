@@ -34,7 +34,7 @@ def check(args):
         else:
             assert len(args.stars) == 1, "No more than one star can be checked at a time."
         if args.verbose:
-            print('Checking data for target %s:'%args.stars[0])
+            print('\n\nChecking data for target %s:'%args.stars[0])
     display, verbose = args.plot, args.verbose
     # Load in data for a given star
     new_args = utils.Parameters(args)
