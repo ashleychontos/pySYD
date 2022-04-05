@@ -28,7 +28,7 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
     to work properly and provide reliable results. If you are unsure about any of the units, 
     we recommend that you provide the light curve (in days) and then let us compute the power
     spectrum for you! For more information about formatting and input data, please visit
-    :ref:`this page <library-input>`.
+    :ref:`this page <library/input>`.
 
 -----
 
@@ -54,6 +54,8 @@ Initialize script
 When running ``pySYD`` from command line, you will likely use something similar to the 
 following statement: 
 
+.. _quickstart/script/command:
+
 .. code-block::
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
@@ -70,7 +72,7 @@ Now let's deconstruct this statement.
    the ``pySYD`` pipeline is in run mode -- which, just as it sounds, will process stars in the order 
    they were provided. This is saved to the argument ``NameSpace`` as the ``mode`` which will run
    the pipeline by calling :mod:`pysyd.pipeline.run`. There are currently five available 
-   modes, all which are described in more detail :ref:`here <library-pipeline>`
+   modes, all which are described in more detail :ref:`here <library/pipeline>`
 
 ``--star 1435467``
    here we are running a single star, KIC 1435467. You can also provide multiple targets,
@@ -83,7 +85,7 @@ Now let's deconstruct this statement.
    adapting Linux-like features, we reserved the single hash options for booleans which
    can all be grouped together, as shown above. The ``-d`` and ``-v`` are short for display and verbose, 
    respectively, and show the figures and verbose output. For a full list of options available, please 
-   see our :ref:`command-line glossary <usage-cli-glossary>`. There are dozens of options to make your 
+   see our :ref:`command-line glossary <usage/cli/glossary>`. There are dozens of options to make your 
    experience as customized as you'd like!
 
 ``--ux 5000``
@@ -91,7 +93,7 @@ Now let's deconstruct this statement.
    due to solar-like oscillations. In this case, there are high frequency artefacts that we would 
    like to ignore. *We actually made a special notebook tutorial specifically on how to address
    and fix this problem.* If you'd like to learn more about this or are having a similar issue, 
-   please visit :ref:`this page <tutorials/numaxhacks.ipynb>`.
+   please visit :ref:`this page <usage/nb/numaxhacks.ipynb>`.
 
 ``--mc 200``
    last but certainly not least - the ``mc`` (for Monte Carlo-like) option sets the number 
@@ -99,25 +101,27 @@ Now let's deconstruct this statement.
    which allows us to bootstrap uncertainties on our derived properties. 
 
 **Note:** For a *complete* list of options which are currently available via command-line interface (CLI), 
-see our special CLI :ref:`glossary <usage-cli-glossary>`.
+see our special CLI :ref:`glossary <usage/cli/glossary>`.
 
 -----
+
+.. _quickstart/script/steps:
 
 Typical workflow
 ****************
 
 The software operates in roughly the following steps:
- #. :ref:`Load in parameters and data <stepone>`
- #. :ref:`Get initial values <steptwo>`
- #. :ref:`Fit global parameters <stepthree>`
- #. :ref:`Estimate uncertainties <stepfour>`
+ #. :ref:`Load in parameters and data <quickstart/script/steps/one>`
+ #. :ref:`Get initial values <quickstart/script/steps/two>`
+ #. :ref:`Fit global parameters <quickstart/script/steps/three>`
+ #. :ref:`Estimate uncertainties <quickstart/script/steps/four>`
 
 For each step, we will first show the relevant block of printed (or :term:`verbose<-v, --verbose>`) output, then
 describe what the software is doing behind the scenes and if applicable, conclude with the section-specific 
 results (i.e. files, figures, etc.).
 
 
-.. _stepone:
+.. _quickstart/script/steps/one:
 
 1. Load in parameters and data
 ++++++++++++++++++++++++++++++
@@ -152,7 +156,7 @@ moving on.
 
 Since none of this happened, we can move on to the next step.
 
-.. _steptwo:
+.. _quickstart/script/steps/two:
 
 2. Get initial values
 +++++++++++++++++++++
@@ -203,7 +207,7 @@ Finally, it saves this best estimate in a basic csv file:
    1435467, 1438.27561061044, 72.3140769912867, 12.3801364686659
 
 
-.. _stepthree:
+.. _quickstart/script/steps/three:
 
 3. Fit global parameters
 ++++++++++++++++++++++++
@@ -277,7 +281,7 @@ time scale and amplitude. In this case, the white noise was *not* a free paramet
 
 .. note::
 
-   To learn more about what each panel is showing, please visit :ref:`this page<library/output>`.
+   To learn more about what each panel is showing, please visit :ref:`this page <library/output/figures/png>`.
 
 If this was run in its default setting, with ``--mc`` = `1`, for a single iteration, the output
 parameters would look like that below. **We urge folks to run new stars for a single step first 
@@ -310,7 +314,7 @@ parameters would look like that below. **We urge folks to run new stars for a si
     the literature and we recommend that you do the same.**
 
 
-.. _stepfour:
+.. _quickstart/script/steps/four:
 
 4. Estimate uncertainties
 +++++++++++++++++++++++++

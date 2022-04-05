@@ -1,3 +1,5 @@
+.. _usage/other/index:
+
 ***********************
 Other usage & tutorials
 ***********************

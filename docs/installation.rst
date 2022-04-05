@@ -59,7 +59,7 @@ You can also use `conda` to create an environment. For this example, I'll call i
     
     conda create -n astero numpy scipy pandas astropy matplotlib tqdm
     
-See our complete list of dependencies (including versions) :ref:`below <installation-dependencies>`. 
+See our complete list of dependencies (including versions) :ref:`below <install/dependencies>`. 
 Then activate the environment and install ``pySYD``:
 
 .. code-block::

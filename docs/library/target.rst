@@ -1,3 +1,5 @@
+.. _library/target:
+
 **************
 Target objects
 **************
@@ -18,6 +20,9 @@ Usage
 
 Examples
 ########
+
+
+.. _library/target/api:
 
 ``pysyd.target`` API
 ####################

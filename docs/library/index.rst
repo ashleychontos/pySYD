@@ -1,5 +1,7 @@
 .. module:: pysyd
 
+.. _library/index:
+
 *****************
 ``pySYD`` library
 *****************
@@ -33,12 +35,12 @@ a couple important tidbits that we think you should know before using the softwa
    :maxdepth: 2
    :caption: User Guide
 
-   library-about
-   library-input
-   library-pipeline
-   library-target	      
-   library-utils
-   library-output
+   library/about
+   library/input
+   library/pipeline
+   library/target	      
+   library/utils
+   library/output
 
 -----
 

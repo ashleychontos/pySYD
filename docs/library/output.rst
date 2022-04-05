@@ -1,3 +1,5 @@
+.. _library/output:
+
 *******
 Results
 *******
@@ -10,6 +12,8 @@ any additional examples on this page but instead, list and describe each of the 
 We refer the reader to this page or that page for more examples.
 
 -----
+
+.. _library/output:
 
 Output
 ######
@@ -29,6 +33,8 @@ example if you'd like more information about the printed `verbose` output.
 
 -----
 
+.. _library/output/files:
+
 Files
 #####
 
@@ -41,10 +47,12 @@ Listed are the extensions to all possible output files from the software:
 
 and we describe each in more detail, including the likely scenarios they arise from.
 
+.. _library/output/files/text:
+
 Text files
 **********
 
-.. _output-txt-ps:
+.. _library/output/files/text/ps:
 
 1. `starname_PS.txt`
 ++++++++++++++++++++
@@ -71,7 +79,7 @@ you can always copy and paste it to the specific star's result directory if you'
     normalize the power spectrum, we can make direct comparisons between power spectra of not
     only different stars, but from different instruments as well!
 
-.. _output-txt-bgcorr:
+.. _library/output/files/text/bgcorrps:
 
 2. `starname_bg_corr.txt`
 +++++++++++++++++++++++++
@@ -89,10 +97,12 @@ background-corrected power spectrum (:term:`BCPS`). The BCPS is used in subseque
 computing global parameters (:math:`\rm \nu_{max}` and :math:`\Delta\nu`) and for constructing
 the :term:`echelle diagram`. Therefore, we thought it might be useful to have a copy of this!
 
+.. _library/output/files/csv:
+
 CSV files
 *********
 
-.. _output-csv-estimates:
+.. _library/output/files/csv/estimates:
 
 3. `estimates.csv`
 ++++++++++++++++++
@@ -112,13 +122,13 @@ yourself. In the cases where this estimating routine is skipped, this file will 
 
 **Note:** The numax estimate is *important* for the main fitting routine. 
 
-.. _output-csv-global:
+.. _library/output/files/csv/global:
 
 4. `global.csv`
 +++++++++++++++
 **(all cases)**
 
-.. _output-csv-samples:
+.. _library/output/files/csv/samples:
 
 5. `samples.csv`
 ++++++++++++++++
@@ -131,6 +141,8 @@ See :ref:`examples` for a guide on what the output plots are showing.
 
 -----
 
+.. _library/output/figures:
+
 Figures
 #######
 
@@ -141,8 +153,12 @@ Listed are the extensions to all possible output figures from the software:
 
 and we describe each in more detail, including the likely scenarios they arise from.
 
+.. _library/output/figures/png:
+
 PNG files
 *********
+
+.. _library/output/figures/png/estimates:
 
 1. `numax_estimates.png`
 ++++++++++++++++++++++++
@@ -154,6 +170,8 @@ PNG files
 | **Bottom middle:** Same as bottom left but for the medium step size (optimized for subgiant stars).  
 | **Bottom right:** Same as bottom left but for the large step size (optimized for main-sequence stars).
 
+
+.. _library/output/figures/png/global:
 
 2. `global_fit.png`
 +++++++++++++++++++
@@ -169,6 +187,8 @@ PNG files
 | **Bottom right:** Echelle diagram collapsed along the frequency direction.
 
 
+.. _library/output/figures/png/samples:
+
 3. `samples.png`
 ++++++++++++++++
 
@@ -181,6 +201,8 @@ As we've said many times before, the software is optimized for running an ensemb
 Therefore, the utility function ``pysyd.utils.scrape_output`` will automatically concatenate the 
 results for each of the main modules into a single csv in the parent results directory so that
 it's easy to find and compare.
+
+.. _library/output/api:
 
 API
 ###

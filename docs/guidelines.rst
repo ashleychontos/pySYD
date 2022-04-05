@@ -3,6 +3,8 @@
 
 .. |smiley| unicode:: U+263A
 
+.. _community:
+
 ************
 Contributing
 ************
@@ -13,6 +15,7 @@ Contributing
     :text: Jump to our community guidelines
     :classes: btn-outline-secondary btn-block
 
+.. _community/contributors:
 
 The ``pySYD`` team
 ##################
@@ -34,6 +37,7 @@ Contributors
     
     **~A very special shoutout to Dan~**
 
+.. _community/collaborators:
 
 Collaborators
 *************
@@ -46,7 +50,7 @@ thanks to our collaborators!
 
 -----
 
-.. _guidelines/index:
+.. _community/guidelines:
 
 Community guidelines
 ####################
@@ -65,7 +69,7 @@ If you would like to contribute, here are the guidelines we ask you to follow:
 
 -----
 
-.. _guidelines/question:
+.. _community/guidelines/question:
 
 Question or problem
 *******************
@@ -84,7 +88,7 @@ If this still does not work for you and you would like to chat with someone in r
 
 -----
 
-.. _guidelines/issue:
+.. _community/guidelines/issue:
 
 Issues & bugs
 *************
@@ -105,7 +109,7 @@ You can file new issues by filling out our `bug report <https://github.com/ashle
 
 -----
 
-.. _guidelines/feature:
+.. _community/guidelines/feature:
 
 New features
 ************
@@ -136,7 +140,7 @@ Please first consider what kind of change it is:
 
 -----
 
-.. _guidelines/code:
+.. _community/guidelines/code:
 
 Contributing code
 *****************
@@ -172,7 +176,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 -----
 
-.. _guidelines/testing:
+.. _community/guidelines/testing:
 
 Testing
 *******

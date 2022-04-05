@@ -1,5 +1,7 @@
+.. _library/pipeline:
+
 **************
-Main overview
+Pipeline modes
 **************
 
 The software generally operates in four main steps:
@@ -11,6 +13,8 @@ The software generally operates in four main steps:
 but also depends on how you run `pySYD`.
 
 -----
+
+.. _library/pipeline/script:
 
 Running as a script
 ###################
@@ -27,10 +31,14 @@ package data (since it is easier to load in)
 
 **Important: when running** `pysyd` **as a script, there is one positional argument for the pipeline "mode".** 
 
+.. _library/pipeline/module:
+
 Importing as a module
 #####################
 
 -----
+
+.. _library/pipeline/overview:
 
 Pipeline overview
 #################
@@ -93,6 +101,9 @@ functions compatible with `Python` notebooks as well. This is still a work in pr
 Imports
 #######
 
+
+.. _library/pipeline/modes:
+
 Pipeline modes
 ##############
 
@@ -120,6 +131,8 @@ There are currently four operational ``pySYD`` modes (and two under development)
 
 Examples
 ########
+
+.. _library/pipeline/api:
 
 ``pysyd.pipeline`` API
 ######################

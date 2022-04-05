@@ -2,7 +2,7 @@
 
    <br />
 
-.. _attribution/index:
+.. _attribution:
 
 ***********
 Attribution

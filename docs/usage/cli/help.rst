@@ -1,3 +1,5 @@
+.. _usage-cli-help:
+
 ***************
 CLI information
 ***************
@@ -45,19 +47,18 @@ commands up by relevant science/software groups to make it easier to digest.
 
 Jump to:
 ********
- - :ref:`high-level functions <cli/help/high>`
- - :ref:`data analyses <cli/help/data>`
- - :ref:`estimating numax <cli/help/est>`
- - :ref:`granulation background <cli/help/bg>`
- - :ref:`final numax value <cli/help/numax>`
- - :ref:`final dnu value <cli/help/dnu>`
- - :ref:`echelle diagram <cli/help/ech>`
- - :ref:`sampling <cli/help/mc>`
- - :ref:`parallel processing <cli/help/pp>`
+ - :ref:`high-level functions <usage-cli-help/high>`
+ - :ref:`data analyses <usage-cli-help/data>`
+ - :ref:`estimate initial values <usage-cli-help/est>`
+ - :ref:`background fit <usage-cli-help/bg>`
+ - :ref:`global fit <usage-cli-help/globe>`
+ - :ref:`echelle diagram <usage-cli-help/ed>`
+ - :ref:`estimate uncertainties <usage-cli-help/mc>`
+ - :ref:`parallel processing <usage-cli-help/pp>`
 
 -----
 
-.. _cli/help/high:
+.. _usage-cli-help/high:
 
 High-level functions
 ####################
@@ -73,7 +74,7 @@ used very sparingly.
 
 .. code-block::
 
-      -c, --cli             This option should not be adjusted for current users
+      -c, --cli             This option should not be adjusted by anyone
       --file path, --list path, --todo path
                             List of stars to process
       --in path, --input path, --inpdir path
@@ -92,7 +93,7 @@ used very sparingly.
 
 -----
 
-.. _cli/help/data:
+.. _usage-cli-help/data:
 
 Initial data analyses
 #####################
@@ -138,7 +139,7 @@ the data as well as which modules to run.
 
 -----
 
-.. _cli/help/est:
+.. _usage-cli-help/est:
 
 Estimating numax
 ################
@@ -171,7 +172,7 @@ to estimate numax if it is not known:
 
 -----
 
-.. _cli/help/bg:
+.. _usage-cli-help/bg:
 
 Background fit
 ##############
@@ -209,10 +210,10 @@ Below is a complete list of parameters relevant to the background-fitting routin
 
 -----
 
-.. _cli/help/numax:
+.. _usage-cli-help/globe:
 
-Deriving numax
-##############
+Global fit
+##########
 
 All of the following parameters are related to deriving numax, or the frequency
 corresponding to maximum power:
@@ -237,13 +238,6 @@ corresponding to maximum power:
 :term:`--lowerp<--lp, --lowerp>`, :term:`--numax`, :term:`--sm<--sm, --smpar>`, :term:`--smpar<--sm, --smpar>`, 
 :term:`--up<--up, --upperp>`, :term:`--upperp<--up, --upperp>`
 
------
-
-.. _cli/help/dnu:
-
-Deriving dnu
-############
-
 Below are all options related to the characteristic frequency spacing (dnu):
 
 .. code-block::
@@ -264,7 +258,7 @@ Below are all options related to the characteristic frequency spacing (dnu):
 
 -----
 
-.. _cli/help/ech:
+.. _usage-cli-help/ed:
 
 Echelle diagram
 ###############
@@ -306,7 +300,7 @@ All customizable options relevant for the echelle diagram output:
 
 -----
 
-.. _cli/help/mc:
+.. _usage-cli-help/mc:
 
 Sampling
 ########

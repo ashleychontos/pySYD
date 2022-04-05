@@ -1,4 +1,4 @@
-.. module:: pysyd
+.. _usage/index:
 
 *****************
 Usage & tutorials
@@ -13,6 +13,6 @@ share the software with you!
    :maxdepth: 3
    :caption: Contents
 
-   Command line <usage-cli-index>
-   Notebook tutorials <usage-nb-index>
-   Other usage <usage-other-index>
+   Command line <usage/cli/index>
+   Notebook tutorials <usage/nb/index>
+   Other usage <usage/other/index>

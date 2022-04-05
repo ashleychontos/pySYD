@@ -34,13 +34,13 @@ is too small!
 .. toctree::
    :titlesonly:
    :maxdepth: 2
-   :caption: Introduction
+   :caption: User Guide
    :hidden:
    
    installation
    Getting started <quickstart>
-   library-index
-   usage-index
+   library/index
+   usage/index
    Glossary <glossary>
 
 

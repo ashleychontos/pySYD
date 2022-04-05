@@ -1,3 +1,5 @@
+.. _usage/cli/index:
+
 ******************
 Command line usage
 ******************
@@ -10,6 +12,6 @@ and have the best default options already all set up for us this way.
    :titlesonly:
    :caption: Contents
    
-   usage-cli-help
-   usage-cli-examples
-   CLI glossary <usage-cli-glossary>
+   usage/cli/help
+   usage/cli/examples
+   CLI glossary <usage/cli/glossary>

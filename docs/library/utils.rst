@@ -1,3 +1,5 @@
+.. _library/utils:
+
 ******************
 Models & utilities 
 ******************
@@ -30,6 +32,8 @@ Models
 
 .. automodule:: pysyd.utils
    :members:
+
+.. _library/utils/api:
 
 Utilities
 #########

@@ -1,6 +1,8 @@
 .. role:: bash(code)
    :language: bash
 
+.. _usage/cli/examples:
+
 *************
 More examples
 *************
@@ -11,19 +13,20 @@ for three KIC stars in the input data directory.
 If so, then you are ready to get started! 
 
 This page has command-line examples for the following cases:
-- :ref:`single star applications <example/single-star>` of varying signal-to-noise (SNR) detections:
-   - :ref:`High SNR <example/high-snr>`
-   - :ref:`Medium SNR <example/medium-snr>`
-   - :ref:`Low SNR <example/low-snr>`
-   - :ref:`No SNR <example/no-snr>`
-- running :ref:`many stars <example/many-stars>`
-- :ref:`advanced examples <example/advanced>` for special commands 
+ -  :ref:`single star applications <example/single>` of varying signal-to-noise (SNR) detections:
+     -  :ref:`High SNR <usage/cli/examples/single/high>`
+     -  :ref:`Medium SNR <usage/cli/examples/single/medium>`
+     -  :ref:`Low SNR <usage/cli/examples/single/low>`
+     -  :ref:`No SNR <usage/cli/examples/single/no>`
+
+ -  running :ref:`many stars <usage/cli/examples/multiple>`
+ -  :ref:`advanced examples <usage/cli/examples/advanced>` for special commands 
 
 including what to look for in each case.
 
 -----
 
-.. _example/single-star:
+.. _usage/cli/examples/single:
 
 A single star
 #############
@@ -32,7 +35,7 @@ For applications to single stars, we will start with a very easy, high signal-to
 example, followed by medium, low, and no SNR examples. These won't be detailed walkthroughs 
 but we are hoping to give pointers about what to look for in each class of examples.
 
-.. _example/high-snr:
+.. _usage/cli/examples/single/high:
 
 High SNR: KIC 11618103
 **********************
@@ -52,7 +55,7 @@ KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
 
-**For a full breakdown of what each panel is showing, please see :ref:`this page <library-output>` for more details.**
+**For a full breakdown of what each panel is showing, please see :ref:`this page <library/output>` for more details.**
   
   
 .. note::
@@ -64,7 +67,7 @@ And just like that, you are now an asteroseismologist!
 
 -----
 
-.. _example/medium-snr:
+.. _usage/cli/examples/single/medium:
 
 Medium SNR: KIC 1435467
 ***********************
@@ -90,7 +93,7 @@ KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \m
 
 -----
 
-.. _example/low-snr:
+.. _usage/cli/examples/single/low:
 
 Low SNR: KIC 8801316
 ********************
@@ -116,7 +119,7 @@ This would be classified as a detection despite the low SNR due to the following
 
 -----
 
-.. _example/no-snr:
+.. _usage/cli/examples/single/no:
 
 No SNR: KIC 6278992
 *******************
@@ -138,7 +141,7 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 -----
 
-.. _example/many-stars:
+.. _usage/cli/examples/multiple:
 
 *******************
 Parallel processing
@@ -172,7 +175,7 @@ the :term:`--nthreads<--nt, --nthread, --nthreads>` command:
    
 -----
 
-.. _example/advanced:
+.. _usage/cli/examples/advanced:
 
 **************
 Advanced usage

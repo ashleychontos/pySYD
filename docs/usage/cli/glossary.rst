@@ -1,3 +1,5 @@
+.. _usage/cli/glossary:
+
 ******************
 List of CL options
 ******************
