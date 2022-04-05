@@ -1,6 +1,6 @@
-****************
-Pipeline results
-****************
+*******
+Results
+*******
 
 Although saving things are optional, we will assume you are running the software to learn more
 about the star -- which can only be done by saving and interpreting the results. 
@@ -18,8 +18,8 @@ Subdirectories are automatically created for each star that is processed. Based 
 you use ``pySYD``, there are a number of different outputs which are saved by default. Here
 we will list and describe them all.
 
-We will reserve this page solely for saved outputs and hence, please see our crashteroseismology
-example if you'd like more information about the printed `verbose` output
+We will reserve this page solely for saved outputs and hence, please see our :ref:`crashteroseismology <quickstart/crash>`
+example if you'd like more information about the printed `verbose` output.
 
 .. todo::
 

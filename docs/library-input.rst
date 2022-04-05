@@ -5,9 +5,9 @@
    have become available -- which is exciting but we are also still furiously working away on 
    this. ***STAY TUNED FOR NEW TOOLS!*** 
 
-***************
-Pipeline inputs
-***************
+******
+Inputs
+******
 
 In case you missed it -- there is a convenient way for you to get started right
 away -- which is by running the ``pySYD`` setup feature. Running the command will provide 

@@ -32,6 +32,8 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
 -----
 
+.. _quickstart/crash:
+
 Crashteroseismology
 ###################
 **crash course in asteroseismology**
@@ -44,6 +46,7 @@ and save time.
 
 -----
 
+.. _quickstart/script:
 
 Initialize script
 *****************
@@ -369,6 +372,8 @@ in the output. this is because the model preferred for this to be fixed
 
 -----
 
+.. _quickstart/module:
+
 Running your favorite star
 ##########################
 
@@ -413,11 +418,13 @@ the star is o-k to go! `Target.ok` is simply a boolean flag but let's check it f
     >>> star.ok
     True
 
-Oh yeah, one last thing before we process the star. As we said in the first example, the displaying
-of output and figures is `False` by default -- so let's change that again.
+Finally, we will use the same settings we used in the first example -- so we need to update those first
+before running.
 
-    >>> star.params['verbose']=True
-    >>> star.params['show']=True
+    >>> star.params['verbose'] = True
+    >>> star.params['show'] = True
+    >>> star.params['upper_ex'] = 5000.
+    >>> star.params['mc_iter'] = 200
 
 Ok, now that we have our desired settings and target, we can go ahead and process the star!
 

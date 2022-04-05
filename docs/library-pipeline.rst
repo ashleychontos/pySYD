@@ -1,5 +1,5 @@
 **************
-Main execution
+Main overview
 **************
 
 The software generally operates in four main steps:
@@ -36,10 +36,10 @@ Pipeline overview
 #################
 
 The software generally operates in four main steps:
- #. :ref:`Loads in parameters and data <stepone>`
- #. :ref:`Gets initial values <steptwo>`
- #. :ref:`Fits global parameters <stepthree>`
- #. :ref:`Estimates uncertainties <stepfour>`
+ #. :ref:`Loads in parameters and data <quickstart/stepone>`
+ #. :ref:`Gets initial values <quickstart/steptwo>`
+ #. :ref:`Fits global parameters <quickstart/stepthree>`
+ #. :ref:`Estimates uncertainties <quickstart/stepfour>`
 
 -----
 
