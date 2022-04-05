@@ -35,12 +35,6 @@ def main():
                                type=str,
                                default=INPDIR,
     )
-    parent_parser.add_argument('--cli',
-                               dest='cli',
-                               help='Running from command line (this should not be touched)',
-                               default=True,
-                               action='store_true',
-    )
     parent_parser.add_argument('--infdir',
                                metavar='str',
                                dest='infdir',
@@ -63,59 +57,55 @@ def main():
                                default=OUTDIR,
     )
 
-    main_parser = argparse.ArgumentParser(add_help=False)
+    data_parser = argparse.ArgumentParser(add_help=False)
 
-    main_parser.add_argument('-b', '--bg', '--background',
-                             dest='background',
-                             help='Turn off the routine that determines the stellar background contribution',
-                             default=True,
-                             action='store_false',
-    )
-    main_parser.add_argument('-e', '--est', '--excess',
-                             dest='excess',
-                             help='Turn off the optional module that estimates numax',
-                             default=True,
-                             action='store_false',
-    )
-    main_parser.add_argument('-g', '--globe', '--global',
-                             dest='globe',
-                             help='Turn off the main module that estimates global properties',
-                             default=True,
-                             action='store_false',
-    )
-    main_parser.add_argument('--gap', '--gaps', 
+    data_parser.add_argument('--gap', '--gaps', 
                              metavar='int',
                              dest='gap',
                              help="What constitutes a time series 'gap' (i.e. n x the cadence)",
                              type=int,
                              default=20, 
     )
-    main_parser.add_argument('-k', '--kc', '--kepcorr', 
+    data_parser.add_argument('-k', '--kc', '--kepcorr', 
                              dest='kep_corr',
                              help='Turn on the Kepler short-cadence artefact correction routine',
                              default=False, 
                              action='store_true',
     )
-    main_parser.add_argument('--of', '--over', '--oversample',
+    data_parser.add_argument('--le', '--lowere', 
+                             metavar='float', 
+                             dest='lower_ech',
+                             help='Lower frequency limit of folded PS to whiten mixed modes',
+                             nargs='*',
+                             default=None,
+                             type=float,
+    )
+    data_parser.add_argument('-n', '--notch', 
+                             dest='notching',
+                             help='Use notching technique to reduce effects from mixed modes (not fully functional, creates weirds effects for higher SNR cases)',
+                             default=False, 
+                             action='store_true',
+    )
+    data_parser.add_argument('--of', '--over', '--oversample',
                              metavar='int',
                              dest='oversampling_factor',
                              help='The oversampling factor (OF) of the input power spectrum',
                              type=int,
                              default=None,
     )
-    main_parser.add_argument('-o', '--overwrite',
+    data_parser.add_argument('-o', '--overwrite',
                              dest='overwrite',
                              help='Overwrite existing files with the same name/path',
                              default=False, 
                              action='store_true',
     )
-    main_parser.add_argument('-s', '--save',
+    data_parser.add_argument('-s', '--save',
                              dest='save',
                              help='Do not save output figures and results.',
                              default=True, 
                              action='store_false',
     )
-    main_parser.add_argument('--star', '--stars',
+    data_parser.add_argument('--star', '--stars',
                              metavar='str',
                              dest='stars',
                              help='List of stars to process',
@@ -123,13 +113,22 @@ def main():
                              nargs='*',
                              default=None,
     )
-    main_parser.add_argument('-x', '--stitch', '--stitching',
+    data_parser.add_argument('--ue', '--uppere', 
+                             metavar='float', 
+                             dest='upper_ech',
+                             help='Upper frequency limit of folded PS to whiten mixed modes',
+                             nargs='*',
+                             default=None,
+                             type=float,
+    )
+    data_parser.add_argument('-x', '--stitch', '--stitching',
                              dest='stitch',
                              help="Correct for large gaps in time series data by 'stitching' the light curve",
                              default=False,
                              action='store_true',
     )
 
+    main_parser = argparse.ArgumentParser(add_help=False)
 
     excess = main_parser.add_argument_group('Estimate numax')
 
@@ -153,6 +152,12 @@ def main():
                         help='Binning mode',
                         default='mean',
                         type=str,
+    )
+    excess.add_argument('-e', '--est', '--excess',
+                        dest='excess',
+                        help='Turn off the optional module that estimates numax',
+                        default=True,
+                        action='store_false',
     )
     excess.add_argument('--lx', '--lowerx', 
                         metavar='float', 
@@ -191,7 +196,6 @@ def main():
     )
 
 
-
     background = main_parser.add_argument_group('Background Fit')
 
     background.add_argument('--all', '--showall',
@@ -206,6 +210,12 @@ def main():
                             help="Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***",
                             default='tau_sigma', 
                             type=str,
+    )
+    background.add_argument('-b', '--bg', '--background',
+                            dest='background',
+                            help='Turn off the routine that determines the stellar background contribution',
+                            default=True,
+                            action='store_false',
     )
     background.add_argument('--bf', '--box', '--boxfilter',
                             metavar='float', 
@@ -265,20 +275,31 @@ def main():
                             type=float,
     )
 
-#####################################################################
-# CLI options related to estimating numax
-#
 
-    numax = main_parser.add_argument_group('Deriving numax')
+    globe = main_parser.add_argument_group('Global fit')
 
-    numax.add_argument('--ew', '--exwidth',
+    globe.add_argument('--dnu',
+                       metavar='float',
+                       dest='dnu',
+                       help='Brute force method to provide value for dnu',
+                       nargs='*',
+                       type=float,
+                       default=None, 
+    )
+    globe.add_argument('--ew', '--exwidth',
                        metavar='float', 
                        dest='ex_width',
                        help='Fractional value of width to use for power excess, where width is computed using a solar scaling relation.',
                        default=1.0,
                        type=float,
     )
-    numax.add_argument('--lp', '--lowerp', 
+    globe.add_argument('-g', '--globe', '--global',
+                       dest='globe',
+                       help='Turn off the main module that estimates global properties',
+                       default=True,
+                       action='store_false',
+    )
+    globe.add_argument('--lp', '--lowerp', 
                        metavar='float', 
                        dest='lower_ps',
                        help='Lower frequency limit for zoomed in PS',
@@ -286,7 +307,14 @@ def main():
                        default=None,
                        type=float,
     )
-    numax.add_argument('--numax',
+    globe.add_argument('--method',
+                       metavar='str',
+                       dest='method',
+                       help='Method to use to determine dnu, ~[M, A, D]',
+                       default='D',
+                       type=str,
+    )
+    globe.add_argument('--numax',
                        metavar='float',
                        dest='numax',
                        help='Skip find excess module and force numax',
@@ -294,60 +322,41 @@ def main():
                        default=None,
                        type=float,
     )
-    numax.add_argument('--sm', '--smpar',
+    globe.add_argument('--peak', '--peaks', '--npeaks',
+                       metavar='int', 
+                       dest='n_peaks', 
+                       help='Number of peaks to fit in the ACF',
+                       default=10, 
+                       type=int,
+    )
+    globe.add_argument('--sm', '--smpar',
                        metavar='float', 
                        dest='sm_par',
                        help='Value of smoothing parameter to estimate smoothed numax (typically between 1-4).',
                        default=None, 
                        type=float,
     )
-    numax.add_argument('--up', '--upperp', 
+    globe.add_argument('--sp', '--smoothps',
+                       metavar='float', 
+                       dest='smooth_ps',
+                       help='Box filter width [in muHz] of PS for ACF', 
+                       type=float,
+                       default=2.5,
+    )
+    globe.add_argument('--thresh', '--threshold',
+                       metavar='float', 
+                       dest='threshold',
+                       help='Fractional value of FWHM to use for ACF',
+                       default=1.0,
+                       type=float,
+    )
+    globe.add_argument('--up', '--upperp', 
                        metavar='float', 
                        dest='upper_ps',
                        help='Upper frequency limit for zoomed in PS',
                        nargs='*',
                        default=None,
                        type=float,
-    )
-
-
-    dnu = main_parser.add_argument_group('Deriving dnu')
-
-    dnu.add_argument('--dnu',
-                     metavar='float',
-                     dest='dnu',
-                     help='Brute force method to provide value for dnu',
-                     nargs='*',
-                     type=float,
-                     default=None, 
-    )
-    dnu.add_argument('--method',
-                     metavar='str',
-                     dest='method',
-                     help='Method to use to determine dnu, ~[M, A, D]',
-                     default='D',
-                     type=str,
-    )
-    dnu.add_argument('--peak', '--peaks', '--npeaks',
-                     metavar='int', 
-                     dest='n_peaks', 
-                     help='Number of peaks to fit in the ACF',
-                     default=5, 
-                     type=int,
-    )
-    dnu.add_argument('--sp', '--smoothps',
-                     metavar='float', 
-                     dest='smooth_ps',
-                     help='Box filter width [in muHz] of PS for ACF', 
-                     type=float,
-                     default=2.5,
-    )
-    dnu.add_argument('--thresh', '--threshold',
-                     metavar='float', 
-                     dest='threshold',
-                     help='Fractional value of FWHM to use for ACF',
-                     default=1.0,
-                     type=float,
     )
 
 
@@ -379,20 +388,7 @@ def main():
                          default=False,
                          action='store_true',
     )
-    echelle.add_argument('--le', '--lowere', 
-                         metavar='float', 
-                         dest='lower_ech',
-                         help='Lower frequency limit of folded PS to whiten mixed modes',
-                         nargs='*',
-                         default=None,
-                         type=float,
-    )
-    echelle.add_argument('-n', '--notch', 
-                         dest='notching',
-                         help='Use notching technique to reduce effects from mixed modes (not fully functional, creates weirds effects for higher SNR cases)',
-                         default=False, 
-                         action='store_true',
-    )
+
     echelle.add_argument('--nox', '--nacross',
                          metavar='int', 
                          dest='nox',
@@ -414,14 +410,7 @@ def main():
                          default=None,
                          type=float,
     )
-    echelle.add_argument('--ue', '--uppere', 
-                         metavar='float', 
-                         dest='upper_ech',
-                         help='Upper frequency limit of folded PS to whiten mixed modes',
-                         nargs='*',
-                         default=None,
-                         type=float,
-    )
+
 
 
     mcmc = main_parser.add_argument_group('Sampling')
@@ -444,36 +433,82 @@ def main():
 
     sub_parser = parser.add_subparsers(title='pySYD modes', dest='mode')
 
-    parser_display = sub_parser.add_parser('display',
-                                           parents=[parent_parser, main_parser],
-                                           formatter_class=argparse.MetavarTypeHelpFormatter,
-                                           help='Display relevant information',
+    parser_check = sub_parser.add_parser('check',
+                                         parents=[parent_parser, data_parser],
+                                         formatter_class=argparse.MetavarTypeHelpFormatter,
+                                         help='Check data for a target or other relevant information',
                                         )
 
-    parser_display.add_argument('-c', '--cols', '--columns',
-                                dest='columns',
-                                help='Show columns of interest in a condensed format',
-                                default=False,
-                                action='store_true',
+    parser_check.add_argument('-c', '--cols', '--columns',
+                              dest='columns',
+                              help='Show columns of interest in a condensed format',
+                              default=False,
+                              action='store_true',
     )
-    parser_display.add_argument('-d', '--show', '--display',
-                                dest='show',
-                                help='Show output figures',
-                                default=True, 
-                                action='store_false',
+    parser_check.add_argument('--cli',
+                              dest='cli',
+                              help='Running from command line (this should not be touched)',
+                              default=False,
+                              action='store_true',
     )
-    parser_display.add_argument('-v', '--verbose', 
-                                dest='verbose',
-                                help='Turn off verbose output',
-                                default=True, 
-                                action='store_false',
+    parser_check.add_argument('-d', '--data', 
+                              dest='data',
+                              help='Check data for a target',
+                              default=True, 
+                              action='store_false',
+    )
+    parser_check.add_argument('-l', '--log', 
+                              dest='log',
+                              help='Disable plotting of power spectrum in log-log scale',
+                              default=True, 
+                              action='store_false',
+    )
+    parser_check.add_argument('--lp', '--lowerp',
+                              metavar='float', 
+                              dest='lower_ps',
+                              help='Lower frequency limit to plot for power spectrum',
+                              default=None,
+                              type=float,
+    )
+    parser_check.add_argument('--lt', '--lowert',
+                              metavar='float', 
+                              dest='lower_ts',
+                              help='Lower limit to plot for time series data',
+                              default=None,
+                              type=float,
+    )
+    parser_check.add_argument('-p', '--plot', 
+                              dest='plot',
+                              help='Disable automatic plotting of data',
+                              default=True, 
+                              action='store_false',
+    )
+    parser_check.add_argument('--up', '--upperp',
+                              metavar='float', 
+                              dest='upper_ps',
+                              help='Upper frequency limit to plot for power spectrum',
+                              default=None,
+                              type=float,
+    )
+    parser_check.add_argument('--ut', '--uppert',
+                              metavar='float', 
+                              dest='upper_ts',
+                              help='Upper limit to plot for time series data',
+                              default=None,
+                              type=float,
+    )
+    parser_check.add_argument('-v', '--verbose', 
+                              dest='verbose',
+                              help='Turn off verbose output',
+                              default=True, 
+                              action='store_false',
     )
 
-    parser_display.set_defaults(func=pipeline.display)
+    parser_check.set_defaults(func=pipeline.check)
 
 
     parser_load = sub_parser.add_parser('load',
-                                        parents=[parent_parser, main_parser], 
+                                        parents=[parent_parser, data_parser], 
                                         formatter_class=argparse.MetavarTypeHelpFormatter,
                                         help='Load in data for a given target',  
                                         )
@@ -496,10 +531,16 @@ def main():
 
     parser_parallel = sub_parser.add_parser('parallel', 
                                             help='Run pySYD in parallel',
-                                            parents=[parent_parser, main_parser],
+                                            parents=[parent_parser, data_parser, main_parser],
                                             formatter_class=argparse.MetavarTypeHelpFormatter,
                                             )
 
+    parser_parallel.add_argument('--cli',
+                                 dest='cli',
+                                 help='Running from command line (this should not be touched)',
+                                 default=True,
+                                 action='store_true',
+    )
     parser_parallel.add_argument('-d', '--show', '--display',
                                  dest='show',
                                  help='Show output figures (not recommended for this mode)',
@@ -526,10 +567,16 @@ def main():
 
     parser_run = sub_parser.add_parser('run',
                                        help='Run the main pySYD pipeline',
-                                       parents=[parent_parser, main_parser], 
+                                       parents=[parent_parser, data_parser, main_parser], 
                                        formatter_class=argparse.MetavarTypeHelpFormatter,
                                        )
 
+    parser_run.add_argument('--cli',
+                            dest='cli',
+                            help='Running from command line (this should not be touched)',
+                            default=True,
+                            action='store_true',
+    )
     parser_run.add_argument('-d', '--show', '--display',
                             dest='show',
                             help='Show output figures',
@@ -551,12 +598,30 @@ def main():
                                          formatter_class=argparse.MetavarTypeHelpFormatter,
                                          help='Easy setup of relevant directories and files',
                                          )
+    parser_setup.add_argument('-a', '--all', 
+                              dest='makeall',
+                              help='Save all columns',
+                              default=False, 
+                              action='store_true',
+    )
     parser_setup.add_argument('--dir', '--directory',
                               metavar='str',
                               dest='dir',
                               help='Path to save setup files to (default=os.getcwd())',
                               type=str,
                               default=os.path.abspath(os.getcwd()),
+    )
+    parser_setup.add_argument('-e', '--ex', '--examples',
+                              dest='examples',
+                              help='Disable auto-saving of example data',
+                              default=True, 
+                              action='store_false',
+    )
+    parser_setup.add_argument('-f', '--files',
+                              dest='files',
+                              help='Disable auto-saving of example input files',
+                              default=True, 
+                              action='store_false',
     )
     parser_setup.add_argument('-n', '--newpath', '--path',
                               dest='new',
@@ -575,7 +640,7 @@ def main():
 
 
     parser_test = sub_parser.add_parser('test',
-                                        parents=[parent_parser, main_parser], 
+                                        parents=[parent_parser, data_parser, main_parser], 
                                         formatter_class=argparse.MetavarTypeHelpFormatter,
                                         help='Test different utilities (currently under development)',  
                                         )

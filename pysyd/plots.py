@@ -529,7 +529,26 @@ def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
         plt.close()
 
 
-def plot_light_curve(star, filename='time_series.png', npanels=1):
+def check_data(star, args, show=True):
+    """
+
+    Plot input data for a target
+
+    """
+    if star.params['verbose']:
+        print(' - displaying figures')
+    set_plot_params()
+    if star.lc:
+        plot_light_curve(star, args)
+    if star.ps:
+        plot_power_spectrum(star, args)
+    if star.params['show']:
+        plt.show(block=False)
+        input(' - press any key to exit')
+    plt.close()
+
+
+def plot_light_curve(star, args, filename='time_series.png', npanels=1):
     """
     Plot the light curve data
 
@@ -548,7 +567,15 @@ def plot_light_curve(star, filename='time_series.png', npanels=1):
     fig = plt.figure("%s time series"%star.name, figsize=d[npanels]['size'])
     ax = plt.subplot(x,y,1)
     ax.plot(star.time, star.flux, 'w-')
-    ax.set_xlim([min(star.time), max(star.time)])
+    if args.lower_ts is not None:
+        lower = args.lower_ts
+    else:
+        lower = min(star.time)
+    if args.upper_ts is not None:
+        upper = args.upper_ts
+    else:
+        upper = max(star.time)
+    ax.set_xlim([lower, upper])
     ax.tick_params(axis='both', which='minor', length=10, width=1.25, direction='inout')
     ax.tick_params(axis='both', which='major', length=15, width=1.25, direction='inout')  
     ax.tick_params(labelsize=22)
@@ -565,7 +592,7 @@ def plot_light_curve(star, filename='time_series.png', npanels=1):
         plt.close()
 
 
-def plot_power_spectrum(star, filename='power_spectrum.png', npanels=1):
+def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
     """
     Plot the power spectrum data
 
@@ -584,12 +611,21 @@ def plot_power_spectrum(star, filename='power_spectrum.png', npanels=1):
     fig = plt.figure("%s power spectrum"%star.name, figsize=d[npanels]['size'])
     ax = plt.subplot(1,1,1)
     ax.plot(star.frequency, star.power, 'w-')
-    ax.set_xlim([min(star.frequency), max(star.frequency)])
+    if args.lower_ps is not None:
+        lower = args.lower_ps
+    else:
+        lower = min(star.frequency)
+    if args.upper_ps is not None:
+        upper = args.upper_ps
+    else:
+        upper = max(star.frequency)
+    ax.set_xlim([lower, upper])
     ax.tick_params(axis='both', which='minor', length=10, width=1.25, direction='inout')
     ax.tick_params(axis='both', which='major', length=15, width=1.25, direction='inout')  
     ax.tick_params(labelsize=22)
-    ax.set_xscale('log')
-    ax.set_yscale('log')
+    if args.log:
+        ax.set_xscale('log')
+        ax.set_yscale('log')
     plt.xlabel(r'$\rm Frequency \,\, [\mu Hz]$', fontsize=28)
     plt.ylabel(r'$\rm Power \,\, [ppm^2 \, \mu Hz^{-1}]$', fontsize=28)
 

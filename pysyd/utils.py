@@ -517,15 +517,18 @@ class Parameters(Constants):
 
 
         """
-        self.check_cli(args)
-        # CLI options overwrite defaults
-        for key, value in args.__dict__.items():
-            # Make sure it is not a variable with a >1 length
-            if key not in self.override:
-                self.params[key] = value
-        # were stars provided
-        if self.params['stars'] is None:
-            self.star_list()
+        if args.cli:
+            self.check_cli(args)
+            # CLI options overwrite defaults
+            for key, value in args.__dict__.items():
+                # Make sure it is not a variable with a >1 length
+                if key not in self.override:
+                    self.params[key] = value
+            # were stars provided
+            if self.params['stars'] is None:
+                self.star_list()
+        else:
+            self.params['stars'] = args.stars
 
 
     def check_cli(self, args, max_laws=3):

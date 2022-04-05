@@ -1,10 +1,15 @@
+# Imports only used in setup
+import os
+import subprocess
+import pandas as pd
+
 # Import relevant, local pySYD modules
 from pysyd import utils
 from pysyd import plots
 from pysyd.target import Target
 
 
-def display(args):
+def check(args):
     """
     
     This is experimental and meant to be helpful for developers or anyone
@@ -22,8 +27,20 @@ def display(args):
         use the hacky, boolean flag ``-t`` or ``--test`` instead (for now)
     
     """
-    # If running from something other than command line
-    args = utils.Parameters(args)
+    if args.data:
+        if args.stars is None:
+            print('\nTrying to check data but no target provided.\nPlease provide a star via --star and try again.')
+            return
+        else:
+            assert len(args.stars) == 1, "No more than one star can be checked at a time."
+        if args.verbose:
+            print('Checking data for target %s:'%args.stars[0])
+    display, verbose = args.plot, args.verbose
+    # Load in data for a given star
+    new_args = utils.Parameters(args)
+    star = Target(args.stars[0], new_args)
+    star.params['show'], star.params['verbose'] = args.plot, args.verbose
+    plots.check_data(star, args)
 
 
 def load(args):
@@ -176,48 +193,47 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
             path to download "raw" package data and examples from the ``pySYD`` source directory
 
     """
-    # Import relevant (external) python modules
-    import os
-    import subprocess
-    import pandas as pd
     # downloading data will generate output in terminal, so include this statement regardless
-    print('\n\nDownloading relevant data from source directory:\n')
+    if args.example:
+        print('\n\nDownloading relevant data from source directory:\n')
 
+    # INFDIR
     # create info directory
     if not os.path.exists(args.infdir):
         os.mkdir(args.infdir)
         note+=' - created input file directory: %s \n'%args.infdir
+    if args.files:
+        # get example input files
+        infile1 = '%sinfo/todo.txt'%raw
+        outfile1 = os.path.join(args.infdir, args.todo)
+        subprocess.call(['curl %s > %s'%(infile1, outfile1)], shell=True)
+        infile2 = '%sinfo/star_info.csv'%raw
+        outfile2 = os.path.join(args.infdir, args.info)
+        subprocess.call(['curl %s > %s'%(infile2, outfile2)], shell=True)
+        if args.makeall:
+            df_temp = pd.read_csv(outfile2)
+            df = pd.DataFrame(columns=utils.get_dict('columns')['all'])
+            for col in df_temp.columns.values.tolist():
+                if col in df.columns.values.tolist():
+                    df[col] = df_temp[col]
+            df.to_csv(outfile2, index=False)
 
-    # get example input files
-    infile1 = '%sinfo/todo.txt'%raw
-    outfile1 = os.path.join(args.infdir, args.todo)
-    subprocess.call(['curl %s > %s'%(infile1, outfile1)], shell=True)
-    infile2 = '%sinfo/star_info.csv'%raw
-    outfile2 = os.path.join(args.infdir, args.info)
-    subprocess.call(['curl %s > %s'%(infile2, outfile2)], shell=True)
-    
-    # if not successful, make empty input files for reference
-    if not os.path.exists(outfile1):
-        f = open(args.todo, "w")
-        f.close()
-    if not os.path.exists(outfile2):
-        df = pd.DataFrame(columns=utils.get_dict(type='columns')['all'])
-        df.to_csv(outfile2, index=False)
-        
+    # INPDIR
     # create data directory
     if not os.path.exists(args.inpdir):
         os.mkdir(args.inpdir)
         note+=' - created data directory at %s \n'%args.inpdir
-        
-    # get example data
-    for target in ['1435467', '2309595', '11618103']:
-        for ext in ['LC', 'PS']:
-            infile='%sdata/%s_%s.txt'%(raw, target, ext)
-            outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
-            subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
-    print('\n')
-    note+=' - example data saved\n'
+    if args.examples:
+        # get example data
+        for target in ['1435467', '2309595', '11618103']:
+            for ext in ['LC', 'PS']:
+                infile='%sdata/%s_%s.txt'%(raw, target, ext)
+                outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
+                subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
+        print('\n')
+        note+=' - example data saved\n'
     
+    # OUTDIR
     # create results directory
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
