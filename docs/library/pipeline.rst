@@ -51,6 +51,14 @@ The software generally operates in four main steps:
 
 -----
 
+.. note::
+
+     The software will process the pipeline on oversampled spectra for the first iterations
+     but will *always* switch to critically-sampled spectra for estimating uncertainties. 
+     **Calculating uncertainties with oversampled spectra can produce unreliable results and 
+     uncertainties!**
+
+
 A ``pySYD`` pipeline ``Target`` class object has two main function calls:
 
 #. The first module :

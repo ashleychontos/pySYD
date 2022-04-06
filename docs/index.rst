@@ -39,8 +39,8 @@ is too small!
    
    installation
    Getting started <quickstart>
-   library/index
-   usage/index
+   <library/index>
+   <usage/index>
    Glossary <glossary>
 
 

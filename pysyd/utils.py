@@ -1077,6 +1077,39 @@ def ask_int(question, n_trials, max_attempts=10, count=1, special=False):
     return None
 
 
+def get_results(file_idlsyd='dicts/idlsyd_results.txt', file_pysyd='dicts/pysyd_results.csv', 
+                suffixes=['_idl', '_py'], max_numax=3200.,)
+    """
+
+    Load pipeline results from `SYD` and `pySYD`
+
+    Parameters
+        file_idlsyd : str
+            path to ``SYD`` ensemble results
+        file_pysyd : str
+            path to ``pySYD`` ensemble results
+        suffixes : List[str]
+            extensions to use when merging the two pipeline results
+        max_numax : float, optional
+            maximum values to use for numax comparison
+
+    Returns
+        df : pandas.DataFrame
+            pandas dataframe with merged results
+
+    """
+    # load in both pipeline results
+    idlsyd = pd.read_csv(file_idlsyd, skiprows=20, delimiter='|', names=get_dict('columns')['syd'])
+    pysyd = pd.read_csv(file_pysyd)
+    # make sure they can crossmatch
+    idlsyd.KIC = idlsyd.KIC.astype(str)
+    pysyd.star = pysyd.star.astype(str)
+    # merge measurements from syd & pySYD catalogs
+    df = pd.merge(idlsyd, pysyd, left_on='KIC', right_on='star', how='inner', suffixes=suffixes)
+    df = df[df['numax_smooth'] <= max_numax]
+    return df
+
+
 def delta_nu(numax):
     """
     

@@ -18,4 +18,6 @@
    'b_3':{'unit':'muHz^-1','label':r'$\rm b_{3} \,\, [\mu Hz^{-1}]$','latex':{'label':'$\rm b_{3}$', 'format':'%.2f', 'unit':'$\rm \mu Hz^{-1}$'}}, 
    'tau_3':{'unit':'s','label':r'$\rm \tau_{3} \,\, [s]$','latex':{'label':'$\tau_{3}$', 'format':'%.2f', 'unit':'s'}}, 
    'sigma_3':{'unit':'ppm','label':r'$\rm \sigma_{3} \,\, [ppm]$','latex':{'label':'$\sigma_{3}$', 'format':'%.2f', 'unit':'ppm'}}, 
+   'cnumax':{'syd':'numax','pysyd':'numax_smooth','error':'sig_numax','xlabel':r'$\textrm{SYD} \,\, \nu_{\textrm{max}}$','ylabel':r'$\textrm{pySYD} \,\, \nu_{\textrm{max}}$','ylimit':[-0.018,0.012],},
+   'cdnu':{'syd':'dnu_idl','pysyd':'dnu_py','error':'sig_dnu','xlabel':r'$\textrm{SYD} \,\, \Delta\nu$','ylabel':r'$\textrm{pySYD} \,\, \Delta\nu$','ylimit':[-0.012,0.012],},
 }

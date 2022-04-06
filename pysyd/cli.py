@@ -99,6 +99,12 @@ def main():
                              default=False, 
                              action='store_true',
     )
+    data_parser.add_argument('-r', '--ret', '--return',
+                             dest='return',
+                             help='Disable the returning of any parameters',
+                             default=False, 
+                             action='store_true',
+    )
     data_parser.add_argument('-s', '--save',
                              dest='save',
                              help='Do not save output figures and results.',
@@ -130,73 +136,73 @@ def main():
 
     main_parser = argparse.ArgumentParser(add_help=False)
 
-    excess = main_parser.add_argument_group('Estimate numax')
+    estimate = main_parser.add_argument_group('Estimate parameters')
 
-    excess.add_argument('-a', '--ask',
-                        dest='ask',
-                        help='Ask which trial to use',
-                        default=False, 
-                        action='store_true',
+    estimate.add_argument('-a', '--ask',
+                         dest='ask',
+                         help='Ask which trial to use',
+                         default=False, 
+                         action='store_true',
     )
-    excess.add_argument('--bin', '--binning',
-                        metavar='float',  
-                        dest='binning', 
-                        help='Binning interval for PS (in muHz)',
-                        default=0.005, 
-                        type=float,
+    estimate.add_argument('--bin', '--binning',
+                         metavar='float',  
+                         dest='binning', 
+                         help='Binning interval for PS (in muHz)',
+                         default=0.005, 
+                         type=float,
     )
-    excess.add_argument('--bm', '--mode', '--bmode',
-                        metavar='str',
-                        choices=["mean", "median", "gaussian"],
-                        dest='bin_mode',
-                        help='Binning mode',
-                        default='mean',
-                        type=str,
+    estimate.add_argument('--bm', '--mode', '--bmode',
+                         metavar='str',
+                         choices=["mean", "median", "gaussian"],
+                         dest='bin_mode',
+                         help='Binning mode',
+                         default='mean',
+                         type=str,
     )
-    excess.add_argument('-e', '--est', '--excess',
-                        dest='excess',
-                        help='Turn off the optional module that estimates numax',
-                        default=True,
-                        action='store_false',
+    estimate.add_argument('-e', '--est', '--excess',
+                         dest='excess',
+                         help='Turn off the optional module that estimates numax',
+                         default=True,
+                         action='store_false',
+    ) 
+    estimate.add_argument('--lx', '--lowerx', 
+                         metavar='float', 
+                         dest='lower_ex',
+                         help='Lower frequency limit of PS',
+                         nargs='*',
+                         default=None,
+                         type=float,
     )
-    excess.add_argument('--lx', '--lowerx', 
-                        metavar='float', 
-                        dest='lower_ex',
-                        help='Lower frequency limit of PS',
-                        nargs='*',
-                        default=None,
-                        type=float,
+    estimate.add_argument('--step', '--steps', 
+                         metavar='float', 
+                         dest='step', 
+                         default=0.25,
+                         type=float, 
     )
-    excess.add_argument('--step', '--steps', 
-                        metavar='float', 
-                        dest='step', 
-                        default=0.25,
-                        type=float, 
+    estimate.add_argument('--trials', '--ntrials',
+                         metavar='int', 
+                         dest='n_trials',
+                         default=3, 
+                         type=int,
     )
-    excess.add_argument('--trials', '--ntrials',
-                        metavar='int', 
-                        dest='n_trials',
-                        default=3, 
-                        type=int,
+    estimate.add_argument('--sw', '--smoothwidth',
+                         metavar='float', 
+                         dest='smooth_width',
+                         help='Box filter width (in muHz) for smoothing the PS',
+                         default=10.0,
+                         type=float,
     )
-    excess.add_argument('--sw', '--smoothwidth',
-                        metavar='float', 
-                        dest='smooth_width',
-                        help='Box filter width (in muHz) for smoothing the PS',
-                        default=10.0,
-                        type=float,
-    )
-    excess.add_argument('--ux', '--upperx', 
-                        metavar='float', 
-                        dest='upper_ex',
-                        help='Upper frequency limit of PS',
-                        nargs='*',
-                        default=None,
-                        type=float,
+    estimate.add_argument('--ux', '--upperx', 
+                         metavar='float', 
+                         dest='upper_ex',
+                         help='Upper frequency limit of PS',
+                         nargs='*',
+                         default=None,
+                         type=float,
     )
 
 
-    background = main_parser.add_argument_group('Background Fit')
+    background = main_parser.add_argument_group('Background fits')
 
     background.add_argument('--all', '--showall',
                             dest='showall',
@@ -276,7 +282,7 @@ def main():
     )
 
 
-    globe = main_parser.add_argument_group('Global fit')
+    globe = main_parser.add_argument_group('Global parameters')
 
     globe.add_argument('--dnu',
                        metavar='float',
@@ -413,7 +419,7 @@ def main():
 
 
 
-    mcmc = main_parser.add_argument_group('Sampling')
+    mcmc = main_parser.add_argument_group('Estimate uncertainties')
 
     mcmc.add_argument('--mc', '--iter', '--mciter', 
                       metavar='int', 
@@ -463,16 +469,16 @@ def main():
                               default=True, 
                               action='store_false',
     )
-    parser_check.add_argument('--lp', '--lowerp',
+    parser_check.add_argument('--lp', '--lowerp', '--lowerps',
                               metavar='float', 
                               dest='lower_ps',
                               help='Lower frequency limit to plot for power spectrum',
                               default=None,
                               type=float,
     )
-    parser_check.add_argument('--lt', '--lowert',
+    parser_check.add_argument('--ll', '--lc', '--lowert', '--lowerl', '--lowerlc'
                               metavar='float', 
-                              dest='lower_ts',
+                              dest='lower_lc',
                               help='Lower limit to plot for time series data',
                               default=None,
                               type=float,
@@ -483,16 +489,22 @@ def main():
                               default=True, 
                               action='store_false',
     )
-    parser_check.add_argument('--up', '--upperp',
+    parser_check.add_argument('-r', '--ret', '--return',
+                              dest='return',
+                              help='Disable the returning of any output',
+                              default=True, 
+                              action='store_false',
+    )
+    parser_check.add_argument('--up', '--upperp', '--upperps'
                               metavar='float', 
                               dest='upper_ps',
                               help='Upper frequency limit to plot for power spectrum',
                               default=None,
                               type=float,
     )
-    parser_check.add_argument('--ut', '--uppert',
+    parser_check.add_argument('--ul', '--uc', '--uppert', '--upperl', '--upperlc'
                               metavar='float', 
-                              dest='upper_ts',
+                              dest='upper_lc',
                               help='Upper limit to plot for time series data',
                               default=None,
                               type=float,
@@ -518,6 +530,12 @@ def main():
                              help='Do not show output figures',
                              default=False, 
                              action='store_true',
+    )
+    parser_load.add_argument('-r', '--ret', '--return',
+                             dest='return',
+                             help='Disable the returning of any output',
+                             default=True, 
+                             action='store_false',
     )
     parser_load.add_argument('-v', '--verbose', 
                              dest='verbose',
@@ -563,6 +581,50 @@ def main():
 
     parser_parallel.set_defaults(func=pipeline.parallel)
 
+
+    parser_plot = sub_parser.add_parser('plot',
+                                        help='Create and show relevant figures',
+                                        parents=[parent_parser, data_parser], 
+                                        formatter_class=argparse.MetavarTypeHelpFormatter,
+                                        )
+
+    parser_plot.add_argument('-c', '--compare', 
+                             dest='compare',
+                             help='Reproduce the *Kepler* legacy results',
+                             default=False,
+                             action='store_true',
+    )
+    parser_plot.add_argument('--cli',
+                             dest='cli',
+                             help='Running from command line (this should not be touched)',
+                             default=True,
+                             action='store_true',
+    )
+    parser_plot.add_argument('-d', '--show', '--display',
+                             dest='show',
+                             help='Turn off the displaying of figures',
+                             default=True, 
+                             action='store_false',
+    )
+    parser_plot.add_argument('-v', '--verbose', 
+                             dest='verbose',
+                             help='Turn off verbose output',
+                             default=True, 
+                             action='store_false',
+    )
+    parser_plot.add_argument('-r', '--ret', '--return',
+                             dest='return',
+                             help='Disable the returning of any output',
+                             default=True, 
+                             action='store_false',
+    )
+    parser_plot.add_argument('--results', 
+                             dest='results',
+                             help='Re-plot ``pySYD`` results for a single star',
+                             default=False,
+                             action='store_true',
+    )
+    parser_plot.set_defaults(func=pipeline.plot)
 
 
     parser_run = sub_parser.add_parser('run',
@@ -662,6 +724,12 @@ def main():
                              help='Include different model fits',
                              default=False,
                              action='store_true',
+    )
+    parser_test.add_argument('-r', '--ret', '--return',
+                             dest='return',
+                             help='Disable the returning of any parameters',
+                             default=True, 
+                             action='store_false',
     )
     parser_test.add_argument('-v', '--verbose', 
                              dest='verbose',
