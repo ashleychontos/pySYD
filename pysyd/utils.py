@@ -1095,11 +1095,11 @@ def ask_int(question, n_trials, max_attempts=10, count=1, special=False):
     return None
 
 
-def get_results(file_idlsyd='idlsyd_results.txt', file_pysyd='pysyd_results.csv', 
+def get_results(file_idlsyd='syd_results.txt', file_pysyd='pysyd_results.csv', 
                 suffixes=['_idl', '_py'], max_numax=3200.,):
     """
 
-    Load pipeline results from `SYD` and `pySYD`
+    Load and compare results between `SYD` and `pySYD` pipelines
 
     Parameters
         file_idlsyd : str
@@ -1132,7 +1132,7 @@ def get_results(file_idlsyd='idlsyd_results.txt', file_pysyd='pysyd_results.csv'
 def delta_nu(numax):
     """
     
-    Estimates the large frequency separation using the numax scaling relation
+    Estimates the large frequency separation using the numax scaling relation (add citation)
 
     Parameters
         numax : float
