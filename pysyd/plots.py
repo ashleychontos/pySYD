@@ -37,6 +37,33 @@ def make_plots(star, showall=False,):
         plt.show(block=False)
 
 
+def select_trial(star):
+    """
+    This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
+    This feature used to be called as part of a method in the `pysyd.target.Target` class but left a
+    stale figure open -- this way it can be closed after the value is selected
+
+    Parameters
+        star : target.Target
+            the pySYD pipeline object
+
+    Returns
+        value : int or float
+            depending on which `trial` was selected, this can be of integer or float type
+
+    
+    """
+    value = utils.ask_int('Which estimate would you like to use? ', star.params['n_trials'])
+    if isinstance(value, int):
+        star.params['best'] = value
+        print('Selecting model %d' % value)
+    else:
+        star.params['numax'] = value
+        star.params['dnu'] = utils.delta_nu(value)
+        print('Using numax of %.2f muHz as an initial guess' % value)
+    return star
+
+
 def plot_estimates(star, filename='numax_estimates.png', ask=False, highlight=True):
     """
     Creates a plot summarizing the results of the find excess routine.
@@ -141,6 +168,9 @@ def plot_estimates(star, filename='numax_estimates.png', ask=False, highlight=Tr
         plt.close()
     if ask:
         plt.show(block=False)
+        star = select_trial(star)
+        plt.close()
+        return star
 
 
 def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10, cmap=):

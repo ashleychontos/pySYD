@@ -105,6 +105,7 @@ class Target:
         plots.make_plots(self)
         if self.params['cli'] or (not self.params['cli'] and not self.params['notebook']):
             input(' - press RETURN to exit')
+        else:
             print('')
 
 
@@ -774,15 +775,7 @@ class Target:
         # Or ask which estimate to use
         else:
             self = utils.save_plotting(self)
-            plots.plot_estimates(self, ask=True)
-            value = utils.ask_int('Which estimate would you like to use? ', self.params['n_trials'])
-            if isinstance(value, int):
-                self.params['best'] = value
-                print('Selecting model %d' % value)
-            else:
-                self.params['numax'] = value
-                self.params['dnu'] = utils.delta_nu(value)
-                print('Using numax of %.2f muHz as an initial guess' % value)
+            self = plots.plot_estimates(self, ask=True)
         self = utils.save_estimates(self)
 
 
