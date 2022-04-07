@@ -633,7 +633,7 @@ class Target:
             pow : numpy.ndarray
                 input power spectrum to correct
             folded_freq : numpy.ndarray
-                frequency array modulo dnu (i.e. folded to the large separation, :math:`\Delta\nu`)
+                frequency array modulo dnu (i.e. folded to the large separation, :math:`\\Delta\\nu`)
             lower_ech : float, optional
                 lower frequency limit of mask to "whiten"
             upper_ech : float, optional
@@ -723,7 +723,7 @@ class Target:
 
     def estimate_numax(self, n_trials=3, binning=0.005, bin_mode='mean', smooth_width=20.0, ask=False):
         """
-        Estimate :math:`\nu_{\mathrm{max}}`
+        Estimate :math:`\\nu_{\\mathrm{max}}`
 
         Automatically finds power excess due to solar-like oscillations using a
         frequency-resolved, collapsed autocorrelation function (ACF)
@@ -787,10 +787,10 @@ class Target:
         Computes a collapsed autocorrelation function (ACF).
 
         Parameters
-            b : int
-                the trial number
             step : float
                 fractional step size to use for the collapsed ACF calculation
+            max_snr : float, optional
+                the maximum signal-to-noise of the estimate (this is primarily for plot formatting)
 
         Attributes
             compare : List[float]
@@ -852,7 +852,9 @@ class Target:
 
         Returns
             return : bool
-                will return `True` if there is prior value for numax otherwise `False`.
+                will return `True` if there is prior value for numax otherwise `False`
+
+        .. seealso:: modules :py:mod:`target.Target.estimate_numax`, :py:mod:`target.Target.initial_estimates`
 
         """
         # THIS MUST BE FIXED TOO
@@ -1054,11 +1056,8 @@ class Target:
 
     def fit_global(self, acf_mask=None):
         """
-        Fit global properties
 
-        The main pySYD pipeline routine that:
-         #. fits the granulation background and correct for it
-         #. then measures numax and dnu 
+        Fits for global asteroseismic parameters :math:`\\rm \\nu{max}` and :math:`\\Delta\\nu`
 
 
         """
@@ -1082,7 +1081,7 @@ class Target:
 
         Parameters
             ind_width : float
-                the independent average smoothing width (default = `20.0` :math:`\rm \mu Hz`)
+                the independent average smoothing width (default = `20.0` :math:`\\rm \\mu Hz`)
 
         Attributes
             bin_freq : numpy.ndarray
@@ -1128,9 +1127,9 @@ class Target:
         """
         Estimate red noise
 
-        Estimates amplitude of red noise components by using a smoothed version of the power
-        spectrum with the power excess region masked out. This will take the mean of a specified 
-        number of points (via -nrms, default=20) for each Harvey-like component.
+        Estimates amplitudes of red noise components by using a smoothed version of the power
+        spectrum with the power excess region masked out -- which will take the mean of a specified 
+        number of points (via -nrms, default=20) for each Harvey-like component
 
         Parameters
             box_filter : float
@@ -1274,7 +1273,9 @@ class Target:
 
     def correct_background(self, metric='aic'):
         """
-        Saves information re: the selected best-fit model (for the stellar background).
+        Saves information on the selected best-fit background model, corrects for this
+        in the power spectrum (i.e. :term:`background-corrected power spectrum`), and saves
+        a copy to :ref:`starid_bg_corr.txt <library-output-files-text-bgcorrps>`
         
         Parameters
             metric : str
@@ -1287,6 +1288,8 @@ class Target:
                 selected best-fit background model
             pars : numpy.ndarray
                 derived parameters for best-fit background model
+
+        .. seealso:: :mod:`Target.model_background`
 
 
         """
@@ -1325,7 +1328,6 @@ class Target:
 
     def get_background(self):
         """
-        Calculate red noise
 
         Calculates the red noise levels in a power spectrum due to the background 
         stellar contribution
@@ -1363,7 +1365,7 @@ class Target:
 
     def get_numax_smooth(self, sm_par=None,):
         """
-        Smooth :math:`\nu_{\mathrm{max}}`
+        Smooth :math:`\\nu_{\\mathrm{max}}`
 
         Estimate numax taking the peak of the smoothed power spectrum
 
@@ -1397,7 +1399,7 @@ class Target:
 
     def get_numax_gaussian(self):
         """
-        Gaussian :math:`\nu_{\mathrm{max}}`
+        Gaussian :math:`\\nu_{\\mathrm{max}}`
 
         Estimate numax by fitting a Gaussian to the power spectrum and adopting the center value
     
@@ -1413,7 +1415,7 @@ class Target:
             gauss, _ = curve_fit(models.gaussian, self.region_freq, self.region_pow, p0=guesses, bounds=bb, maxfev=5000)
         except RuntimeError as _:
             if self.i == 0:
-                raise ProcessingError("Gaussian fit for numax failed to converge.\n\nPlease check your power spectrum and try again.")
+                raise PySYDProcessingError("Gaussian fit for numax failed to converge.\n\nPlease check your power spectrum and try again.")
             else:
                 pass
         else:
@@ -1433,16 +1435,17 @@ class Target:
 
         Parameters
             fft : bool
-                if `True`, uses FFTs to compute the ACF, otherwise it will use
-                ``numpy.correlate`` (default = `True`)
+                if `True`, uses FFTs to compute the ACF, otherwise it will use :mod:`numpy.correlate`
+                (default = `True`)
             smooth_ps : float, optional
-                convolve the background-corrected PS with a box filter of this width (:math:`\rm \mu Hz`)
+                convolve the background-corrected PS with a box filter of this width (:math:`\\rm \\mu Hz`)
 
         Attributes
             bgcorr_smooth : numpy.ndarray
                 
             lag
             auto
+
 
         """
         if self.params['dnu'] is not None:
@@ -1619,9 +1622,9 @@ class Target:
 
     def echelle(self, smooth_ech=None, nox=50, noy=0, hey=False,):
         """
-        Echelle diagram
+        Echelle diagram (ED)
 
-        Creates required arrays to plot an echelle diagram in the final figure
+        Creates required arrays to plot the ED in the final figure
 
         Parameters
             smooth_ech : float, optional
@@ -1688,6 +1691,12 @@ class Target:
 
 
     def estimate_dnu(self):
+        """
+
+        Estimates the spacing (:math:`\\Delta\\nu`) by fitting a Gaussian to the relevant
+        peak in the autocorrelation function (:term:`ACF`)
+
+        """
         # define the peak in the ACF
         self.zoom_lag = self.lag[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
         self.zoom_auto = self.auto[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
@@ -1699,15 +1708,3 @@ class Target:
         else:
             # the center of that Gaussian is our estimate for Dnu
             self.params['results']['parameters']['dnu'].append(gauss[2]) 
-
-
-class InputError(Exception):
-    def __repr__(self):
-        return "InputError"
-    __str__ = __repr__
-
-
-class ProcessingError(Exception):
-    def __repr__(self):
-        return "ProcessingError"
-    __str__ = __repr__

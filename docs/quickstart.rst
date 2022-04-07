@@ -12,11 +12,11 @@ ours.
 
 On this page we will work through two examples -- each demonstrating a different way to
 use the software. Since the software was initially intended to be a hands-off command-line tool,
-the first example will run ``pySYD`` as a script to introduce both the software *and* science 
-in a crash course to asteroseismology -- what we like to refer to as crashteroseismology.
-We'll break everything down to be sure everyone is on the same page and then once we are all
-expert asteroseismologists, we will reconstruct it in a condensed form by importing ``pySYD``
-as a module.
+the first example will run ``pySYD`` :ref:`as a script <quickstart-script>` to introduce 
+the software *and* science in a crash course -- what we refer to as 
+:ref:`crashteroseismology <quickstart-crash>.` We'll break everything down to be sure everyone 
+is on the same page and then once we are all experts, we will reconstruct it in a condensed 
+form by using ``pySYD`` in an :ref:`interaction session <quickstart-module>`.
 
 If you have *any* questions, check out our :ref:`user guide <user-guide>` for more 
 information. If this still does not address your question or problem, please do not hesitate
@@ -39,10 +39,9 @@ Crashteroseismology
 **crash course in asteroseismology**
 
 For purposes of this first example, we will assume that we do not know anything about the star or
-its properties so that the software runs from start to finish. In any typical circumstance,
-however,  we can provide optional inputs (e.g., the center of the frequency range with the 
-oscillations, or :term:`numax` :math:`\rm \nu_{max}`) that can bypass some additionally steps
-and save time. 
+its properties so that the software runs from start to finish on its own. In any normal circumstance,
+however, we can provide additional inputs (e.g., the center of the frequency range with the 
+oscillations, or :term:`numax` :math:`\rm \nu_{max}`) that can bypass steps and save some time. 
 
 -----
 
@@ -185,7 +184,7 @@ this out so that we are left with very little residual slope in the power spectr
 Background Fit' is shown below in the second panel by the lime green line. Then we have our
 background-divided power spectrum directly to the right of this panel.
 
-.. image:: _static/quickstart-1435467_estimates.png
+.. image:: _static/quickstart/1435467_estimates.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
 
@@ -273,7 +272,7 @@ worked for this purpose yet but you have an idea, please reach out and let us kn
 Model 4 was selected for our example, consisting of two Harvey-like components, each with their characteristic
 time scale and amplitude. In this case, the white noise was *not* a free parameter.
 
-.. image:: _static/quickstart-1435467_global.png
+.. image:: _static/quickstart/1435467_global.png
   :width: 680
   :alt: Global parameters for KIC 1435467
 
@@ -346,7 +345,7 @@ Notice the difference in the printed parameters this time - they now have uncert
 We include the progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
 executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
 
-.. image:: _static/quickstart-1435467_samples.png
+.. image:: _static/quickstart/1435467_samples.png
   :width: 680
   :alt: KIC 1435467 posteriors
 
@@ -370,7 +369,6 @@ executed in parallel mode. This is hard-wired since the latter would produce a n
 * matches expected output for model 4 selection - notice how there is no white noise term
 in the output. this is because the model preferred for this to be fixed
    
-
 
 -----
 

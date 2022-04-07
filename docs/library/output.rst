@@ -7,7 +7,9 @@ about the star -- which can only be done by saving and interpreting the results.
 
 Since we have already shown many examples for different stellar types, we will not include 
 any additional examples on this page but instead, list and describe each of the output files. 
-We refer the reader to this page or that page for more examples.
+Therefore we refer the reader to check out :ref:`this page <quickstart>`, the 
+:ref:`comand-line examples <user-guide-cli-examples>` or the :ref:`notebook tutorials <user-guide-nb>`
+if more examples are desired.
 
 -----
 
@@ -36,14 +38,16 @@ example if you'd like more information about the printed `verbose` output.
 Files
 #####
 
-Listed are the extensions to all possible output files from the software: 
- #. starname_PS.txt
- #. starname_bg_corr.txt
- #. estimates.csv
- #. global.csv
- #. samples.csv
+Listed are all the possible output files:
 
-and we describe each in more detail, including the likely scenarios they arise from.
+ #. :ref:`starname_PS.txt <library-output-files-text-ps>`
+ #. :ref:`starname_bg_corr.txt <library-output-files-text-bgcorrps>`
+ #. :ref:`estimates.csv <library-output-files-csv-estimates>`
+ #. :ref:`global.csv <library-output-files-csv-global>`
+ #. :ref:`samples.csv <library-output-files-csv-samples>`
+
+which we describe in more detail below, including the frequency and likely scenarios they 
+arise from.
 
 .. _library-output-files-text:
 
@@ -144,12 +148,13 @@ See :ref:`examples` for a guide on what the output plots are showing.
 Figures
 #######
 
-Listed are the extensions to all possible output figures from the software: 
- #. numax_estimates.png
- #. global_fit.png
- #. samples.png
+Listed are all possible output figures for running a single star:
 
-and we describe each in more detail, including the likely scenarios they arise from.
+ #. :ref:`numax_estimates.png <library-output-figures-png-estimates>`
+ #. :ref:`global_fit.png <library-output-figures-png-global>`
+ #. :ref:`samples.png <library-output-figures-png-samples>`
+
+and similar to the :ref:`file section <library-output-files>`, we describe each in more detail below.
 
 .. _library-output-figures-png:
 

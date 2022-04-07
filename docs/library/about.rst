@@ -31,6 +31,30 @@ existing analyses and expanding upon numerous new features. Some of the improvem
 
 -----
 
+.. _library-about-benchmark:
+
+Benchmarking to closed-source pipelines
+#######################################
+
+We ran `pySYD` on ~100 *Kepler* legacy stars (defined :term:`here <Kepler legacy sample>`) observed in short-cadence and compared 
+the output to ``SYD`` results from `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_. 
+The same time series and power spectra were used for both analyses. The resulting values 
+are compared for the two methods below for :term:`numax` (:math:`\rm \nu_{max}`, left) and 
+:term:`dnu` (:math:`\Delta\nu`, right). 
+
+.. image:: ../_static/comparison.png
+  :width: 680
+  :alt: Comparison of the `pySYD` and `SYD` pipelines
+
+The residuals show no strong systematics to within <0.5% in Dnu and <~1% in numax, which 
+is smaller than the typical random uncertainties. This confirms that the open-source `Python` 
+package ``pySYD`` provides consistent results with the legacy IDL version that has been 
+used extensively in the literature.
+
+.. TODO:: Add script or jupyter notebook to reproduce this figure.
+
+-----
+
 .. _library-about-related:
 
 Related Tools
@@ -151,29 +175,5 @@ a list of software packages that performs similar or complementary analyses.
     If your software is not listed or if something listed is incorrect/missing, please 
     open a pull request to add it, we aim to be inclusive of all *Kepler*-, K2- and TESS-
     related tools!
-
------
-
-.. _library-about-benchmark:
-
-Benchmarking to closed-source pipelines
-#######################################
-
-We ran `pySYD` on ~100 *Kepler* legacy stars (defined :term:`here <Kepler legacy sample>`) observed in short-cadence and compared 
-the output to ``SYD`` results from `Serenelli et al. 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S/abstract>`_. 
-The same time series and power spectra were used for both analyses. The resulting values 
-are compared for the two methods below for :term:`numax` (:math:`\rm \nu_{max}`, left) and 
-:term:`dnu` (:math:`\Delta\nu`, right). 
-
-.. image:: _static/comparison.png
-  :width: 680
-  :alt: Comparison of the `pySYD` and `SYD` pipelines
-
-The residuals show no strong systematics to within <0.5% in Dnu and <~1% in numax, which 
-is smaller than the typical random uncertainties. This confirms that the open-source `Python` 
-package ``pySYD`` provides consistent results with the legacy IDL version that has been 
-used extensively in the literature.
-
-.. TODO:: Add script or jupyter notebook to reproduce this figure.
 
 -----

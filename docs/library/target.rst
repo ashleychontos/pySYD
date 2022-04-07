@@ -29,3 +29,6 @@ Examples
 
 .. automodule:: pysyd.target
    :members:
+
+.. autoclass:: pysyd.target.Target
+   :inherited-members:

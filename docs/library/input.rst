@@ -15,9 +15,8 @@ In case you missed it -- there is a convenient way for you to get started right
 away -- which is by running the ``pySYD`` setup feature. Running the command will provide 
 *all* of the relevant files that are discussed in detail on this page. 
 
-To read more details about the setup feature, please visit our :ref:`Installation <installation>` 
-or :ref:`Quickstart <quickstart>` pages. You can also see how it works directly by visiting
-:ref:`the API <library-pipeline>`. 
+To read more details about the setup feature, please visit :ref:`this page <install-setup>` *or*
+peep its API (:mod:`pysyd.pipeline.setup`). 
 
 -----
 

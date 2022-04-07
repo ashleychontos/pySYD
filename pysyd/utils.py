@@ -110,9 +110,13 @@ class Parameters(Constants):
 
     def get_defaults(self, params={}):
         """
-        Load defaults
+        Loads default parameters information
     
-        Loads in all the default parameters for pysyd to run
+        Calls
+            :mod:`pysyd.utils.Parameters.get_main`
+            :mod:`pysyd.utils.Parameters.get_excess`
+            :mod:`pysyd.utils.Parameters.get_background`
+            :mod:`pysyd.utils.Parameters.get_globe`
 
         Attributes
             params : Dict[str[Dict[,]]]
@@ -224,6 +228,8 @@ class Parameters(Constants):
             bin_mode : {'mean', 'median', 'gaussian'}
                 mode to use when binning
 
+        .. seealso:: methods :py:mod:`get_background`, :py:mod:`get_globe`
+
         Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
@@ -247,13 +253,13 @@ class Parameters(Constants):
                        upper_bg=8000.0, n_threads=0, showall=False,):
         """
     
-        Get the parameters for the background-fitting routine.
+        Get defaults for the background-fitting routine
 
         Parameters
             box_filter : float
-                the size of the 1D box smoothing filter (default = `1.0` :math:`\rm \mu Hz`)
+                the size of the 1D box smoothing filter (default = `1.0` :math:`\\rm \\mu Hz`)
             ind_width : float
-                the independent average smoothing width (default = `20.0` :math:`\rm \mu Hz`)
+                the independent average smoothing width (default = `20.0` :math:`\\rm \\mu Hz`)
             n_rms : int
                 number of data points to estimate red noise contributions (default = `20`)
             metric : str
@@ -301,8 +307,8 @@ class Parameters(Constants):
                   interp_ech=False, lower_ech=None, upper_ech=None, nox=50, noy=0, notching=False,):
         """
     
-        Get the parameters relevant for finding global asteroseismic parameters :math:`\rm \nu_{max}` 
-        and :math:`\Delta\nu`
+        Get defaults for deriving global asteroseismic parameters :math:`\\rm \\nu_{max}` 
+        and :math:`\\Delta\\nu`
 
         Parameters
             sm_par : float
@@ -371,7 +377,7 @@ class Parameters(Constants):
         if stars is not None:
             self.params['stars'] = stars
         else:
-            raise InputError("ERROR: no star provided")
+            raise PySYDInputError("ERROR: no star provided")
         self.assign_stars()
 
 
@@ -441,7 +447,7 @@ class Parameters(Constants):
         """
         Add info
 
-        Saves all defaults, inputs and information for each star separately
+        Checks and saves all default information for stars separately
 
 
         """
@@ -469,7 +475,9 @@ class Parameters(Constants):
         Load star info
     
         Reads in any star information provided in the csv -- columns MUST match the exact
-        formats provided. TODO: if unsure, can (re)set up this file with a simple command
+        formats provided 
+
+        .. todo:: if unsure, can (re)set up this file with a simple command
 
 
         """
@@ -556,9 +564,6 @@ class Parameters(Constants):
             max_laws : int
                 maximum number of resolvable Harvey components
 
-        Yields
-            ??? (what's the thing for asserting)
-
         """
         self.override = {
             'numax': args.numax,
@@ -610,7 +615,7 @@ def get_dict(type='params'):
                 6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
                 7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
                }
-    path = os.path.join(os.path.dirname(__file__), 'data', '%s.dict'%type)
+    path = os.path.join(os.path.dirname(__file__), 'dicts', '%s.dict'%type)
     with open(path, 'r') as f:
         return ast.literal_eval(f.read())
 
@@ -679,13 +684,13 @@ def get_next(path, count=1):
 def save_estimates(star, variables=['star', 'numax', 'dnu', 'snr']):
     """
     
-    Saves the estimate for numax (from first module)
+    Saves the parameter estimates (i.e. results from first module)
 
     Parameters
         star : pysyd.target.Target
             processed pipeline target
         variables : List[str]
-            list of estimated variables to save (e.g., :math:`\rm \nu_{max}`, :math:`\Delta\nu`)
+            list of estimated variables to save (e.g., :math:`\\rm \\nu_{max}`, :math:`\\Delta\\nu`)
 
     Returns
         star : pysyd.target.Target
@@ -707,7 +712,7 @@ def save_plotting(star):
     """
     
     Saves all the relevant information for plotting (from the first iteration) so that it can 
-    be done at the end now, opposed to interrupting the workflow like it did before.
+    be done at the end now, as opposed to interrupting the workflow like it did before
 
     Parameters
         star : pysyd.target.Target
@@ -780,7 +785,7 @@ def save_plotting(star):
 def save_parameters(star, results={}, cols=['parameter', 'value', 'uncertainty']):
     """
     
-    Saves the derived global asteroseismic parameters (from the main module)
+    Saves the derived global parameters 
 
     Parameters
         star : pysyd.target.Target
@@ -817,9 +822,8 @@ def save_parameters(star, results={}, cols=['parameter', 'value', 'uncertainty']
 
 def verbose_output(star, note=''):
     """
-    Verbose output
 
-    Prints the results from the global asteroseismic fit (if args.verbose is `True`)
+    Prints verbose output from the global fit 
 
 
     """
@@ -847,9 +851,8 @@ def scrape_output(args):
     """
     Concatenate results
     
-    Takes the results from each processed target and concatenates the results into a single csv 
-    for each submodule (i.e. excess.csv and background.csv). This is automatically called if pySYD 
-    successfully runs for at least one star (count >= 1)
+    Takes results for each processed target and concatenates the results into a single csv 
+    for each submodule -- this is done automatically
     
 
     """
@@ -997,9 +1000,8 @@ def return_max(x, y, exp_dnu=None, index=False, idx=None):
 
 def bin_data(x, y, width, log=False, mode='mean'):
     """
-    Bin data
     
-    Bins a series of data
+    Bins data
 
     Parameters
         x : numpy.ndarray
@@ -1046,7 +1048,9 @@ def bin_data(x, y, width, log=False, mode='mean'):
 def ask_int(question, n_trials, max_attempts=10, count=1, special=False):    
     """
     
-    Asks for an integer user input
+    Asks for an integer user input -- this is specially formatted for the
+    estimating module by requiring an integer number that corresponds to one
+    of the (n_)trials or zero to provide :math:`\\rm \\nu_{max}` directly
 
     Parameters
         question : str
@@ -1091,7 +1095,7 @@ def ask_int(question, n_trials, max_attempts=10, count=1, special=False):
     return None
 
 
-def get_results(file_idlsyd='dicts/idlsyd_results.txt', file_pysyd='dicts/pysyd_results.csv', 
+def get_results(file_idlsyd='idlsyd_results.txt', file_pysyd='pysyd_results.csv', 
                 suffixes=['_idl', '_py'], max_numax=3200.,):
     """
 
@@ -1113,8 +1117,9 @@ def get_results(file_idlsyd='dicts/idlsyd_results.txt', file_pysyd='dicts/pysyd_
 
     """
     # load in both pipeline results
-    idlsyd = pd.read_csv(file_idlsyd, skiprows=20, delimiter='|', names=get_dict('columns')['syd'])
-    pysyd = pd.read_csv(file_pysyd)
+    idlsyd = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', file_idlsyd), \
+                         skiprows=20, delimiter='|', names=get_dict('columns')['syd'])
+    pysyd = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', file_pysyd))
     # make sure they can crossmatch
     idlsyd.KIC = idlsyd.KIC.astype(str)
     pysyd.star = pysyd.star.astype(str)

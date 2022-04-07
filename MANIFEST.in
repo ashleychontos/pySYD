@@ -2,4 +2,5 @@ include README.md
 include CONTRIBUTING.md
 include CODE_OF_CONDUCT.md
 include requirements.txt
+include data/*
 exclude examples/*
