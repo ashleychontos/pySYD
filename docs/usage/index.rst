@@ -1,5 +1,3 @@
-.. _usage/index:
-
 *****************
 Usage & tutorials
 *****************

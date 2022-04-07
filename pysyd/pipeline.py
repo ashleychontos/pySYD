@@ -25,19 +25,7 @@ def check(args):
 
     
     """
-    if args.data:
-        if args.stars is None:
-            print('\nTrying to check data but no target provided.\nPlease provide a star via --star and try again.')
-            return
-        else:
-            assert len(args.stars) == 1, "No more than one star can be checked at a time."
-        if args.verbose:
-            print('\n\nChecking data for target %s:'%args.stars[0])
-    display, verbose = args.plot, args.verbose
-    # Load in data for a given star
-    new_args = utils.Parameters(args)
-    star = Target(args.stars[0], new_args)
-    star.params['show'], star.params['verbose'] = args.plot, args.verbose
+    star, args = load(args)
     plots.check_data(star, args)
 
 
@@ -84,7 +72,7 @@ def load(args):
     new_args = utils.Parameters(args)
     star = Target(args.stars[0], new_args)
     star.params['show'], star.params['verbose'] = args.plot, args.verbose
-
+    return star, args
 
 
 def parallel(args):
@@ -176,7 +164,7 @@ def plot(args):
 
     """
     if args.compare:
-        plots.create_comparison_plot(show=args.show, save=args.save, overwrite=args.overwrite,):
+        plots.create_comparison_plot(show=args.show, save=args.save, overwrite=args.overwrite,)
     if args.results:
         if args.stars is None:
             raise utils.InputError("Please provide a star to plot results for")

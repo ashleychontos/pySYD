@@ -8,13 +8,28 @@ import multiprocessing as mp
 from astropy.stats import mad_std
 from astropy.timeseries import LombScargle as lomb
 
-from pysyd.models import *
+from . import PACKAGEDIR, MPLSTYLE
+from .models import *
 
 
 
-class InputError(Exception):
+
+class PySYDInputError(Exception):
+    """Class for pySYD user input errors."""
     def __repr__(self):
-        return "InputError"
+        return "PySYDInputError"
+    __str__ = __repr__
+
+class PySYDProcessingError(Exception):
+    """Class for pySYD processing exceptions."""
+    def __repr__(self):
+        return "PySYDProcessingError"
+    __str__ = __repr__
+
+class PySYDInputWarning(Warning):
+    """Class for pySYD user input warnnings."""
+    def __repr__(self):
+        return "PySYDInputWarning"
     __str__ = __repr__
 
 
@@ -596,7 +611,7 @@ def get_dict(type='params'):
                 6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
                 7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
                }
-    path = os.path.join(os.path.dirname(__file__), 'dicts', '%s.dict'%type)
+    path = os.path.join(os.path.dirname(__file__), 'data', '%s.dict'%type)
     with open(path, 'r') as f:
         return ast.literal_eval(f.read())
 
@@ -1078,7 +1093,7 @@ def ask_int(question, n_trials, max_attempts=10, count=1, special=False):
 
 
 def get_results(file_idlsyd='dicts/idlsyd_results.txt', file_pysyd='dicts/pysyd_results.csv', 
-                suffixes=['_idl', '_py'], max_numax=3200.,)
+                suffixes=['_idl', '_py'], max_numax=3200.,):
     """
 
     Load pipeline results from `SYD` and `pySYD`

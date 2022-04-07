@@ -1,7 +1,5 @@
 .. module:: pysyd
 
-.. _library/index:
-
 *****************
 ``pySYD`` library
 *****************

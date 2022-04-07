@@ -643,6 +643,7 @@ def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
 def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'], show=False, 
                            save=True, minor=10., major=15., LW=1.25, label_size=28., tick_size=22.,
                            overwrite=False, npanels=2,):
+
     """
     Compare ensemble results between the ``pySYD`` and ``SYD`` pipelines
     for the *Kepler* legacy sample
@@ -676,38 +677,37 @@ def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'],
     params = utils.get_dict('params')
     df = utils.get_results()
 
-	fig = plt.figure(figsize=(6,12))
-	plt.rc('text', usetex=True)
+    fig = plt.figure(figsize=(6,12))
     og = gridspec.GridSpec(npanels, 1, wspace=0.0, hspace=0.0, bottom=0.1)
-     
+
     for i, variable in enumerate(variables):
         # inner grid for including residuals
         ig = gridspec.GridSpecFromSubplotSpec(8, 6, subplot_spec=og[i])
         # plot parameters
-   	    ax1 = plt.subplot(ig[0:6, 0:6])
-	    ax1.plot(df[params['c%s'%variable]['syd']].values, df[params['c%s'%variable]['syd']].values, c='k',ls='--')
-	    ax1.errorbar(df[params['c%s'%variable]['syd']].values, df[params['c%s'%variable]['pysyd']].values, fmt='o', mec='k', mfc='none', color='lightgrey')
-    	ax1.set_ylabel(params['c%s'%variable]['ylabel'], fontsize=label_size)
+        ax1 = plt.Subplot(fig, ig[0:6, 0:6])
+        ax1.plot(df[params['c%s'%variable]['syd']].values, df[params['c%s'%variable]['syd']].values, c='k',ls='--')
+        ax1.errorbar(df[params['c%s'%variable]['syd']].values, df[params['c%s'%variable]['pysyd']].values, fmt='o', mec='k', mfc='none', color='lightgrey')
+        ax1.set_ylabel(params['c%s'%variable]['ylabel'], fontsize=label_size)
         ax1.tick_params(labelsize=tick_size)
         ax1.tick_params(axis='both', which='minor', length=minor, width=LW, direction='inout')
         ax1.tick_params(axis='both', which='major', length=major, width=LW, direction='inout') 
 
         # plot residuals
         residuals = (df[params['c%s'%variable]['syd']].values-df[params['c%s'%variable]['pysyd']].values)/df[params['c%s'%variable]['syd']].values
-	    ax2 = plt.subplot(gs[6:8, 0:6])
-	    ax2.errorbar(df[params['c%s'%variable]['syd']].values, residuals, fmt='o' ,mec='k', mfc='none', color='lightgrey')
-	    ax2.axhline(0, c='k', ls='--')
-    	ax2.set_ylabel(r'$\frac{\textrm{SYD -- pySYD}}{\textrm{SYD}}$', fontsize=28)
-    	ax2.set_xlabel(params['c%s'%variable]['xlabel']) 
-	    ax2.set_ylim(params['c%s'%variable]['ylimit'][0],params['c%s'%variable]['ylimit'][1])
+        ax2 = plt.Subplot(fig, ig[6:8, 0:6])
+        ax2.errorbar(df[params['c%s'%variable]['syd']].values, residuals, fmt='o' ,mec='k', mfc='none', color='lightgrey')
+        ax2.axhline(0, c='k', ls='--')
+        ax2.set_ylabel(r'$\frac{\textrm{SYD -- pySYD}}{\textrm{SYD}}$', fontsize=28)
+        ax2.set_xlabel(params['c%s'%variable]['xlabel']) 
+        ax2.set_ylim(params['c%s'%variable]['ylimit'][0],params['c%s'%variable]['ylimit'][1])
         ax2.axhline(0.01, c='lightgrey', ls='--', dashes=(5,5), zorder=-1)
         ax2.axhline(-0.01, c='lightgrey', ls='--', dashes=(5,5), zorder=-1)
-	    # add stats
-	    STR1='Offset: {0:.5f}'.format(np.median(residuals))+' $\pm$ ' +'{0:.5f}'.format(1.25*np.std(residuals)/np.sqrt(len(residuals)))
-	    STR2='Scatter (MAD): {0:.5f}'.format(mad_std(residuals))
-	    STR3='Scatter (SD): {0:.5f}'.format(np.std(residuals))
-	    t = ax1.text(0.03,0.9, s=STR1+STR2+STR3, color='k', ha='left', va='center', transform = ax1.transAxes)
-	    t.set_bbox(dict(facecolor='white',edgecolor='k'))
+        # add stats
+        STR1='Offset: {0:.5f}'.format(np.median(residuals))+' $\pm$ ' +'{0:.5f}'.format(1.25*np.std(residuals)/np.sqrt(len(residuals)))
+        STR2='Scatter (MAD): {0:.5f}'.format(mad_std(residuals))
+        STR3='Scatter (SD): {0:.5f}'.format(np.std(residuals))
+        t = ax1.text(0.03,0.9, s=STR1+STR2+STR3, color='k', ha='left', va='center', transform = ax1.transAxes)
+        t.set_bbox(dict(facecolor='white',edgecolor='k'))
 
     plt.tight_layout()
     if save:

@@ -245,9 +245,9 @@ Use the following to get up and running right away:
     cd ~/path/to/local/pysyd/directory
     pysyd setup 
 
-The final command which will equip you with example data and files to immediately get 
-started using the software. This is essentially the same as all the steps discussed above 
-but in a more condensed version.
+The last command which will provide you with example data and files to immediately get 
+going. This is essentially a summary of all the steps discussed on this page but a more
+consolidated version.
 
 *You are now ready to become an asteroseismologist!*
 

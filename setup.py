@@ -9,9 +9,9 @@ def get_property(prop, project):
 with open("README.md", "r", encoding="utf-8") as file:
     long_description = file.read()
 
-reqs = []
+install_reqs = []
 for line in open('requirements.txt', 'r').readlines():
-    reqs.append(line)
+    install_reqs.append(line)
 
 setuptools.setup(
     name="pysyd",
@@ -33,9 +33,9 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=reqs,
+    install_requires=install_reqs,
     packages=setuptools.find_packages(),
-    package_data={"": ["dicts/*.dict"]},
+    package_data={"pysyd": ["dicts/*.dict", "dicts/*.txt", "dicts/*.csv"]},
     entry_points={'console_scripts':['pysyd=pysyd.cli:main']},
     python_requires=">=3.6",
 )

@@ -8,14 +8,19 @@ import sys
 
 __all__ = ['cli', 'pipeline', 'models', 'target', 'plots', 'utils']
 __author__ = 'ashley <achontos@hawaii.edu>'
-__version__ = '5.0.0'
+__version__ = '5.0.7'
 
 _ROOT = os.path.abspath(os.getcwd())
 INFDIR = os.path.join(_ROOT, 'info')
 INPDIR = os.path.join(_ROOT, 'data')
 OUTDIR = os.path.join(_ROOT, 'results')
+PACKAGEDIR = os.path.abspath(os.path.dirname(__file__))
+MPLSTYLE = "{}/data/pysyd.mplstyle".format(PACKAGEDIR)
+"""
 
-import sys
+Matplotlib stylesheet for plotting ``pySYD`` results.
+
+"""
 
 # enforce python version
 # (same as check at beginning of setup.py)

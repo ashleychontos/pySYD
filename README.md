@@ -58,7 +58,7 @@ If applicable, please also use our [ASCL listing](https://ui.adsabs.harvard.edu/
 
 ## License
 
-&copy; 2022 Ashley Chontos and contributors. <br/>
+&copy; 2019-2022 Ashley Chontos and contributors. <br/>
 `pySYD` is free software made available under the [MIT license](LICENSE.md).
 
 ## Contribution

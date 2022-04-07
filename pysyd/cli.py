@@ -99,12 +99,6 @@ def main():
                              default=False, 
                              action='store_true',
     )
-    data_parser.add_argument('-r', '--ret', '--return',
-                             dest='return',
-                             help='Disable the returning of any parameters',
-                             default=False, 
-                             action='store_true',
-    )
     data_parser.add_argument('-s', '--save',
                              dest='save',
                              help='Do not save output figures and results.',
@@ -476,7 +470,7 @@ def main():
                               default=None,
                               type=float,
     )
-    parser_check.add_argument('--ll', '--lc', '--lowert', '--lowerl', '--lowerlc'
+    parser_check.add_argument('--ll', '--lc', '--lowert', '--lowerl', '--lowerlc',
                               metavar='float', 
                               dest='lower_lc',
                               help='Lower limit to plot for time series data',
@@ -495,14 +489,14 @@ def main():
                               default=True, 
                               action='store_false',
     )
-    parser_check.add_argument('--up', '--upperp', '--upperps'
+    parser_check.add_argument('--up', '--upperp', '--upperps',
                               metavar='float', 
                               dest='upper_ps',
                               help='Upper frequency limit to plot for power spectrum',
                               default=None,
                               type=float,
     )
-    parser_check.add_argument('--ul', '--uc', '--uppert', '--upperl', '--upperlc'
+    parser_check.add_argument('--ul', '--uc', '--uppert', '--upperl', '--upperlc',
                               metavar='float', 
                               dest='upper_lc',
                               help='Upper limit to plot for time series data',
