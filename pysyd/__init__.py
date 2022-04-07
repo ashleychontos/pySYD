@@ -8,7 +8,7 @@ import sys
 
 __all__ = ['cli', 'pipeline', 'models', 'target', 'plots', 'utils']
 __author__ = 'ashley <achontos@hawaii.edu>'
-__version__ = '5.0.7'
+from version import __version__ 
 
 _ROOT = os.path.abspath(os.getcwd())
 INFDIR = os.path.join(_ROOT, 'info')
