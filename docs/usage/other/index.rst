@@ -1,4 +1,4 @@
-.. _usage/other/index:
+.. _user-guide-other:
 
 ***********************
 Other usage & tutorials

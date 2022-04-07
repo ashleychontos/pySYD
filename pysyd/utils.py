@@ -8,9 +8,8 @@ import multiprocessing as mp
 from astropy.stats import mad_std
 from astropy.timeseries import LombScargle as lomb
 
-from . import PACKAGEDIR, MPLSTYLE
-from .models import *
 
+from .models import *
 
 
 

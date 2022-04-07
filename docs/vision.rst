@@ -18,7 +18,7 @@ closed-source tools.
 
 .. note::
 
-    We've attempted to collect these tools in a :ref:`single place <library/about/related>` 
+    We've attempted to collect these tools in a :ref:`single place <library-about-related>` 
     for easy comparisons. Please let us know if we've somehow missed yours --
     we would be happy to add it!
 

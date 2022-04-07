@@ -5,7 +5,7 @@
    have become available -- which is exciting but we are also still furiously working away on 
    this. ***STAY TUNED FOR NEW TOOLS!*** 
 
-.. _library/input:
+.. _library-input:
 
 ******
 Inputs
@@ -21,7 +21,7 @@ or :ref:`Quickstart <quickstart>` pages. You can also see how it works directly 
 
 -----
 
-.. _library/input/required:
+.. _library-input-required:
 
 Required 
 ########
@@ -35,7 +35,7 @@ For a given star with ID, input data are:
  #. the light curve, and
  #. the power spectrum.
 
-.. _library/input/required/lc:
+.. _library-input-required-lc:
 
 Light curve
 ^^^^^^^^^^^
@@ -48,7 +48,7 @@ for the processing of the data, which we'll discuss in detail in a little bit.**
 For the time series data, the y-axis is less critical here. It can be anything from units 
 of fraction flux or brightness as a function of time, along with any other normalization(s).
 
-.. _library/input/required/ps:
+.. _library-input-required-ps:
 
 Power spectrum
 ^^^^^^^^^^^^^^
@@ -67,7 +67,7 @@ community-driven software packages like `astropy` that can fortunately compute t
 
 -----
 
-.. _library/input/optional:
+.. _library-input-optional:
 
 Optional
 ########
@@ -75,7 +75,7 @@ Optional
 There are two main information files which can be provided but both are optional -- whether
 or not you choose to use them ultimately depends on how you will run the software. 
 
-.. _library/input/optional/todo:
+.. _library-input-optional-todo:
 
 Target list
 ***********
@@ -95,7 +95,7 @@ with the data.
 **Note:** If no stars are specified via command line or in a notebook, ``pySYD`` will read 
 in this text file and process the list of stars by default. 
 
-.. _library/input/optional/info:
+.. _library-input-optional-info:
 
 Star info
 *********

@@ -2,7 +2,7 @@
 Installation & setup
 ********************
 
-.. link-button:: install/quickstart
+.. link-button:: install-quickstart
     :type: ref
     :text: Jump to quickstart
     :classes: btn-outline-secondary btn-block
@@ -14,9 +14,9 @@ Installation
 
 There are three main ways you can install the software:
 
-#. :ref:`Install from the Python Package Index <install/pip>`
-#. :ref:`Create an environment <install/conda>`
-#. :ref:`Clone directly from GitHub <install/git>`
+#. :ref:`Install from the Python Package Index <install-pip>`
+#. :ref:`Create an environment <install-conda>`
+#. :ref:`Clone directly from GitHub <install-git>`
 
 .. note::
 
@@ -25,7 +25,7 @@ There are three main ways you can install the software:
 
 -----
 
-.. _install/pip:
+.. _install-pip:
 
 Install from PyPI
 *****************
@@ -48,7 +48,7 @@ running the following command:
 
 -----
 
-.. _install/conda:
+.. _install-conda:
 
 Create an environment
 *********************
@@ -59,7 +59,7 @@ You can also use `conda` to create an environment. For this example, I'll call i
     
     conda create -n astero numpy scipy pandas astropy matplotlib tqdm
     
-See our complete list of dependencies (including versions) :ref:`below <install/dependencies>`. 
+See our complete list of dependencies (including versions) :ref:`below <install-dependencies>`. 
 Then activate the environment and install ``pySYD``:
 
 .. code-block::
@@ -70,7 +70,7 @@ Then activate the environment and install ``pySYD``:
 
 -----
 
-.. _install/git:
+.. _install-git:
 
 Clone from GitHub
 *****************
@@ -93,7 +93,7 @@ cloned ``pySYD`` repo.
 
 -----
 
-.. _install/dependencies:
+.. _install-dependencies:
 
 Dependencies
 ############
@@ -114,7 +114,7 @@ and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, us
 
 -----
 
-.. _install/test:
+.. _install-test:
 
 Testing 
 #######
@@ -146,7 +146,7 @@ window, which should display the following output:
 
 -----
 
-.. _install/setup:
+.. _install-setup:
 
 Setup
 #####
@@ -231,7 +231,7 @@ As shown above, example data and other relevant files were downloaded from the
 
 -----
 
-.. _install/quickstart:
+.. _install-quickstart:
 
 Quickstart
 ##########

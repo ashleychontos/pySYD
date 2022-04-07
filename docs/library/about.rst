@@ -1,4 +1,4 @@
-.. _library/about:
+.. _library-about:
 
 ******************
 About the software
@@ -31,7 +31,7 @@ existing analyses and expanding upon numerous new features. Some of the improvem
 
 -----
 
-.. _library/about/related:
+.. _library-about-related:
 
 Related Tools
 #############
@@ -154,7 +154,7 @@ a list of software packages that performs similar or complementary analyses.
 
 -----
 
-.. _library/about/benchmark:
+.. _library-about-benchmark:
 
 Benchmarking to closed-source pipelines
 #######################################

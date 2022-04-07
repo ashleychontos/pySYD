@@ -10,10 +10,9 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
 
 
-from pysyd import models
-from pysyd import utils
-from pysyd import plots
-
+from . import utils
+from . import plots
+from . import models
 
 
 

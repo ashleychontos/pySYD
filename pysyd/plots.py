@@ -4,39 +4,9 @@ import matplotlib.pyplot as plt
 from astropy.convolution import convolve, Box1DKernel
 
 
-from pysyd import models
-from pysyd import utils
-
-
-
-def set_plot_params():
-    """
-    Sets the matplotlib parameters.
-
-
-    """
-
-    plt.style.use('dark_background')
-    plt.rcParams.update({
-        'agg.path.chunksize': 10000,
-        'mathtext.fontset': 'stix',
-        'figure.autolayout': True,
-        'lines.linewidth': 1,
-        'axes.titlesize': 18.0,
-        'axes.labelsize': 16.0,
-        'axes.linewidth': 1.25,
-        'axes.formatter.useoffset': False,
-        'xtick.major.size': 10.0,
-        'xtick.minor.size': 5.0,
-        'xtick.major.width': 1.25,
-        'xtick.minor.width': 1.25,
-        'xtick.direction': 'inout',
-        'ytick.major.size': 10.0,
-        'ytick.minor.size': 5.0,
-        'ytick.major.width': 1.25,
-        'ytick.minor.width': 1.25,
-        'ytick.direction': 'inout',
-    })
+from . import utils
+from . import models
+from . import MPLSTYLE
 
 
 
@@ -54,7 +24,7 @@ def make_plots(star, showall=False,):
     
     """
     # set defaults
-    set_plot_params()
+    plt.style.use(MPLSTYLE)
     if 'estimates' in star.params['plotting']:
         plot_estimates(star)
     if 'parameters' in star.params['plotting']:
@@ -173,7 +143,7 @@ def plot_estimates(star, filename='numax_estimates.png', ask=False, highlight=Tr
         plt.show(block=False)
 
 
-def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10):
+def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10, cmap=):
     """
     Creates a plot summarizing the results of the fit background routine.
 

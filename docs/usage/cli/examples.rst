@@ -1,7 +1,7 @@
 .. role:: bash(code)
    :language: bash
 
-.. _usage/cli/examples:
+.. _user-guide-cli-examples:
 
 *************
 More examples
@@ -14,19 +14,19 @@ If so, then you are ready to get started!
 
 This page has command-line examples for the following cases:
  -  :ref:`single star applications <example/single>` of varying signal-to-noise (SNR) detections:
-     -  :ref:`High SNR <usage/cli/examples/single/high>`
-     -  :ref:`Medium SNR <usage/cli/examples/single/medium>`
-     -  :ref:`Low SNR <usage/cli/examples/single/low>`
-     -  :ref:`No SNR <usage/cli/examples/single/no>`
+     -  :ref:`High SNR <user-guide-cli-examples-single-high>`
+     -  :ref:`Medium SNR <user-guide-cli-examples-single-medium>`
+     -  :ref:`Low SNR <user-guide-cli-examples-single-low>`
+     -  :ref:`No SNR <user-guide-cli-examples-single-no>`
 
- -  running :ref:`many stars <usage/cli/examples/multiple>`
- -  :ref:`advanced examples <usage/cli/examples/advanced>` for special commands 
+ -  running :ref:`many stars <user-guide-cli-examples-multiple>`
+ -  :ref:`advanced examples <user-guide-cli-examples-advanced>` for special commands 
 
 including what to look for in each case.
 
 -----
 
-.. _usage/cli/examples/single:
+.. _user-guide-cli-examples-single:
 
 A single star
 #############
@@ -35,22 +35,22 @@ For applications to single stars, we will start with a very easy, high signal-to
 example, followed by medium, low, and no SNR examples. These won't be detailed walkthroughs 
 but we are hoping to give pointers about what to look for in each class of examples.
 
-.. _usage/cli/examples/single/high:
+.. _user-guide-cli-examples-single-high:
 
 High SNR: KIC 11618103
 **********************
 
 KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
-.. image:: _static/examples/11618103_excess.png
+.. image:: _static/examples-11618103_excess.png
   :width: 680
   :alt: Find excess output plot for KIC 11618103.
 
-.. image:: _static/examples/11618103_background.png
+.. image:: _static/examples-11618103_background.png
   :width: 680
   :alt: Fit background output plot for KIC 11618103.
 
-.. image:: _static/examples/11618103_samples.png
+.. image:: _static/examples-11618103_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
@@ -67,7 +67,7 @@ And just like that, you are now an asteroseismologist!
 
 -----
 
-.. _usage/cli/examples/single/medium:
+.. _user-guide-cli-examples-single-medium:
 
 Medium SNR: KIC 1435467
 ***********************
@@ -78,22 +78,22 @@ breaks down every step and output for this example.
 
 KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \mu Hz`.
 
-.. image:: _static/examples/1435467_estimates.png
+.. image:: _static/examples-1435467_estimates.png
   :width: 680
   :alt: Find excess output plot for KIC 11618103.
 
-.. image:: _static/examples/1435467_global.png
+.. image:: _static/examples-1435467_global.png
   :width: 680
   :alt: Fit background output plot for KIC 11618103.
 
-.. image:: _static/examples/1435467_samples.png
+.. image:: _static/examples-1435467_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
 
 -----
 
-.. _usage/cli/examples/single/low:
+.. _user-guide-cli-examples-single-low:
 
 Low SNR: KIC 8801316
 ********************
@@ -102,11 +102,11 @@ As if asteroseismology wasn't hard enough, let's make it even more difficult for
 
 KIC 8801316 is a subgiant with a numax ~1100 muHz, shown in the figures below. 
 
-.. image:: _static/examples/8801316_excess.png
+.. image:: _static/examples-8801316_excess.png
   :width: 680
   :alt: Numax estimate KIC 8801316.
 
-.. image:: _static/examples/8801316_background.png
+.. image:: _static/examples-8801316_background.png
   :width: 680
   :alt: Global fit for KIC 8801316.
 
@@ -119,29 +119,29 @@ This would be classified as a detection despite the low SNR due to the following
 
 -----
 
-.. _usage/cli/examples/single/no:
+.. _user-guide-cli-examples-single-no:
 
 No SNR: KIC 6278992
 *******************
 
 KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
-.. image:: _static/examples/6278992_excess.png
+.. image:: _static/examples-6278992_excess.png
   :width: 680
   :alt: Find excess output plot for KIC 6278992.
 
-.. image:: _static/examples/6278992_background.png
+.. image:: _static/examples-6278992_background.png
   :width: 680
   :alt: Fit background output plot for KIC 6278992.
 
-.. image:: _static/examples/6278992_samples.png
+.. image:: _static/examples-6278992_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 6278992.
 
 
 -----
 
-.. _usage/cli/examples/multiple:
+.. _user-guide-cli-examples-multiple:
 
 *******************
 Parallel processing
@@ -175,7 +175,7 @@ the :term:`--nthreads<--nt, --nthread, --nthreads>` command:
    
 -----
 
-.. _usage/cli/examples/advanced:
+.. _user-guide-cli-examples-advanced:
 
 **************
 Advanced usage

@@ -1,4 +1,4 @@
-.. _usage/cli/glossary:
+.. _user-guide-cli-glossary:
 
 ******************
 List of CL options

@@ -18,7 +18,7 @@ We'll break everything down to be sure everyone is on the same page and then onc
 expert asteroseismologists, we will reconstruct it in a condensed form by importing ``pySYD``
 as a module.
 
-If you have *any* questions, check out our :ref:`user guide <usage/index>` for more 
+If you have *any* questions, check out our :ref:`user guide <user-guide>` for more 
 information. If this still does not address your question or problem, please do not hesitate
 to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
@@ -28,11 +28,11 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
     to work properly and provide reliable results. If you are unsure about any of the units, 
     we recommend that you provide the light curve (in days) and then let us compute the power
     spectrum for you! For more information about formatting and input data, please visit
-    :ref:`this page <library/input>`.
+    :ref:`this page <library-input>`.
 
 -----
 
-.. _quickstart/crash:
+.. _quickstart-crash:
 
 Crashteroseismology
 ###################
@@ -46,7 +46,7 @@ and save time.
 
 -----
 
-.. _quickstart/script:
+.. _quickstart-script:
 
 Initialize script
 *****************
@@ -54,7 +54,7 @@ Initialize script
 When running ``pySYD`` from command line, you will likely use something similar to the 
 following statement: 
 
-.. _quickstart/script/command:
+.. _quickstart-script-command:
 
 .. code-block::
 
@@ -72,7 +72,7 @@ Now let's deconstruct this statement.
    the ``pySYD`` pipeline is in run mode -- which, just as it sounds, will process stars in the order 
    they were provided. This is saved to the argument ``NameSpace`` as the ``mode`` which will run
    the pipeline by calling :mod:`pysyd.pipeline.run`. There are currently five available 
-   modes, all which are described in more detail :ref:`here <library/pipeline>`
+   modes, all which are described in more detail :ref:`here <library-pipeline>`
 
 ``--star 1435467``
    here we are running a single star, KIC 1435467. You can also provide multiple targets,
@@ -85,7 +85,7 @@ Now let's deconstruct this statement.
    adapting Linux-like features, we reserved the single hash options for booleans which
    can all be grouped together, as shown above. The ``-d`` and ``-v`` are short for display and verbose, 
    respectively, and show the figures and verbose output. For a full list of options available, please 
-   see our :ref:`command-line glossary <usage/cli/glossary>`. There are dozens of options to make your 
+   see our :ref:`command-line glossary <user-guide-cli-glossary>`. There are dozens of options to make your 
    experience as customized as you'd like!
 
 ``--ux 5000``
@@ -93,7 +93,7 @@ Now let's deconstruct this statement.
    due to solar-like oscillations. In this case, there are high frequency artefacts that we would 
    like to ignore. *We actually made a special notebook tutorial specifically on how to address
    and fix this problem.* If you'd like to learn more about this or are having a similar issue, 
-   please visit :ref:`this page <usage/nb/numaxhacks.ipynb>`.
+   please visit :ref:`this page <user-guide-nb-numaxhacks>`.
 
 ``--mc 200``
    last but certainly not least - the ``mc`` (for Monte Carlo-like) option sets the number 
@@ -105,23 +105,23 @@ see our special CLI :ref:`glossary <usage/cli/glossary>`.
 
 -----
 
-.. _quickstart/script/steps:
+.. _quickstart-script-steps:
 
 Typical workflow
 ****************
 
 The software operates in roughly the following steps:
- #. :ref:`Load in parameters and data <quickstart/script/steps/one>`
- #. :ref:`Get initial values <quickstart/script/steps/two>`
- #. :ref:`Fit global parameters <quickstart/script/steps/three>`
- #. :ref:`Estimate uncertainties <quickstart/script/steps/four>`
+ #. :ref:`Load in parameters and data <quickstart-script-steps-one>`
+ #. :ref:`Get initial values <quickstart-script-steps-two>`
+ #. :ref:`Fit global parameters <quickstart-script-steps-three>`
+ #. :ref:`Estimate uncertainties <quickstart-script-steps-four>`
 
 For each step, we will first show the relevant block of printed (or :term:`verbose<-v, --verbose>`) output, then
 describe what the software is doing behind the scenes and if applicable, conclude with the section-specific 
 results (i.e. files, figures, etc.).
 
 
-.. _quickstart/script/steps/one:
+.. _quickstart-script-steps-one:
 
 1. Load in parameters and data
 ++++++++++++++++++++++++++++++
@@ -141,11 +141,9 @@ results (i.e. files, figures, etc.).
 During this step, it will take the star name along with the command-line arguments and 
 created an instance of the :mod:`pysyd.target.Target` object. Initialization of this class
 will automatically search for and load in data for a given star, as shown in the output above.
-
+Both the light curve and power spectrum were available for KIC 143546-
 For this target, KIC 1435467, both the light curve and power spectrum were available and it automatically
-calculated the oversampling factor. **Note:** it will process the pipeline on oversampled spectra for 
-single iterations but will *always* switch to critically-sampled spectra for estimating uncertainties. 
-**Calculating uncertainties with oversampled spectra can produce unreliable results and uncertainties!**
+calculated the oversampling factor.
 
 *If there are issues during the first step,* ``pySYD`` *will flag this and immediately halt 
 any further execution of the code.* If something seems questionable during this step but 
@@ -156,7 +154,7 @@ moving on.
 
 Since none of this happened, we can move on to the next step.
 
-.. _quickstart/script/steps/two:
+.. _quickstart-script-steps-two:
 
 2. Get initial values
 +++++++++++++++++++++
@@ -187,7 +185,7 @@ this out so that we are left with very little residual slope in the power spectr
 Background Fit' is shown below in the second panel by the lime green line. Then we have our
 background-divided power spectrum directly to the right of this panel.
 
-.. image:: _static/quickstart/1435467_estimates.png
+.. image:: _static/quickstart-1435467_estimates.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
 
@@ -207,7 +205,7 @@ Finally, it saves this best estimate in a basic csv file:
    1435467, 1438.27561061044, 72.3140769912867, 12.3801364686659
 
 
-.. _quickstart/script/steps/three:
+.. _quickstart-script-steps-three:
 
 3. Fit global parameters
 ++++++++++++++++++++++++
@@ -275,7 +273,7 @@ worked for this purpose yet but you have an idea, please reach out and let us kn
 Model 4 was selected for our example, consisting of two Harvey-like components, each with their characteristic
 time scale and amplitude. In this case, the white noise was *not* a free parameter.
 
-.. image:: _static/quickstart/1435467_global.png
+.. image:: _static/quickstart-1435467_global.png
   :width: 680
   :alt: Global parameters for KIC 1435467
 
@@ -314,7 +312,7 @@ parameters would look like that below. **We urge folks to run new stars for a si
     the literature and we recommend that you do the same.**
 
 
-.. _quickstart/script/steps/four:
+.. _quickstart-script-steps-four:
 
 4. Estimate uncertainties
 +++++++++++++++++++++++++
@@ -348,7 +346,7 @@ Notice the difference in the printed parameters this time - they now have uncert
 We include the progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
 executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
 
-.. image:: _static/quickstart/1435467_samples.png
+.. image:: _static/quickstart-1435467_samples.png
   :width: 680
   :alt: KIC 1435467 posteriors
 
@@ -376,7 +374,7 @@ in the output. this is because the model preferred for this to be fixed
 
 -----
 
-.. _quickstart/module:
+.. _quickstart-module:
 
 Running your favorite star
 ##########################

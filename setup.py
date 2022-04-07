@@ -35,7 +35,9 @@ setuptools.setup(
     ],
     install_requires=install_reqs,
     packages=setuptools.find_packages(),
-    package_data={"pysyd": ["dicts/*.dict", "dicts/*.txt", "dicts/*.csv"]},
+#    package_data={"pysyd": ["data/*", "dicts/*"]},
+#    data_files=[("",['data/pysyd_results.csv']),
+#                ("",['data/idlsyd_results.csv'])],
     entry_points={'console_scripts':['pysyd=pysyd.cli:main']},
     python_requires=">=3.6",
 )

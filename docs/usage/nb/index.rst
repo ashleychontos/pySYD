@@ -1,4 +1,4 @@
-.. _usage/nb/index:
+.. _user-guide-nb:
 
 *****************
 Interactive usage

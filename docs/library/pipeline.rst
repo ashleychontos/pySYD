@@ -1,4 +1,4 @@
-.. _library/pipeline:
+.. _library-pipeline:
 
 **************
 Pipeline modes
@@ -14,7 +14,7 @@ but also depends on how you run `pySYD`.
 
 -----
 
-.. _library/pipeline/script:
+.. _library-pipeline-script:
 
 Running as a script
 ###################
@@ -31,14 +31,14 @@ package data (since it is easier to load in)
 
 **Important: when running** `pysyd` **as a script, there is one positional argument for the pipeline "mode".** 
 
-.. _library/pipeline/module:
+.. _library-pipeline-module:
 
 Importing as a module
 #####################
 
 -----
 
-.. _library/pipeline/overview:
+.. _library-pipeline-overview:
 
 Pipeline overview
 #################
@@ -110,7 +110,7 @@ Imports
 #######
 
 
-.. _library/pipeline/modes:
+.. _library-pipeline-modes:
 
 Pipeline modes
 ##############
@@ -140,7 +140,7 @@ There are currently four operational ``pySYD`` modes (and two under development)
 Examples
 ########
 
-.. _library/pipeline/api:
+.. _library-pipeline-api:
 
 ``pysyd.pipeline`` API
 ######################

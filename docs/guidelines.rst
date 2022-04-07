@@ -3,19 +3,17 @@
 
 .. |smiley| unicode:: U+263A
 
-.. _community:
-
 ************
 Contributing
 ************
 
 
-.. link-button:: guidelines/index
+.. link-button:: guidelines-index
     :type: ref
     :text: Jump to our community guidelines
     :classes: btn-outline-secondary btn-block
 
-.. _community/contributors:
+.. _guidelines-contributors:
 
 The ``pySYD`` team
 ##################
@@ -37,7 +35,7 @@ Contributors
     
     **~A very special shoutout to Dan~**
 
-.. _community/collaborators:
+.. _guidelines-collaborators:
 
 Collaborators
 *************
@@ -50,7 +48,7 @@ thanks to our collaborators!
 
 -----
 
-.. _community/guidelines:
+.. _guidelines-index:
 
 Community guidelines
 ####################
@@ -60,16 +58,16 @@ forum is a great place to start in case things have already been brought up and/
 
 If you would like to contribute, here are the guidelines we ask you to follow:
 
-* :ref:`Question or problem <guidelines/question>`
-* :ref:`Issues & bugs <guidelines/issue>`
-* :ref:`New features <guidelines/feature>`
-* :ref:`Contributing code <guidelines/contribute>`
-* :ref:`Style guide <guidelines/style>`
-* :ref:`Testing <guidelines/testing>`
+* :ref:`Question or problem <guidelines-question>`
+* :ref:`Issues & bugs <guidelines-issue>`
+* :ref:`New features <guidelines-feature>`
+* :ref:`Contributing code <guidelines-contribute>`
+* :ref:`Style guide <guidelines-code>`
+* :ref:`Testing <guidelines-testing>`
 
 -----
 
-.. _community/guidelines/question:
+.. _guidelines-question:
 
 Question or problem
 *******************
@@ -88,7 +86,7 @@ If this still does not work for you and you would like to chat with someone in r
 
 -----
 
-.. _community/guidelines/issue:
+.. _guidelines-issue:
 
 Issues & bugs
 *************
@@ -109,7 +107,7 @@ You can file new issues by filling out our `bug report <https://github.com/ashle
 
 -----
 
-.. _community/guidelines/feature:
+.. _guidelines-feature:
 
 New features
 ************
@@ -135,12 +133,12 @@ Please first consider what kind of change it is:
   discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
   and help you to craft the change so that it is successfully accepted into the project.
 * Any smaller or **Minor Features** can be crafted and directly submitted as a pull request. However,
-  before you submit a pull request, please see our :ref:`style guide <guidelines/style>` to facilitate
+  before you submit a pull request, please see our :ref:`style guide <guidelines-code>` to facilitate
   and expedite the merge process.
 
 -----
 
-.. _community/guidelines/code:
+.. _guidelines-code:
 
 Contributing code
 *****************
@@ -176,7 +174,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 -----
 
-.. _community/guidelines/testing:
+.. _guidelines-testing:
 
 Testing
 *******

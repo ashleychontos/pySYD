@@ -1,4 +1,4 @@
-.. _usage-cli-help:
+.. _user-guide-cli-help:
 
 ***************
 CLI information
@@ -41,24 +41,24 @@ commands up by relevant science/software groups to make it easier to digest.
 .. note::
 
     As you are navigating this page, keep in mind that we also have a special 
-    :ref:`glossary<cli/glossary>` for all our command-line options. This includes everything
+    :ref:`glossary <usage-cli-glossary>` for all our command-line options. This includes everything
     from the variable type, default value and relevant units to how it's stored within the 
     software itself! These links are provided at the bottom of each section.
 
 Jump to:
 ********
- - :ref:`high-level functions <usage-cli-help/high>`
- - :ref:`data analyses <usage-cli-help/data>`
- - :ref:`estimate initial values <usage-cli-help/est>`
- - :ref:`background fit <usage-cli-help/bg>`
- - :ref:`global fit <usage-cli-help/globe>`
- - :ref:`echelle diagram <usage-cli-help/ed>`
- - :ref:`estimate uncertainties <usage-cli-help/mc>`
- - :ref:`parallel processing <usage-cli-help/pp>`
+ - :ref:`high-level functions <user-guide-cli-help-high>`
+ - :ref:`data analyses <user-guide-cli-help-data>`
+ - :ref:`estimate initial values <user-guide-cli-help-est>`
+ - :ref:`background fit <user-guide-cli-help-bg>`
+ - :ref:`global fit <user-guide-cli-help-globe>`
+ - :ref:`echelle diagram <user-guide-cli-help-ed>`
+ - :ref:`estimate uncertainties <user-guide-cli-help-mc>`
+ - :ref:`parallel processing <user-guide-cli-help-pp>`
 
 -----
 
-.. _usage-cli-help/high:
+.. _user-guide-cli-help-high:
 
 High-level functions
 ####################
@@ -93,7 +93,7 @@ used very sparingly.
 
 -----
 
-.. _usage-cli-help/data:
+.. _user-guide-cli-help-data:
 
 Initial data analyses
 #####################
@@ -139,7 +139,7 @@ the data as well as which modules to run.
 
 -----
 
-.. _usage-cli-help/est:
+.. _user-guide-cli-help-est:
 
 Estimating numax
 ################
@@ -172,7 +172,7 @@ to estimate numax if it is not known:
 
 -----
 
-.. _usage-cli-help/bg:
+.. _user-guide-cli-help-bg:
 
 Background fit
 ##############
@@ -210,7 +210,7 @@ Below is a complete list of parameters relevant to the background-fitting routin
 
 -----
 
-.. _usage-cli-help/globe:
+.. _user-guide-cli-help-globe:
 
 Global fit
 ##########
@@ -258,7 +258,7 @@ Below are all options related to the characteristic frequency spacing (dnu):
 
 -----
 
-.. _usage-cli-help/ed:
+.. _user-guide-cli-help-ed:
 
 Echelle diagram
 ###############
@@ -300,7 +300,7 @@ All customizable options relevant for the echelle diagram output:
 
 -----
 
-.. _usage-cli-help/mc:
+.. _user-guide-cli-help-mc:
 
 Sampling
 ########

@@ -4,9 +4,9 @@ import subprocess
 import pandas as pd
 
 # Import relevant, local pySYD modules
-from pysyd import utils
-from pysyd import plots
-from pysyd.target import Target
+from . import utils
+from . import plots
+from .target import Target
 
 
 def check(args):

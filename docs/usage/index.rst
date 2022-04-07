@@ -1,3 +1,5 @@
+.. _user-guide:
+
 *****************
 Usage & tutorials
 *****************
@@ -11,6 +13,6 @@ share the software with you!
    :maxdepth: 3
    :caption: Contents
 
-   Command line <usage/cli/index>
-   Notebook tutorials <usage/nb/index>
-   Other usage <usage/other/index>
+   Command line <cli/index>
+   Notebook tutorials <nb/index>
+   Other usage <other/index>

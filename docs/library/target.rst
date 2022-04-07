@@ -1,4 +1,4 @@
-.. _library/target:
+.. _library-target:
 
 **************
 Target objects
@@ -22,7 +22,7 @@ Examples
 ########
 
 
-.. _library/target/api:
+.. _library-target-api:
 
 ``pysyd.target`` API
 ####################

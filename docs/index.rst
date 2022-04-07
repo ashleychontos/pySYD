@@ -27,8 +27,14 @@ knowledge.
 This package is being actively developed in 
 `a public repository on GitHub <https://github.com/ashleychontos/pySYD>`_ -- we especially 
 welcome and *encourage* any new contributions to help make ``pySYD`` better! Please see 
-our :ref:`community guidelines <guidelines/index>` to find out how you can help. No contribution 
+our :ref:`community guidelines <guidelines-index>` to find out how you can help. No contribution 
 is too small!
+
+.. important::
+
+   The ``pySYD`` documentation is currently being updated and revamped so we apologize in
+   advance for any errors related to this construction. We appreciate your patience and
+   understanding!
 
 
 .. toctree::
@@ -38,9 +44,9 @@ is too small!
    :hidden:
    
    installation
-   Getting started <quickstart>
-   <library/index>
-   <usage/index>
+   quickstart
+   library/index
+   usage/index
    Glossary <glossary>
 
 
@@ -54,7 +60,7 @@ is too small!
    attribution
    guidelines
 
-.. link-button:: install/quickstart
+.. link-button:: install-quickstart
     :type: ref
     :text: Click here to immediately get started!
     :classes: btn-outline-secondary btn-block
