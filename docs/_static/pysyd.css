@@ -19,8 +19,19 @@ body {
 }
 
 pre, code {
-  font-size: 100%;
+  font-family: monospace; 
+  font-size: 200%;
   line-height: 155%;
+  color:blue;
+}
+
+.red { 
+  color: red; 
+}
+
+.bolditalic {
+  font-weight: bold;
+  font-style: italic;
 }
 
 div.output_area div[class*=highlight] pre {
@@ -47,7 +58,7 @@ h1 {
 
 h2 {
   font-family: "Garamond", serif;
-  color: #4d77cf; /* han blue */
+  color: #4d77cf; /* warm blue */
   letter-spacing: -.02em;
 }
 
@@ -58,7 +69,11 @@ h3 {
 
 h4 {
   font-family: "Garamond", serif;
-  color: #673d82; /* light gray */
+  color: #9552bf; /* light purple */
+}
+
+span.underlined {
+  text-decoration: underline;
 }
 
 /* Override some aspects of the pydata-sphinx-theme: taken from Pandas */

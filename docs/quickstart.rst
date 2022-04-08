@@ -38,8 +38,8 @@ Crashteroseismology: a crash course in asteroseismology
 
 For purposes of this first example, we will assume that we do not know anything about the star or
 its properties so that the software runs from start to finish on its own. In any normal circumstance,
-however, we can provide additional inputs (e.g., the center of the frequency range with the 
-oscillations, or :term:`numax` :math:`\rm \nu_{max}`) that can bypass steps and save time. 
+however, we can provide additional inputs like the center of the frequency range with the 
+oscillations, or :term:`numax` ():math:`\rm \nu_{max}`), that can bypass steps and save time. 
 
 
 .. _quickstart-script:
@@ -48,7 +48,7 @@ Initialize script
 *****************
 
 When running ``pySYD`` from command line, you will likely use something similar to the 
-following statement: 
+following: 
 
 .. _quickstart-script-command:
 
@@ -56,7 +56,7 @@ following statement:
 
     pysyd run --star 1435467 -dv --ux 5000 --mc 200
 
-Now let's deconstruct this statement.
+which we will now deconstruct.
 
 ``pysyd``
    if you used `pip` install, the binary (or executable) should be available. In fact, the setup
@@ -65,21 +65,21 @@ Now let's deconstruct this statement.
 
 ``run`` 
    regardless of how you choose to use the software, the most common way you will likely implement
-   the ``pySYD`` pipeline is in run mode -- which, just as it sounds, will process stars in the order 
-   they were provided. This is saved to the `args` parser `NameSpace` as the `mode`, which will run
-   the pipeline by calling :mod:`pysyd.pipeline.run`. There are currently five available (tested)
-   modes (with two more in development), all which are described in more detail :ref:`here <library-pipeline>`
+   ``pySYD`` is in run mode -- which, just as it sounds, will process stars in order. This is saved
+   to the ``args`` parser ``NameSpace`` as the `mode`, which will run the pipeline by calling 
+   :mod:`pysyd.pipeline.run`. There are currently five available (tested) modes (with two more in development), 
+   all which are described in more detail :ref:`here <library-pipeline>`
 
 ``--star 1435467``
    here we are running a single star, KIC 1435467. You can also provide multiple targets,
    where the stars will append to a list and then be processed consecutively. On the other 
-   hand if no targets are provided, the program would default to reading in the star or 'todo' 
-   list (via 'info/todo.txt'). Again, this is because the software is optimized for 
+   hand, if no targets are provided, the program would default to reading in the star or `todo` 
+   list (via `info/todo.txt`). Again, this is because the software is optimized for 
    running many stars.
 
 ``-dv``
-   adapting Linux-like features, we reserved the single hash options for booleans which
-   can all be grouped together, as shown above. The ``-d`` and ``-v`` are short for display and verbose, 
+   adapting Linux-like behavior, we reserved the single hash options for booleans which
+   can all be grouped together (as shown above). Here the ``-d`` and ``-v`` are short for display and verbose, 
    respectively, and show the figures and verbose output. For a full list of options available, please 
    see our :ref:`command-line glossary <user-guide-cli-glossary>`. There are dozens of options to make your 
    experience as customized as you'd like!
@@ -316,11 +316,6 @@ parameters would look like that below. **We urge folks to run new stars for a si
     (:math:`\rm \nu_{max}`) under the output parameters. **In fact for this methodology 
     first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
     the literature and we recommend that you do the same.**
-
-
-.. bibliography:: ../references.bib
-
-   verner2011
 
 
 .. _quickstart-script-steps-four:
