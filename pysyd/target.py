@@ -1234,7 +1234,7 @@ class Target:
                 if n_free == 0:
                     self.params['paras'].append([])
                     model = np.ones_like(self.bin_pow)*self.params['noise']
-                    b, a = models.compute_bic(self.bin_pow, model, n_parameters=n_free), models.compute_aic(self.bin_pow, model, n_parameters=n_free)
+                    b, a = models._compute_bic(self.bin_pow, model, n_parameters=n_free), models._compute_aic(self.bin_pow, model, n_parameters=n_free)
                     self.params['bic'].append(b)
                     self.params['aic'].append(a)
                 else:
@@ -1252,7 +1252,7 @@ class Target:
                     else:
                         self.params['paras'].append(pars)
                         model = models.background(self.bin_freq, pars, noise=self.params['noise'])
-                        b, a = models.compute_bic(self.bin_pow, model, n_parameters=n_free), models.compute_aic(self.bin_pow, model, n_parameters=n_free)
+                        b, a = models._compute_bic(self.bin_pow, model, n_parameters=n_free), models._compute_aic(self.bin_pow, model, n_parameters=n_free)
                         self.params['bic'].append(b)
                         self.params['aic'].append(a)
                 if self.params['verbose']:

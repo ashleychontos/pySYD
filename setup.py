@@ -1,14 +1,6 @@
-import re
 import setuptools
 
 exec(open("pysyd/version.py").read())
-
-with open("README.md", "r", encoding="utf-8") as file:
-    long_description = file.read()
-
-install_reqs = []
-for line in open('requirements.txt', 'r').readlines():
-    install_reqs.append(line)
 
 setuptools.setup(
     name="pysyd",
@@ -17,7 +9,7 @@ setuptools.setup(
     author_email="achontos@hawaii.edu",
     description="automated measurements of global asteroseismic parameters",
     license="MIT",
-    long_description=long_description,
+    long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
     url="https://github.com/ashleychontos/pysyd",
     project_urls={
@@ -26,15 +18,33 @@ setuptools.setup(
         "Bug Tracker": "https://github.com/ashleychontos/pySYD/issues",
     },
     classifiers=[
-        "Programming Language :: Python :: 3",
+        "Intended Audience :: Science/Research",
+        "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Scientific/Engineering",
     ],
-    install_requires=install_reqs,
+    install_requires = [
+        'astropy>=4.0.0',
+        'numpy>=1.14.5',
+        'pandas>=1.0.5',
+        'scipy',
+    ],
+    extras_require = {
+        'sampling': ['tqdm'],
+        'plotting': ['matplotlib>=1.5.3'],
+    },
+#    setup_requires = ['pytest-runner', 'flake8'],
+#    tests_require = ['pytest'],
     packages=setuptools.find_packages(),
-#    package_data={"pysyd": ["data/*", "dicts/*"]},
-#    data_files=[("",['data/pysyd_results.csv']),
-#                ("",['data/idlsyd_results.csv'])],
+    include_package_data=True,
+    package_data={'': ["data/*.csv", "data/*.mplstyle", "data/*.txt"]},
     entry_points={'console_scripts':['pysyd=pysyd.cli:main']},
-    python_requires=">=3.6",
+    python_requires=">=3",
 )

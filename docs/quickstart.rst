@@ -10,13 +10,12 @@ experience with `Python`. If not, we recommend visiting the Python website and g
 some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
 ours.
 
-On this page we will work through two examples -- each demonstrating a different way to
-use the software. Since the software was initially intended to be a hands-off command-line tool,
+On this page we will work through two examples -- each demonstrating a different application 
+of the software. Since the software was initially intended to be a hands-off command-line tool,
 the first example will run ``pySYD`` :ref:`as a script <quickstart-script>` to introduce 
-the software *and* science in a crash course -- what we refer to as 
-:ref:`crashteroseismology <quickstart-crash>.` We'll break everything down to be sure everyone 
-is on the same page and then once we are all experts, we will reconstruct it in a condensed 
-form by using ``pySYD`` in an :ref:`interaction session <quickstart-module>`.
+the software *and* science in a crash course -- what we refer to as crashteroseismology. We'll 
+break everything down to be sure everyone is on the same page and then reconstruct it in a condensed 
+form by importing ``pySYD`` in an :ref:`interaction session <quickstart-module>`.
 
 If you have *any* questions, check out our :ref:`user guide <user-guide>` for more 
 information. If this still does not address your question or problem, please do not hesitate
@@ -34,14 +33,13 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
 .. _quickstart-crash:
 
-Crashteroseismology
-###################
-**crash course in asteroseismology**
+Crashteroseismology: a crash course in asteroseismology
+#######################################################
 
 For purposes of this first example, we will assume that we do not know anything about the star or
 its properties so that the software runs from start to finish on its own. In any normal circumstance,
 however, we can provide additional inputs (e.g., the center of the frequency range with the 
-oscillations, or :term:`numax` :math:`\rm \nu_{max}`) that can bypass steps and save some time. 
+oscillations, or :term:`numax` :math:`\rm \nu_{max}`) that can bypass steps and save time. 
 
 -----
 
@@ -63,15 +61,15 @@ Now let's deconstruct this statement.
 
 ``pysyd``
    if you used `pip` install, the binary (or executable) should be available. In fact, the setup
-   file defines this entry point for ``pysyd`` and is accessed through the :mod:`pysyd.cli.main` 
-   script -- which is also where you can find the parser with all the available commands and options.
+   file defines the entry point for ``pysyd``, which is accessed through the :mod:`pysyd.cli.main` 
+   script -- where you can also find all available parsers and commands
 
 ``run`` 
    regardless of how you choose to use the software, the most common way you will likely implement
    the ``pySYD`` pipeline is in run mode -- which, just as it sounds, will process stars in the order 
-   they were provided. This is saved to the argument ``NameSpace`` as the ``mode`` which will run
-   the pipeline by calling :mod:`pysyd.pipeline.run`. There are currently five available 
-   modes, all which are described in more detail :ref:`here <library-pipeline>`
+   they were provided. This is saved to the `args` parser `NameSpace` as the `mode`, which will run
+   the pipeline by calling :mod:`pysyd.pipeline.run`. There are currently five available (tested)
+   modes (with two more in development), all which are described in more detail :ref:`here <library-pipeline>`
 
 ``--star 1435467``
    here we are running a single star, KIC 1435467. You can also provide multiple targets,
@@ -100,16 +98,14 @@ Now let's deconstruct this statement.
    which allows us to bootstrap uncertainties on our derived properties. 
 
 **Note:** For a *complete* list of options which are currently available via command-line interface (CLI), 
-see our special CLI :ref:`glossary <usage/cli/glossary>`.
+see our special CLI :ref:`glossary <user-guide-cli-glossary>`.
 
 -----
 
 .. _quickstart-script-steps:
 
-Typical workflow
-****************
-
 The software operates in roughly the following steps:
+
  #. :ref:`Load in parameters and data <quickstart-script-steps-one>`
  #. :ref:`Get initial values <quickstart-script-steps-two>`
  #. :ref:`Fit global parameters <quickstart-script-steps-three>`
@@ -123,7 +119,7 @@ results (i.e. files, figures, etc.).
 .. _quickstart-script-steps-one:
 
 1. Load in parameters and data
-++++++++++++++++++++++++++++++
+******************************
 
 .. code-block::
 
@@ -138,25 +134,25 @@ results (i.e. files, figures, etc.).
     -----------------------------------------------------------
 
 During this step, it will take the star name along with the command-line arguments and 
-created an instance of the :mod:`pysyd.target.Target` object. Initialization of this class
-will automatically search for and load in data for a given star, as shown in the output above.
-Both the light curve and power spectrum were available for KIC 143546-
-For this target, KIC 1435467, both the light curve and power spectrum were available and it automatically
-calculated the oversampling factor.
+create an instance of the :mod:`pysyd.target.Target` object. Initialization of this class
+will automatically search for and load in data for the given star, as shown in the output above.
+Both the light curve and power spectrum were available for KIC 1435467 and as you can see in 
+these cases, ``pySYD`` will use both arrays to compute additional information like the time 
+series cadence, power spectrum resolution, etc.
 
 *If there are issues during the first step,* ``pySYD`` *will flag this and immediately halt 
 any further execution of the code.* If something seems questionable during this step but 
-is not fatal for executing the pipeline, it will only return some warnings. In fact, all 
+is not fatal for executing the pipeline, it will only return a warning. In fact, all 
 :mod:`pysyd.target` class instances will have an ``ok`` attribute - literally meaning 
-that the star is 'ok' to be processed. By default, the pipeline checks this attribute before 
-moving on. 
+that the star is 'ok' to be processed. By default, the pipeline checks this attribute 
+before moving on. 
 
 Since none of this happened, we can move on to the next step.
 
 .. _quickstart-script-steps-two:
 
 2. Get initial values
-+++++++++++++++++++++
+*********************
 
 .. code-block::
 
@@ -174,27 +170,28 @@ Since none of this happened, we can move on to the next step.
     Selecting model 3
     -----------------------------------------------------------
 
-The main thing we need to know before performing a global fit is a rough starting point 
+The main thing we need to know before performing the global fit is an approximate starting point 
 for the frequency corresponding to maximum power, or :term:`numax` (:math:`\rm \nu_{max}`).
-Please read the next section for more information about this.
+Please read the next section for more information regarding this.
 
-It does this by making a very rough approximation of the stellar background by binning the 
-power spectrum in both log and linear spaces (think a very HEAVY smoothing filter) and divides
-this out so that we are left with very little residual slope in the power spectrum. The 'Crude
-Background Fit' is shown below in the second panel by the lime green line. Then we have our
-background-divided power spectrum directly to the right of this panel.
+The software first makes a very rough approximation of the stellar background by binning the 
+power spectrum in both log and linear spaces (think a very HEAVY smoothing filter), which the
+power spectrum is then divided by so that we are left with very little residual slope in the :term:`PS`.
+The 'Crude Background Fit' is shown below in the second panel by the lime green line. The
+background-corrected power spectrum (:term:`BCPS`) is then shown in the panel to the right.
 
 .. image:: _static/quickstart/1435467_estimates.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
 
-Next it uses a "collapsed" autocorrelation function (ACF) technique with different bin sizes
-to identify localized power excess in the power spectrum due to solar-like oscillations. By
-default, this is done three times (or trials) and hence, provides three different estimates.
-The bottom row in the above figure shows these three trials, highlighting the one that was 
-selected -- which is based on the signal-to-noise (S/N) of the detection.
+Next ``pySYD`` uses a "collapsed" autocorrelation function (:term:`ACF`) technique with different 
+bin sizes to identify localized power excess in the PS due to solar-like oscillations. By default, 
+this is done three times (or trials) and hence, provides three different estimates - which is
+typically sufficient for these purposes. The bottom row in the above figure shows these three trials, 
+highlighting the one that was selected, or the one with the highest signal-to-noise (S/N).
 
-Finally, it saves this best estimate in a basic csv file:
+Finally, it saves the best estimates in a csv file for later use, which can be used to bypass
+this step the next time that the star is processed.
 
 
 .. csv-table:: 1435467 parameter estimates
@@ -207,7 +204,7 @@ Finally, it saves this best estimate in a basic csv file:
 .. _quickstart-script-steps-three:
 
 3. Fit global parameters
-++++++++++++++++++++++++
+************************
 
 .. code-block::
 
@@ -240,34 +237,41 @@ the global asteroseismic parameters. We do this *separately* in two steps becaus
 fairly different properties and we wouldn't want either of the estimates to be influenced by 
 the other in any way. 
 
-Ultimately the stellar background has more of a presence in the power spectrum in that it is 
-observed over a wider range of frequencies compared to the solar-like oscillations. Therefore 
-by attempting to identify where the oscillations are in the power spectrum, we can mask 
-them out to better characterize the background.
+Ultimately the stellar background has more of a "presence" in the power spectrum in that, 
+dissimilar to solar-like oscillations that are observed over a small range of frequencies, the
+stellar background contribution is observed over all frequencies. Therefore by attempting to 
+identify where the oscillations are in the power spectrum, we can mask them out to better 
+characterize the background.
 
-Unlike previous versions of this software and previous versions of this software (i.e. `SYD`), 
-we have now implemented an automated background model selection. After much trial and error, 
-the :term:`AIC` seems to perform better for our purposes - which is now the default metric used.
+We should take a sidestep to explain something important that is happening behind the scenes.
+A major reason why the predecessor to `pySYD`, IDL-based `SYD`, was so successful was because
+it assumed that the estimated numax and granulation timescales could be scaled with the Sun --
+a fact that was not known at the time but greatly improved its ability to quickly and efficiently
+process stars. This is clearly demonstrated in the 2nd and 3rd panels in the figure below, 
+where the initial guesses are strikingly similar to the fitted model.
 
-We should take a sidestep to explain something happening behind the scenes here. The reason why
-`SYD` was so successful is because it assumed that the estimated numax and granulation timescales
-could be scaled with the Sun -- a fact that was not known at the time but greatly improved the 
-ability to quickly and efficiently process stars.
+While this scaling relation ensured great starting points for the background fit, `SYD` still
+required a lot fine-tuning by the user. Therefore we adapted the same approach but instead
+implemented an automated background model seletion. After much trial and error, the :term:`BIC`
+seems to perform better for our purposes - which is now the default metric used (but can easily
+be changed, if desired).
 
-Of course measuring these time scales is limited by the total duration of the time series but
-in general, we can resolve 3 Harvey-like components (or laws) at best (for now anyway). We use 
-all this information to guess how many we should be able to resolve and over what time scales.
-In fact for a given star, we end up with
+Measuring the granulation time scales is of course limited by the time series baseline but
+in general, we can resolve up to 3 Harvey-like components (or laws) at best (for now anyway). 
+For more information about the Harvey model, please see the original paper here_.
+Therefore we use all this information to guess how many we should observe and end up with
 
 .. math::
 
     n_{\mathrm{models}} = 2 \cdot (n_{\mathrm{laws}}+1)
 
-The fact of 2 is because we give the options to fix the white noise or for it to also be a free
-parameter. The +1 is because we also consider the model where we are not able to resolve any.
-From our perspective, the main purpose of implementing this was to try to identify null detections,
-since we do not expect to see oscillations in every star we observe. Ultimately this has not
-worked for this purpose yet but you have an idea, please reach out and let us know!
+models for a given star. The fact of 2 is because we give the options to fix the white noise 
+or for it to also be a free parameter. The +1 (times 2) is because we also want to consider 
+the simplest model i.e. where we are not able to resolve any. From our perspective, the main 
+purpose of implementing this was to try to identify null detections, since we do not expect 
+to observe oscillations in every star. **However, this is a work in progress and we are still
+trying various methods to identify and quantify non-detections so if you have any ideas, please 
+reach out to us!** 
 
 Model 4 was selected for our example, consisting of two Harvey-like components, each with their characteristic
 time scale and amplitude. In this case, the white noise was *not* a free parameter.
@@ -278,7 +282,8 @@ time scale and amplitude. In this case, the white noise was *not* a free paramet
 
 .. note::
 
-   To learn more about what each panel is showing, please visit :ref:`this page <library/output/figures/png>`.
+   For more information about what each panel is showing in any of these figures, please visit 
+   :ref:`this page <library-output-figures-png>`.
 
 If this was run in its default setting, with ``--mc`` = `1`, for a single iteration, the output
 parameters would look like that below. **We urge folks to run new stars for a single step first 
@@ -314,7 +319,7 @@ parameters would look like that below. **We urge folks to run new stars for a si
 .. _quickstart-script-steps-four:
 
 4. Estimate uncertainties
-+++++++++++++++++++++++++
+*************************
 
 .. code-block::
 
@@ -447,6 +452,11 @@ Ok, now that we have our desired settings and target, we can go ahead and proces
 
     >>> from pysyd import plots
 
-
-
 -----
+
+References
+##########
+
+.. [here] `Harvey (1985) <https://ui.adsabs.harvard.edu/abs/1985ESASP.235..199H>`_
+.. [fritz15] `Fritz & Kallivayalil (2015) <https://arxiv.org/abs/1508.06647>`_
+.. [bovy16] `Bovy et al. (2016) <https://arxiv.org/abs/1609.01298>`_

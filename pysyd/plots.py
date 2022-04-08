@@ -173,9 +173,9 @@ def plot_estimates(star, filename='numax_estimates.png', ask=False, highlight=Tr
         return star
 
 
-def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10, cmap=):
+def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10, cmap='binary',):
     """
-    Creates a plot summarizing the results of the fit background routine.
+    Creates a plot summarizing all derived parameters
 
     Parameters
         star : target.Target

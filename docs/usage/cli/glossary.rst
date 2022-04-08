@@ -1,8 +1,8 @@
 .. _user-guide-cli-glossary:
 
-******************
-List of CL options
-******************
+***************
+List of options
+***************
 
 .. glossary::
 

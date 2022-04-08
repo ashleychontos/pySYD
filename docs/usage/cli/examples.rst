@@ -13,7 +13,9 @@ for three KIC stars in the input data directory.
 If so, then you are ready to get started! 
 
 This page has command-line examples for the following cases:
+
  -  :ref:`single star applications <example/single>` of varying signal-to-noise (SNR) detections:
+
      -  :ref:`High SNR <user-guide-cli-examples-single-high>`
      -  :ref:`Medium SNR <user-guide-cli-examples-single-medium>`
      -  :ref:`Low SNR <user-guide-cli-examples-single-low>`
@@ -102,11 +104,11 @@ As if asteroseismology wasn't hard enough, let's make it even more difficult for
 
 KIC 8801316 is a subgiant with a numax ~1100 muHz, shown in the figures below. 
 
-.. image:: _static/examples-8801316_excess.png
+.. image:: ../../_static/examples/8801316_excess.png
   :width: 680
   :alt: Numax estimate KIC 8801316.
 
-.. image:: _static/examples-8801316_background.png
+.. image:: ../../_static/examples/8801316_background.png
   :width: 680
   :alt: Global fit for KIC 8801316.
 
@@ -126,15 +128,15 @@ No SNR: KIC 6278992
 
 KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
-.. image:: _static/examples-6278992_excess.png
+.. image:: ../../_static/examples/6278992_excess.png
   :width: 680
   :alt: Find excess output plot for KIC 6278992.
 
-.. image:: _static/examples-6278992_background.png
+.. image:: ../../_static/examples/6278992_background.png
   :width: 680
   :alt: Fit background output plot for KIC 6278992.
 
-.. image:: _static/examples-6278992_samples.png
+.. image:: ../../_static/examples/6278992_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 6278992.
 
@@ -143,9 +145,16 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 .. _user-guide-cli-examples-multiple:
 
-*******************
-Parallel processing
-*******************
+Many stars
+##########
+
+Regular mode
+************
+
+hey
+
+Parallel mode
+*************
 
 There is a parallel processing option included in the software, which is helpful for
 running many stars. This can be accessed through the following command:
@@ -182,136 +191,126 @@ Advanced usage
 **************
 
 
-Below are examples of how to use specific ``pySYD`` features, as well as plots showing before and after results.
-
------
-
-``--dnu``: force dnu
-********************
+Below are examples of different optional ``pySYD`` features, including their before and after plots.
 
 
-+-------------------------------------------------------+---------------------------------------------------------+
-| Before                                                | After                                                   |
-+=======================================================+=========================================================+
-| Fix the dnu value if the desired dnu is not automatically selected by `pySYD`.                                  |
-+-------------------------------------------------------+---------------------------------------------------------+
-|:bash:`pysyd run --star 9512063 --numax 843`           |:bash:`pysyd run --star 9512063 --numax 843 --dnu 49.54` |
-+-------------------------------------------------------+---------------------------------------------------------+
-| .. figure:: _static/advanced/9512063_before.png       | .. figure:: _static/advanced/9512063_after.png          |
-|    :width: 680                                        |    :width: 680                                          |
-+-------------------------------------------------------+---------------------------------------------------------+
+:term:`ew<--ew, --exwidth>` & :term:`exwidth<--ew, --exwidth>`
+**************************************************************
 
------
+Fractional amount to scale the width of the oscillations envelope by -- which is normally calculated
+w.r.t. solar values.
 
-``--ew``: excess width
++-------------------------------------------------------+-------------------------------------------------------+
+| Before                                                | After                                                 |
++=======================================================+=======================================================+
+| :bash:`pysyd run --star 9542776 --numax 900`          | :bash:`pysyd run --star 9542776 --numax 900 --ew 1.5` |
++-------------------------------------------------------+-------------------------------------------------------+
+| .. figure:: ../../_static/examples/9542776_before.png | .. figure:: ../../_static/examples/9542776_after.png  |
+|    :width: 680                                        |    :width: 680                                        |
++-------------------------------------------------------+-------------------------------------------------------+
+
+
+
+:term:`k<-k, --kc, --kepcorr>`, :term:`kc<-k, --kc, --kepcorr>` & :term:`kepcorr<-k, --kc, --kepcorr>`
+******************************************************************************************************
+
+Remove the well-known *Kepler* short-cadence artefact that occurs at/near the long-cadence :term:`nyquist frequency` 
+(:math:`\sim 270 \mu \mathrm{Hz}`) by simulating white noise
+
++-------------------------------------------------------+------------------------------------------------------+
+| Before                                                | After                                                |
++=======================================================+======================================================+
+| :bash:`pysyd run --star 8045442 --numax 550`          | :bash:`pysyd run --star 8045442 --numax 550 --kc`    |
++-------------------------------------------------------+------------------------------------------------------+
+| .. figure:: ../../_static/examples/8045442_before.png | .. figure:: ../../_static/examples/8045442_after.png |
+|    :width: 680                                        |    :width: 680                                       |
++-------------------------------------------------------+------------------------------------------------------+
+
+
+
+:term:`lp<--lp, --lowerp>` & :term:`lowerp<--lp, --lowerp>`
+***********************************************************
+
+Manually set the lower frequency bound (or limit) of the power excess, which is helpful
+in the following scenarios:
+
+ #. the width of the power excess is wildly different from that estimated by the solar scaling relation
+ #. artefact or strange (typically not astrophysical) feature is close to the power excess and cannot be removed otherwise
+ #. power excess is near the :term:`nyquist frequency`
+
+
++---------------------------------------------------------+--------------------------------------------------------+
+| Before                                                  | After                                                  |
++=========================================================+========================================================+
+| :bash:`pysyd run --star 10731424 --numax 750`           | :bash:`pysyd run --star 10731424 --numax 750 --lp 490` |
++---------------------------------------------------------+--------------------------------------------------------+
+| .. figure:: ../../_static/examples/10731424_before.png  | .. figure:: ../../_static/examples/10731424_after.png  |
+|    :width: 680                                          |    :width: 680                                         |
++---------------------------------------------------------+--------------------------------------------------------+
+
+
+:term:`npeaks<--peaks, --npeaks>` & :term:`peaks<--peaks, --npeaks>`
+********************************************************************
+
+Change the number of peaks chosen in the autocorrelation function (:term:`ACF`) - this is especially
+helpful for low S/N cases, where the spectrum is noisy and the ACF has many peaks close the expected
+spacing (**FIX THIS**)
+
++-------------------------------------------------------+------------------------------------------------------+
+| Before                                                | After                                                |
++=======================================================+======================================================+
+| :bash:`pysyd run --star 9455860`                      | :bash:`pysyd run --star 9455860 --npeaks 10`         |
++-------------------------------------------------------+------------------------------------------------------+
+| .. figure:: ../../_static/examples/9455860_before.png | .. figure:: ../../_static/examples/9455860_after.png |
+|    :width: 680                                        |    :width: 680                                       |
++-------------------------------------------------------+------------------------------------------------------+
+
+
+:term:`numax<--numax>`
 **********************
 
-+------------------------------------------------------------------+------------------------------------------------------------------+
-| Before                                                           | After                                                            |
-+==================================================================+==================================================================+
-| Changed the excess width in the background corrected power spectrum used to calculate the ACF (and hence dnu).                      |
-+------------------------------------------------------------------+------------------------------------------------------------------+
-| :bash:`pysyd run --star 9542776 --numax 900`                     | :bash:`pysyd run --star 9542776 --numax 900 --ew 1.5`            |
-+------------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: _static/advanced/9542776_before.png                  | .. figure:: _static/advanced/9542776_after.png                   |
-|    :width: 680                                                   |    :width: 680                                                   |
-+------------------------------------------------------------------+------------------------------------------------------------------+
-
------
-
-``--ie``: smooth echelle
-************************
-
-+------------------------------------------------------------------+------------------------------------------------------------------+
-| Before                                                           | After                                                            |
-+==================================================================+==================================================================+
-| Smooth echelle diagram by turning on the interpolation, in order to distinguish the modes for low SNR cases.                        |
-+------------------------------------------------------------------+------------------------------------------------------------------+
-| :bash:`pysyd run 3112889 --numax 871.52 --dnu 53.2`              | :bash:`pysyd run --star 3112889 --numax 871.52 --dnu 53.2 --ie`  |
-+------------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: _static/advanced/3112889_before.png                  | .. figure:: _static/advanced/3112889_after.png                   |
-|    :width: 680                                                   |    :width: 680                                                   |
-+------------------------------------------------------------------+------------------------------------------------------------------+
-
------
-
-``--kc``: *Kepler* correction
-*****************************
-
-+---------------------------------------------------------------+------------------------------------------------------------------+
-| Before                                                        | After                                                            |
-+===============================================================+==================================================================+
-| Remove *Kepler* artefacts from the power spectrum for an accurate numax estimate.                                                |
-+---------------------------------------------------------------+------------------------------------------------------------------+
-| :bash:`pysyd run --star 8045442 --numax 550`                  | :bash:`pysyd run --star 8045442 --numax 550 --kc`                |
-+---------------------------------------------------------------+------------------------------------------------------------------+
-| .. figure:: _static/advanced/8045442_before.png               | .. figure:: _static/advanced/8045442_after.png                   |
-|    :width: 680                                                |    :width: 680                                                   |
-+---------------------------------------------------------------+------------------------------------------------------------------+
-
------
-
-``--lp``: lower frequency of power excess
-*****************************************
-
-+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| Before                                                                   | After                                                                    |
-+==========================================================================+==========================================================================+
-| Set the lower frequency limit in zoomed in power spectrum; useful when an artefact is present close to the excess and cannot be removed otherwise.  |
-+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| :bash:`pysyd run --star 10731424 --numax 750`                            | :bash:`pysyd run --star 10731424 --numax 750 --lp 490`                   |
-+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| .. figure:: _static/advanced/10731424_before.png                         | .. figure:: _static/advanced/10731424_after.png                          |
-|    :width: 680                                                           |    :width: 680                                                           |
-+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-
------
-
-:term:`--npeaks<--peaks, --npeaks>`
-###################################
-
-+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| Before                                                                   | After                                                                    |
-+==========================================================================+==========================================================================+
-| Change the number of peaks chosen in ACF; useful in low SNR cases where the spectrum is noisy and ACF has many peaks close to the expected dnu.     |
-+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| :bash:`pysyd run --star 9455860`                                         | :bash:`pysyd run --star 9455860 --npeaks 10`                             |
-+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-| .. figure:: _static/advanced/9455860_before.png                          | .. figure:: _static/advanced/9455860_after.png                           |
-|    :width: 680                                                           |    :width: 680                                                           |
-+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
-
------
-
-:term:`--numax`
-###############
+If the value of :math:`\rm \nu_{max}` is known, this can be provided to bypass the first module and save some time. 
+There are also other ways to go about doing this, please see our notebook tutorial that goes through these different
+ways.
 
 +--------------------------------------------------------+-------------------------------------------------------+
 | Before                                                 | After                                                 |
 +========================================================+=======================================================+
-| Set the numax value if pySYD chooses the wrong excess in the power spectrum.                                   |
-+--------------------------------------------------------+-------------------------------------------------------+
 | :bash:`pysyd run --star 5791521`                       | :bash:`pysyd run --star 5791521 --numax 670`          |
 +--------------------------------------------------------+-------------------------------------------------------+
-| .. figure:: _static/advanced/5791521_before.png        | .. figure:: _static/advanced/5791521_after.png        |
+| .. figure:: ../../_static/examples/5791521_before.png  | .. figure:: ../../_static/examples/5791521_after.png  |
 |    :width: 680                                         |    :width: 680                                        |
 +--------------------------------------------------------+-------------------------------------------------------+
 
 
------
-
 :term:`--upperx<--ux, --upperx>`
-################################
+********************************
 
-+-----------------------------------------------------+-------------------------------------------------------+
-| Before                                              | After                                                 |
-+=====================================================+=======================================================+
-| Set the upper frequency limit in power spectrum; useful when `pySYD` latches on to an artefact.             |
-+-----------------------------------------------------+-------------------------------------------------------+
-| :bash:`pysyd run --star 11769801`                   | :bash:`pysyd run --star 11769801 -ux 3500`            |
-+-----------------------------------------------------+-------------------------------------------------------+
-| .. figure:: _static/advanced/11769801_before.png    | .. figure:: _static/advanced/11769801_after.png       |
-|    :width: 680                                      |    :width: 680                                        |
-+-----------------------------------------------------+-------------------------------------------------------+
+Set the upper frequency limit in the power spectrum when estimating :math:`\rm \nu_{max}` before the main fitting
+routine. This is helpful if there are high frequency artefacts that the software latches on to.
 
------
++--------------------------------------------------------+-------------------------------------------------------+
+| Before                                                 | After                                                 |
++========================================================+=======================================================+
+| :bash:`pysyd run --star 11769801`                      | :bash:`pysyd run --star 11769801 -ux 3500`            |
++--------------------------------------------------------+-------------------------------------------------------+
+| .. figure:: ../../_static/examples/11769801_before.png | .. figure:: ../../_static/examples/11769801_after.png |
+|    :width: 680                                         |    :width: 680                                        |
++--------------------------------------------------------+-------------------------------------------------------+
+
+
+:term:`i<-i, --ie, --interpech>`, :term:`ie<-i, --ie, --interpech>` & :term:`interpech<-i, --ie, --interpech>`
+**************************************************************************************************************
+
+Smooth the echelle diagram output by turning on the (bilinear) interpolation, which is helpful for identifying
+ridges in low S/N cases
+
++-------------------------------------------------------+-----------------------------------------------------------------+
+| Before                                                | After                                                           |
++=======================================================+=================================================================+
+| :bash:`pysyd run 3112889 --numax 871.52 --dnu 53.2`   | :bash:`pysyd run --star 3112889 --numax 871.52 --dnu 53.2 --ie` |
++-------------------------------------------------------+-----------------------------------------------------------------+
+| .. figure:: ../../_static/examples/3112889_before.png | .. figure:: ../../_static/examples/3112889_after.png            |
+|    :width: 680                                        |    :width: 680                                                  |
++-------------------------------------------------------+-----------------------------------------------------------------+
+

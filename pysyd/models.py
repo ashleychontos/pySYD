@@ -97,7 +97,7 @@ def gaussian(frequency, offset, amplitude, center, width):
     return model
 
 
-def harvey_none(frequency, white_noise, ab=False):
+def _harvey_none(frequency, white_noise, ab=False):
     """
     No Harvey model
     
@@ -128,7 +128,7 @@ def harvey_none(frequency, white_noise, ab=False):
     return model
 
 
-def harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
+def _harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
     """
     One Harvey model
     
@@ -160,7 +160,7 @@ def harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
     return model
 
 
-def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False):
+def _harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False):
     """
     Two Harvey model
     
@@ -198,7 +198,7 @@ def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False)
     return model
 
 
-def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise, ab=False):
+def _harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise, ab=False):
     """
     Three Harvey model
     
@@ -242,7 +242,7 @@ def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, whit
     return model
 
 
-def log_likelihood(observations, model):
+def _log_likelihood(observations, model):
     """
     Until we figure out a better method, we are computing the likelhood using
     the mean squared error.
@@ -262,7 +262,7 @@ def log_likelihood(observations, model):
     return -0.5*(np.sum((observations-model)**2.))
 
 
-def compute_aic(observations, model, n_parameters):
+def _compute_aic(observations, model, n_parameters):
     """
     Computes the Akaike Information Criterion (AIC) given the 
     background model of the power spectrum
@@ -287,7 +287,7 @@ def compute_aic(observations, model, n_parameters):
     return aic
 
 
-def compute_bic(observations, model, n_parameters):
+def _compute_bic(observations, model, n_parameters):
     """
     Computes the Bayesian Information Criterion (BIC) given the 
     background model of the power spectrum

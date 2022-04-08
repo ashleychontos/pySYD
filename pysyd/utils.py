@@ -602,18 +602,21 @@ def get_dict(type='params'):
         result : Dict[str,Dict[,]]
             the loaded, relevant dictionary
 
+    .. important:: 
+       `'functions'` must be saved within the script, since it points to modules loaded in from
+       another file 
 
     """
     if type == 'functions':
         return {
-                0: lambda white_noise : (lambda frequency : harvey_none(frequency, white_noise)),
-                1: lambda frequency, white_noise : harvey_none(frequency, white_noise), 
-                2: lambda white_noise : (lambda frequency, tau_1, sigma_1 : harvey_one(frequency, tau_1, sigma_1, white_noise)), 
-                3: lambda frequency, tau_1, sigma_1, white_noise : harvey_one(frequency, tau_1, sigma_1, white_noise), 
-                4: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2 : harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise)), 
-                5: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise : harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise),
-                6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
-                7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
+                0: lambda white_noise : (lambda frequency : _harvey_none(frequency, white_noise)),
+                1: lambda frequency, white_noise : _harvey_none(frequency, white_noise), 
+                2: lambda white_noise : (lambda frequency, tau_1, sigma_1 : _harvey_one(frequency, tau_1, sigma_1, white_noise)), 
+                3: lambda frequency, tau_1, sigma_1, white_noise : _harvey_one(frequency, tau_1, sigma_1, white_noise), 
+                4: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2 : _harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise)), 
+                5: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise : _harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise),
+                6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : _harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
+                7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : _harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
                }
     path = os.path.join(os.path.dirname(__file__), 'dicts', '%s.dict'%type)
     with open(path, 'r') as f:

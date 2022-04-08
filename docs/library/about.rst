@@ -64,6 +64,13 @@ Related Tools
 Several tools have been developed to solve related scientific and data analysis problems. We have compiled 
 a list of software packages that performs similar or complementary analyses.
 
+ * ``AMP``:
+   - language: 
+   - reference:
+   - documentation: no
+   - publicly available: no
+   - requires license: n/a
+
  * ``A2Z``: determining global parameters of the oscillations of solar-like stars
     - language: `?`
     - reference: yes <https://ui.adsabs.harvard.edu/abs/2010A%26A...511A..46M>
