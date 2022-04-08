@@ -775,7 +775,7 @@ class Target:
         # Or ask which estimate to use
         else:
             self = utils.save_plotting(self)
-            self = plots.plot_estimates(self, ask=True)
+            self = plots.plot_estimates(self)
         self = utils.save_estimates(self)
 
 

@@ -1119,7 +1119,7 @@ def get_results(file_idlsyd=SYDFILE, file_pysyd=PYSYDFILE, suffixes=['_idl', '_p
 
     """
     # load in both pipeline results
-    idlsyd = pd.read_csv(file_idlsyd)
+    idlsyd = pd.read_csv(file_idlsyd, skiprows=20, delimiter='|', names=get_dict('columns')['syd'])
     pysyd = pd.read_csv(file_pysyd)
     # make sure they can crossmatch
     idlsyd.KIC = idlsyd.KIC.astype(str)

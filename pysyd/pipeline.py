@@ -174,10 +174,6 @@ def plot(args):
         if args.verbose:
             print('\n\nPlotting results for target %s:'%args.stars[0])
 
-    # Load relevant pySYD parameters
-    args = utils.Parameters(args)
-    return args
-
 
 def run(args):
     """
