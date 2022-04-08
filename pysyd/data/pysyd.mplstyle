@@ -34,7 +34,7 @@ ytick.major.width           : 1.25
 ytick.minor.width           : 1.25
 
 agg.path.chunksize          : 10000
-mathtext.fontseet           : stix
+mathtext.fontset            : stix
 grid.color                  : white
 image.cmap                  : binary
 text.color                  : white
