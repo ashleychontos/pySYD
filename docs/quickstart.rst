@@ -1,6 +1,10 @@
 .. role::  raw-html(raw)
     :format: html
 
+.. role:: underlined
+   :class: underlined
+
+
 ***************
 Getting started
 ***************
@@ -44,8 +48,8 @@ oscillations, or :term:`numax` ():math:`\rm \nu_{max}`), that can bypass steps a
 
 .. _quickstart-script:
 
-Initialize script
-*****************
+:underlined:`Initialize script`
+*******************************
 
 When running ``pySYD`` from command line, you will likely use something similar to the 
 following: 
@@ -101,8 +105,8 @@ see our special CLI :ref:`glossary <user-guide-cli-glossary>`.
 
 -----
 
-The steps
-*********
+:underlined:`The steps`
+***********************
 
 .. _quickstart-script-steps:
 
@@ -272,8 +276,8 @@ or for it to also be a free parameter. The +1 (times 2) is because we also want 
 the simplest model i.e. where we are not able to resolve any. From our perspective, the main 
 purpose of implementing this was to try to identify null detections, since we do not expect 
 to observe oscillations in every star. **However, this is a work in progress and we are still
-trying various methods to identify and quantify non-detections so if you have any ideas, please 
-reach out to us!** 
+trying various methods to identify and quantify non-detections. Therefore if you have any ideas, 
+please reach out to us!** 
 
 Model 4 was selected for our example, consisting of two Harvey-like components, each with their characteristic
 time scale and amplitude. In this case, the white noise was *not* a free parameter.
