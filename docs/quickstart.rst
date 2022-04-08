@@ -179,7 +179,7 @@ The software first makes a very rough approximation of the stellar background by
 power spectrum in both log and linear spaces (think a very HEAVY smoothing filter), which the
 power spectrum is then divided by so that we are left with very little residual slope in the :term:`PS`.
 The 'Crude Background Fit' is shown below in the second panel by the lime green line. The
-background-corrected power spectrum (:term:`BCPS`) is then shown in the panel to the right.
+background-corrected power spectrum (:term:`BCPS`) is shown in the panel to the right.
 
 .. image:: _static/quickstart/1435467_estimates.png
   :width: 680
@@ -316,6 +316,11 @@ parameters would look like that below. **We urge folks to run new stars for a si
     (:math:`\rm \nu_{max}`) under the output parameters. **In fact for this methodology 
     first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
     the literature and we recommend that you do the same.**
+
+
+.. bibliography:: ../references.bib
+
+   verner2011
 
 
 .. _quickstart-script-steps-four:
@@ -460,5 +465,3 @@ References
 ##########
 
 .. [here] `Harvey (1985) <https://ui.adsabs.harvard.edu/abs/1985ESASP.235..199H>`_
-.. [fritz15] `Fritz & Kallivayalil (2015) <https://arxiv.org/abs/1508.06647>`_
-.. [bovy16] `Bovy et al. (2016) <https://arxiv.org/abs/1609.01298>`_

@@ -3,7 +3,6 @@
 figure.facecolor            : black
 figure.edgecolor            : black
 figure.dpi                  : 300
-figure.autolayout           : True
 
 lines.color                 : white
 lines.linewidth             : 1.0
@@ -15,9 +14,8 @@ axes.labelcolor             : white
 axes.formatter.use_mathtext : True
 axes.formatter.useoffset    : False
 axes.titlesize              : 18.0
-axes.labelcolor             : white
 axes.labelsize              : 16.0
-axes.linewidth              : 1.25
+axes.linewidth              : 0.75
 
 xtick.color                 : white
 xtick.direction             : inout

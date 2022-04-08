@@ -252,3 +252,12 @@ consolidated version.
 *You are now ready to become an asteroseismologist!*
 
 -----
+
+References
+##########
+
+.. bibliography:: ../references.bib
+
+   verner2011
+
+-----

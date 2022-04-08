@@ -9,7 +9,7 @@ from astropy.stats import mad_std
 from astropy.timeseries import LombScargle as lomb
 
 
-from .models import *
+from . import models
 
 
 
@@ -609,14 +609,14 @@ def get_dict(type='params'):
     """
     if type == 'functions':
         return {
-                0: lambda white_noise : (lambda frequency : _harvey_none(frequency, white_noise)),
-                1: lambda frequency, white_noise : _harvey_none(frequency, white_noise), 
-                2: lambda white_noise : (lambda frequency, tau_1, sigma_1 : _harvey_one(frequency, tau_1, sigma_1, white_noise)), 
-                3: lambda frequency, tau_1, sigma_1, white_noise : _harvey_one(frequency, tau_1, sigma_1, white_noise), 
-                4: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2 : _harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise)), 
-                5: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise : _harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise),
-                6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : _harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
-                7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : _harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
+                0: lambda white_noise : (lambda frequency : models._harvey_none(frequency, white_noise)),
+                1: lambda frequency, white_noise : models._harvey_none(frequency, white_noise), 
+                2: lambda white_noise : (lambda frequency, tau_1, sigma_1 : models._harvey_one(frequency, tau_1, sigma_1, white_noise)), 
+                3: lambda frequency, tau_1, sigma_1, white_noise : models._harvey_one(frequency, tau_1, sigma_1, white_noise), 
+                4: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2 : models._harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise)), 
+                5: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise : models._harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise),
+                6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : models._harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
+                7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : models._harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
                }
     path = os.path.join(os.path.dirname(__file__), 'dicts', '%s.dict'%type)
     with open(path, 'r') as f:

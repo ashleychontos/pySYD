@@ -281,7 +281,7 @@ def _compute_aic(observations, model, n_parameters):
 
     """
     N = len(observations)
-    LL = log_likelihood(observations, model)
+    LL = _log_likelihood(observations, model)
     aic = (-2.*LL)/N + (2.*n_parameters)/N
 
     return aic
@@ -306,7 +306,7 @@ def _compute_bic(observations, model, n_parameters):
 
     """
     N = len(observations)
-    LL = log_likelihood(observations, model)
+    LL = _log_likelihood(observations, model)
     bic = -2.*LL + np.log(N)*n_parameters
 
     return bic
