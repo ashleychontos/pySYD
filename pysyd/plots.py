@@ -676,6 +676,7 @@ def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'],
     """
     params = utils.get_dict('params')
     df = utils.get_results()
+    import matplotlib.gridspec as gridspec
 
     fig = plt.figure(figsize=(6,12))
     og = gridspec.GridSpec(npanels, 1, wspace=0.0, hspace=0.0, bottom=0.1)

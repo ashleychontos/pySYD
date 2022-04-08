@@ -15,7 +15,9 @@ INFDIR = os.path.join(_ROOT, 'info')
 INPDIR = os.path.join(_ROOT, 'data')
 OUTDIR = os.path.join(_ROOT, 'results')
 PACKAGEDIR = os.path.abspath(os.path.dirname(__file__))
-MPLSTYLE = "{}/data/pysyd.mplstyle".format(PACKAGEDIR)
+SYDFILE = os.path.join(PACKAGEDIR, 'data', 'syd_results.txt')
+PYSYDFILE = os.path.join(PACKAGEDIR, 'data', 'pysyd_results.csv')
+MPLSTYLE = os.path.join(PACKAGEDIR, 'data', 'pysyd.mplstyle')
 """
 
 Matplotlib stylesheet for plotting ``pySYD`` results.

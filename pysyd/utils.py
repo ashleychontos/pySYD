@@ -10,7 +10,7 @@ from astropy.timeseries import LombScargle as lomb
 
 
 from . import models
-
+from . import SYDFILE, PYSYDFILE
 
 
 class PySYDInputError(Exception):
@@ -1098,8 +1098,7 @@ def ask_int(question, n_trials, max_attempts=10, count=1, special=False):
     return None
 
 
-def get_results(file_idlsyd='syd_results.txt', file_pysyd='pysyd_results.csv', 
-                suffixes=['_idl', '_py'], max_numax=3200.,):
+def get_results(file_idlsyd=SYDFILE, file_pysyd=PYSYDFILE, suffixes=['_idl', '_py'], max_numax=3200.,):
     """
 
     Load and compare results between `SYD` and `pySYD` pipelines
@@ -1120,9 +1119,8 @@ def get_results(file_idlsyd='syd_results.txt', file_pysyd='pysyd_results.csv',
 
     """
     # load in both pipeline results
-    idlsyd = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', file_idlsyd), \
-                         skiprows=20, delimiter='|', names=get_dict('columns')['syd'])
-    pysyd = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', file_pysyd))
+    idlsyd = pd.read_csv(file_idlsyd)
+    pysyd = pd.read_csv(file_pysyd)
     # make sure they can crossmatch
     idlsyd.KIC = idlsyd.KIC.astype(str)
     pysyd.star = pysyd.star.astype(str)
