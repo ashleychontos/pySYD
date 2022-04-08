@@ -391,16 +391,16 @@ def main():
 ####
 
     plotting = argparse.ArgumentParser(add_help=False)
-    plotting.add_argument('-d', '--show', '--display',
-                          dest='show',
-                          help='show output figures',
-                          default=False, 
-                          action='store_true',
-    )
     plotting.add_argument('--all', '--showall',
                           dest='showall',
                           help='plot background comparison figure',
                           default=False,
+                          action='store_true',
+    )
+    plotting.add_argument('-d', '--show', '--display',
+                          dest='show',
+                          help='Do not show output figures',
+                          default=False, 
                           action='store_true',
     )
     plotting.add_argument('--ce', '--cm', '--color', 
@@ -521,13 +521,6 @@ def main():
                               default=None,
                               type=float,
     )
-    parser_check.add_argument('-v', '--verbose', 
-                              dest='verbose',
-                              help='Turn off verbose output',
-                              default=True, 
-                              action='store_false',
-    )
-
     parser_check.set_defaults(func=pipeline.check)
 
 ####
@@ -537,21 +530,9 @@ def main():
                                         formatter_class=argparse.MetavarTypeHelpFormatter,
                                         help='Load in data for a given target',  
                                         )
-    parser_load.add_argument('-d', '--show', '--display',
-                             dest='show',
-                             help='Do not show output figures',
-                             default=False, 
-                             action='store_true',
-    )
     parser_load.add_argument('-r', '--ret', '--return',
                              dest='return',
                              help='Disable the returning of any output',
-                             default=True, 
-                             action='store_false',
-    )
-    parser_load.add_argument('-v', '--verbose', 
-                             dest='verbose',
-                             help='Turn off verbose output',
                              default=True, 
                              action='store_false',
     )
@@ -564,30 +545,12 @@ def main():
                                             parents=[high_level_function, data_analyses, main_parser, plotting],
                                             formatter_class=argparse.MetavarTypeHelpFormatter,
                                             )
-    parser_parallel.add_argument('--cli',
-                                 dest='cli',
-                                 help='Running from command line (this should not be touched)',
-                                 default=True,
-                                 action='store_true',
-    )
-    parser_parallel.add_argument('-d', '--show', '--display',
-                                 dest='show',
-                                 help='Show output figures (not recommended for this mode)',
-                                 default=False, 
-                                 action='store_true',
-    )
     parser_parallel.add_argument('--nt', '--nthread', '--nthreads',
                                  metavar='int', 
                                  dest='n_threads',
                                  help='Number of processes to run in parallel',
                                  type=int,
                                  default=0,
-    )
-    parser_parallel.add_argument('-v', '--verbose', 
-                                 dest='verbose',
-                                 help='Turn on verbose output (not recommended in this mode)',
-                                 default=False, 
-                                 action='store_true',
     )
     parser_parallel.set_defaults(func=pipeline.parallel)
 
@@ -603,24 +566,6 @@ def main():
                              help='Reproduce the *Kepler* legacy results',
                              default=False,
                              action='store_true',
-    )
-    parser_plot.add_argument('--cli',
-                             dest='cli',
-                             help='Running from command line (this should not be touched)',
-                             default=True,
-                             action='store_true',
-    )
-    parser_plot.add_argument('-d', '--show', '--display',
-                             dest='show',
-                             help='Turn off the displaying of figures',
-                             default=True, 
-                             action='store_false',
-    )
-    parser_plot.add_argument('-v', '--verbose', 
-                             dest='verbose',
-                             help='Turn off verbose output',
-                             default=True, 
-                             action='store_false',
     )
     parser_plot.add_argument('-r', '--ret', '--return',
                              dest='return',
@@ -683,12 +628,6 @@ def main():
                               default=False,
                               action='store_true',
     )
-    parser_setup.add_argument('-v', '--verbose', 
-                              dest='verbose',
-                              help='Turn off verbose output',
-                              default=True, 
-                              action='store_false',
-    )
     parser_setup.set_defaults(func=pipeline.setup)
 
 
@@ -697,12 +636,6 @@ def main():
                                         formatter_class=argparse.MetavarTypeHelpFormatter,
                                         help='Test different utilities (currently under development)',  
                                         )
-    parser_test.add_argument('-d', '--show', '--display',
-                             dest='show',
-                             help='Show output figures',
-                             default=True, 
-                             action='store_false',
-    )
     parser_test.add_argument('--methods', 
                              dest='methods',
                              help='Compare different dnu methods',
@@ -718,12 +651,6 @@ def main():
     parser_test.add_argument('-r', '--ret', '--return',
                              dest='return',
                              help='Disable the returning of any parameters',
-                             default=True, 
-                             action='store_false',
-    )
-    parser_test.add_argument('-v', '--verbose', 
-                             dest='verbose',
-                             help='Turn off verbose output',
                              default=True, 
                              action='store_false',
     )

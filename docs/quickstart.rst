@@ -41,7 +41,6 @@ its properties so that the software runs from start to finish on its own. In any
 however, we can provide additional inputs (e.g., the center of the frequency range with the 
 oscillations, or :term:`numax` :math:`\rm \nu_{max}`) that can bypass steps and save time. 
 
------
 
 .. _quickstart-script:
 
@@ -102,6 +101,9 @@ see our special CLI :ref:`glossary <user-guide-cli-glossary>`.
 
 -----
 
+The steps
+*********
+
 .. _quickstart-script-steps:
 
 The software operates in roughly the following steps:
@@ -115,11 +117,10 @@ For each step, we will first show the relevant block of printed (or :term:`verbo
 describe what the software is doing behind the scenes and if applicable, conclude with the section-specific 
 results (i.e. files, figures, etc.).
 
-
 .. _quickstart-script-steps-one:
 
 1. Load in parameters and data
-******************************
+++++++++++++++++++++++++++++++
 
 .. code-block::
 
@@ -152,7 +153,7 @@ Since none of this happened, we can move on to the next step.
 .. _quickstart-script-steps-two:
 
 2. Get initial values
-*********************
++++++++++++++++++++++
 
 .. code-block::
 
@@ -204,7 +205,7 @@ this step the next time that the star is processed.
 .. _quickstart-script-steps-three:
 
 3. Fit global parameters
-************************
+++++++++++++++++++++++++
 
 .. code-block::
 
@@ -258,7 +259,8 @@ be changed, if desired).
 
 Measuring the granulation time scales is of course limited by the time series baseline but
 in general, we can resolve up to 3 Harvey-like components (or laws) at best (for now anyway). 
-For more information about the Harvey model, please see the original paper here_.
+For more information about the Harvey model, please see the original paper here_ as well as
+its application in context .
 Therefore we use all this information to guess how many we should observe and end up with
 
 .. math::
@@ -319,7 +321,7 @@ parameters would look like that below. **We urge folks to run new stars for a si
 .. _quickstart-script-steps-four:
 
 4. Estimate uncertainties
-*************************
++++++++++++++++++++++++++
 
 .. code-block::
 
