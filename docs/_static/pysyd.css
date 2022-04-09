@@ -20,8 +20,8 @@ body {
 
 pre, code {
   font-family: monospace; 
-  font-size: 200%;
-  line-height: 155%;
+  font-size: 100%;
+  line-height: 100%;
   color:blue;
 }
 
