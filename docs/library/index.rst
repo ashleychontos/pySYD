@@ -3,7 +3,7 @@
 .. _library:
 
 *****************
-``pySYD`` library
+`pySYD` library
 *****************
 
 Thanks for stopping by the ``pySYD`` documentation and taking an interest in

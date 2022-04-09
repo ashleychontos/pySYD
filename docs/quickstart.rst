@@ -4,7 +4,6 @@
 .. role:: underlined
    :class: underlined
 
-
 ***************
 Getting started
 ***************
@@ -43,7 +42,7 @@ Crashteroseismology: a crash course in asteroseismology
 For purposes of this first example, we will assume that we do not know anything about the star or
 its properties so that the software runs from start to finish on its own. In any normal circumstance,
 however, we can provide additional inputs like the center of the frequency range with the 
-oscillations, or :term:`numax` ():math:`\rm \nu_{max}`), that can bypass steps and save time. 
+oscillations, or :term:`numax` ( :math:`\rm \nu_{max}`), that can bypass steps and save time. 
 
 
 .. _quickstart-script:

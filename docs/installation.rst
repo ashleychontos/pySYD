@@ -1,3 +1,6 @@
+.. role:: underlined
+   :class: underlined
+
 ********************
 Installation & setup
 ********************
@@ -27,8 +30,8 @@ There are three main ways you can install the software:
 
 .. _install-pip:
 
-Install from PyPI
-*****************
+:underlined:`Install from PyPI`
+*******************************
 
 The ``pySYD`` package is available on the Python Package Index (`PyPI <https://pypi.org/project/pysyd/>`_)
 and therefore you can install the latest stable version directly using `pip`:
@@ -50,8 +53,8 @@ running the following command:
 
 .. _install-conda:
 
-Create an environment
-*********************
+:underlined:`Create an environment`
+***********************************
 
 You can also use `conda` to create an environment. For this example, I'll call it 'astero'.
 
@@ -72,8 +75,8 @@ Then activate the environment and install ``pySYD``:
 
 .. _install-git:
 
-Clone from GitHub
-*****************
+:underlined:`Clone from GitHub`
+*******************************
 
 If you are wanting to contribute, you can clone the latest development
 version from `GitHub <https://github.com/ashleychontos/pySYD>`_ using `git`.
@@ -163,8 +166,8 @@ We'd like to emphasize this last bullet because it establishes a local, relative
 structure that is both straightforward for the pipeline and intuitive to the user.
 
 
-Make a local directory
-**********************
+:underlined:`Make a local directory`
+************************************
 
 Before you do that though, we recommend that you create a new, local directory to keep all 
 your pysyd-related data, information and results in a single, easy-to-find location. This is 
@@ -178,8 +181,8 @@ The folder or directory can be whatever is most convenient for you:
     mkdir ~/path/to/local/pysyd/directory
     
 
-Initialize setup
-****************
+:underlined:`Initialize setup
+*****************************
 
 Now all you need to do is change into that directory, run the following command and let
 ``pySYD`` do the rest of the work for you!
@@ -250,14 +253,5 @@ going. This is essentially a summary of all the steps discussed on this page but
 consolidated version.
 
 *You are now ready to become an asteroseismologist!*
-
------
-
-References
-##########
-
-.. bibliography:: ../references.bib
-
-   verner2011
 
 -----

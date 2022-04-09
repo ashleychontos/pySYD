@@ -1,3 +1,5 @@
+.. _glossary:
+
 *******************************
 Glossary of documentation terms
 *******************************
@@ -70,10 +72,7 @@ Glossary of documentation terms
     BIC
     Bayesian Information Criterion
         a common metric for model selection
-         * **definition:**
 
-
-.. glossary::
 
     cadence
         the median absolute difference between consecutive time series observations
@@ -104,6 +103,7 @@ Glossary of documentation terms
     numax
     frequency of maximum power
         the frequency corresponding to maximum power, which is roughly the center of the Gaussian-like envelope of oscillations
+
          * **variable:** :math:`\nu_{\mathrm{max}}`
          * **units:** :math:`\rm \mu Hz`
     

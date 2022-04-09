@@ -27,7 +27,7 @@ from importlib import import_module
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-sys.path.append('/usr/local/lib/python3.7/site-packages/sphinx_panels')
+#sys.path.append('/usr/local/lib/python3.7/site-packages/sphinx_panels')
 sys.path.append('/usr/local/lib/python3.7/site-packages/ipython_genutils')
 
 # Get configuration information from setup.cfg
@@ -177,7 +177,7 @@ html_theme = 'sphinx_rtd_theme'
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 
-html_logo = "_static/pysyd_logo_rtd.png"
+html_logo = "_static/pysyd_rtd.png"
 
 #html_theme_options = {
 #    "logo_link": "index",
@@ -230,7 +230,7 @@ html_css_files = [
 #
 # ----------------------------------------------------------------------------
 
-latex_logo = '_static/latex.png'
+latex_logo = '_static/pysyd_white_on_black_3d.png'
 
 #latex_elements = {
 #    'sphinxsetup': 'verbatimwithframe=false',
@@ -251,7 +251,7 @@ automodsumm_inherited_members = True
 # Add nbsphinx
 extensions = [
     'nbsphinx',
-    'sphinx_panels',
+#    'sphinx_panels',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',

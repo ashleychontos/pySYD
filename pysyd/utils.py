@@ -739,7 +739,6 @@ def save_plotting(star):
             interp_pow = np.copy(star.interp_pow),
             bgcorr_pow = np.copy(star.bgcorr_pow),
             )
-        star.params['plotting'][star.module].update(params)
     elif star.module == 'parameters':
         params = dict(
             time = np.copy(star.time),

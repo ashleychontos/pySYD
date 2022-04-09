@@ -15,4 +15,4 @@ topic or tutorial by submitting a pull request!
    
    singlestar.ipynb
    numaxhacks.ipynb
-   example.ipynb
+

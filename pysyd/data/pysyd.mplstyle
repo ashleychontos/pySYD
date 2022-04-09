@@ -2,11 +2,11 @@
 
 figure.facecolor            : black
 figure.edgecolor            : black
-figure.dpi                  : 300
+#figure.dpi                  : 300
 
-lines.color                 : white
-lines.linewidth             : 1.0
-lines.markersize            : 2.0
+#lines.color                 : white
+#lines.linewidth             : 1.0
+#lines.markersize            : 2.0
 
 axes.facecolor              : black
 axes.edgecolor              : white
@@ -31,11 +31,10 @@ ytick.minor.size            : 10
 ytick.major.width           : 1.25
 ytick.minor.width           : 1.25
 
-agg.path.chunksize          : 10000
-mathtext.fontset            : stix
-grid.color                  : white
-image.cmap                  : binary
-text.color                  : white
-patch.edgecolor             : white
-savefig.facecolor           : black
-savefig.edgecolor           : black
+#mathtext.fontset            : stix
+#grid.color                  : white
+#image.cmap                  : binary
+#text.color                  : white
+#patch.edgecolor             : white
+#savefig.facecolor           : black
+#savefig.edgecolor           : black

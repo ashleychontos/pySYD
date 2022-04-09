@@ -775,7 +775,8 @@ class Target:
         # Or ask which estimate to use
         else:
             self = utils.save_plotting(self)
-            self = plots.plot_estimates(self)
+            self = plots.select_trial(self)
+        self = plots.plot_estimates(self)
         self = utils.save_estimates(self)
 
 
@@ -824,12 +825,11 @@ class Target:
             try:
                 best_vars, _ = curve_fit(models.gaussian, np.array(md), np.array(csum), p0=[np.median(csum), 1.0-np.median(csum), md[idx], self.constants['width_sun']*(md[idx]/self.constants['numax_sun'])], maxfev=5000, bounds=((-np.inf,-np.inf,1,-np.inf),(np.inf,np.inf,np.inf,np.inf)),)
             except Exception as _:
-                self.params['plotting']['estimates'][b].update({'good_fit':False,})
+                self.params['plotting']['estimates'][b].update({'good_fit':False,'fitx':np.linspace(min(md), max(md), 10000)})
                 snr = 0.
             else:
                 self.params['plotting']['estimates'][b].update({'good_fit':True,})
-                fitx = np.linspace(min(md), max(md), 10000)
-                self.params['plotting']['estimates'][b].update({'fitx':fitx,'fity':models.gaussian(fitx, *best_vars)})
+                self.params['plotting']['estimates'][b].update({'fitx':np.linspace(min(md), max(md), 10000),'fity':models.gaussian(np.linspace(min(md), max(md), 10000), *best_vars)})
                 snr = max(self.params['plotting']['estimates'][b]['fity'])/np.absolute(best_vars[0])
                 if snr > max_snr:
                     snr = max_snr
@@ -854,7 +854,7 @@ class Target:
             return : bool
                 will return `True` if there is prior value for numax otherwise `False`
 
-        .. seealso:: modules :py:mod:`target.Target.estimate_numax`, :py:mod:`target.Target.initial_estimates`
+        .. seealso:: modules :py:mod:`pysyd.target.Target.estimate_numax`, :py:mod:`pysyd.target.Target.initial_estimates`
 
         """
         # THIS MUST BE FIXED TOO
