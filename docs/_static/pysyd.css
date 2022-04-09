@@ -21,8 +21,7 @@ body {
 pre, code {
   font-family: monospace; 
   font-size: 100%;
-  line-height: 100%;
-  color: green;
+  line-height: 155%;
 }
 
 .red { 
