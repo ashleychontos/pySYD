@@ -32,7 +32,6 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
     spectrum for you! For more information about formatting and input data, please visit
     :ref:`this page <library-input>`.
 
------
 
 .. _quickstart-crash:
 
@@ -102,7 +101,6 @@ which we will now deconstruct.
 **Note:** For a *complete* list of options which are currently available via command-line interface (CLI), 
 see our special CLI :ref:`glossary <user-guide-cli-glossary>`.
 
------
 
 :underlined:`The steps`
 ***********************

@@ -7,14 +7,9 @@
 More examples
 *************
 
-If the pysyd setup feature was successfully executed, there should now be light curves and power spectra 
-for three KIC stars in the input data directory. 
-
-If so, then you are ready to get started! 
-
 This page has command-line examples for the following cases:
 
- -  :ref:`single star applications <example/single>` of varying signal-to-noise (SNR) detections:
+ -  single star applications of varying signal-to-noise (SNR) detections:
 
      -  :ref:`High SNR <user-guide-cli-examples-single-high>`
      -  :ref:`Medium SNR <user-guide-cli-examples-single-medium>`
@@ -26,12 +21,11 @@ This page has command-line examples for the following cases:
 
 including what to look for in each case.
 
------
 
 .. _user-guide-cli-examples-single:
 
-A single star
-#############
+Single star applications
+########################
 
 For applications to single stars, we will start with a very easy, high signal-to-noise (SNR)
 example, followed by medium, low, and no SNR examples. These won't be detailed walkthroughs 
@@ -44,15 +38,15 @@ High SNR: KIC 11618103
 
 KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
-.. image:: ../../_static/examples-11618103_excess.png
+.. image:: ../../_static/examples/11618103_excess.png
   :width: 680
   :alt: Find excess output plot for KIC 11618103.
 
-.. image:: ../../_static/examples-11618103_background.png
+.. image:: ../../_static/examples/11618103_background.png
   :width: 680
   :alt: Fit background output plot for KIC 11618103.
 
-.. image:: ../../_static/examples-11618103_samples.png
+.. image:: ../../_static/examples/11618103_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
@@ -67,7 +61,6 @@ KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
     
 And just like that, you are now an asteroseismologist!
 
------
 
 .. _user-guide-cli-examples-single-medium:
 
@@ -80,20 +73,19 @@ breaks down every step and output for this example.
 
 KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \mu Hz`.
 
-.. image:: ../../_static/examples-1435467_estimates.png
+.. image:: ../../_static/examples/1435467_estimates.png
   :width: 680
   :alt: Find excess output plot for KIC 11618103.
 
-.. image:: ../../_static/examples-1435467_global.png
+.. image:: ../../_static/examples/1435467_global.png
   :width: 680
   :alt: Fit background output plot for KIC 11618103.
 
-.. image:: ../../_static/examples-1435467_samples.png
+.. image:: ../../_static/examples/1435467_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
 
------
 
 .. _user-guide-cli-examples-single-low:
 
@@ -119,7 +111,7 @@ This would be classified as a detection despite the low SNR due to the following
 - the autocorrelation function (ACF) in panel 6 show periodic peaks
 - the echelle diagram in panel 8 shows the ridges, albeit faintly
 
------
+
 
 .. _user-guide-cli-examples-single-no:
 
@@ -141,7 +133,6 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
   :alt: Distributions of Monte-Carlo samples for KIC 6278992.
 
 
------
 
 .. _user-guide-cli-examples-multiple:
 
@@ -182,7 +173,6 @@ the :term:`--nthreads<--nt, --nthread, --nthreads>` command:
     Remember that by default, the stars to be processed (i.e. todo) will read in from **info/todo.txt**
     if no ``-list`` or ``-todo`` paths are provided.
    
------
 
 .. _user-guide-cli-examples-advanced:
 

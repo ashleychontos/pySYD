@@ -10,10 +10,6 @@ Installation & setup
     :text: Jump to quickstart
     :classes: btn-outline-secondary btn-block
 
------
-
-Installation
-############
 
 There are three main ways you can install the software:
 
@@ -26,12 +22,10 @@ There are three main ways you can install the software:
     **The recommended way to install this package is from PyPI via** `pip`, **since**
     **it will automatically enforce the proper dependencies and versions**
 
------
-
 .. _install-pip:
 
 :underlined:`Install from PyPI`
-*******************************
+###############################
 
 The ``pySYD`` package is available on the Python Package Index (`PyPI <https://pypi.org/project/pysyd/>`_)
 and therefore you can install the latest stable version directly using `pip`:
@@ -49,21 +43,22 @@ running the following command:
     python setup.py install
 
 
------
-
 .. _install-conda:
 
 :underlined:`Create an environment`
-***********************************
+###################################
 
 You can also use `conda` to create an environment. For this example, I'll call it 'astero'.
+
 
 .. code-block::
     
     conda create -n astero numpy scipy pandas astropy matplotlib tqdm
-    
+
+
 See our complete list of dependencies (including versions) :ref:`below <install-dependencies>`. 
 Then activate the environment and install ``pySYD``:
+
 
 .. code-block::
 
@@ -71,12 +66,10 @@ Then activate the environment and install ``pySYD``:
     pip install git+https://github.com/ashleychontos/pySYD
 
 
------
-
 .. _install-git:
 
-:underlined:`Clone from GitHub`
-*******************************
+Clone from GitHub
+#################
 
 If you are wanting to contribute, you can clone the latest development
 version from `GitHub <https://github.com/ashleychontos/pySYD>`_ using `git`.
@@ -94,7 +87,6 @@ The next step is to build and install the project:
 which needs to be executed from the top-level directory inside the 
 cloned ``pySYD`` repo.
 
------
 
 .. _install-dependencies:
 
@@ -115,7 +107,6 @@ Explicit version requirements are specified in the project `requirements.txt <ht
 and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
 `conda` should install and enforce these versions automatically. 
 
------
 
 .. _install-test:
 
@@ -147,7 +138,6 @@ window, which should display the following output:
         test                Test different utilities (currently under development)
 
 
------
 
 .. _install-setup:
 
@@ -232,7 +222,6 @@ As shown above, example data and other relevant files were downloaded from the
 
 .. TODO:: add an option to download example data/files as a package in the root directory.
 
------
 
 .. _install-quickstart:
 
@@ -254,4 +243,3 @@ consolidated version.
 
 *You are now ready to become an asteroseismologist!*
 
------
