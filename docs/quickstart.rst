@@ -396,8 +396,6 @@ of operations *does* matter.
 
 Notice the difference in the printed parameters this time - they now have uncertainties!
 
-.. code-block::
-
 We include the progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
 executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
 

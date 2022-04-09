@@ -15,13 +15,14 @@ span#logotext2 {
 
 body {
   font-family: 'Garamond', serif;
-  color:#4A4A4A; /* numpy.org body color */
+  color: #4A4A4A; /* numpy.org body color */
 }
 
 pre, code {
-  font-family: monospace; 
+  font-family: 'Courier New', monospace;
   font-size: 100%;
-  line-height: 155%;
+  line-height: 125%;
+  color: #4A4A4A;
 }
 
 .red { 

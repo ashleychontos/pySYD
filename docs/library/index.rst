@@ -11,8 +11,9 @@ learning more about how it all works -- we are so *thrilled* to share asteroseis
 with you!
 
 .. toctree::
+   :titlesonly:
    :maxdepth: 2
-   :caption: Contents
+   :caption: User Guide
 
    about
    input

@@ -11,7 +11,7 @@ share the software with you!
 .. toctree::
    :titlesonly:
    :maxdepth: 3
-   :caption: Contents
+   :caption: Tutorials & information
 
    Command line <cli/index>
    Notebook tutorials <nb/index>
