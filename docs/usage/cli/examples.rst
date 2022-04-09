@@ -44,15 +44,15 @@ High SNR: KIC 11618103
 
 KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
-.. image:: _static/examples-11618103_excess.png
+.. image:: ../../_static/examples-11618103_excess.png
   :width: 680
   :alt: Find excess output plot for KIC 11618103.
 
-.. image:: _static/examples-11618103_background.png
+.. image:: ../../_static/examples-11618103_background.png
   :width: 680
   :alt: Fit background output plot for KIC 11618103.
 
-.. image:: _static/examples-11618103_samples.png
+.. image:: ../../_static/examples-11618103_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 
@@ -80,15 +80,15 @@ breaks down every step and output for this example.
 
 KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \mu Hz`.
 
-.. image:: _static/examples-1435467_estimates.png
+.. image:: ../../_static/examples-1435467_estimates.png
   :width: 680
   :alt: Find excess output plot for KIC 11618103.
 
-.. image:: _static/examples-1435467_global.png
+.. image:: ../../_static/examples-1435467_global.png
   :width: 680
   :alt: Fit background output plot for KIC 11618103.
 
-.. image:: _static/examples-1435467_samples.png
+.. image:: ../../_static/examples-1435467_samples.png
   :width: 680
   :alt: Distributions of Monte-Carlo samples for KIC 11618103.
 

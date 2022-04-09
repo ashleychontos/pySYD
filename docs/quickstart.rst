@@ -162,16 +162,16 @@ Since none of this happened, we can move on to the next step.
 .. code-block::
 
     -----------------------------------------------------------
-    PS binned to 173 datapoints
+    PS binned to 228 datapoints
     
     Numax estimates
     ---------------
-    Numax estimate 1: 1416.12 +/- 86.91
-    S/N: 2.18
-    Numax estimate 2: 1464.42 +/- 76.62
-    S/N: 4.33
-    Numax estimate 3: 1438.28 +/- 97.24
-    S/N: 12.38
+    Numax estimate 1: 1440.10 +/- 81.29
+    S/N: 2.01
+    Numax estimate 2: 1513.01 +/- 50.24
+    S/N: 4.47
+    Numax estimate 3: 1466.28 +/- 94.05
+    S/N: 9.84
     Selecting model 3
     -----------------------------------------------------------
 
@@ -203,7 +203,7 @@ this step the next time that the star is processed.
    :header: "stars", "numax", "dnu", "snr"
    :widths: 20, 20, 20, 20
 
-   1435467, 1438.27561061044, 72.3140769912867, 12.3801364686659
+   1435467, 1466.27531634578, 73.433876222636, 9.83548305222251
 
 
 .. _quickstart-script-steps-three:
@@ -216,25 +216,41 @@ this step the next time that the star is processed.
     -----------------------------------------------------------
     GLOBAL FIT
     -----------------------------------------------------------
-    PS binned to 335 data points
+    PS binned to 333 data points
     
     Background model
     ----------------
     Comparing 6 different models:
     Model 0: 0 Harvey-like component(s) + white noise fixed
-     BIC = 981.74 | AIC = 2.93
+     BIC = 981.66 | AIC = 2.95
     Model 1: 0 Harvey-like component(s) + white noise term
-     BIC = 1009.29 | AIC = 3.00
+     BIC = 1009.56 | AIC = 3.02
     Model 2: 1 Harvey-like component(s) + white noise fixed
-     BIC = 80.37 | AIC = 0.22
+     BIC = 80.27 | AIC = 0.22
     Model 3: 1 Harvey-like component(s) + white noise term
-     BIC = 90.83 | AIC = 0.24
+     BIC = 90.49 | AIC = 0.24
     Model 4: 2 Harvey-like component(s) + white noise fixed
-     BIC = 81.50 | AIC = 0.20
+     BIC = 81.46 | AIC = 0.20
     Model 5: 2 Harvey-like component(s) + white noise term
-     BIC = 94.42 | AIC = 0.22
-    Based on AIC statistic: model 4
+     BIC = 94.36 | AIC = 0.23
+    Based on BIC statistic: model 2
     -----------------------------------------------------------
+    Output parameters
+    -----------------------------------------------------------
+    numax_smooth: 1299.81 muHz
+    A_smooth: 1.74 ppm^2/muHz
+    numax_gauss: 1344.46 muHz
+    A_gauss: 1.50 ppm^2/muHz
+    FWHM: 294.83 muHz
+    dnu: 70.69 muHz
+    tau_1: 234.10 s
+    sigma_1: 87.40 ppm
+    -----------------------------------------------------------
+     - displaying figures
+     - press RETURN to exit
+     - combining results into single csv file
+    -----------------------------------------------------------
+
 
 A bulk of the heavy lifting is done in this main fitting routine, which is actually done 
 in two separate steps: 1) modeling and characterizing the stellar background and 2) determining 
@@ -261,10 +277,11 @@ implemented an automated background model seletion. After much trial and error, 
 seems to perform better for our purposes - which is now the default metric used (but can easily
 be changed, if desired).
 
-Measuring the granulation time scales is of course limited by the time series baseline but
-in general, we can resolve up to 3 Harvey-like components (or laws) at best (for now anyway). 
-For more information about the Harvey model, please see the original paper here_ as well as
-its application in context .
+Measuring the granulation time scales is obviously limited by the total observation baseline
+of the time series but in general, we can resolve up to 3 Harvey-like components (or laws) 
+at best (for now anyway). For more information about the Harvey model, please see the original 
+paper [1]_ as well as its application in context .
+
 Therefore we use all this information to guess how many we should observe and end up with
 
 .. math::
@@ -279,8 +296,12 @@ to observe oscillations in every star. **However, this is a work in progress and
 trying various methods to identify and quantify non-detections. Therefore if you have any ideas, 
 please reach out to us!** 
 
-Model 4 was selected for our example, consisting of two Harvey-like components, each with their characteristic
-time scale and amplitude. In this case, the white noise was *not* a free parameter.
+For this example we started with two Harvey-like components but the automated model selection
+preferred a simpler one consisting of a single Harvey law. In addition, the white noise was
+fixed and *not* a free parameter and hence, the final model had 3 less parameters than it started
+with. For posterity, we included the output if only a single iteration had been run (which we 
+recommend by default when analyzing a star for the first time). 
+
 
 .. image:: _static/quickstart/1435467_global.png
   :width: 680
@@ -295,21 +316,24 @@ If this was run in its default setting, with ``--mc`` = `1`, for a single iterat
 parameters would look like that below. **We urge folks to run new stars for a single step first 
 (ALWAYS) before running it several iterations to make sure everything looks ok.**
 
+**One final important note:** we chose to show this example since it is a perfect testament for
+why we do the fitting in two steps. You can see the estimate from the first module quoted a value
+close to 1500 microhertz but it still got the final value correct. Background fits and the order
+of operations *does* matter.
+
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"
    :widths: 20, 20, 20
 
-   numax_smooth, 1303.82549513, --
-   A_smooth, 1.6981881189944,--
-   numax_gauss, 1354.18609943197, --
-   A_gauss, 1.45587282712706, --
-   FWHM, 284.631831313442, --
-   dnu, 70.653293964844, --
-   tau_1, 1069.91765124738, --
-   sigma_1, 31.1026782311927, --
-   tau_2, 218.303624326155, --
-   sigma_2, 85.4836783903674, --
+   numax_smooth, 1299.81293631, --
+   A_smooth, 1.7443557750467,--
+   numax_gauss, 1344.46209196076, --
+   A_gauss, 1.49520571824331, --
+   FWHM, 294.828525018811, --
+   dnu, 70.686368232649, --
+   tau_1, 234.096929954605, --
+   sigma_1, 87.4003388422754, --
 
 
 .. note::
@@ -330,21 +354,40 @@ parameters would look like that below. **We urge folks to run new stars for a si
 .. code-block::
 
     -----------------------------------------------------------
+    GLOBAL FIT
+    -----------------------------------------------------------
+    PS binned to 333 data points
+    
+    Background model
+    ----------------
+    Comparing 6 different models:
+    Model 0: 0 Harvey-like component(s) + white noise fixed
+     BIC = 981.66 | AIC = 2.95
+    Model 1: 0 Harvey-like component(s) + white noise term
+     BIC = 1009.56 | AIC = 3.02
+    Model 2: 1 Harvey-like component(s) + white noise fixed
+     BIC = 80.27 | AIC = 0.22
+    Model 3: 1 Harvey-like component(s) + white noise term
+     BIC = 90.49 | AIC = 0.24
+    Model 4: 2 Harvey-like component(s) + white noise fixed
+     BIC = 81.46 | AIC = 0.20
+    Model 5: 2 Harvey-like component(s) + white noise term
+     BIC = 94.36 | AIC = 0.23
+    Based on BIC statistic: model 2
+    -----------------------------------------------------------
     Sampling routine:
     100%|███████████████████████████████████████| 200/200 [00:21<00:00,  9.23it/s]
     -----------------------------------------------------------
     Output parameters
     -----------------------------------------------------------
-    numax_smooth: 1303.83 +/- 65.19 muHz
-    A_smooth: 1.70 +/- 0.21 ppm^2/muHz
-    numax_gauss: 1354.19 +/- 43.04 muHz
-    A_gauss: 1.46 +/- 0.29 ppm^2/muHz
-    FWHM: 284.63 +/- 64.57 muHz
-    dnu: 70.65 +/- 0.81 muHz
-    tau_1: 1069.92 +/- 2121.15 s
-    sigma_1: 31.10 +/- 42.95 ppm
-    tau_2: 218.30 +/- 20.25 s
-    sigma_2: 85.48 +/- 3.68 ppm
+    numax_smooth: 1299.81 +/- 50.31 muHz
+    A_smooth: 1.74 +/- 0.21 ppm^2/muHz
+    numax_gauss: 1344.46 +/- 35.97 muHz
+    A_gauss: 1.50 +/- 0.24 ppm^2/muHz
+    FWHM: 294.83 +/- 68.78 muHz
+    dnu: 70.69 +/- 0.72 muHz
+    tau_1: 234.10 +/- 17.82 s
+    sigma_1: 87.40 +/- 2.54 ppm
     -----------------------------------------------------------
      - displaying figures
      - press RETURN to exit
@@ -352,6 +395,8 @@ parameters would look like that below. **We urge folks to run new stars for a si
     -----------------------------------------------------------
 
 Notice the difference in the printed parameters this time - they now have uncertainties!
+
+.. code-block::
 
 We include the progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
 executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
@@ -366,16 +411,14 @@ executed in parallel mode. This is hard-wired since the latter would produce a n
    :header: "parameter", "value", "uncertainty"
    :widths: 20, 20, 20
 
-   numax_smooth, 1303.82549513, 65.1861645150548
-   A_smooth, 1.6981881189944, 0.208329237417828
-   numax_gauss, 1354.18609943197, 43.0399300425255
-   A_gauss, 1.45587282712706, 0.286045233580998
-   FWHM, 284.631831313442, 64.5689284576161
-   dnu, 70.653293964844, 0.81171745376397
-   tau_1, 1069.91765124738, 2121.15050259705
-   sigma_1, 31.1026782311927, 42.9475567908216
-   tau_2, 218.303624326155, 20.2541392707925
-   sigma_2, 85.4836783903674, 3.68355287162928
+   numax_smooth, 1299.81293631, 50.3135930088401
+   A_smooth, 1.7443557750467, 0.206023287782047
+   numax_gauss, 1344.46209196076, 35.9718007557108
+   A_gauss, 1.49520571824331, 0.239359250395468
+   FWHM, 294.828525018811, 68.7801574556345
+   dnu, 70.686368232649, 0.724027370237817
+   tau_1, 234.096929954605, 17.8245695851712
+   sigma_1, 87.4003388422754, 2.54295662794715
 
 * matches expected output for model 4 selection - notice how there is no white noise term
 in the output. this is because the model preferred for this to be fixed
@@ -463,4 +506,4 @@ Ok, now that we have our desired settings and target, we can go ahead and proces
 References
 ##########
 
-.. [here] `Harvey (1985) <https://ui.adsabs.harvard.edu/abs/1985ESASP.235..199H>`_
+.. [1] `Harvey (1985) <https://ui.adsabs.harvard.edu/abs/1985ESASP.235..199H>`_
