@@ -181,8 +181,8 @@ The folder or directory can be whatever is most convenient for you:
     mkdir ~/path/to/local/pysyd/directory
     
 
-:underlined:`Initialize setup
-*****************************
+:underlined:`Initialize setup`
+******************************
 
 Now all you need to do is change into that directory, run the following command and let
 ``pySYD`` do the rest of the work for you!

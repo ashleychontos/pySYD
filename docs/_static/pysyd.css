@@ -1,10 +1,6 @@
-span#logotext2 {
-    color: #764099;
-}
+/* span#logotext2 {color: #764099;} */
 
-/* Taken from gala - doubly taken from NumPy */
-
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,400;0,600;1,400;1,600&display=swap'); */
 
 .navbar-brand img {
    height: 60px;
@@ -13,20 +9,20 @@ span#logotext2 {
    height: 75px;
 }
 
-body {
-  font-family: 'Garamond', serif;
-  color: #4A4A4A; /* numpy.org body color */
-}
+/* body {font-family: 'Garamond', serif; color: #4A4A4A; }*/
 
-pre, code {
+pre {
   font-family: 'Courier New', monospace;
   font-size: 100%;
-  line-height: 125%;
-  color: #4A4A4A;
+  line-height: 155%;
+  color: black;
 }
 
-.red { 
-  color: red; 
+code {
+  font-family: 'Courier New', monospace;
+  font-size: 100%;
+  line-height: 100%;
+  color: #4A4A4A;
 }
 
 .bolditalic {
@@ -59,7 +55,7 @@ h1 {
 h2 {
   font-family: "Garamond", serif;
   color: #4d77cf; /* warm blue */
-  letter-spacing: -.02em;
+  letter-spacing: -.01em;
 }
 
 h3 {
