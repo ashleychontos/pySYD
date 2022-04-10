@@ -324,7 +324,7 @@ List of options
     ``--of, --over, --oversample``
         the oversampling factor of the provided power spectrum. Default is `0`, which means it is calculated from
         the time series data. **Note:** this needs to be provided if there is no time series data!
-         * dest = ``args.of_actual``
+         * dest = ``args.oversampling_factor``
          * type = `int`
          * default = `None`
          
