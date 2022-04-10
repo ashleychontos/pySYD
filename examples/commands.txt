@@ -1,0 +1,19 @@
+# examples with verbose output
+pysyd run --star 1435467 -dv --ux 5000
+pysyd run --star 1435467 -dv --ux 5000 --mc 200
+pysyd run --star 11618103 -dv 
+pysyd run --star 8801316 -dv --lx 100 --lb 100
+pysyd run --star 6278992 -dv
+# advanced before/after (no output needed)
+pysyd run --star 5791521
+pysyd run --star 5791521 --numax 670
+pysyd run --star 9542776 --numax 900
+pysyd run --star 9542776 --numax 900 --ew 1.5
+pysyd run --star 8045442 --numax 550
+pysyd run --star 8045442 --numax 550 --kc
+pysyd run --star 10731424 --numax 750
+pysyd run --star 10731424 --numax 750 --lp 490
+pysyd run --star 11769801
+pysyd run --star 11769801 --ux 3500
+pysyd run --star 3112889 --numax 871.52
+pysyd run --star 3112889 --numax 871.52 --ie
