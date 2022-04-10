@@ -174,6 +174,8 @@ the :term:`--nthreads<--nt, --nthread, --nthreads>` command:
     if no ``-list`` or ``-todo`` paths are provided.
    
 
+-----
+
 .. _user-guide-cli-examples-advanced:
 
 **************

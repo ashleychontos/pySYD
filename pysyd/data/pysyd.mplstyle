@@ -8,10 +8,10 @@ figure.edgecolor            : black
 #lines.linewidth             : 1.0
 #lines.markersize            : 2.0
 
-axes.facecolor              : black
-axes.edgecolor              : white
-axes.labelcolor             : white
-axes.formatter.use_mathtext : True
+#axes.facecolor              : black
+#axes.edgecolor              : white
+#axes.labelcolor             : white
+#axes.formatter.use_mathtext : True
 axes.formatter.useoffset    : False
 axes.titlesize              : 18.0
 axes.labelsize              : 16.0

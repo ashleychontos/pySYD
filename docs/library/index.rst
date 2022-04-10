@@ -27,7 +27,7 @@ with you!
 TL;DR
 #####
 
-If you (understandably) do not have time to go through the entire user guide, we have summarized 
+If you do not have time to go through the entire user guide, we have summarized 
 a couple important tidbits that we think you should know before using the software.
 
  - The first is that the userbase for the initial `pySYD` release was intended for non-expert 

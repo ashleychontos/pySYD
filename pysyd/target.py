@@ -767,16 +767,16 @@ class Target:
         self.bgcorr_pow = self.pow/self.interp_pow
         # Collapsed ACF to find numax
         self.collapsed_acf()
+        self.params['best'] = self.params['compare'].index(max(self.params['compare']))+1
         # Select trial that resulted with the highest SNR detection
         if not self.params['ask']:
-            self.params['best'] = self.params['compare'].index(max(self.params['compare']))+1
             if self.params['verbose']:
                 print('Selecting model %d' % self.params['best'])
         # Or ask which estimate to use
         else:
-            self = utils.save_plotting(self)
+#            self = utils.save_plotting(self)
             self = plots.select_trial(self)
-        self = plots.plot_estimates(self)
+#        self = plots.plot_estimates(self)
         self = utils.save_estimates(self)
 
 
