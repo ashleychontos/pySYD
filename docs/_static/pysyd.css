@@ -14,8 +14,8 @@
 pre {
   font-family: 'Courier New', monospace;
   font-size: 100%;
-  line-height: 155%;
-  color: green;
+  line-height: 100%;
+  color: #4A4A4A;
 }
 
 code {
