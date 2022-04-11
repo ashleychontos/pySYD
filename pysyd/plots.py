@@ -57,7 +57,7 @@ def select_trial(star):
 
     n = 1
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Current numax guesses for %s"%star.name, figsize=())
+    fig = plt.figure("Current numax guesses for %s"%star.name, figsize=d[n_panels]['size'])
 
     params = star.params['plotting']['estimates']
     # ACF trials to determine numax
@@ -80,7 +80,6 @@ def select_trial(star):
         ax.set_ylim([-0.05, ymax+0.15*yran])
         ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
 
-    fig.set_size_inches(d[n_panels]['size'][0],d[n_panels]['size'][1])
     plt.tight_layout()
     plt.show()
     value = utils.ask_int('Which estimate would you like to use? ', star.params['n_trials'])
@@ -115,7 +114,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
         n_panels -= 1
     n = 0
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Estimate numax results for %s"%star.name)
+    fig = plt.figure("Estimate numax results for %s"%star.name, figsize=d[n_panels]['size'])
 
     params = star.params['plotting']['estimates']
     n += 1
@@ -184,7 +183,6 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
             if params[i]['good_fit']:
                 ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
 
-    fig.set_size_inches(d[n_panels]['size'][0],d[n_panels]['size'][1])
     plt.tight_layout()
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
@@ -220,7 +218,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     n = 0
     d = utils.get_dict(type='plots')
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Global fit for %s"%star.name)
+    fig = plt.figure("Global fit for %s"%star.name, figsize=d[n_panels]['size'])
 
     params = star.params['plotting']['parameters']
 
@@ -303,7 +301,6 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax3.set_yscale('log')
 
     if star.params['background'] and not star.params['globe'] and star.params['save']:
-        fig.set_size_inches(d[n_panels]['size'][0],d[n_panels]['size'][1])
         plt.tight_layout()
         path = os.path.join(star.params['path'],subfilename)
         if not star.params['overwrite']:
@@ -401,7 +398,6 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax9.set_xlim([0.0, 2.0*params['obs_dnu']])
     ax9.set_ylim([min(params['yax'])-0.025*(yrange), max(params['yax'])+0.05*(yrange)])
 
-    fig.set_size_inches(d[n_panels]['size'][0],d[n_panels]['size'][1])
     plt.tight_layout()
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
@@ -427,7 +423,7 @@ def plot_samples(star, filename='samples.png'):
     d = utils.get_dict(type='plots')
     params = utils.get_dict()
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Posteriors for %s"%star.name)
+    fig = plt.figure("Posteriors for %s"%star.name, figsize=d[n_panels]['size'])
 
     sample = star.params['plotting']['samples']
     for i, col in enumerate(sample['df'].columns.values.tolist()):
@@ -436,7 +432,7 @@ def plot_samples(star, filename='samples.png'):
         ax.set_yticks([])
         ax.set_yticklabels([])
         ax.set_title(params[col]['label'], fontsize=16)
-    fig.set_size_inches(d[n_panels]['size'][0],d[n_panels]['size'][1])
+
     plt.tight_layout()
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
