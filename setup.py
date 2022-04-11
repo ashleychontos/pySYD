@@ -35,6 +35,8 @@ setuptools.setup(
         'numpy>=1.14.5',
         'pandas>=1.0.5',
         'scipy',
+        'tqdm',
+        'matplotlib>=1.5.3',
     ],
     extras_require = {
         'sampling': ['tqdm'],

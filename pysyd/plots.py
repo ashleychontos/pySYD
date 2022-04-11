@@ -57,7 +57,7 @@ def select_trial(star):
 
     n = 1
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Current numax guesses for %s"%star.name)
+    fig = plt.figure("Current numax guesses for %s"%star.name, figsize=())
 
     params = star.params['plotting']['estimates']
     # ACF trials to determine numax
