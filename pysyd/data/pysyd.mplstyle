@@ -8,10 +8,10 @@ figure.edgecolor            : black
 #lines.linewidth             : 1.0
 #lines.markersize            : 2.0
 
-#axes.facecolor              : black
-#axes.edgecolor              : white
-#axes.labelcolor             : white
-#axes.formatter.use_mathtext : True
+axes.facecolor              : black
+axes.edgecolor              : white
+axes.labelcolor             : white
+axes.formatter.use_mathtext : True
 axes.formatter.useoffset    : False
 axes.titlesize              : 18.0
 axes.labelsize              : 16.0
@@ -31,10 +31,10 @@ ytick.minor.size            : 10
 ytick.major.width           : 1.25
 ytick.minor.width           : 1.25
 
-#mathtext.fontset            : stix
-#grid.color                  : white
-#image.cmap                  : binary
-#text.color                  : white
-#patch.edgecolor             : white
-#savefig.facecolor           : black
-#savefig.edgecolor           : black
+mathtext.fontset            : stix
+grid.color                  : white
+image.cmap                  : binary
+text.color                  : white
+patch.edgecolor             : white
+savefig.facecolor           : black
+savefig.edgecolor           : black

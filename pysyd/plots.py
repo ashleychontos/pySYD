@@ -3,11 +3,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+
+
+
+
+
+
+
+# Package mode
 from . import utils
 from . import models
 from . import MPLSTYLE
 
 plt.style.use(MPLSTYLE)
+
 
 def make_plots(star, showall=False,):
     """
@@ -54,7 +63,7 @@ def select_trial(star):
     """
     d = utils.get_dict(type='plots')
     n_panels = star.params['n_trials']
-
+    plt.style.use(MPLSTYLE)
     n = 1
     x, y = d[n_panels]['x'], d[n_panels]['y']
     fig = plt.figure("Current numax guesses for %s"%star.name, figsize=d[n_panels]['size'])
@@ -62,12 +71,11 @@ def select_trial(star):
     params = star.params['plotting']['estimates']
     # ACF trials to determine numax
     for i in range(star.params['n_trials']):
-        ax = plt.subplot(y, x, n+i)
+        ax = plt.subplot(x, y, n+i)
         ax.plot(params[i]['x'], params[i]['y'], 'w-')
         xran = max(params[i]['fitx'])-min(params[i]['fitx'])
         ymax = params[i]['maxy']
         ax.axvline(params[i]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
-        ax.set_title(r'$\rm Collapsed \,\, ACF \,\, [trial \,\, %d]$' % (i+1))
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
         ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
         if params[i]['good_fit']:
@@ -75,6 +83,7 @@ def select_trial(star):
             if max(params[i]['fity']) > params[i]['maxy']:
                 ymax = max(params[i]['fity'])
             ax.axvline(params[i]['numax'], color='lime', linestyle='--', linewidth=0.75)
+            ax.set_title(r'$\rm Trial \,\, %d \,\, | \,\, \nu_{max} \sim %.0f \, \mu Hz $'%(i+1, params[i]['numax']))
         yran = np.absolute(ymax)
         ax.set_xlim([min(params[i]['x']), max(params[i]['x'])])
         ax.set_ylim([-0.05, ymax+0.15*yran])

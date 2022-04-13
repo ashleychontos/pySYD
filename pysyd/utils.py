@@ -6,11 +6,14 @@ import pandas as pd
 from astropy.io import ascii
 import multiprocessing as mp
 from astropy.stats import mad_std
-from astropy.timeseries import LombScargle as lomb
 
 
+
+
+# Package mode
 from . import models
 from . import SYDFILE, PYSYDFILE
+from . import INFDIR, INPDIR, OUTDIR
 
 
 class PySYDInputError(Exception):
@@ -110,13 +113,13 @@ class Parameters(Constants):
 
     def get_defaults(self, params={}):
         """
-        Loads default parameters information
+        Loads default parameter information - completely analagous to the parsers available
+        via command line (including how/when they are loaded in)
     
         Calls
+            :mod:`pysyd.utils.Parameters.get_high`
+            :mod:`pysyd.utils.Parameters.get_data`
             :mod:`pysyd.utils.Parameters.get_main`
-            :mod:`pysyd.utils.Parameters.get_excess`
-            :mod:`pysyd.utils.Parameters.get_background`
-            :mod:`pysyd.utils.Parameters.get_globe`
 
         Attributes
             params : Dict[str[Dict[,]]]
@@ -125,57 +128,39 @@ class Parameters(Constants):
 
         """
         self.params = {}
+        # Initialize high level functionality
+        self.get_high()
+        # Get parameters related to data loading/saving
+        self.get_data()
         # Initialize main 'params' dictionary
         self.get_main()
-        # Initialize parameters for the find excess routine
-        self.get_excess()
-        # Initialize parameters for the fit background routine
-        self.get_background()
-        # Initialize parameters relevant for estimating global parameters
-        self.get_globe() 
+        # Get plotting info
+        self.get_plotting()
 
 
-    def get_main(self, stars=None, excess=True, background=True, globe=True, verbose=False, 
-                 show=False, save=True, kep_corr=False, stitch=False, gap=20, overwrite=False,
-                 oversampling_factor=None, inpdir='data', infdir='info', outdir='results',
-                 todo='todo.txt', info='star_info.csv', cli=False, notebook=False, mode='load',):
+    def get_high(self, inpdir='data', infdir='info', outdir='results', save=True, verbose=False, 
+                 overwrite=False, cli=False, notebook=False,):
         """
    
         Get the parameters for higher-level functionality
 
         Parameters
-            stars : List[str], optional
-                list of targets to process. If `None`, will read in from `info/todo.txt` (default).
-            excess : bool, optional
-                disable the module that estimates numax
-            background : bool, optional
-                disable the background-fitting routine (not recommended)
-            globe : bool, optional
-                disable the module that fits the global parameters (also not recommended)
-            verbose : bool, optional
-                turn on verbose output
-            show : bool, optional
-                show output figures
-            save : bool, optional
-                save all data products
-            kep_corr : bool, optional
-                use the module that corrects for known kepler artefacts
-            stitch : bool, optional
-                use the module that corrects for large gaps in data
-            overwrite : bool, optional
-                allow files to be overwritten by new ones
-            oversampling_factor : int, optional
-                oversampling factor of input power spectrum
             inpdir : str
                 path to input data (default='data/')
             infdir : str
                 path to star information (default='info/')
             outdir : str
                 path to results (default='results/')
-            todo : str
-                path to star list to process (default='info/todo.txt')
-            info : str
-                path to star csv info (default='info/star_info.csv')
+            save : bool, optional
+                save all data products
+            verbose : bool, optional
+                turn on verbose output
+            overwrite : bool, optional
+                allow files to be overwritten by new ones
+            cli : bool, optional
+                this should not be touched - there is a function that determines this automatically
+            notebook : bool, optional
+                this should not be altered either - there is a function that determines this automatically
 
         Attributes
             params : Dict[str,Dict[,]]
@@ -183,99 +168,185 @@ class Parameters(Constants):
 
 
         """
-        main = dict(
-            stars = stars,
-            inpdir = os.path.join(os.path.abspath(os.getcwd()),inpdir),
-            outdir = os.path.join(os.path.abspath(os.getcwd()),outdir),
-            infdir = os.path.join(os.path.abspath(os.getcwd()),infdir),
-            info = info,
-            todo = todo,
-            show = show,
+        high = dict(
+            inpdir = os.path.join(os.path.abspath(os.getcwd()), INPDIR),
+            infdir = os.path.join(os.path.abspath(os.getcwd()), INFDIR),
+            outdir = os.path.join(os.path.abspath(os.getcwd()), OUTDIR),
             save = save,
-            kep_corr = kep_corr,
-            stitch = stitch,
-            gap = gap,
-            oversampling_factor = oversampling_factor, 
-            overwrite = overwrite,
-            excess = excess,
-            background = background,
-            globe = globe,
             verbose = verbose,
+            overwrite = overwrite,
             cli = cli,
             notebook = notebook,
-            mode = mode,
         )
-        self.params.update(main)
+        self.params.update(high)
 
 
-    def get_excess(self, n_trials=3, step=0.25, binning=0.005, smooth_width=10.0, bin_mode='mean', 
-                   lower_ex=1.0, upper_ex=8000.0, ask=False,):
+    def get_data(self, stars=None, todo='todo.txt', info='star_info.csv', mode='load',
+                 gap=20, stitch=False, oversampling_factor=None, kep_corr=False, dnu=None, 
+                 lower_ech=None, upper_ech=None, notching=False,):
+        """
+   
+        Get the parameters related to data manipulation and initial loading
+
+        Parameters
+            stars : List[str], optional
+                list of targets to process. If `None`, will read in from `info/todo.txt` (default).
+            todo : str
+                path to star list to process (default='info/todo.txt')
+            info : str
+                path to star csv info (default='info/star_info.csv')
+            mode : str, optional
+                which `pySYD` mode (default=`'load'`)
+            gap : int, optional
+                n times the number of cadences defines a "gap" (to correct for)
+            stitch : bool, optional
+                use the module that corrects for large gaps in data
+            oversampling_factor : int, optional
+                oversampling factor of input power spectrum
+            kep_corr : bool, optional
+                use the module that corrects for known kepler artefacts
+            dnu : float, optional
+                spacing to fold PS in order to "whiten" mixed modes (**Note:** requires all 3 args)
+            lower_ech : float
+                lower bound of folded PS (in muHz) to 'whiten' mixed modes (default = `None`)
+            upper_ech : float
+                upper bound of folded PS (in muHz) to 'whiten' mixed modes (default = `None`)
+            notching : bool, optional
+                option to use notching technique (vs. simulating white noise, default = `False`)
+
+        Attributes
+            params : Dict[str,Dict[,]]
+                the updated parameters
+
+
+        """
+        data = dict(
+            stars = stars,
+            info = os.path.join(os.path.abspath(os.getcwd()), INFDIR, info),
+            todo = os.path.join(os.path.abspath(os.getcwd()), INFDIR, todo),
+            mode = mode,
+            gap = gap,
+            stitch = stitch,
+            oversampling_factor = oversampling_factor,
+            kep_corr = kep_corr,
+            dnu = dnu,
+            lower_ech = lower_ech,
+            upper_ech = upper_ech,
+            notching = notching,
+        )
+        self.params.update(data)
+
+
+    def get_main(self, n_threads=0,):
+        """
+   
+        Container class analagous to the `'main'` parser
+
+        Parameters
+            n_threads : int
+                number of threads to use when running in parallel mode
+
+        Calls
+            :mod:`pysyd.utils.Parameters.get_estimate`
+            :mod:`pysyd.utils.Parameters.get_background`
+            :mod:`pysyd.utils.Parameters.get_global`
+            :mod:`pysyd.utils.Parameters.get_sampling`
+
+        Attributes
+            params : Dict[str,Dict[,]]
+                the updated parameters
+
+        .. seealso::
+
+
+        """
+        # Initialize parameters for the find excess routine
+        self.get_estimate()
+        # Initialize parameters for the fit background routine
+        self.get_background()
+        # Initialize parameters relevant for estimating global parameters
+        self.get_global()
+        # Estimate parameters
+        self.get_sampling()
+        self.params.update({'n_threads':n_threads})
+
+
+    def get_estimate(self, excess=True, smooth_width=10.0, binning=0.005, bin_mode='mean', 
+                     step=0.25, n_trials=3, ask=False, lower_ex=1.0, upper_ex=8000.0,):
         """
     
         Get the parameters for the find excess routine.
 
         Parameters
-            step : float, optional
-                TODO: Write description. Default value is `0.25`.
-            binning : float, optional
-                logarithmic binning width. Default value is `0.005`.
+            excess : bool, optional
+                disable the module that estimates numax
             smooth_width: float, optional
                 box filter width (in :math:`\rm \mu Hz`) to smooth power spectrum
-            ask : bool, optional
-                If `True`, it will ask which trial to use as the estimate for numax.
-            n_trials : int, optional
-                the number of trials. Default value is `3`.
+            binning : float, optional
+                logarithmic binning width. Default value is `0.005`.
             bin_mode : {'mean', 'median', 'gaussian'}
                 mode to use when binning
+            step : float, optional
+                TODO: Write description. Default value is `0.25`.
+            n_trials : int, optional
+                the number of trials. Default value is `3`.
+            ask : bool, optional
+                If `True`, it will ask which trial to use as the estimate for numax.
+            lower_ex : float, optional
+                lower frequency limit of PS to use in the first module
+            upper_ex : float, optional
+                upper frequency limit of PS to use in the first module
 
-        .. seealso:: methods :py:mod:`get_background`, :py:mod:`get_globe`
+        .. seealso:: methods :py:mod:`utils.Parameters.get_background`, :py:mod:`utils.Parameters.get_global`
 
         Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
 
         """
-        excess = dict(
-            step = step,
-            binning = binning,
+        estimate = dict(
+            excess = excess,
             smooth_width = smooth_width,
-            ask = ask,
+            binning = binning,
+            bin_mode = bin_mode,
+            step = step,
             n_trials = n_trials,
+            ask = ask,
             lower_ex = lower_ex,
             upper_ex = upper_ex,
-            bin_mode = bin_mode,
         )
-        self.params.update(excess)
+        self.params.update(estimate)
 
 
-    def get_background(self, ind_width=20.0, box_filter=1.0, n_rms=20, metric='bic', mc_iter=1, 
-                       samples=False, n_laws=None, fix_wn=False, basis='tau_sigma', lower_bg=1.0, 
-                       upper_bg=8000.0, n_threads=0, showall=False,):
+    def get_background(self, background=True, ind_width=20.0, box_filter=1.0, n_rms=20, metric='bic', mc_iter=1, 
+                       samples=False, n_laws=None, fix_wn=False, basis='tau_sigma', lower_bg=1.0, upper_bg=8000.0,):
         """
     
         Get defaults for the background-fitting routine
 
         Parameters
+            background : bool, optional
+                disable the background-fitting routine (not recommended)
+            basis : str
+                which basis to use for background fitting, e.g. {a,b} parametrization (default = `tau_sigma`)
             box_filter : float
                 the size of the 1D box smoothing filter (default = `1.0` :math:`\\rm \\mu Hz`)
             ind_width : float
                 the independent average smoothing width (default = `20.0` :math:`\\rm \\mu Hz`)
             n_rms : int
                 number of data points to estimate red noise contributions (default = `20`)
-            metric : str
-                which metric to use (i.e. bic or aic) for model selection (default = `'bic'`)
-            basis : str
-                which basis to use for background fitting, e.g. {a,b} parametrization (default = `tau_sigma`)
             n_laws : int
                 force number of Harvey-like components in background fit (default = `None`)
             fix_wn : bool
                 fix the white noise level in the background fit (default = `False`)
-            mc_iter : int
-                number of samples used to estimate uncertainty (default = `1`)
-            samples : bool
-                if `True`, will save the monte carlo samples to a csv (default = `False`)
-            showall : bool
-                if `True`, will make the plot that comparisons all background models
+            metric : str
+                which metric to use (i.e. bic or aic) for model selection (default = `'bic'`)
+            lower_bg : float, optional
+                lower frequency limit of PS to use for the background fit
+            upper_bg : float, optional
+                upper frequency limit of PS to use for the background fit
+            functions : Dict[int:pysyd.models]
+                pointer function to different models for the background fit
 
         Attributes
             params : Dict[str,Dict[,]]
@@ -284,65 +355,49 @@ class Parameters(Constants):
 
         """
         background = dict(
-            ind_width = ind_width,
+            background = background,
+            basis = basis,
             box_filter = box_filter,
+            ind_width = ind_width,
             n_rms = n_rms,
             n_laws = n_laws,
             fix_wn = fix_wn,
-            basis = basis,
             metric = metric,
-            functions = get_dict(type='functions'),
-            mc_iter = mc_iter,
-            samples = samples,
-            n_threads = n_threads,
             lower_bg = lower_bg,
             upper_bg = upper_bg,
-            showall = showall,
+            functions = get_dict(type='functions'),
         )
         self.params.update(background)
 
 
-    def get_globe(self, sm_par=None, lower_ps=None, upper_ps=None, ex_width=1.0, method='D', smooth_ps=2.5, 
-                  threshold=1.0, n_peaks=5, hey=False, cmap='binary', clip_value=3.0, smooth_ech=None,  
-                  interp_ech=False, lower_ech=None, upper_ech=None, nox=50, noy=0, notching=False,):
+    def get_global(self, globe=True, numax=None, lower_ps=None, upper_ps=None, ex_width=1.0, 
+                   sm_par=None, smooth_ps=2.5, threshold=1.0, method='D', n_peaks=5,):
         """
     
         Get defaults for deriving global asteroseismic parameters :math:`\\rm \\nu_{max}` 
         and :math:`\\Delta\\nu`
 
         Parameters
+            globe : bool, optional
+                disable the module that fits the global parameters (also not recommended)
+            numax : float, optional
+                provide initial value for numax to bypass the first module
+            lower_ps : float, optional
+                lower bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
+            upper_ps : float
+                upper bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
+            ex_width : float
+                fractional width to use for power excess centered on :term:`numax`
             sm_par : float
                 Gaussian filter width for determining smoothed numax (values are typically between 1-4)
-            method : str
-                method to determine dnu, choices are ~['M','A','D'] (default is `'D'`).
-            lower_ps : float
-                lower bound of power excess (in muHz). Default value is `None`.
-            upper_ps : float
-                upper bound of power excess (in muHz). Default value is `None`.
-            ex_width : float
-                fractional width to use for power excess centerd on numax. Default value is `1.0`.
             smooth_ps : float
-                box filter [in muHz] for PS smoothing before calculating ACF. Default value is `1.5`.
+                box filter to smooth PS smoothing before calculating the ACF (default = `1.5` :math:`\\rm \\mu Hz`)
             threshold : float
-                fractional width of FWHM to use in ACF for later iterations. Default value is `1.0`.
+                fractional width of FWHM to use in ACF for later iterations (default = `1.0`) 
+            method : str
+                method to determine dnu, choices are ~['M','A','D'] (default is `'D'`)
             n_peaks : int
-                the number of peaks to select. Default value is `5`.
-            lower_ech : float
-                lower bound of folded PS (in muHz) to 'whiten' mixed modes. Default value is `None`.
-            upper_ech : float
-                upper bound of folded PS (in muHz) to 'whiten' mixed modes. Default value is `None`.
-            clip_value : float
-                the minimum frequency of the echelle plot. Default value is `3.0`.
-            smooth_ech : float
-                option to smooth the output of the echelle plot
-            interp_ech : bool
-                turns on the bilinear smoothing in echelle plot
-            nox : int
-                x-axis resolution on the echelle diagram. Default value is `50`. (NOT CURRENTLY IMPLEMENTED YET)
-            noy : int
-                how many radial orders to plot on the echelle diagram (default = `5`)
-            hey : bool
-                plugin for Daniel Hey's echelle package (NOT CURRENTLY IMPLEMENTED YET)
+                the number of peaks to select (default = `10`)
 
         Attributes
             params : Dict[str,Dict[,]]
@@ -351,26 +406,93 @@ class Parameters(Constants):
 
         """
         globe = dict(
-            sm_par = sm_par,
-            ex_width = ex_width,
+            globe = globe,
+            numax = numax,
             lower_ps = lower_ps,
             upper_ps = upper_ps,
+            ex_width = ex_width,
+            sm_par = sm_par,
             smooth_ps = smooth_ps,
             threshold = threshold,
-            n_peaks = n_peaks,
             method = method,
+            n_peaks = n_peaks,
+        )
+        self.params.update(globe)
+
+
+    def get_sampling(self, mc_iter=1, samples=False,):
+        """
+    
+        Get parameters relevant for estimating uncertainties
+
+        Parameters
+            mc_iter : int
+                number of samples used to estimate uncertainty (default = `1`)
+            samples : bool
+                save samples from the monte carlo sampling (default = `False`)
+
+        Attributes
+            params : Dict[str,Dict[,]]
+                the updated parameters
+
+
+        """
+        mcmc = dict(
+            mc_iter = mc_iter,
+            samples = samples,
+        )
+        self.params.update(mcmc)
+
+
+
+    def get_plotting(self, showall=False, show=False, cmap='binary', clip_value=3.0, hey=False,
+                     interp_ech=False, nox=None, noy='0+0', npb=10, smooth_ech=None,):
+        """
+    
+        Get defaults for deriving global asteroseismic parameters :math:`\\rm \\nu_{max}` 
+        and :math:`\\Delta\\nu`
+
+        Parameters
+            showall : bool, optional
+                makes plot comparing all background models (default = `False`)
+            show : bool
+                show output figures (default = `True`) **note:** this is not recommended when running on many stars
+            cmap : str, optional
+                change colormap of echelle diagram (default = `'binary'`)
+            clip_value : float
+                the minimum frequency of the echelle plot. Default value is `3.0`.
+            hey : bool
+                plugin for Daniel Hey's echelle package (NOT CURRENTLY IMPLEMENTED YET)
+            interp_ech : bool
+                turns on the bilinear smoothing in echelle plot
+            nox : int
+                x-axis resolution on the echelle diagram - default uses spacing and resolution to calculate appropriate value
+            noy : str
+                how many radial orders to plot on the echelle diagram (default = `'5+0'` ) NEW: and how many orders to shift the ED by
+            npb : int
+                instead of specifying arbitrary value, provide how many frequencies should be in a given bin
+            smooth_ech : float
+                option to smooth the output of the echelle plot
+
+        Attributes
+            params : Dict[str,Dict[,]]
+                the updated parameters
+
+
+        """
+        plot = dict(
+            showall = showall,
+            show = show,
             cmap = cmap,
+            hey = hey,
             clip_value = clip_value,
-            smooth_ech = smooth_ech,
             interp_ech = interp_ech,
             nox = nox,
             noy = noy,
-            lower_ech = lower_ech,
-            upper_ech = upper_ech,
-            notching = notching,
-            hey = hey,
+            npb = npb,
+            smooth_ech = smooth_ech,
         )
-        self.params.update(globe)
+        self.params.update(plot)
 
 
     def add_stars(self, stars=None):

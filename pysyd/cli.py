@@ -1,9 +1,20 @@
 import os
 import argparse
 
+
+
+
+
+
+
+
+
+
+# Package mode
 import pysyd
 from pysyd import pipeline
 from pysyd import INFDIR, INPDIR, OUTDIR
+
 
 
 def main():
@@ -224,18 +235,18 @@ def main():
 ####
 
     background = main_parser.add_argument_group('Background fits')
+    background.add_argument('-b', '--bg', '--background',
+                            dest='background',
+                            help='Turn off the routine that determines the stellar background contribution',
+                            default=True,
+                            action='store_false',
+    )
     background.add_argument('--basis', 
                             metavar='str',
                             dest='basis',
                             help="Which basis to use for background fit (i.e. 'a_b', 'pgran_tau', 'tau_sigma'), *** NOT operational yet ***",
                             default='tau_sigma', 
                             type=str,
-    )
-    background.add_argument('-b', '--bg', '--background',
-                            dest='background',
-                            help='Turn off the routine that determines the stellar background contribution',
-                            default=True,
-                            action='store_false',
     )
     background.add_argument('--bf', '--box', '--boxfilter',
                             metavar='float', 
@@ -399,7 +410,7 @@ def main():
     )
     plotting.add_argument('-d', '--show', '--display',
                           dest='show',
-                          help='Do not show output figures',
+                          help='Show output figures',
                           default=False, 
                           action='store_true',
     )
@@ -432,15 +443,22 @@ def main():
     plotting.add_argument('--nox', '--nacross',
                          metavar='int', 
                          dest='nox',
-                         help='number of bins to use on the x-axis of the ED',
-                         default=50,
+                         help='number of bins to use on the x-axis of the ED (currently being tested)',
+                         default=None,
                          type=int, 
     )
     plotting.add_argument('--noy', '--ndown', '--norders',
-                         metavar='int', 
+                         metavar='str', 
                          dest='noy',
-                         help='The number of orders to plot on the y-axis of the ED',
-                         default=0,
+                         help='NEW!! Number of orders to plot pm how many orders to shift (if ED is not centered)',
+                         default='0+0',
+                         type=str,
+    )
+    plotting.add_argument('--npb',
+                         metavar='int',
+                         dest='npb',
+                         help='NEW!! npb == "number per bin", which is option instead of nox that uses the frequency resolution and spacing to compute an appropriate bin size for the ED',
+                         default=10,
                          type=int,
     )
     plotting.add_argument('--se', '--smoothech',

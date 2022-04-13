@@ -1,12 +1,20 @@
-# Imports only used in setup
 import os
 import subprocess
 import pandas as pd
 
-# Import relevant, local pySYD modules
+
+
+
+
+
+
+
+
+# Package mode
 from . import utils
 from . import plots
 from .target import Target
+
 
 
 def check(args):

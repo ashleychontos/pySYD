@@ -10,6 +10,7 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 from astropy.convolution import Box1DKernel, Gaussian1DKernel, convolve, convolve_fft
 
 
+# Package mode
 from . import utils
 from . import plots
 from . import models
@@ -172,7 +173,7 @@ class Target:
         # CASE 4: NO LIGHT CURVE AND NO POWER SPECTRUM
         #     ->  cannot process, return user error
         if not self.ps:
-            raise InputError("ERROR: no data found for target %s"%self.name)
+            raise utils.PySYDInputError("ERROR: no data found for target %s"%self.name)
         self.get_warnings() 
 
 
@@ -1620,7 +1621,7 @@ class Target:
         self.i += 1
 
 
-    def echelle(self, smooth_ech=None, nox=50, noy=0, hey=False,):
+    def echelle(self, smooth_ech=None, nox=50, noy=0, hey=False, npb=10):
         """
         Echelle diagram (ED)
 
@@ -1664,15 +1665,23 @@ class Target:
         else:
             smooth_y = np.copy(self.bg_corr)
         # If the number of desired orders is not provided
-        if self.params['noy'] == 0:
-            self.params['noy'] = int(self.params['obs_numax']/self.params['obs_dnu']//2)
+        if self.params['noy'] == "0+0" or self.params['noy'] == "0-0":
+            ny = int(self.params['obs_numax']/self.params['obs_dnu']//2)
+            nshift = 0
+        else:
+            ny, nshift = int(self.params['noy'][0]), int(self.params['noy'][-1])
+            if '-' in self.params['noy']:
+                nshift *= -1            
         # Make sure n_across isn't finer than the actual resolution grid
-        if self.params['nox'] >= int(np.ceil(self.params['obs_dnu']/self.params['resolution'])):
-            self.params['nox'] = int(np.ceil(self.params['obs_dnu']/self.params['resolution']/3.))
-        nx, ny = (self.params['nox'], self.params['noy'])
+        if self.params['nox'] is None or (self.params['nox'] >= int(np.ceil(self.params['obs_dnu']/self.params['resolution']))):
+            # add function to check that the resolution isn't ridiculous
+            nx = int(np.ceil(self.params['obs_dnu']/self.params['resolution']/self.params['npb']))
+        else:
+            nx = int(self.params['nox'])
         self.x = np.linspace(0.0, 2*self.params['obs_dnu'], 2*nx+1)
-        yy = np.arange(self.params['obs_numax']%(self.params['obs_dnu']/2.),max(self.frequency),self.params['obs_dnu'])
-        lower, upper = self.params['obs_numax']-3*self.params['obs_dnu']/2.-(self.params['obs_dnu']*(ny//2)), self.params['obs_numax']+self.params['obs_dnu']/2.+(self.params['obs_dnu']*(ny//2))
+        yy = np.arange(min(self.frequency),max(self.frequency),self.params['obs_dnu'])
+        lower = self.params['obs_numax']-(self.params['obs_dnu']*(ny/2.))+(self.params['obs_dnu']*(nshift+0))
+        upper = self.params['obs_numax']+(self.params['obs_dnu']*(ny/2.))+(self.params['obs_dnu']*(nshift+1))
         self.y = yy[(yy >= lower)&(yy <= upper)]
         z = np.zeros((ny+1,2*nx))
         for i in range(1,ny+1):
