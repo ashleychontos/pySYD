@@ -29,8 +29,9 @@ Single star applications
 ########################
 
 For applications to single stars, we will start with a very easy, high signal-to-noise (SNR)
-example, followed by medium, low, and no SNR examples. These won't be detailed walkthroughs 
-but we are hoping to give pointers about what to look for in each class of examples.
+example, followed by medium, low, and no SNR examples. These examples will not be as detailed 
+as the :ref:`quickstart example <quickstart-script>` -- our goal here is to provide pointers 
+on what to look for for each case. 
 
 
 -----
@@ -195,12 +196,13 @@ Advanced usage
 **************
 
 
-Below are examples of different optional ``pySYD`` features, including their before and after plots.
+Below are examples of different commands, including their before and after plots to demonstrate
+the desired effects.
 
 -----
 
-:term:`ew<--ew, --exwidth>` & :term:`exwidth<--ew, --exwidth>`
-##############################################################
+:term:`--ew<--ew, --exwidth>` & :term:`--exwidth<--ew, --exwidth>`
+##################################################################
 
 Fractional amount to scale the width of the oscillations envelope by -- which is normally calculated
 w.r.t. solar values.
@@ -216,8 +218,8 @@ w.r.t. solar values.
 
 -----
 
-:term:`k<-k, --kc, --kepcorr>`, :term:`kc<-k, --kc, --kepcorr>` & :term:`kepcorr<-k, --kc, --kepcorr>`
-######################################################################################################
+:term:`-k<-k, --kc, --kepcorr>`, :term:`--kc<-k, --kc, --kepcorr>` & :term:`--kepcorr<-k, --kc, --kepcorr>`
+###########################################################################################################
 
 Remove the well-known *Kepler* short-cadence artefact that occurs at/near the long-cadence :term:`nyquist frequency` 
 (:math:`\sim 270 \mu \mathrm{Hz}`) by simulating white noise
@@ -233,8 +235,8 @@ Remove the well-known *Kepler* short-cadence artefact that occurs at/near the lo
 
 -----
 
-:term:`lp<--lp, --lowerp>` & :term:`lowerp<--lp, --lowerp>`
-###########################################################
+:term:`--lp<--lp, --lowerp>` & :term:`--lowerp<--lp, --lowerp>`
+###############################################################
 
 Manually set the lower frequency bound (or limit) of the power excess, which is helpful
 in the following scenarios:
@@ -255,8 +257,8 @@ in the following scenarios:
 
 -----
 
-:term:`npeaks<--peaks, --npeaks>` & :term:`peaks<--peaks, --npeaks>`
-####################################################################
+:term:`--npeaks<--peaks, --npeaks>` & :term:`--peaks<--peaks, --npeaks>`
+########################################################################
 
 Change the number of peaks chosen in the autocorrelation function (:term:`ACF`) - this is especially
 helpful for low S/N cases, where the spectrum is noisy and the ACF has many peaks close the expected
@@ -273,8 +275,8 @@ spacing (**FIX THIS**)
 
 -----
 
-:term:`numax<--numax>`
-######################
+:term:`--numax<--numax>`
+########################
 
 If the value of :math:`\rm \nu_{max}` is known, this can be provided to bypass the first module and save some time. 
 There are also other ways to go about doing this, please see our notebook tutorial that goes through these different
@@ -291,8 +293,8 @@ ways.
 
 -----
 
-:term:`--upperx<--ux, --upperx>`
-################################
+:term:`--ux<--ux, --upperx>` & :term:`--upperx<--ux, --upperx>`
+###############################################################
 
 Set the upper frequency limit in the power spectrum when estimating :math:`\rm \nu_{max}` before the main fitting
 routine. This is helpful if there are high frequency artefacts that the software latches on to.
@@ -300,7 +302,7 @@ routine. This is helpful if there are high frequency artefacts that the software
 +--------------------------------------------------------+-------------------------------------------------------+
 | Before                                                 | After                                                 |
 +========================================================+=======================================================+
-| :bash:`pysyd run --star 11769801`                      | :bash:`pysyd run --star 11769801 -ux 3500`            |
+| :bash:`pysyd run --star 11769801`                      | :bash:`pysyd run --star 11769801 --ux 3500`           |
 +--------------------------------------------------------+-------------------------------------------------------+
 | .. figure:: ../../_static/examples/11769801_before.png | .. figure:: ../../_static/examples/11769801_after.png |
 |    :width: 680                                         |    :width: 680                                        |
@@ -308,8 +310,8 @@ routine. This is helpful if there are high frequency artefacts that the software
 
 -----
 
-:term:`i<-i, --ie, --interpech>`, :term:`ie<-i, --ie, --interpech>` & :term:`interpech<-i, --ie, --interpech>`
-##############################################################################################################
+:term:`-i<-i, --ie, --interpech>`, :term:`--ie<-i, --ie, --interpech>` & :term:`--interpech<-i, --ie, --interpech>`
+###################################################################################################################
 
 Smooth the echelle diagram output by turning on the (bilinear) interpolation, which is helpful for identifying
 ridges in low S/N cases

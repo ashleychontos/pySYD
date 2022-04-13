@@ -1,0 +1,15 @@
+{
+   'required':['show','save','verbose','overwrite','stitch','gap','kep_corr','oversampling_factor','excess','binning','bin_mode','lower_ex','upper_ex','step','smooth_width','n_trials','ask','background','basis','box_filter','fix_wn','n_laws','ind_width','lower_bg','upper_bg','metric','n_rms','globe','ex_width','sm_par','method','n_peaks','smooth_ps','threshold','hey','cmap','clip_value','interp_ech','notching','nox','noy','smooth_ech','mc_iter','samples','inpdir','infdir','outdir','todo','info',],
+   'table':['numax_smooth','A_smooth','numax_gauss','A_gauss','FWHM','dnu','white'],
+   'syd':['KIC','range_low','range_up','numax','sig_numax','dnu','sig_dnu','Length','DetFlag','SrcFlag'],
+   'override':['lower_ex', 'upper_ex', 'lower_ps', 'upper_ps', 'lower_bg', 'upper_bg', 'numax', 'dnu', 'lower_ech', 'upper_ech',],
+   'added':['path','force','seed','ech_mask','boxes','compare','results','best','bg_mask','exp_numax','ps_mask','b','mnu','nlaws','b_orig','mnu_orig','nlaws_orig','noise','a','a_orig','guesses','bounds','bic','aic','paras','model','pars','obs_numax','exp_dnu',],
+   'all':['stars','rs','rs_err','teff','teff_err','logg','logg_err','show','save','verbose','overwrite','stitch','gap','kep_corr','oversampling_factor','excess','numax','dnu','binning','bin_mode','lower_ex','upper_ex','step','smooth_width','n_trials','ask','background','basis','box_filter','fix_wn','n_laws','ind_width','lower_bg','upper_bg','metric','n_rms','globe','ex_width','lower_ps','upper_ps','numax','sm_par','dnu','method','n_peaks','smooth_ps','threshold','hey','cmap','clip_value','interp_ech','notching','lower_ech','upper_ech','seed','nox','noy','smooth_ech','mc_iter','samples','n_threads','inpdir','infdir','outdir','todo','info','functions',],
+   'some':['stars','rs','teff','logg','show','save','verbose','overwrite','stitch','gap','lower_ex','upper_ex','n_laws','lower_bg','upper_bg','ex_width','lower_ps','upper_ps','numax','smooth_ps','dnu','lower_ech','upper_ech','seed','mc_iter','samples',],
+   'select':['stars','rs','teff','logg','numax','lower_ex','upper_ex','lower_bg','upper_bg','lower_ps','upper_ps','dnu','lower_ech','upper_ech','seed',],
+   'basic':['stars','rs','teff','logg','numax','lower_bg','upper_bg','seed',],
+   'int':['gap','oversampling_factor','n_trials','n_laws','n_rms','n_peaks','seed','nox','noy','mc_iter','n_threads'],
+   'float':['rs','rs_err','teff','teff_err','logg','logg_err','binning','lower_ex','upper_ex','step','smooth_width','box_filter','ind_width','lower_bg','upper_bg','ex_width','lower_ps','upper_ps','numax','sm_par','dnu','smooth_ps','threshold','clip_value','lower_ech','upper_ech','smooth_ech',],
+   'bool':['show','save','verbose','overwrite','stitch','kep_corr','excess','ask','background','fix_wn','globe','hey','interp_ech','notching','samples',],
+   'str':['stars','bin_mode','basis','metric','method','cmap','inpdir','infdir','outdir','todo','info',],
+}

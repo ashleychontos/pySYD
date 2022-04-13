@@ -1,0 +1,40 @@
+# Matplotlib style used by pysyd
+
+figure.facecolor            : black
+figure.edgecolor            : black
+#figure.dpi                  : 300
+
+#lines.color                 : white
+#lines.linewidth             : 1.0
+#lines.markersize            : 2.0
+
+axes.facecolor              : black
+axes.edgecolor              : white
+axes.labelcolor             : white
+axes.formatter.use_mathtext : True
+axes.formatter.useoffset    : False
+axes.titlesize              : 18.0
+axes.labelsize              : 16.0
+axes.linewidth              : 0.75
+
+xtick.color                 : white
+xtick.direction             : inout
+xtick.major.size            : 15
+xtick.minor.size            : 10
+xtick.major.width           : 1.25
+xtick.minor.width           : 1.25
+
+ytick.color                 : white
+ytick.direction             : inout
+ytick.major.size            : 15
+ytick.minor.size            : 10
+ytick.major.width           : 1.25
+ytick.minor.width           : 1.25
+
+mathtext.fontset            : stix
+grid.color                  : white
+image.cmap                  : binary
+text.color                  : white
+patch.edgecolor             : white
+savefig.facecolor           : black
+savefig.edgecolor           : black
