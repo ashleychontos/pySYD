@@ -14,4 +14,4 @@ and have the best default options already all set up for us this way.
    
    help
    examples
-   glossary>
+   glossary

@@ -537,7 +537,7 @@ class Parameters(Constants):
         """
         # If no stars have been provided yet, read in from text file
         if not os.path.exists(os.path.join(self.params['infdir'], self.params['todo'])):
-            raise InputError("ERROR: no stars or star list provided")
+            raise PySYDInputError("ERROR: no stars or star list provided")
         else:
             with open(os.path.join(self.params['infdir'], self.params['todo']), "r") as f:
                 self.params['stars'] = [line.strip().split()[0] for line in f.readlines()]
@@ -590,6 +590,7 @@ class Parameters(Constants):
                 self.params[star]['ech_mask'] = [self.params[star]['lower_ech'], self.params[star]['upper_ech']]
             else:
                 self.params[star]['ech_mask'] = None
+            self.adjust_parameters(star)
 
 
     def get_info(self):
@@ -706,6 +707,45 @@ class Parameters(Constants):
             assert isinstance(args.oversampling_factor, int), "The oversampling factor for the input PS must be an integer"
         if args.n_laws is not None:
             assert args.n_laws <= max_laws, "We likely cannot resolve %d Harvey-like components for point sources. Please select a smaller number."%args.n_laws
+
+
+    def adjust_parameters(self, star, adjust=True, defaults=None,):
+        """ 
+    
+        Adjusts default parameters for low vs high numax configurations
+
+        Parameters
+            star : str
+                individual star ID
+            adjust : bool, optional
+                maximum number of resolvable Harvey components
+            defaults : str, optional
+                option for when numax is not known but can differentiate between "low" vs. "high" frequencies
+
+        """
+        self.params[star]['boxes'] = np.logspace(np.log10(0.5), np.log10(500.), self.params['n_trials'])
+        self.params[star]['smooth_width'], self.params[star]['ind_width'] = 10., 10.
+        self.params[star]['lower_ex'], self.params[star]['lower_bg'] = 1., 1.
+        self.params[star]['upper_ex'], self.params[star]['upper_bg'] = 8000., 8000.
+        self.params[star]['smooth_ps'] = 1.5
+        if self.params[star]['adjust']: and self.params[star]['numax'] is not None:
+            if (self.params[star]['numax'] is not None and self.params[star]['numax'] < 500.) or \
+              (self.params[star]['defaults'] is not None and self.params[star]['defaults'] == 'low'):
+                self.params[star]['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
+                self.params[star]['smooth_width'] = 5.
+                self.params[star]['ind_width'] = 5.
+                self.params[star]['smooth_ps'] = 1.0
+                self.params[star]['lower_ex'], self.params[star]['lower_bg'] = 1., 1.
+                self.params[star]['upper_ex'], self.params[star]['upper_bg'] = 1000., 1000.
+            elif (self.params[star]['numax'] is not None and self.params[star]['numax'] >= 500.) or \
+              (self.params[star]['defaults'] is not None and self.params[star]['defaults'] == 'high'):                self.params[star]['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
+                self.params[star]['smooth_width'] = 20.
+                self.params[star]['ind_width'] = 20.
+                self.params[star]['smooth_ps'] = 2.5
+                self.params[star]['lower_ex'], self.params[star]['lower_bg'] = 100., 100.
+                self.params[star]['upper_ex'], self.params[star]['upper_bg'] = 8000., 8000.
+            else:
+                pass
 
 
 def get_dict(type='params'):

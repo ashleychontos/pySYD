@@ -110,22 +110,63 @@ class Target:
             print('')
 
 
-#########################################################################################
-#
-# Three main higher-level function calls
-#  1. load in data for a given star
-#  2. use the data to estimate initial starting points
-#  3. use the estimates to derive the full suite of parameters
-#
-# 
+##########################################################################################
+
 
     def load_star(self, ps=False, lc=False, note='',):
         """
-        Load data for single star
 
-        Loads all data in for a single star. This is done by first checking for the power
-        spectrum and then the time series data, which will compute a power spectrum in the
-        event that there is not one.
+        Load data for a single star by first checking to see if the power spectrum exists
+        and then loads in the time series data, which will compute a power spectrum in the
+        event that there is not one. If neither are available, this will raise an input
+        user error. **Note:** based on the way the data is handled, this will also print
+        any other warnings or errors
+
+        Attributes
+            note : str, optional
+                verbose output
+            lc : bool
+                `True` if object has light curve
+            ps : bool
+                `True` if object has power spectrum
+            ok : bool
+                boolean if star is literally 'ok' to process
+
+        Methods
+            :mod:`pysyd.target.Target.load_power_spectrum`
+            :mod:`pysyd.target.Target.load_time_series`
+            :mod:`pysyd.target.Target.get_warnings`
+        
+            
+
+        """
+        self.ps, self.lc, self.ok, self.note = False, False, False, ''
+        # Now done at beginning to make sure it only does this once per star
+        if glob.glob(os.path.join(self.params['inpdir'],'%s*' % str(self.name))):
+            if self.params['verbose']:
+                print('\n-----------------------------------------------------------\nTarget: %s\n-----------------------------------------------------------' % str(self.name))
+            # Load PS first in case we need to calculate PS from LC
+            self.load_power_spectrum()
+            # Load light curve
+            self.load_time_series()
+        # CASE 4: NO LIGHT CURVE AND NO POWER SPECTRUM
+        #     ->  cannot process, return user error
+        if not self.ps:
+            raise utils.PySYDInputError("ERROR: no data found for target %s"%self.name)
+        self.get_warnings() 
+
+
+    def load_power_spectrum(self):
+        """
+        Load power spectrum
+    
+        Loads in the power spectrum data in for a given star,
+        which will return `False` if unsuccessful and therefore, not run the rest
+        of the pipeline
+
+        Parameters
+            oversampling_factor : int, optional
+                oversampling factor of input power spectrum
 
         Attributes
             note : str, optional
@@ -158,106 +199,6 @@ class Target:
                 total time series duration (:math:`\Delta T`)
             tau_upper : float
                 upper limit of the modeled time scales set by baseline/2
-            
-
-        """
-        self.ps, self.lc, self.ok, self.note = False, False, False, ''
-        # Now done at beginning to make sure it only does this once per star
-        if glob.glob(os.path.join(self.params['inpdir'],'%s*' % str(self.name))):
-            if self.params['verbose']:
-                print('\n-----------------------------------------------------------\nTarget: %s\n-----------------------------------------------------------' % str(self.name))
-            # Load PS first in case we need to calculate PS from LC
-            self.load_power_spectrum()
-            # Load light curve
-            self.load_time_series()
-        # CASE 4: NO LIGHT CURVE AND NO POWER SPECTRUM
-        #     ->  cannot process, return user error
-        if not self.ps:
-            raise utils.PySYDInputError("ERROR: no data found for target %s"%self.name)
-        self.get_warnings() 
-
-
-    def estimate_parameters(self, excess=True,):
-        """
-        Estimate :math:`\\rm \\nu_{max}`
-
-        Estimates the initial starting values for parameters before performing the global
-        fit. First it quantifies a crude background model by binning the power spectrum in 
-        two steps (in both log and linear space). It will divide this contribution out and
-        then use a collapsed autocorrelation technique to identify the power excess due to
-        solar-like oscillations.
-
-        Parameters
-            excess : bool, optional
-                if numax is already known, this can be changed to `False`
-
-
-        """
-        if 'results' not in self.params:
-            self.params['results'] = {}
-        if 'plotting' not in self.params:
-            self.params['plotting'] = {}
-        if self.params['excess']:
-            # get initial values and fix data
-            self.initial_estimates()
-            # execute function
-            self.estimate_numax()
-
-
-    def derive_parameters(self, background=True, globe=True, mc_iter=1, converge=False,):
-        """
-        Global fit
-
-        Estimates the initial starting values for parameters before performing the global
-        fit. First it quantifies a crude background model by binning the power spectrum in 
-        two steps (in both log and linear space). It will divide this contribution out and
-        then use a collapsed autocorrelation technique to identify the power excess due to
-        solar-like oscillations.
-
-        Parameters
-            background : bool, optional
-                if numax is already known, this can be changed to `False`
-            globe : bool, optional
-                if numax is already known, this can be changed to `False`
-            converge : bool
-                will return `True` if the background-fitting routine converged on a sensible result
-            mc_iter : int
-                the number of iterations to run
-
-
-        """
-        if 'results' not in self.params:
-            self.params['results'] = {}
-        if 'plotting' not in self.params:
-            self.params['plotting'] = {}
-        # make sure there is an estimate for numax
-        self.check_numax()
-        # get initial values and fix data
-        self.initial_parameters()
-        self.first_step()
-        # if the first step is ok, carry on
-        if self.params['mc_iter'] > 1:
-            self.get_samples()
-        # Save results
-        utils.save_parameters(self)
-
-
-#########################################################################################
-#
-# Loading data
-#
-
-    def load_power_spectrum(self):
-        """
-        Load power spectrum
-    
-        Loads in the power spectrum data in for a given star,
-        which will return `False` if unsuccessful and therefore, not run the rest
-        of the pipeline
-
-        Parameters
-            oversampling_factor : int, optional
-                oversampling factor of input power spectrum
 
 
         """
@@ -300,6 +241,38 @@ class Target:
             stitch : bool, optional
                 use the module that corrects for large gaps in data
 
+        Attributes
+            note : str, optional
+                verbose output
+            lc : bool
+                `True` if object has light curve
+            time : numpy.ndarray
+                time array in days
+            flux : numpy.ndarray
+                relative or normalized flux array
+            ps : bool
+                `True` if object has power spectrum
+            frequency : numpy.ndarray
+                copy of original frequency array
+            power : numpy.ndarray
+                copy of original power spectrum
+            freq_os : numpy.ndarray
+                final version of oversampled frequency array
+            pow_os : numpy.ndarray
+                final version of oversampled power spectrum
+            freq_cs : numpy.ndarray
+                final version of critically-sampled frequency array
+            pow_cs : numpy.ndarray
+                final version of critically-sampled power spectrum
+            cadence : int
+                median cadence of time series data (:math:`\Delta t`)
+            nyquist : float
+                nyquist frequency of the power spectrum (calculated from time series cadence)
+            baseline : float
+                total time series duration (:math:`\Delta T`)
+            tau_upper : float
+                upper limit of the modeled time scales set by baseline/2
+
 
         """
         self.nyquist, other = None, ''
@@ -331,11 +304,10 @@ class Target:
                 oversampling_factor = (1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])
                 if self.params['oversampling_factor'] is not None:
                     if int(oversampling_factor) != self.params['oversampling_factor']:
-                        other += "WARNING: \ncalculated vs. provided oversampling factor do NOT match"
+                        raise utils.PySYDInputWarning("WARNING: \ncalculated vs. provided oversampling factor do NOT match")
                 else:
                     if not float('%.2f'%oversampling_factor).is_integer():
-                        error="\nERROR: the calculated oversampling factor is not an integer\nPlease check the input data and try again"
-                        raise InputError(error)
+                        raise utils.PySYDInputError("\nERROR: the calculated oversampling factor is not an integer\nPlease check the input data and try again")
                     else:
                         self.params['oversampling_factor'] = int(oversampling_factor)   
                 self.frequency, self.power = self.fix_data(self.frequency, self.power)
@@ -488,7 +460,7 @@ class Target:
         return frequency, power
 
 
-    def fix_data(self, frequency, power, kep_corr=False):
+    def fix_data(self, frequency, power, kep_corr=False, ech_mask=None,):
         """
         Fix power spectrum
 
@@ -507,6 +479,8 @@ class Target:
                 copy of the corrected frequency array 
             power : numpy.ndarray
                 copy of the corrected power spectrum
+
+        .. seealso:: :mod:`pysyd.target.Target.remove_artefact`, :mod:`pysyd.target.Target.whiten_mixed`
 
         """
         if self.params['kep_corr']:
@@ -531,7 +505,7 @@ class Target:
             lower : int 
                 lower limit for random seed value (default=`1`)
             upper : int
-                upper limit for random seed value (default=`10**7`)
+                arbitrary upper limit for random seed value (default=`10**7`)
 
 
         """
@@ -579,8 +553,8 @@ class Target:
         .. note::
 
             Known artefacts are:
-             #. 1./LC harmonics
-             #. high frequency artefacts (>5000 muHz)
+             #. long-cadence harmonics
+             #. sharp, high-frequency artefacts (:math:`\\rm >5000 \\mu Hz`)
              #. low frequency artefacts 250-400 muHz (mostly present in Q0 and Q3 data)
 
 
@@ -622,10 +596,9 @@ class Target:
 
     def whiten_mixed(self, freq, pow, dnu=None, lower_ech=None, upper_ech=None, notching=False,):
         """
-        Remove mixed modes
     
         Module to help reduce the effects of mixed modes random white noise in place of 
-        :math:`\ell=1` for subgiants with mixed modes to better constrain the large 
+        :math:`\\ell=1` for subgiants with mixed modes to better constrain the large 
         frequency separation
 
         Parameters
@@ -674,17 +647,39 @@ class Target:
         return np.copy(frequency), np.copy(power)
 
 
-#########################################################################################
-#
-# Estimating parameters
-#
+##########################################################################################
+
+
+    def estimate_parameters(self, excess=True,):
+        """
+
+        Automated routine to identify power excess due to solar-like oscillations and estimate
+        an initial starting point for :term:`numax` (:math:`\\nu_{\\mathrm{max}}`)
+
+        Parameters
+            excess : bool, optional
+                if numax is already known, this will automatically be skipped since it is not needed
+
+
+        """
+        if 'results' not in self.params:
+            self.params['results'] = {}
+        if 'plotting' not in self.params:
+            self.params['plotting'] = {}
+        if self.params['excess']:
+            # get initial values and fix data
+            self.initial_estimates()
+            # execute function
+            self.estimate_numax()
+            # save results
+            self = utils.save_estimates(self)
+
 
     def initial_estimates(self, lower_ex=1.0, upper_ex=8000.0, max_trials=6):
         """
     
-        Parameters associated with the first module, which is an automated method 
-        to identify power excess due to solar-like oscillations and then estimate
-        the center of that region
+        Prepares data and parameters associated with the first module that identifies 
+        solar-like oscillations and estimates :term:`numax`
 
         Parameters
             lower_ex : float, optional
@@ -715,16 +710,19 @@ class Target:
         self.pow = self.power[(self.frequency >= lower)&(self.frequency <= upper)]
         if self.params['n_trials'] > max_trials:
             self.params['n_trials'] = max_trials
-        if (self.params['numax'] is not None and self.params['numax'] <= 500.) or (self.nyquist is not None and self.nyquist <= 300.):
-            self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
-        else:
-            self.params['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
+        if not hasattr(self.params, 'boxes'):
+            if (self.params['numax'] is not None and self.params['numax'] <= 500.) or (self.nyquist is not None and self.nyquist <= 300.):
+                self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
+            else:
+                self.params['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
         self.params['plotting']['estimates'], self.params['results']['estimates'] = {}, {}
 
 
-    def estimate_numax(self, n_trials=3, binning=0.005, bin_mode='mean', smooth_width=20.0, ask=False):
+    def estimate_numax(self, n_trials=3, binning=0.005, bin_mode='mean', smooth_width=20.0, ask=False,):
         """
-        Estimate :math:`\\nu_{\\mathrm{max}}`
+
+        Automated routine to identify power excess due to solar-like oscillations or :term:`numax`
+        (:math:`\\nu_{\\mathrm{max}}`)
 
         Automatically finds power excess due to solar-like oscillations using a
         frequency-resolved, collapsed autocorrelation function (ACF)
@@ -762,7 +760,6 @@ class Target:
         # Mask out frequency values that are lower than the smoothing width to avoid weird looking fits
         mask = (self.smooth_freq >= (min(self.freq)+self.params['smooth_width'])) & (self.smooth_freq <= (max(self.freq)-self.params['smooth_width']))
         s = InterpolatedUnivariateSpline(self.smooth_freq[mask], self.smooth_pow[mask], k=1)
-#        s = InterpolatedUnivariateSpline(self.smooth_freq, self.smooth_pow, k=1)
         # Interpolate and divide to get a crude background-corrected power spectrum
         self.interp_pow = s(self.freq)
         self.bgcorr_pow = self.pow/self.interp_pow
@@ -775,11 +772,7 @@ class Target:
                 print('Selecting model %d' % self.params['best'])
         # Or ask which estimate to use
         else:
-#            self = utils.save_plotting(self)
             self = plots.select_trial(self)
-#        self = plots.plot_estimates(self)
-        self = utils.save_estimates(self)
-
 
 
     def collapsed_acf(self, step=0.25, max_snr=100.0):
@@ -862,7 +855,7 @@ class Target:
         # Check if numax was provided as input
         if self.params['numax'] is not None:
             if np.isnan(float(self.params['numax'])):
-                raise ProcessingError("ERROR: invalid value for numax")
+                raise utils.PySYDProcessingError("ERROR: invalid value for numax")
         else:
             # If not, checks if estimate_numax module was run
             if glob.glob(os.path.join(self.params['path'],'estimates*')):
@@ -875,16 +868,49 @@ class Target:
                 for col in columns:
                     self.params[col] = df.loc[0, col]
                 if np.isnan(self.params['numax']):
-                    raise ProcessingError("ERROR: invalid value for numax")
+                    raise utils.PySYDProcessingError("ERROR: invalid value for numax")
             else:
                 # Raise error
-                raise ProcessingError("ERROR: no numax provided for global fit")
+                raise utils.PySYDProcessingError("ERROR: no numax provided for global fit")
 
 
-#########################################################################################
-#
-# Deriving parameters
-#
+##########################################################################################
+
+
+    def derive_parameters(self, mc_iter=1,):
+        """
+
+        Main function to derive the background and global asteroseismic parameters (including
+        uncertainties when relevant), which does everything from finding the initial estimates 
+        to plotting/saving results
+
+        Parameters
+            mc_iter : int
+                the number of iterations to run
+
+        Methods
+            :mod:`pysyd.target.Target.check_numax`
+            :mod:`pysyd.target.Target.initial_parameters`
+            :mod:`pysyd.target.Target.first_step`
+            :mod:`pysyd.target.Target.get_samples`
+
+
+        """
+        if 'results' not in self.params:
+            self.params['results'] = {}
+        if 'plotting' not in self.params:
+            self.params['plotting'] = {}
+        # make sure there is an estimate for numax
+        self.check_numax()
+        # get initial values and fix data
+        self.initial_parameters()
+        self.first_step()
+        # if the first step is ok, carry on
+        if self.params['mc_iter'] > 1:
+            self.get_samples()
+        # Save results
+        utils.save_parameters(self)
+
 
     def initial_parameters(self, lower_bg=1.0, upper_bg=8000.0,):
         """
@@ -895,9 +921,9 @@ class Target:
 
         Parameters
             lower_bg : float, optional
-                minimum frequency to use for the background-fitting 
+                lower frequency limit of PS to use for the background fit
             upper_bg : float, optional
-                maximum frequency to use for the background-fitting
+                upper frequency limit of PS to use for the background fit
 
         .. warning::
 
@@ -920,7 +946,6 @@ class Target:
         if self.nyquist is not None and self.nyquist < upper:
             upper = self.nyquist
         self.params['bg_mask']=[lower,upper]
-
         # Mask power spectrum for main module
         mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.params['bg_mask'][0], self.params['bg_mask'][1]))
         self.frequency, self.power = np.copy(self.frequency[mask]), np.copy(self.power[mask])
@@ -938,19 +963,27 @@ class Target:
     def solar_scaling(self, numax=None, scaling='tau_sun_single', max_laws=3, ex_width=1.0,
                       lower_ps=None, upper_ps=None,):
         """
-        Solar scaling relation
+        
+        Using the initial starting value for :math:`\\rm \\nu_{max}`, estimates the rest of
+        the parameters needed for *both* the background and global fits 
     
         Uses scaling relations from the Sun to:
          #. estimate the width of the region of oscillations using numax
          #. guess starting values for granulation time scales
 
         Parameters
+            numax : float, optional
+                provide initial value for numax to bypass the first module
 	           scaling : str
-	               which scaling relation to use
+	               which solar scaling relation to use
             max_laws : int
                 the maximum number of resolvable Harvey-like components
-           	ex_width : float
-                fractional width of the power excess to use (w.r.t. solar)
+            ex_width : float
+                fractional width to use for power excess centered on :term:`numax`
+            lower_ps : float, optional
+                lower bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
+            upper_ps : float
+                upper bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
 
         Attributes
             b : List[float]
@@ -1001,8 +1034,56 @@ class Target:
         self.params['nlaws'], self.params['a'] = len(self.params['mnu']), []
 
 
+    def first_step(self, converge=False, background=True, globe=True,):
+        """
+
+        Processes a star for a single step, which applies additional analyses in the first
+        iteration for each of the two main steps (i.e. background model and global fit):
+        #. **background model:** the automated best-fit model selection is only performed in the
+           first step, the results which are saved for future purposes (including the 
+           background-corrected power spectrum)
+        #. **global fit:** while the :term:`ACF` is computed for every iteration, a mask is
+           created in the first step to prevent the estimate for dnu to latch on to a different 
+           (i.e. incorrect) peak, since this is a multi-modal parameter space
+
+        Methods
+            - :mod:`pysyd.target.Target.estimate_background`
+            - :mod:`pysyd.target.Target.model_background`
+            - :mod:`pysyd.target.Target.fit_global`
+
+        Parameters
+            converge : bool
+                returns `True` if background fit converged 
+            background : bool, optional
+                disable the background model selection and fit global properties to raw PS
+            globe : bool, optional
+                really only relevant if interested in the background model *only* (and not global properties)
+
+        .. seealso:: :mod:`pysyd.target.Target.single_step`
+
+        """
+        # Background corrections
+        self.estimate_background()
+        self.model_background()
+        # Global fit
+        if self.params['globe']:
+            # global fit
+            self.fit_global()
+            if self.params['verbose'] and self.params['mc_iter'] > 1:
+                print('-----------------------------------------------------------\nSampling routine:')
+
+
     def get_samples(self,):
         """
+
+        Estimates uncertainties for parameters by randomizing the power spectrum and
+        attempting to recover the same parameters by calling the :mod:`pysyd.target.Target.single_step`
+
+        .. note:: 
+
+           all iterations except for the first step are applied to the :term:`critically-sampled power spectrum`
+           and *not* the :term:`oversampled power spectrum`
+
 
         """
         # Switch to critically-sampled PS if sampling
@@ -1024,23 +1105,26 @@ class Target:
                         self.pbar.close()
 
 
-    def first_step(self, converge=False, background=True, globe=True,):
-        """
-
-        """
-        # Background corrections
-        self.estimate_background()
-        self.model_background()
-        # Global fit
-        if self.params['globe']:
-            # global fit
-            self.fit_global()
-            if self.params['verbose'] and self.params['mc_iter'] > 1:
-                print('-----------------------------------------------------------\nSampling routine:')
-
-
     def single_step(self, converge=False,):
         """
+
+        Similar to the first step, this function calls the same methods but uses the selected best-fit
+        background model from the first step to estimate the parameters. 
+
+        Methods
+            - :mod:`pysyd.target.Target.estimate_background`
+            - :mod:`pysyd.target.Target.get_background`
+            - :mod:`pysyd.target.Target.fit_global`
+
+        Parameters
+            converge : bool
+                returns `True` if background fit converged 
+            background : bool, optional
+                fit global properties to raw PS (*not* background-corrected PS)
+            globe : bool, optional
+                disable global fit if interested in the background model *only*
+
+
 
         """
         self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
@@ -1059,6 +1143,14 @@ class Target:
         """
 
         Fits for global asteroseismic parameters :math:`\\rm \\nu{max}` and :math:`\\Delta\\nu`
+
+        Parameters
+            acf_mask : [float,float]
+                
+
+        .. seealso:: :mod:`pysyd.target.Target.get_numax_smooth`, 
+                     :mod:`pysyd.target.Target.get_numax_gaussian`, and
+                     :mod:`pysyd.target.Target.estimate_dnu`
 
 
         """
@@ -1110,10 +1202,8 @@ class Target:
 
     def get_white_noise(self):
         """
-        Estimate white noise
 
-        Estimate the white noise level (in muHz) by taking the mean of
-        the last 10% of the power spectrum.
+        Estimate the white noise level by taking the mean of the last 10% of the power spectrum
 
         Attributes
             noise : float
@@ -1126,7 +1216,6 @@ class Target:
 
     def estimate_initial_red(self, box_filter=1.0, n_rms=20,):
         """
-        Estimate red noise
 
         Estimates amplitudes of red noise components by using a smoothed version of the power
         spectrum with the power excess region masked out -- which will take the mean of a specified 
@@ -1183,21 +1272,22 @@ class Target:
             fix_wn : bool
                 fix the white noise level in the background fit (default = `False`)
             basis : str
-                which basis to use for background fitting, e.g. {a,b} parametrization (default = `tau_sigma`)
+                which basis to use for background fitting, e.g. {a,b} parametrization (default = `tau_sigma`) **Note:** not yet operational
 
         Attributes
             bounds : list
-                the bounds on the Harvey parameters for a given model
+                the parameter bounds for a given model
             bic : list
                 the BIC statistic
             aic : list
                 the AIC statistic
             paras : list
-                the fitted parameters for each model that was explored
+                the best-fit parameters for a given model 
 
         Returns
             return : bool
                 will return `True` if fitting failed and the iteration must be repeated, otherwise `False`.
+
 
         """
         if self.params['background']:
@@ -1272,7 +1362,7 @@ class Target:
             self.params['pars'] = ([self.params['noise']])
 
 
-    def correct_background(self, metric='aic'):
+    def correct_background(self, metric='bic'):
         """
         Saves information on the selected best-fit background model, corrects for this
         in the power spectrum (i.e. :term:`background-corrected power spectrum`), and saves
@@ -1290,7 +1380,7 @@ class Target:
             pars : numpy.ndarray
                 derived parameters for best-fit background model
 
-        .. seealso:: :mod:`Target.model_background`
+        .. seealso:: :mod:`pysyd.target.Target.model_background`
 
 
         """
@@ -1454,11 +1544,11 @@ class Target:
         else:
             self.guess = self.params['exp_dnu']
         # Optional smoothing of PS to remove fine structure before computing ACF
-        if int(self.params['smooth_ps']) != 0:
+        if self.params['smooth_ps'] == 0.0:
+            self.bgcorr_smooth = np.copy(self.bg_corr)
+        else:
             boxkernel = Box1DKernel(int(np.ceil(self.params['smooth_ps']/self.params['resolution'])))
             self.bgcorr_smooth = convolve(self.bg_corr, boxkernel)
-        else:
-            self.bgcorr_smooth = np.copy(self.bg_corr)
         # Use only power near the expected numax to reduce additional noise in ACF
         power = self.bgcorr_smooth[(self.frequency >= self.params['ps_mask'][0])&(self.frequency <= self.params['ps_mask'][1])]
         lag = np.arange(0.0, len(power))*self.params['resolution']
@@ -1666,7 +1756,8 @@ class Target:
             smooth_y = np.copy(self.bg_corr)
         # If the number of desired orders is not provided
         if self.params['noy'] == "0+0" or self.params['noy'] == "0-0":
-            ny = int(self.params['obs_numax']/self.params['obs_dnu']//2)
+            width = self.constants['width_sun']*(self.params['obs_numax']/self.constants['numax_sun'])
+            ny = int(np.ceil(width/self.params['obs_dnu']))
             nshift = 0
         else:
             ny, nshift = int(self.params['noy'][0]), int(self.params['noy'][-1])
