@@ -63,8 +63,48 @@ class Target:
 
 
     def __repr__(self):
-        return "<Star Object {}>".format(self.name)
-           
+        return "<Star {}>".format(self.name)
+
+
+    def adjust_parameters(self, adjust=True, defaults=None,):
+        """ 
+    
+        Adjusts default parameters for low vs high numax configurations
+
+        Parameters
+            star : str
+                individual star ID
+            adjust : bool, optional
+                maximum number of resolvable Harvey components
+            defaults : str, optional
+                option for when numax is not known but can differentiate between "low" vs. "high" frequencies
+
+        """
+        if self.params['numax'] is not None:
+        elif self.nyquist is not None:
+            if (self.params['numax'] is not None and self.params['numax'] < 500.) or \
+              (self.params['defaults'] is not None and self.params['defaults'] == 'low'):
+                self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
+                self.params['smooth_width'] = 5.
+                self.params['ind_width'] = 5.
+                self.params['smooth_ps'] = 1.0
+                self.params['lower_ex'], self.params['lower_bg'] = 1., 1.
+                self.params['upper_ex'], self.params['upper_bg'] = 1000., 1000.
+            elif (self.params['numax'] is not None and self.params['numax'] >= 500.) or \
+              (self.params['defaults'] is not None and self.params['defaults'] == 'high'):
+                self.params['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
+                self.params['smooth_width'] = 20.
+                self.params['ind_width'] = 20.
+                self.params['smooth_ps'] = 2.5
+                self.params['lower_ex'], self.params['lower_bg'] = 100., 100.
+                self.params['upper_ex'], self.params['upper_bg'] = 8000., 8000.
+            else:
+                self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(500.), self.params['n_trials'])
+                self.params['smooth_width'], self.params['ind_width'] = 10., 10.
+                self.params['lower_ex'], self.params['lower_bg'] = 1., 1.
+                self.params['upper_ex'], self.params['upper_bg'] = 8000., 8000.
+                self.params['smooth_ps'] = 1.5           
+
 
     def process_star(self,):
         """
@@ -710,11 +750,10 @@ class Target:
         self.pow = self.power[(self.frequency >= lower)&(self.frequency <= upper)]
         if self.params['n_trials'] > max_trials:
             self.params['n_trials'] = max_trials
-        if not hasattr(self.params, 'boxes'):
-            if (self.params['numax'] is not None and self.params['numax'] <= 500.) or (self.nyquist is not None and self.nyquist <= 300.):
-                self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
-            else:
-                self.params['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
+        if (self.params['numax'] is not None and self.params['numax'] <= 500.) or (self.nyquist is not None and self.nyquist <= 300.):
+            self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
+        else:
+            self.params['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
         self.params['plotting']['estimates'], self.params['results']['estimates'] = {}, {}
 
 

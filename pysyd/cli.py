@@ -175,11 +175,11 @@ def main():
                           default=True,
                           action='store_false',
     )
-    estimate.add_argument('--adj', '--adjust',
+    estimate.add_argument('-j', '--adjust',
                           dest='adjust',
                           help='Adjusts default parameters based on region of oscillations',
-                          default=True, 
-                          action='store_false',
+                          default=False, 
+                          action='store_true',
     )
     estimate.add_argument('--def', '--defaults',
                           metavar='str',

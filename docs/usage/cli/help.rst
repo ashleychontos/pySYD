@@ -1,13 +1,32 @@
 .. _user-guide-cli-help:
 
-********
+*****
+Intro
+*****
+
+As we have alluded to throughout the documentation, `pySYD` was initially intended to be 
+ran as a command-line tool -- which means that it is optimized for this usage and therefore 
+has many of the best defaults already in place. Here, "best" just means that the setup is 
+what works *best* for a majority of stars. 
+
+However, that does not necessarily mean that your star(s) or setting(s) are expected to 
+conform or adhere to these settings. In fact, we recommend playing around with some of the 
+settings to see how it affects your results. This will help build your intution for seismic 
+analyses. 
+
+.. note:: 
+
+   Please keep in mind that we have extensively tested most (if not all) options but we are 
+   constantly adding new ones, which ultimately might break something. If this happens, we 
+   encourage you to submit an issue here and thank you in advance for your help!
+
+
 CLI help
-********
+########
 
 To give you a glimpse into the insanely large amount of available features, open up a terminal
-window and run the help command for the main pipeline execution (:mod:`pysyd.pipeline.run`; 
-since `mode` inherits all parsers):
-your ``pySYD`` experience about the tons of ``pySYD`` features has via command line,
+window and run the help command for the main pipeline mode, `run` (aka :mod:`pysyd.pipeline.run`), 
+since this mode inherits all command-line parsers:
 
 .. code-block::
 
@@ -32,22 +51,20 @@ your ``pySYD`` experience about the tons of ``pySYD`` features has via command l
       -h, --help            show this help message and exit
 
 This was actually just a teaser! If you ran it from your end, you probably noticed an 
-output that was a factor of ~5-10 longer!
+output that was a factor of ~5-10 longer! It may seem like an overwhelming amount but 
+do not fret, this is for good reason -- and that's to make your asteroseismic experience 
+as customized as possible.
 
-It may seem like an overwhelming amount but do not fret, this is for good reason -- and that's to 
-make your asteroseismic experience as customizable as possible. Down below, we have broken the 
-commands up by relevant science/software groups to make it easier to digest. 
-
-.. note::
-
-    As you are navigating this page, keep in mind that we also have a special 
-    :ref:`glossary <usage-cli-glossary>` for all our command-line options. This includes everything
-    from the variable type, default value and relevant units to how it's stored within the 
-    software itself. These glossary links are provided at the bottom of each section.
-
+**Note:** As you are navigating this page, keep in mind that we also have a special 
+:ref:`glossary <usage-cli-glossary>` for all our command-line options. This includes everything
+from the variable type, default value and relevant units to how it's stored within the 
+software itself. These glossary links are provided at the bottom of each relevant section.
 
 Jump to:
 ********
+
+We have broken up the parsers and commands by relevant groups (and/or analyses) to make it 
+easier to understand:
 
  - :ref:`high-level functions <user-guide-cli-help-high>`
  - :ref:`data analyses <user-guide-cli-help-data>`

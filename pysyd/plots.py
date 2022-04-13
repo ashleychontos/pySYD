@@ -15,7 +15,6 @@ from . import utils
 from . import models
 from . import MPLSTYLE
 
-plt.style.use(MPLSTYLE)
 
 
 def make_plots(star, showall=False,):
@@ -128,7 +127,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
     params = star.params['plotting']['estimates']
     n += 1
     if star.lc:
-        # Time series data
+        # PANEL 1: time series data
         ax1 = plt.subplot(y, x, n)
         ax1.plot(params['time'], params['flux'], 'w-')
         ax1.set_xlim([min(params['time']), max(params['time'])])
@@ -139,7 +138,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
         n -= 1
 
     n += 1
-    # log-log power spectrum with crude background fit
+    # PANEL 2: log-log PS with crude background fit
     ax2 = plt.subplot(y, x, n)
     ax2.loglog(params['freq'], params['pow'], 'w-')
     ax2.set_xlim([min(params['freq']), max(params['freq'])])
@@ -151,7 +150,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
     ax2.loglog(params['freq'], params['interp_pow'], color='lime', linestyle='-', lw=2.0)
 
     n += 1
-    # Crude background-corrected power spectrum
+    # PANEL 3: background-corrected power spectrum
     ax3 = plt.subplot(y, x, n)
     ax3.plot(params['freq'], params['bgcorr_pow'], 'w-')
     ax3.set_xlim([min(params['freq']), max(params['freq'])])
@@ -161,7 +160,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
     ax3.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
 
     n += 1
-    # ACF trials to determine numax
+    # PANEL 4-6: ACF trials 
     for i in range(star.params['n_trials']):
         ax = plt.subplot(y, x, n+i)
         ax.plot(params[i]['x'], params[i]['y'], 'w-')
@@ -232,7 +231,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     params = star.params['plotting']['parameters']
 
     n += 1
-    # Time series data
+    # PANEL 1: time series data
     if star.lc:
         ax1 = fig.add_subplot(x, y, n)
         ax1.plot(params['time'], params['flux'], 'w-')
@@ -244,7 +243,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
         n -= 1
 
     n += 1
-    # Initial background guesses
+    # PANEL 2: initial background guesses
     ax2 = fig.add_subplot(x, y, n)
     ax2.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
     ax2.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['random_pow'][params['frequency'] < star.params['ps_mask'][0]], 'w-', zorder=1)
@@ -272,7 +271,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax2.set_yscale('log')
 
     n += 1
-    # Fitted background
+    # PANEL 3: fitted background
     ax3 = fig.add_subplot(x, y, n)
     ax3.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
     ax3.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['random_pow'][params['frequency'] < star.params['ps_mask'][0]], 'w-', zorder=1)
@@ -320,7 +319,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
         return
 
     n += 1
-    # Smoothed power excess w/ gaussian
+    # PANEL 4: smoothed power excess 
     ax4 = fig.add_subplot(x, y, n)
     ax4.plot(params['region_freq'], params['region_pow'], 'w-', zorder=0)
     idx = utils.return_max(params['region_freq'], params['region_pow'], index=True)
@@ -340,7 +339,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     psd = params['bgcorr_smooth'][mask]
     peaks_f, peaks_p = utils.max_elements(freq, psd, star.params['n_peaks'])
     n += 1
-    # Background-corrected power spectrum with n highest peaks
+    # PANEL 5: background-corrected power spectrum 
     ax5 = fig.add_subplot(x, y, n)
     ax5.plot(freq, psd, 'w-', zorder=0, linewidth=1.0)
     ax5.scatter(peaks_f, peaks_p, s=25.0, edgecolor='r', marker='s', facecolor='none', linewidths=1.0)
@@ -355,8 +354,9 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     new_weights = weights/max(weights)
     diff = list(np.absolute(params['lag']-params['obs_dnu']))
     idx = diff.index(min(diff))
+
     n += 1
-    # ACF for determining dnu
+    # PANEL 6: ACF 
     ax6 = fig.add_subplot(x, y, n)
     ax6.plot(params['lag'], params['auto'], 'w-', zorder=0, linewidth=1.)
     ax6.scatter(params['peaks_l'], params['peaks_a'], s=30.0, edgecolor='r', marker='^', facecolor='none', linewidths=1.0)
@@ -371,7 +371,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax6.set_ylim([min(params['auto'])-0.05*(max(params['auto'])-min(params['auto'])), max(params['auto'])+0.1*(max(params['auto'])-min(params['auto']))])
 
     n += 1
-    # dnu fit
+    # PANEL 7: dnu fit
     ax7 = fig.add_subplot(x, y, n)
     ax7.plot(params['zoom_lag'], params['zoom_auto'], 'w-', zorder=0, linewidth=1.0)
     ax7.axvline(params['obs_dnu'], color='lime', linestyle='--', linewidth=1.5, zorder=2)
@@ -387,7 +387,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     else:
         interpolation='nearest'
     n += 1
-    # echelle diagram
+    # PANEL 8: echelle diagram
     ax8 = fig.add_subplot(x, y, n)
     ax8.imshow(params['z'], extent=params['extent'], interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap(star.params['cmap']))
     ax8.axvline([params['obs_dnu']], color='white', linestyle='--', linewidth=1.5, dashes=(5, 5))
@@ -399,6 +399,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
 
     yrange = max(params['yax'])-min(params['yax'])
     n += 1
+    # PANEL 9: collapsed ED
     ax9 = fig.add_subplot(x, y, n)
     ax9.plot(params['xax'], params['yax'], color='white', linestyle='-', linewidth=0.75)
     ax9.set_title(r'$\rm Collapsed \,\, ED$')
@@ -559,8 +560,8 @@ def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
         plt.close()
 
 
-def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'], show=False, 
-                           save=True, overwrite=False, npanels=2,):
+def _create_comparison_plot(filename='comparison.png', variables=['numax','dnu'], show=False, 
+                            save=True, overwrite=False, npanels=2,):
     """
     Compare ensemble results between the ``pySYD`` and ``SYD`` pipelines
     for the *Kepler* legacy sample
@@ -703,7 +704,7 @@ def _dnu_comparison(star, methods=['M','A','D'], markers=['o','D','^'], styles=[
 
 
 
-def check_data(star, args, show=True):
+def _check_data(star, args, show=True):
     """
 
     Plot input data for a target
@@ -711,11 +712,11 @@ def check_data(star, args, show=True):
     """
     if star.params['verbose']:
         print(' - displaying figures')
-    set_plot_params()
+    plt.style.use(MPLSTYLE)
     if star.lc:
-        plot_light_curve(star, args)
+        _plot_light_curve(star, args)
     if star.ps:
-        plot_power_spectrum(star, args)
+        _plot_power_spectrum(star, args)
     if star.params['show']:
         plt.show(block=False)
         input(' - press any key to exit')
@@ -723,7 +724,7 @@ def check_data(star, args, show=True):
     plt.close()
 
 
-def plot_light_curve(star, args, filename='time_series.png', npanels=1):
+def _plot_light_curve(star, args, filename='time_series.png', npanels=1):
     """
     Plot the light curve data
 
@@ -767,7 +768,7 @@ def plot_light_curve(star, args, filename='time_series.png', npanels=1):
         plt.close()
 
 
-def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
+def _plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
     """
     Plot the power spectrum data
 

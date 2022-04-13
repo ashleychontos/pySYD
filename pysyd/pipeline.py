@@ -34,7 +34,7 @@ def check(args):
     
     """
     star, args = load(args)
-    plots.check_data(star, args)
+    plots._check_data(star, args)
 
 
 def load(args):
@@ -172,10 +172,10 @@ def plot(args):
 
     """
     if args.compare:
-        plots.create_comparison_plot(show=args.show, save=args.save, overwrite=args.overwrite,)
+        plots._create_comparison_plot(show=args.show, save=args.save, overwrite=args.overwrite,)
     if args.results:
         if args.stars is None:
-            raise utils.InputError("Please provide a star to plot results for")
+            raise utils.PySYDInputError("Please provide a star to plot results for")
         else:
             assert len(args.stars) == 1, "No more than one star can be checked at a time."
         assert os.path.exists(os.path.join(args.params['outdir'],args.stars[0]))

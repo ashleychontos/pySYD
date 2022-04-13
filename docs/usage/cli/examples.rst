@@ -21,6 +21,7 @@ This page has command-line examples for the following cases:
 
 including what to look for in each case.
 
+-----
 
 .. _user-guide-cli-examples-single:
 
@@ -31,6 +32,9 @@ For applications to single stars, we will start with a very easy, high signal-to
 example, followed by medium, low, and no SNR examples. These won't be detailed walkthroughs 
 but we are hoping to give pointers about what to look for in each class of examples.
 
+
+-----
+
 .. _user-guide-cli-examples-single-high:
 
 High SNR: KIC 11618103
@@ -40,15 +44,15 @@ KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
 .. image:: ../../_static/examples/11618103_excess.png
   :width: 680
-  :alt: Find excess output plot for KIC 11618103.
+  :alt: KIC 11618103 estimates
 
 .. image:: ../../_static/examples/11618103_background.png
   :width: 680
-  :alt: Fit background output plot for KIC 11618103.
+  :alt: KIC 11618103 global fit
 
 .. image:: ../../_static/examples/11618103_samples.png
   :width: 680
-  :alt: Distributions of Monte-Carlo samples for KIC 11618103.
+  :alt: KIC 11618103 parameter posteriors
 
 
 **For a full breakdown of what each panel is showing, please see :ref:`this page <library/output>` for more details.**
@@ -58,9 +62,10 @@ KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
     The sampling results can be saved by using the boolean flag ``-m`` or ``--samples``,
     which will save the posteriors of the fitted parameters for later use. 
-    
-And just like that, you are now an asteroseismologist!
 
+
+
+-----
 
 .. _user-guide-cli-examples-single-medium:
 
@@ -75,17 +80,18 @@ KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \m
 
 .. image:: ../../_static/examples/1435467_estimates.png
   :width: 680
-  :alt: Find excess output plot for KIC 11618103.
+  :alt: KIC 1435467 estimates
 
 .. image:: ../../_static/examples/1435467_global.png
   :width: 680
-  :alt: Fit background output plot for KIC 11618103.
+  :alt: KIC 1435467 global fit
 
 .. image:: ../../_static/examples/1435467_samples.png
   :width: 680
-  :alt: Distributions of Monte-Carlo samples for KIC 11618103.
+  :alt: KIC 1435467 parameter posteriors
 
 
+-----
 
 .. _user-guide-cli-examples-single-low:
 
@@ -96,13 +102,18 @@ As if asteroseismology wasn't hard enough, let's make it even more difficult for
 
 KIC 8801316 is a subgiant with a numax ~1100 muHz, shown in the figures below. 
 
-.. image:: ../../_static/examples/8801316_excess.png
+.. image:: ../../_static/examples/8801316_estimates.png
   :width: 680
-  :alt: Numax estimate KIC 8801316.
+  :alt: KIC 8801316 estimates
 
-.. image:: ../../_static/examples/8801316_background.png
+.. image:: ../../_static/examples/8801316_global.png
   :width: 680
-  :alt: Global fit for KIC 8801316.
+  :alt: KIC 8801316 global fit
+
+.. image:: ../../_static/examples/8801316_samples.png
+  :width: 680
+  :alt: KIC 8801316 parameter posteriors
+
 
 This would be classified as a detection despite the low SNR due to the following reasons:
 
@@ -112,6 +123,7 @@ This would be classified as a detection despite the low SNR due to the following
 - the echelle diagram in panel 8 shows the ridges, albeit faintly
 
 
+-----
 
 .. _user-guide-cli-examples-single-no:
 
@@ -120,19 +132,19 @@ No SNR: KIC 6278992
 
 KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
-.. image:: ../../_static/examples/6278992_excess.png
+.. image:: ../../_static/examples/6278992_estimates.png
   :width: 680
-  :alt: Find excess output plot for KIC 6278992.
+  :alt: KIC 6278992 estimates
 
-.. image:: ../../_static/examples/6278992_background.png
+.. image:: ../../_static/examples/6278992_global.png
   :width: 680
-  :alt: Fit background output plot for KIC 6278992.
+  :alt: KIC 6278992 global fit
 
 .. image:: ../../_static/examples/6278992_samples.png
   :width: 680
-  :alt: Distributions of Monte-Carlo samples for KIC 6278992.
+  :alt: KIC 6278992 parameter posteriors
 
-
+-----
 
 .. _user-guide-cli-examples-multiple:
 
@@ -185,9 +197,10 @@ Advanced usage
 
 Below are examples of different optional ``pySYD`` features, including their before and after plots.
 
+-----
 
 :term:`ew<--ew, --exwidth>` & :term:`exwidth<--ew, --exwidth>`
-**************************************************************
+##############################################################
 
 Fractional amount to scale the width of the oscillations envelope by -- which is normally calculated
 w.r.t. solar values.
@@ -201,10 +214,10 @@ w.r.t. solar values.
 |    :width: 680                                        |    :width: 680                                        |
 +-------------------------------------------------------+-------------------------------------------------------+
 
-
+-----
 
 :term:`k<-k, --kc, --kepcorr>`, :term:`kc<-k, --kc, --kepcorr>` & :term:`kepcorr<-k, --kc, --kepcorr>`
-******************************************************************************************************
+######################################################################################################
 
 Remove the well-known *Kepler* short-cadence artefact that occurs at/near the long-cadence :term:`nyquist frequency` 
 (:math:`\sim 270 \mu \mathrm{Hz}`) by simulating white noise
@@ -218,10 +231,10 @@ Remove the well-known *Kepler* short-cadence artefact that occurs at/near the lo
 |    :width: 680                                        |    :width: 680                                       |
 +-------------------------------------------------------+------------------------------------------------------+
 
-
+-----
 
 :term:`lp<--lp, --lowerp>` & :term:`lowerp<--lp, --lowerp>`
-***********************************************************
+###########################################################
 
 Manually set the lower frequency bound (or limit) of the power excess, which is helpful
 in the following scenarios:
@@ -240,9 +253,10 @@ in the following scenarios:
 |    :width: 680                                          |    :width: 680                                         |
 +---------------------------------------------------------+--------------------------------------------------------+
 
+-----
 
 :term:`npeaks<--peaks, --npeaks>` & :term:`peaks<--peaks, --npeaks>`
-********************************************************************
+####################################################################
 
 Change the number of peaks chosen in the autocorrelation function (:term:`ACF`) - this is especially
 helpful for low S/N cases, where the spectrum is noisy and the ACF has many peaks close the expected
@@ -257,9 +271,10 @@ spacing (**FIX THIS**)
 |    :width: 680                                        |    :width: 680                                       |
 +-------------------------------------------------------+------------------------------------------------------+
 
+-----
 
 :term:`numax<--numax>`
-**********************
+######################
 
 If the value of :math:`\rm \nu_{max}` is known, this can be provided to bypass the first module and save some time. 
 There are also other ways to go about doing this, please see our notebook tutorial that goes through these different
@@ -274,9 +289,10 @@ ways.
 |    :width: 680                                         |    :width: 680                                        |
 +--------------------------------------------------------+-------------------------------------------------------+
 
+-----
 
 :term:`--upperx<--ux, --upperx>`
-********************************
+################################
 
 Set the upper frequency limit in the power spectrum when estimating :math:`\rm \nu_{max}` before the main fitting
 routine. This is helpful if there are high frequency artefacts that the software latches on to.
@@ -290,9 +306,10 @@ routine. This is helpful if there are high frequency artefacts that the software
 |    :width: 680                                         |    :width: 680                                        |
 +--------------------------------------------------------+-------------------------------------------------------+
 
+-----
 
 :term:`i<-i, --ie, --interpech>`, :term:`ie<-i, --ie, --interpech>` & :term:`interpech<-i, --ie, --interpech>`
-**************************************************************************************************************
+##############################################################################################################
 
 Smooth the echelle diagram output by turning on the (bilinear) interpolation, which is helpful for identifying
 ridges in low S/N cases
@@ -306,3 +323,4 @@ ridges in low S/N cases
 |    :width: 680                                         |    :width: 680                                         |
 +--------------------------------------------------------+--------------------------------------------------------+
 
+-----

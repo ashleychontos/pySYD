@@ -590,7 +590,7 @@ class Parameters(Constants):
                 self.params[star]['ech_mask'] = [self.params[star]['lower_ech'], self.params[star]['upper_ech']]
             else:
                 self.params[star]['ech_mask'] = None
-            self.adjust_parameters(star)
+#            self.adjust_parameters(star)
 
 
     def get_info(self):
@@ -728,7 +728,7 @@ class Parameters(Constants):
         self.params[star]['lower_ex'], self.params[star]['lower_bg'] = 1., 1.
         self.params[star]['upper_ex'], self.params[star]['upper_bg'] = 8000., 8000.
         self.params[star]['smooth_ps'] = 1.5
-        if self.params[star]['adjust']: and self.params[star]['numax'] is not None:
+        if self.params[star]['adjust'] and self.params[star]['numax'] is not None:
             if (self.params[star]['numax'] is not None and self.params[star]['numax'] < 500.) or \
               (self.params[star]['defaults'] is not None and self.params[star]['defaults'] == 'low'):
                 self.params[star]['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
@@ -738,7 +738,8 @@ class Parameters(Constants):
                 self.params[star]['lower_ex'], self.params[star]['lower_bg'] = 1., 1.
                 self.params[star]['upper_ex'], self.params[star]['upper_bg'] = 1000., 1000.
             elif (self.params[star]['numax'] is not None and self.params[star]['numax'] >= 500.) or \
-              (self.params[star]['defaults'] is not None and self.params[star]['defaults'] == 'high'):                self.params[star]['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
+              (self.params[star]['defaults'] is not None and self.params[star]['defaults'] == 'high'):
+                self.params[star]['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
                 self.params[star]['smooth_width'] = 20.
                 self.params[star]['ind_width'] = 20.
                 self.params[star]['smooth_ps'] = 2.5
