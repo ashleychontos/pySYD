@@ -112,7 +112,7 @@ class Target:
     def process_star(self,):
         """Run `pySYD`
 
-        Processes a single star from start to finish
+        Processes the main `pySYD` pipeline on a given star from start to finish
 
         Parameters
         ----------
@@ -129,8 +129,6 @@ class Target:
         derive_parameters
         show_results
 
-
-        Run the ``pySYD`` pipeline on a given star
 
         """
         self.params['results'], self.params['plotting'] = {}, {}
