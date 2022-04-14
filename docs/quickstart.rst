@@ -1,12 +1,9 @@
-.. role::  raw-html(raw)
-    :format: html
-
 .. role:: underlined
    :class: underlined
 
-***************
-Getting started
-***************
+*****************************
+:underlined:`Getting started`
+*****************************
 
 The examples on this page assume that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the Python website and going through
@@ -33,6 +30,8 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
     :ref:`this page <library-input>`.
 
 
+-----
+
 .. _quickstart-crash:
 
 Crashteroseismology: a crash course in asteroseismology
@@ -43,13 +42,16 @@ its properties so that the software runs from start to finish on its own. In any
 however, we can provide additional inputs like the center of the frequency range with the 
 oscillations, or :term:`numax` ( :math:`\rm \nu_{max}`), that can bypass steps and save time. 
 
+.. role::  raw-html(raw)
+    :format: html
+
 
 .. _quickstart-script:
 
 :underlined:`Initialize script`
 *******************************
 
-When running ``pySYD`` from command line, you will likely use something similar to the 
+When running `pySYD` from command line, you will likely use something similar to the 
 following: 
 
 .. _quickstart-script-command:

@@ -120,9 +120,9 @@ class Target:
                 the end
 
         Methods
-            estimate_parameters
-            derive_parameters
-            show_results
+            - :mod:`estimate_parameters`
+            - :mod:`derive_parameters`
+            - :mod:`show_results`
 
 
         """
@@ -156,16 +156,14 @@ class Target:
 
 
     def load_star(self, ps=False, lc=False, note='',):
-        """
+        """Load star data
 
-        Load data for a single star by first checking to see if the power spectrum exists
+        Load data in for a single star by first checking to see if the power spectrum exists
         and then loads in the time series data, which will compute a power spectrum in the
-        event that there is not one. If neither are available, this will raise an input
-        user error. **Note:** based on the way the data is handled, this will also print
-        any other warnings or errors
+        event that there is not one
 
         Attributes
-            note : str, optional
+            note : str, default=''
                 verbose output
             lc : bool, default=False
                 `True` if object has light curve
@@ -173,14 +171,16 @@ class Target:
                 `True` if object has power spectrum
 
         Methods
-            :mod:`pysyd.target.Target.load_power_spectrum`
-            :mod:`pysyd.target.Target.load_time_series`
-            :mod:`pysyd.target.Target.get_warnings`
-        
-            
+            - :mod:`pysyd.target.Target.load_power_spectrum`
+            - :mod:`pysyd.target.Target.load_time_series`
+            - :mod:`pysyd.target.Target.get_warnings`   
+
+        Raises
+            PySYDInputError
+                if no data is found for a given target   
 
         """
-        self.ps, self.lc, self.ok, self.note = False, False, False, ''
+        self.ps, self.lc, self.note = False, False, ''
         # Now done at beginning to make sure it only does this once per star
         if glob.glob(os.path.join(self.params['inpdir'],'%s*' % str(self.name))):
             if self.params['verbose']:
@@ -197,26 +197,15 @@ class Target:
 
 
     def load_power_spectrum(self):
-        """
-        Load power spectrum
+        """Load power spectrum
     
-        Loads in the power spectrum data in for a given star,
-        which will return `False` if unsuccessful and therefore, not run the rest
-        of the pipeline
-
-        Parameters
-            oversampling_factor : int, optional
-                oversampling factor of input power spectrum
+        Loads in available power spectrum and computes relevant information -- also checks
+        for time series data and will raise a warning if there is none since it will have
+        to assume a :term:`critically-sampled power spectrum`
 
         Attributes
             note : str, optional
                 verbose output
-            lc : bool
-                `True` if object has light curve
-            time : numpy.ndarray
-                time array in days
-            flux : numpy.ndarray
-                relative or normalized flux array
             ps : bool
                 `True` if object has power spectrum
             frequency : numpy.ndarray
@@ -231,15 +220,10 @@ class Target:
                 final version of critically-sampled frequency array
             pow_cs : numpy.ndarray
                 final version of critically-sampled power spectrum
-            cadence : int
-                median cadence of time series data (:math:`\Delta t`)
-            nyquist : float
-                nyquist frequency of the power spectrum
-            baseline : float
-                total time series duration (:math:`\Delta T`)
-            tau_upper : float
-                upper limit of the modeled time scales set by baseline/2
 
+        Raises
+            PySYDInputWarning
+                if no information or time series data is provided (i.e. *has* to assume the PS is critically-sampled) 
 
         """
         # Try loading the power spectrum
@@ -264,22 +248,19 @@ class Target:
                 self.tau_upper = self.baseline/2.
 
 
-    def load_time_series(self, nyquist=None):
-        """
-        Load light curve
+    def load_time_series(self, save=True, stitch=False, oversampling_factor=None,):
+        """Load light curve
         
-        If time series data is available, the time series data
-        is loaded in, and then it calculates the cadence and nyquist 
-        frequency. If time series data is not provided, either the
-        cadence or nyquist frequency must be provided via CLI
+        Loads in time series data and calculates relevant parameters like the 
+        cadence and nyquist frequency
 
         Parameters
-            save : bool, optional
+            save : bool, default=True
                 save all data products
-            kep_corr : bool, optional
-                use the module that corrects for known kepler artefacts
-            stitch : bool, optional
-                use the module that corrects for large gaps in data
+            stitch : bool, default=False
+                "stitches" together time series data with large "gaps"
+            oversampling_factor : int, optional
+                oversampling factor of input power spectrum
 
         Attributes
             note : str, optional
@@ -290,12 +271,20 @@ class Target:
                 time array in days
             flux : numpy.ndarray
                 relative or normalized flux array
-            ps : bool
-                `True` if object has power spectrum
+            cadence : int
+                median cadence of time series data ( :math:`\\Delta t`)
+            nyquist : float
+                nyquist frequency of the power spectrum (calculated from time series cadence)
+            baseline : float
+                total time series duration ( :math:`\\Delta T`)
+            tau_upper : float
+                upper limit of the modeled time scales set by baseline/2
+
+        Yields
             frequency : numpy.ndarray
-                copy of original frequency array
+                newly-computed (and normalized) frequency array
             power : numpy.ndarray
-                copy of original power spectrum
+                newly-computed (and normalized) power spectrum
             freq_os : numpy.ndarray
                 final version of oversampled frequency array
             pow_os : numpy.ndarray
@@ -304,14 +293,14 @@ class Target:
                 final version of critically-sampled frequency array
             pow_cs : numpy.ndarray
                 final version of critically-sampled power spectrum
-            cadence : int
-                median cadence of time series data (:math:`\Delta t`)
-            nyquist : float
-                nyquist frequency of the power spectrum (calculated from time series cadence)
-            baseline : float
-                total time series duration (:math:`\Delta T`)
-            tau_upper : float
-                upper limit of the modeled time scales set by baseline/2
+
+        Raises
+            PySYDInputWarning
+                if the oversampling factor provided is different from that computed from the
+                time series data and power spectrum
+            PySYDInputError
+                if the oversampling factor calculated from the time series data and power 
+                spectrum is not an integer
 
 
         """
@@ -367,12 +356,11 @@ class Target:
 
 
     def load_file(self, path):
-        """
-        Generic load function from text file
+        """Generic load function from text file
     
         Load a light curve or a power spectrum from a basic 2xN txt file
         and stores the data into the `x` (independent variable) and `y`
-        (dependent variable) arrays, where N is the length of the series.
+        (dependent variable) arrays, where N is the length of the series
 
         Parameters
             path : str
@@ -396,19 +384,26 @@ class Target:
 
 
     def get_warnings(self, long=10**6, note='',):
-        """
-        Check input data
+        """Check input data
+
+        Prints relevant warnings about the input data
 
         Parameters
-            note : str, optional
+            note : str, default=''
                 verbose output
-            long : int
+            long : int, default= :math:`10^{6}`
                 arbitrary number to let user know if a "long" PS was given, as it will
                 take pySYD longer to process
 
-        Attributes
-            resolution : float
-                frequency resolution of input power spectrum
+        Raises
+            PySYDInputWarning
+                if the power spectrum is large and will slow down the software
+            PySYDInputWarning
+                if the time series data is "stitched" together
+            PySYDInputWarning
+                if the *Kepler* artefact correction module was used
+            PySYDInputWarning
+                if the power spectrum was "whitened" to help with mixed modes
 
         """
         note = ''
@@ -422,19 +417,17 @@ class Target:
             note += '#             - whitened PS to help w/ mixed modes**\n'
         if self.params['verbose'] and note != '':
             print(note)
-        self.ok = True
 
 
     def stitch_data(self, gap=20):
-        """
-        Stitch light curve
+        """Stitch light curve
 
         For computation purposes and for special cases that this does not affect the integrity of the results,
         this module 'stitches' a light curve together for time series data with large gaps. For stochastic p-mode
         oscillations, this is justified if the lifetimes of the modes are smaller than the gap. 
 
         Parameters
-            gap : int
+            gap : int, default=20
                 how many consecutive missing cadences are considered a 'gap'
       
         Attributes
@@ -443,9 +436,9 @@ class Target:
             new_time : numpy.ndarray
                 corrected time series array
 
-        Return
-            warning : str
-                prints a warning when using this method
+        Raises
+            PySYDInputWarning
+                when using this method since it's technically not a great thing to do
 
         .. warning::
             USE THIS WITH CAUTION. This is technically not a great thing to do for primarily
@@ -467,15 +460,14 @@ class Target:
 
 
     def compute_spectrum(self, oversampling_factor=1):
-        """
-        Calculate power spectrum
+        """Compute power spectrum
 
-        NEW function to compute a power spectrum given time series data, which will
+        **NEW** function to calculate a power spectrum given time series data, which will
         normalize the power spectrum to spectral density according to Parseval's theorem
 
         Parameters
             oversampling_factor : int
-                the oversampling factor to compute for the power spectrum 
+                the oversampling factor to use when computing the power spectrum 
 
         Returns
             frequency : numpy.ndarray
@@ -501,11 +493,10 @@ class Target:
 
 
     def fix_data(self, frequency, power, kep_corr=False, ech_mask=None,):
-        """
-        Fix power spectrum
+        """Frequency domain tools
 
-        Runs power spectra through our optional tools like remove_artefact() and 
-        white_mixed(). If neither of these options are used, it will return a copy
+        Runs power spectra through our optional tools like :mod:`pysyd.target.Target.remove_artefact` and 
+        :mod:`pysyd.target.Target.white_mixed`. If neither of these options are used, it will return a copy
         of the original arrays
 
         Parameters
@@ -513,17 +504,20 @@ class Target:
                 input frequency array to correct
             power : numpy.ndarray
                 input power spectrum to correct
+            save : bool, default=True
+                save all data products
             kep_corr : bool, default=False
                 correct for known *Kepler* short-cadence artefacts
             ech_mask : bool, default=None
                 folded frequency bounds for mixed modes, has format ~[lower, upper]
 
         Methods
-            remove_artefact : mitigate known *Kepler* artefacts
-            whiten_mixed : mitigate mixed modes
-            remove_artefact, whiten_mixed
-            :mod:`whiten_mixed`
-        
+            remove_artefact
+                mitigate known *Kepler* artefacts
+            whiten_mixed 
+                mitigate mixed modes
+            :mod:`remove_artefact`, :mod:`whiten_mixed`
+            :mod:`Target.whiten_mixed`
 	   
         Returns
             frequency : numpy.ndarray

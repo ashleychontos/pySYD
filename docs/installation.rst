@@ -244,6 +244,7 @@ As shown above, example data and other relevant files were downloaded from the
 
 .. TODO:: add an option to download example data/files as a package in the root directory.
 
+-----
 
 .. _install-quickstart:
 
