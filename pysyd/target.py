@@ -821,16 +821,16 @@ class Target:
 
         Parameters
         ----------
-            n_trials : int, optional
-                the number of trials. Default value is `3`.
-            binning : float, optional
-                logarithmic binning width. Default value is `0.005`.
+            n_trials : int, default=3
+                the number of trials to run
+            binning : float, default=0.005
+                logarithmic binning width (i.e. evenly spaced in log space)
             bin_mode : {'mean', 'median', 'gaussian'}
                 mode to use when binning
-            smooth_width: float, optional
-                box filter width (in :math:`\rm \mu Hz`) to smooth power spectrum
-            ask : bool, optional
-                If `True`, it will ask which trial to use as the estimate for numax.
+            smooth_width: float, default=20.0
+                box filter width (in :math:`\\rm \\mu Hz`) to smooth power spectrum
+            ask : bool, default=False
+                If `True`, it will ask which trial to use as the estimate for numax
 
         Attributes
         ----------
@@ -1822,34 +1822,36 @@ class Target:
         self.i += 1
 
 
-    def echelle(self, smooth_ech=None, nox=50, noy='0+0', hey=False, npb=10, nshift=0,):
+    def echelle(self, smooth_ech=None, nox=None, noy='0+0', hey=False, npb=10, nshift=0,):
         """
 
         Creates the necessary arrays to create an :term:`echelle diagram`
 
         Parameters
-            smooth_ech : float, optional
-                value to smooth (i.e. convolve) ED by
-            nox : int
-                number of grid points in x-axis of echelle diagram 
-            noy : str
-                number of orders (y-axis) to plot in echelle diagram
-            npb : int, optional
-                option to provide the number of points per bin as opposed to an arbitrary value (calculated from spacing and frequency resolution)
-            nshift : int, optional
-                number of orders to shift echelle diagram (i.e. + is up, - is down)
-            hey : bool, optional
-                plugin for Dan Hey's echelle package **(not currently implemented)**
+        ----------
+        smooth_ech : float, default=None
+            value to smooth (i.e. convolve) ED by
+        nox : int, default=0
+            number of grid points in x-axis of echelle diagram 
+        noy : str, default='0+0'
+            number of orders (y-axis) to plot in echelle diagram
+        npb : int, default=10
+            option to provide the number of points per bin as opposed to an arbitrary value (calculated from spacing and frequency resolution)
+        nshift : int, default=0
+            number of orders to shift echelle diagram (i.e. + is up, - is down)
+        hey : bool, default=False
+            plugin for Dan Hey's echelle package **(not currently implemented)**
 
         Attributes
-            x : numpy.ndarray
-                folded frequencies (x-axis) for echelle diagram
-            y : numpy.ndarray
-                frequency array (y-axis) for echelle diagram
-            z : numpy.meshgrid
-                smoothed + summed 2d power for echelle diagram
-            extent : List[float]
-                extent == [min(x), max(x), min(y), max(y)]
+        ----------
+        x : numpy.ndarray
+            folded frequencies (x-axis) for echelle diagram
+        y : numpy.ndarray
+            frequency array (y-axis) for echelle diagram
+        z : numpy.meshgrid
+            smoothed + summed 2d power for echelle diagram
+        extent : List[float]
+            extent == [min(x), max(x), min(y), max(y)]
 
 
         """

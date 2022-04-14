@@ -453,7 +453,7 @@ class Parameters(Constants):
         and :math:`\\Delta\\nu`
 
         Parameters
-            showall : bool, optional
+            showall : bool, default=False
                 makes plot comparing all background models (default = `False`)
             show : bool
                 show output figures (default = `True`) **note:** this is not recommended when running on many stars
