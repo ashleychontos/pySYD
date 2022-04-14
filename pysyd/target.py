@@ -37,14 +37,12 @@ class Target:
         load in data for the given star name
 
         Parameters
-        ----------
             name : str
                 which target to load in and/or process
             args : utilities.Parameters
                 container class of pysyd parameters
 
         Attributes
-        ----------
             params : Dict
                 copy of args.params[name] dictionary with pysyd parameters and options
 
@@ -72,7 +70,6 @@ class Target:
         Adjusts default parameters for low vs high numax configurations
 
         Parameters
-        ----------
             star : str
                 individual star ID
             adjust : bool, optional
@@ -115,7 +112,6 @@ class Target:
         Processes the main `pySYD` pipeline on a given star from start to finish
 
         Parameters
-        ----------
             results : Dict[]
                 dictionary containing the results from the pipeline, with keys corresponding
                 to each of the steps (i.e. 'estimates', 'parameters', 'samples')
@@ -124,10 +120,9 @@ class Target:
                 the end
 
         Methods
-        -------
-        estimate_parameters
-        derive_parameters
-        show_results
+            estimate_parameters
+            derive_parameters
+            show_results
 
 
         """
@@ -141,7 +136,6 @@ class Target:
         """
 
         Parameters
-        ----------
             show : bool, optional
                 show output figures and text
             verbose : bool, optional
@@ -171,18 +165,14 @@ class Target:
         any other warnings or errors
 
         Attributes
-        ----------
             note : str, optional
                 verbose output
-            lc : bool
+            lc : bool, default=False
                 `True` if object has light curve
-            ps : bool
+            ps : bool, default=False
                 `True` if object has power spectrum
-            ok : bool
-                boolean if star is literally 'ok' to process
 
         Methods
-        -------
             :mod:`pysyd.target.Target.load_power_spectrum`
             :mod:`pysyd.target.Target.load_time_series`
             :mod:`pysyd.target.Target.get_warnings`
@@ -215,12 +205,10 @@ class Target:
         of the pipeline
 
         Parameters
-        ----------
             oversampling_factor : int, optional
                 oversampling factor of input power spectrum
 
         Attributes
-        ----------
             note : str, optional
                 verbose output
             lc : bool
@@ -286,7 +274,6 @@ class Target:
         cadence or nyquist frequency must be provided via CLI
 
         Parameters
-        ----------
             save : bool, optional
                 save all data products
             kep_corr : bool, optional
@@ -295,7 +282,6 @@ class Target:
                 use the module that corrects for large gaps in data
 
         Attributes
-        ----------
             note : str, optional
                 verbose output
             lc : bool
@@ -389,15 +375,13 @@ class Target:
         (dependent variable) arrays, where N is the length of the series.
 
         Parameters
-        ----------
             path : str
                 the file path of the data file
 
         Returns
-        -------
-            x : numpy.array
+            x : numpy.ndarray
                 the independent variable i.e. the time or frequency array 
-            y : numpy.array
+            y : numpy.ndarray
                 the dependent variable, in this case either the flux or power array
 
         """
@@ -416,7 +400,6 @@ class Target:
         Check input data
 
         Parameters
-        ----------
             note : str, optional
                 verbose output
             long : int
@@ -424,7 +407,6 @@ class Target:
                 take pySYD longer to process
 
         Attributes
-        ----------
             resolution : float
                 frequency resolution of input power spectrum
 
@@ -452,19 +434,16 @@ class Target:
         oscillations, this is justified if the lifetimes of the modes are smaller than the gap. 
 
         Parameters
-        ----------
             gap : int
                 how many consecutive missing cadences are considered a 'gap'
       
         Attributes
-        ----------
             time : numpy.ndarray
                 original time series array
             new_time : numpy.ndarray
                 corrected time series array
 
         Return
-        ------
             warning : str
                 prints a warning when using this method
 
@@ -495,12 +474,10 @@ class Target:
         normalize the power spectrum to spectral density according to Parseval's theorem
 
         Parameters
-        ----------
             oversampling_factor : int
                 the oversampling factor to compute for the power spectrum 
 
         Returns
-        -------
             frequency : numpy.ndarray
                 the calculated frequency array in :math:`\\rm \\mu Hz`
             power : numpy.ndarray
@@ -532,26 +509,23 @@ class Target:
         of the original arrays
 
         Parameters
-        ----------
-        frequency : numpy.ndarray
-            input frequency array to correct
-        power : numpy.ndarray
-            input power spectrum to correct
-        kep_corr : bool, default=False
-            correct for known *Kepler* short-cadence artefacts
-        ech_mask : bool, default=None
-            folded frequency bounds for mixed modes, has format ~[lower, upper]
+            frequency : numpy.ndarray
+                input frequency array to correct
+            power : numpy.ndarray
+                input power spectrum to correct
+            kep_corr : bool, default=False
+                correct for known *Kepler* short-cadence artefacts
+            ech_mask : bool, default=None
+                folded frequency bounds for mixed modes, has format ~[lower, upper]
 
         Methods
-        -------
-        remove_artefact : mitigate known *Kepler* artefacts
-        whiten_mixed : mitigate mixed modes
-        remove_artefact, whiten_mixed
-        :mod:`whiten_mixed`
+            remove_artefact : mitigate known *Kepler* artefacts
+            whiten_mixed : mitigate mixed modes
+            remove_artefact, whiten_mixed
+            :mod:`whiten_mixed`
         
 	   
         Returns
-        -------
             frequency : numpy.ndarray
                 copy of the corrected frequency array 
             power : numpy.ndarray
@@ -585,7 +559,6 @@ class Target:
         from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
 
         Parameters
-        ----------
             lower : int, default=1
                 lower limit for random seed value
             upper : int, default=:math:`10^{7}`
@@ -616,7 +589,6 @@ class Target:
         (using linear interpolation) following a chi-squared distribution. 
 
         Parameters
-        ----------
             freq : numpy.ndarray
                 input frequency array to correct
             pow : numpy.ndarray
@@ -633,7 +605,6 @@ class Target:
                 upper limit of high frequency artefact
 	    
         Returns
-        -------
             frequency : numpy.ndarray
                 copy of the corrected frequency array 
             power : numpy.ndarray
@@ -691,7 +662,6 @@ class Target:
         frequency separation
 
         Parameters
-        ----------
             freq : numpy.ndarray
                 input frequency array to correct
             pow : numpy.ndarray
@@ -706,7 +676,6 @@ class Target:
                 if `True`, uses notching instead of generating white noise
 
         Returns
-        -------
             frequency : numpy.ndarray
                 copy of the corrected frequency array 
             power : numpy.ndarray
@@ -748,7 +717,6 @@ class Target:
         an initial starting point for :term:`numax` (:math:`\\nu_{\\mathrm{max}}`)
 
         Parameters
-        ----------
             excess : bool, default=True
                 if numax is already known, this will automatically be skipped since it is not needed
 
@@ -774,7 +742,6 @@ class Target:
         solar-like oscillations and estimates :term:`numax`
 
         Parameters
-        ----------
             lower_ex : float, default=1.0
                 the lower frequency limit of the PS used to estimate numax
             upper_ex : float, default=8000.0
@@ -820,7 +787,6 @@ class Target:
         frequency-resolved, collapsed autocorrelation function (ACF)
 
         Parameters
-        ----------
             n_trials : int, default=3
                 the number of trials to run
             binning : float, default=0.005
@@ -833,7 +799,6 @@ class Target:
                 If `True`, it will ask which trial to use as the estimate for numax
 
         Attributes
-        ----------
             bin_freq
             bin_pow
             bin_pow_err
@@ -876,10 +841,9 @@ class Target:
         Computes a collapsed autocorrelation function (ACF).
 
         Parameters
-        ----------
-            step : float
+            step : float, default=0.25
                 fractional step size to use for the collapsed ACF calculation
-            max_snr : float, optional
+            max_snr : float, default=100.0
                 the maximum signal-to-noise of the estimate (this is primarily for plot formatting)
 
         Attributes
@@ -936,7 +900,6 @@ class Target:
         Checks if there is a starting value for numax
 
         Parameters
-        ----------
             columns : List[str]
                 saved columns if the estimate_numax() function was run
 
@@ -981,8 +944,7 @@ class Target:
         to plotting/saving results
 
         Parameters
-        ----------
-            mc_iter : int
+            mc_iter : int, default=1
                 the number of iterations to run
 
         Methods
@@ -1021,10 +983,9 @@ class Target:
         filter (i.e. [lower,upper] mask) to use for this subroutine.
 
         Parameters
-        ----------
-            lower_bg : float, optional
+            lower_bg : float, default=1.0
                 lower frequency limit of PS to use for the background fit
-            upper_bg : float, optional
+            upper_bg : float, default=8000.0
                 upper frequency limit of PS to use for the background fit
 
         .. warning::
@@ -1076,7 +1037,6 @@ class Target:
          #. guess starting values for granulation time scales
 
         Parameters
-        ----------
             numax : float, optional
                 provide initial value for numax to bypass the first module
 	           scaling : str
@@ -1091,7 +1051,6 @@ class Target:
                 upper bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
 
         Attributes
-        ----------
             b : List[float]
                 list of starting points for
             b_orig : List[float]
@@ -1632,17 +1591,17 @@ class Target:
         Compute the ACF of the smooth background corrected power spectrum.
 
         Parameters
-        ----------
-        fft : bool, default=True
-            if `True`, uses FFTs to compute the ACF, otherwise it will use :mod:`numpy.correlate`
-        smooth_ps : float, optional
-            convolve the background-corrected PS with a box filter of this width (:math:`\\rm \\mu Hz`)
+            fft : bool, default=True
+                if `True`, uses FFTs to compute the ACF, otherwise it will use :mod:`numpy.correlate`
+            smooth_ps : float, optional
+                convolve the background-corrected PS with a box filter of this width (:math:`\\rm \\mu Hz`)
+            ps_mask : List[lower,upper]
+                region of power spectrum used to compute ACF
 
         Attributes
-        ----------
-        bgcorr_smooth : numpy.ndarray        
-        lag
-        auto
+            bgcorr_smooth : numpy.ndarray        
+            lag
+            auto
 
 
         """
@@ -1674,27 +1633,26 @@ class Target:
 
     def initial_dnu(self, force=None, method='D', n_peaks=10,):
         """
+
         More modular functions to estimate dnu on the first iteration given
         different methods. By default, we have been using a Gaussian weighting
         centered on the expected value for dnu (determine from the pipeline).
         One can also "force" or provide a value for dnu.
 
         Parameters
-        ----------
-        method : {'M','A','D'}
-            which method to use, where: 
-             - 'M' == Maryum == scipy's find_peaks module
-             - 'A' == Ashley == Ashley's module from the functions script
-             - 'D' == Dennis == weighting technique
-        n_peaks : int
-            the number of peaks to identify in the ACF
+            method : {'M','A','D'}
+                which method to use, where: 
+                 - 'M' == Maryum == scipy's find_peaks module
+                 - 'A' == Ashley == Ashley's module from the functions script
+                 - 'D' == Dennis == weighting technique
+            n_peaks : int
+                the number of peaks to identify in the ACF
 
         Attributes
-        ----------
-        peaks_l
-        peaks_a
-        best_lag
-        best_auto
+            peaks_l
+            peaks_a
+            best_lag
+            best_auto
 
         """
         if self.params['method'] == 'M':
@@ -1723,23 +1681,21 @@ class Target:
         from getting stuck in a local maximum (i.e. fractional harmonics)
 
         Parameters
-        ----------
-        threshold : float
-            the threshold is multiplied by the full-width half-maximum value, centered on the peak 
-            in the ACF to determine the width of the cutout region
-        acf_mask : List[float,float]
-            limits (i.e. lower, upper) to use for ACF "cutout"
+            threshold : float
+                the threshold is multiplied by the full-width half-maximum value, centered on the peak 
+                in the ACF to determine the width of the cutout region
+            acf_mask : List[float,float]
+                limits (i.e. lower, upper) to use for ACF "cutout"
 
         Attributes
-        ----------
-        zoom_lag
-        zoom_auto
-        acf_guesses
-        acf_bb
-        obs_dnu
-        new_lag
-        dnu_fit
-        obs_acf
+            zoom_lag
+            zoom_auto
+            acf_guesses
+            acf_bb
+            obs_dnu
+            new_lag
+            dnu_fit
+            obs_acf
        
 
         """
@@ -1784,20 +1740,18 @@ class Target:
         ridges -- TODO: still under development
 
         Parameters
-        ----------
-        clip_value : float, default=3.0
-            lower limit of distance modulus 
+            clip_value : float, default=3.0
+                lower limit of distance modulus 
 
         Attributes
-        ----------
-        xax : numpy.ndarray
-            x-axis for collapsed ED ~[0, :math:`2\\times\\Delta\\nu`]
-        yax : numpy.ndarray
-            y-axis of collapsed ED == marginalized power (along y axis)
-        zz : numpy.meshgrid
-            copy of flattened (smoothed+summed) 2d power for ED
-        z : numpy.meshgrid
-            smoothed + summed 2d power for echelle diagram
+            xax : numpy.ndarray
+                x-axis for collapsed ED ~[0, :math:`2\\times\\Delta\\nu`]
+            yax : numpy.ndarray
+                y-axis of collapsed ED == marginalized power (along y axis)
+            zz : numpy.meshgrid
+                copy of flattened (smoothed+summed) 2d power for ED
+            z : numpy.meshgrid
+                smoothed + summed 2d power for echelle diagram
 
         .. important:: need to optimize this - currently does nothing
 
@@ -1834,30 +1788,28 @@ class Target:
         Creates the necessary arrays to create an :term:`echelle diagram`
 
         Parameters
-        ----------
-        smooth_ech : float, default=None
-            value to smooth (i.e. convolve) ED by
-        nox : int, default=0
-            number of grid points in x-axis of echelle diagram 
-        noy : str, default='0+0'
-            number of orders (y-axis) to plot in echelle diagram
-        npb : int, default=10
-            option to provide the number of points per bin as opposed to an arbitrary value (calculated from spacing and frequency resolution)
-        nshift : int, default=0
-            number of orders to shift echelle diagram (i.e. + is up, - is down)
-        hey : bool, default=False
-            plugin for Dan Hey's echelle package **(not currently implemented)**
+            smooth_ech : float, default=None
+                value to smooth (i.e. convolve) ED by
+            nox : int, default=0
+                number of grid points in x-axis of echelle diagram 
+            noy : str, default='0+0'
+                number of orders (y-axis) to plot in echelle diagram
+            npb : int, default=10
+                option to provide the number of points per bin as opposed to an arbitrary value (calculated from spacing and frequency resolution)
+            nshift : int, default=0
+                number of orders to shift echelle diagram (i.e. + is up, - is down)
+            hey : bool, default=False
+                plugin for Dan Hey's echelle package **(not currently implemented)**
 
         Attributes
-        ----------
-        x : numpy.ndarray
-            folded frequencies (x-axis) for echelle diagram
-        y : numpy.ndarray
-            frequency array (y-axis) for echelle diagram
-        z : numpy.meshgrid
-            smoothed + summed 2d power for echelle diagram
-        extent : List[float]
-            extent == [min(x), max(x), min(y), max(y)]
+            x : numpy.ndarray
+                folded frequencies (x-axis) for echelle diagram
+            y : numpy.ndarray
+                frequency array (y-axis) for echelle diagram
+            z : numpy.meshgrid
+                smoothed + summed 2d power for echelle diagram
+            extent : List[float]
+                extent == [min(x), max(x), min(y), max(y)]
 
 
         """

@@ -291,8 +291,7 @@ def test(args):
     # Load relevant pySYD parameters
     examples = utils.get_dict(type='tests')
     for star in ['1435467', '2309595', '11618103']:
-        print('KIC %s\n%s\n'%(star, '-'*(len(star)+4)))
-        utils.
-        
+        print('KIC %s\n%s\n'%(star, '-'*(len(star)+4)))        
         answers = examples[star]['results']
+    print('\n####################################################################\n#                   Test(s) successfully completed.                    #')
 
