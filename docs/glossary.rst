@@ -1,8 +1,11 @@
+.. role:: underlined
+   :class: underlined
+
 .. _glossary:
 
-*******************************
-Glossary of documentation terms
-*******************************
+*********************************************
+:underlined:`Glossary of documentation terms`
+*********************************************
 
 .. glossary::
 

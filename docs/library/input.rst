@@ -1,15 +1,18 @@
 .. note::
 
-   The initial ``pySYD`` release required *both* the light curve and power spectrum *but*
+   The initial `pySYD` release required *both* the light curve and power spectrum *but*
    this has since changed! For example, time-domain utilities in more recent implementations 
    have become available -- which is exciting but we are also still furiously working away on 
-   this. ***STAY TUNED FOR NEW TOOLS!*** 
+   this. **STAY TUNED FOR NEW TOOLS!** 
+
+.. role:: underlined
+   :class: underlined
 
 .. _library-input:
 
-******
-Inputs
-******
+**************
+`pySYD` Inputs
+**************
 
 In case you missed it -- there is a convenient way for you to get started right
 away -- which is by running the ``pySYD`` setup feature. Running the command will provide 
@@ -25,19 +28,15 @@ peep its API (:mod:`pysyd.pipeline.setup`).
 Required 
 ########
 
-The only thing that is really *required* to successfully run the software is the data! 
-
-Data types
-**********
-
-For a given star with ID, input data are:
+The only thing really *required* to run the software is the data. For a given star with ID, 
+input data are:
  #. the light curve, and
  #. the power spectrum.
 
 .. _library-input-required-lc:
 
-Light curve
-^^^^^^^^^^^
+:underlined:`Light curve`
+*************************
 
 The *Kepler*, K2 & TESS missions have provided *billions* of stellar light curves, or a 
 measure of the object's brightness (or flux) in time. Like most other standard photometric 
@@ -49,8 +48,8 @@ of fraction flux or brightness as a function of time, along with any other norma
 
 .. _library-input-required-ps:
 
-Power spectrum
-^^^^^^^^^^^^^^
+:underlined:`Power spectrum`
+****************************
 
 What *REALLY* matters for asteroseismology is how the time series data looks in frequency space, 
 which is generally calculated by taking the fourier transform (and often referred to as the
@@ -76,8 +75,8 @@ or not you choose to use them ultimately depends on how you will run the softwar
 
 .. _library-input-optional-todo:
 
-Target list
-***********
+:underlined:`Target list`
+*************************
 
 For example, providing a star list via a basic text file is convenient for running a large 
 sample of stars. We provided an example with the rest of the setup, but essentially all it
@@ -96,8 +95,8 @@ in this text file and process the list of stars by default.
 
 .. _library-input-optional-info:
 
-Star info
-*********
+:underlined:`Star info`
+***********************
 
 As suggested by the name of the file, this contains star information on an individual basis. Similar to
 the data, target IDs must *exactly* match the given name in order to be successfully crossmatched -- but
