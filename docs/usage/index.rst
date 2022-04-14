@@ -9,9 +9,11 @@ share the software with you!
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: Contents
 
    Command line <cli/help>
+   cli/examples
+   cli/glossary
    Notebook tutorials <nb/index>
    Other usage <other/index>

@@ -5,9 +5,9 @@ Intro
 *****
 
 As we have alluded to throughout the documentation, `pySYD` was initially intended to be 
-ran as a command-line tool -- which means that it is optimized for this usage and therefore 
-has many of the best defaults already in place. Here, "best" just means that the setup is 
-what works *best* for a majority of stars. 
+ran as a command-line tool -- which means that the software is optimized for this usage and 
+therefore, has many of the best defaults already in place. Here, "best" just means that the 
+setup is what works *best* for a majority of stars. 
 
 However, that does not necessarily mean that your star(s) or setting(s) are expected to 
 conform or adhere to these settings. In fact, we recommend playing around with some of the 

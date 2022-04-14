@@ -13,12 +13,12 @@ experience with `Python`. If not, we recommend visiting the Python website and g
 some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
 ours.
 
-On this page we will work through two examples -- each demonstrating a different application 
-of the software. Since the software was initially intended to be a hands-off command-line tool,
-the first example will run ``pySYD`` :ref:`as a script <quickstart-script>` to introduce 
-the software *and* science in a crash course -- what we refer to as crashteroseismology. We'll 
-break everything down to be sure everyone is on the same page and then reconstruct it in a condensed 
-form by importing ``pySYD`` in an :ref:`interaction session <quickstart-module>`.
+We will work through two examples -- each demonstrating a different application of the software. 
+Since `pySYD` was initially intended to be a hands-off :ref:`command-line tool <quickstart-script>`, 
+the first will demonstrate this usage in order to introduce the software *and* science --
+breaking down each step of the application as much as possible. For the second, we will 
+reconstruct the steps and process in a more condensed form by importing `pySYD` in an 
+:ref:`interaction session <quickstart-module>`.
 
 If you have *any* questions, check out our :ref:`user guide <user-guide>` for more 
 information. If this still does not address your question or problem, please do not hesitate

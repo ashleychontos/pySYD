@@ -206,7 +206,7 @@ def run(args):
     utils.scrape_output(args)
 
 
-def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
+def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
     """
     
     Running this after installation will create the appropriate directories in the current working
@@ -286,5 +286,13 @@ def test(args):
         
     
     """
+    print('####################################################################\n#                                                                  #\n#                   Testing pySYD functionality                    #\n#                                                                  #\n####################################################################\n')
+    subprocess.call(['pysyd run --star %s --mc 200'%star], shell=True)
     # Load relevant pySYD parameters
-    args = utils.Parameters(args)
+    examples = utils.get_dict(type='tests')
+    for star in ['1435467', '2309595', '11618103']:
+        print('KIC %s\n%s\n'%(star, '-'*(len(star)+4)))
+        utils.
+        
+        answers = examples[star]['results']
+

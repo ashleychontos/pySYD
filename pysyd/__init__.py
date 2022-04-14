@@ -1,8 +1,3 @@
-"""
-``pySYD``
-
-"""
-
 import os
 import sys
 
@@ -15,19 +10,13 @@ _ROOT = os.path.abspath(os.getcwd())
 INFDIR = os.path.join(_ROOT, 'info')
 INPDIR = os.path.join(_ROOT, 'data')
 OUTDIR = os.path.join(_ROOT, 'results')
+
 # Package directory & data
 PACKAGEDIR = os.path.abspath(os.path.dirname(__file__))
 SYDFILE = os.path.join(PACKAGEDIR, 'data', 'syd_results.txt')
 PYSYDFILE = os.path.join(PACKAGEDIR, 'data', 'pysyd_results.csv')
 MPLSTYLE = os.path.join(PACKAGEDIR, 'data', 'pysyd.mplstyle')
-"""
 
-Matplotlib stylesheet for plotting ``pySYD`` results.
- -> a mixture of the `dark_background` & `presentation`
-    stylesheets with a little personal action (lotsa 
-    dark on light action)
-
-"""
 
 # enforce python version
 # (same as check at beginning of setup.py)

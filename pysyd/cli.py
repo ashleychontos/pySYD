@@ -192,7 +192,7 @@ def main():
                           metavar='float', 
                           dest='smooth_width',
                           help='Box filter width (in muHz) for smoothing the PS',
-                          default=20.0,
+                          default=10.0,
                           type=float,
     )
     estimate.add_argument('--bin', '--binning',
@@ -272,7 +272,7 @@ def main():
                             metavar='float', 
                             dest='ind_width', 
                             help='Width of binning for PS [in muHz]',
-                            default=20.0, 
+                            default=10.0, 
                             type=float,
     )
     background.add_argument('--rms', '--nrms', 
@@ -427,7 +427,7 @@ def main():
                           default=False, 
                           action='store_true',
     )
-    plotting.add_argument('--ce', '--cm', '--color', 
+    plotting.add_argument('--cm', '--color', 
                          metavar='str',
                          dest='cmap',
                          help='Change colormap of ED, which is `binary` by default.',
@@ -561,12 +561,6 @@ def main():
                                         formatter_class=argparse.MetavarTypeHelpFormatter,
                                         help='Load in data for a given target',  
                                         )
-    parser_load.add_argument('-r', '--ret', '--return',
-                             dest='return',
-                             help='Disable the returning of any output',
-                             default=True, 
-                             action='store_false',
-    )
     parser_load.set_defaults(func=pipeline.load)
 
 ####
@@ -597,12 +591,6 @@ def main():
                              help='Reproduce the *Kepler* legacy results',
                              default=False,
                              action='store_true',
-    )
-    parser_plot.add_argument('-r', '--ret', '--return',
-                             dest='return',
-                             help='Disable the returning of any output',
-                             default=True, 
-                             action='store_false',
     )
     parser_plot.add_argument('--results', 
                              dest='results',
@@ -641,19 +629,13 @@ def main():
                               type=str,
                               default=os.path.abspath(os.getcwd()),
     )
-    parser_setup.add_argument('-e', '--ex', '--examples',
-                              dest='examples',
-                              help='Disable auto-saving of example data',
-                              default=True, 
-                              action='store_false',
-    )
     parser_setup.add_argument('-f', '--files',
                               dest='files',
                               help='Disable auto-saving of example input files',
                               default=True, 
                               action='store_false',
     )
-    parser_setup.add_argument('-n', '--newpath', '--path',
+    parser_setup.add_argument('--path', '--dir', '--directory',
                               dest='new',
                               help='Set up new path in pysyd init file',
                               default=False,
@@ -678,12 +660,6 @@ def main():
                              help='Include different model fits',
                              default=False,
                              action='store_true',
-    )
-    parser_test.add_argument('-r', '--ret', '--return',
-                             dest='return',
-                             help='Disable the returning of any parameters',
-                             default=True, 
-                             action='store_false',
     )
     parser_test.set_defaults(func=pipeline.test)
 

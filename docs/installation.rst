@@ -1,9 +1,9 @@
 .. role:: underlined
    :class: underlined
 
-********************
-Installation & setup
-********************
+**********************************
+:underlined:`Installation & setup`
+**********************************
 
 .. link-button:: install-quickstart
     :type: ref
@@ -22,10 +22,12 @@ There are three main ways you can install the software:
     **The recommended way to install this package is from PyPI via** `pip`, **since**
     **it will automatically enforce the proper dependencies and versions**
 
+-----
+
 .. _install-pip:
 
-:underlined:`Install from PyPI`
-###############################
+Install from PyPI
+#################
 
 The ``pySYD`` package is available on the Python Package Index (`PyPI <https://pypi.org/project/pysyd/>`_)
 and therefore you can install the latest stable version directly using `pip`:
@@ -42,11 +44,12 @@ running the following command:
 
     python setup.py install
 
+-----
 
 .. _install-conda:
 
-:underlined:`Create an environment`
-###################################
+Create an environment
+#####################
 
 You can also use `conda` to create an environment. For this example, I'll call it 'astero'.
 
@@ -65,6 +68,7 @@ Then activate the environment and install ``pySYD``:
     conda activate astero
     pip install git+https://github.com/ashleychontos/pySYD
 
+-----
 
 .. _install-git:
 
@@ -87,26 +91,43 @@ The next step is to build and install the project:
 which needs to be executed from the top-level directory inside the 
 cloned ``pySYD`` repo.
 
+-----
 
 .. _install-dependencies:
 
 Dependencies
 ############
 
+Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
+and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
+`conda` should install and enforce these versions automatically. 
+
+Required
+********
+
 This package has the following dependencies:
 
 * `Python <https://www.python.org>`_ (>=3)
 * `Numpy <https://numpy.org>`_
 * `pandas <https://pandas.pydata.org>`_ 
-* `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
 * `Astropy <https://www.astropy.org>`_
 * `scipy <https://docs.scipy.org/doc/>`_
+
+Optional
+********
+
+Printed output and/or figures for regular `pySYD` applications will also require: 
+
+* `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
 * `tqdm <https://tqdm.github.io>`_
 
-Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
-and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
-`conda` should install and enforce these versions automatically. 
+Development
+^^^^^^^^^^^
 
+Testing
+^^^^^^^
+
+-----
 
 .. _install-test:
 
@@ -138,6 +159,7 @@ window, which should display the following output:
         test                Test different utilities (currently under development)
 
 
+-----
 
 .. _install-setup:
 

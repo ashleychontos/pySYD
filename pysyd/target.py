@@ -66,7 +66,7 @@ class Target:
         return "<Star {}>".format(self.name)
 
 
-    def adjust_parameters(self, adjust=True, defaults=None,):
+    def _adjust_parameters(self, adjust=True, defaults=None,):
         """ 
     
         Adjusts default parameters for low vs high numax configurations
@@ -79,15 +79,16 @@ class Target:
             defaults : str, optional
                 option for when numax is not known but can differentiate between "low" vs. "high" frequencies
 
-        """
         if self.params['numax'] is not None:
-        elif self.nyquist is not None:
-            if (self.params['numax'] is not None and self.params['numax'] < 500.) or \
-              (self.params['defaults'] is not None and self.params['defaults'] == 'low'):
+            if self.params['numax'] < 500.:
                 self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
                 self.params['smooth_width'] = 5.
                 self.params['ind_width'] = 5.
                 self.params['smooth_ps'] = 1.0
+            elif:
+        elif self.nyquist is not None:
+            if (self.params['numax'] is not None and self.params['numax'] < 500.) or \
+              (self.params['defaults'] is not None and self.params['defaults'] == 'low'):
                 self.params['lower_ex'], self.params['lower_bg'] = 1., 1.
                 self.params['upper_ex'], self.params['upper_bg'] = 1000., 1000.
             elif (self.params['numax'] is not None and self.params['numax'] >= 500.) or \
@@ -104,6 +105,7 @@ class Target:
                 self.params['lower_ex'], self.params['lower_bg'] = 1., 1.
                 self.params['upper_ex'], self.params['upper_bg'] = 8000., 8000.
                 self.params['smooth_ps'] = 1.5           
+        """
 
 
     def process_star(self,):
@@ -141,13 +143,9 @@ class Target:
             utils.verbose_output(self)
             if self.params['show']:
                 print(' - displaying figures')
-        else:
-            print('')
         plots.make_plots(self)
-        if self.params['cli'] or (not self.params['cli'] and not self.params['notebook']):
+        if (self.params['cli'] and self.params['verbose']) or (not self.params['cli'] and not self.params['notebook']):
             input(' - press RETURN to exit')
-        else:
-            print('')
 
 
 ##########################################################################################
@@ -754,7 +752,7 @@ class Target:
             self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
         else:
             self.params['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
-        self.params['plotting']['estimates'], self.params['results']['estimates'] = {}, {}
+        self.params['plotting'][self.module], self.params['results'][self.module] = {}, {}
 
 
     def estimate_numax(self, n_trials=3, binning=0.005, bin_mode='mean', smooth_width=20.0, ask=False,):
@@ -835,7 +833,7 @@ class Target:
         self.params['compare'] = []
         # Computes a collapsed ACF using different "box" (or bin) sizes
         for b, box in enumerate(self.params['boxes']):
-            self.params['results']['estimates'][b+1], self.params['plotting']['estimates'][b] = {}, {}
+            self.params['results'][self.module][b+1], self.params['plotting'][self.module][b] = {}, {}
             start, cumsum, md = 0, [], []
             subset = np.ceil(box/self.params['resolution'])
             steps = np.ceil((box*self.params['step'])/self.params['resolution'])
@@ -853,21 +851,21 @@ class Target:
             csum = list(cumsum/max(cumsum))
             # Pick the maximum value as an initial guess for numax
             idx = csum.index(max(csum))
-            self.params['plotting']['estimates'].update({b:{'x':np.array(md),'y':np.array(csum),'maxx':md[idx],'maxy':csum[idx]}})
+            self.params['plotting'][self.module].update({b:{'x':np.array(md),'y':np.array(csum),'maxx':md[idx],'maxy':csum[idx]}})
             # Fit Gaussian to get estimate value for numax
             try:
                 best_vars, _ = curve_fit(models.gaussian, np.array(md), np.array(csum), p0=[np.median(csum), 1.0-np.median(csum), md[idx], self.constants['width_sun']*(md[idx]/self.constants['numax_sun'])], maxfev=5000, bounds=((-np.inf,-np.inf,1,-np.inf),(np.inf,np.inf,np.inf,np.inf)),)
             except Exception as _:
-                self.params['plotting']['estimates'][b].update({'good_fit':False,'fitx':np.linspace(min(md), max(md), 10000)})
+                self.params['plotting'][self.module][b].update({'good_fit':False,'fitx':np.linspace(min(md), max(md), 10000)})
                 snr = 0.
             else:
-                self.params['plotting']['estimates'][b].update({'good_fit':True,})
-                self.params['plotting']['estimates'][b].update({'fitx':np.linspace(min(md), max(md), 10000),'fity':models.gaussian(np.linspace(min(md), max(md), 10000), *best_vars)})
-                snr = max(self.params['plotting']['estimates'][b]['fity'])/np.absolute(best_vars[0])
+                self.params['plotting'][self.module][b].update({'good_fit':True,})
+                self.params['plotting'][self.module][b].update({'fitx':np.linspace(min(md), max(md), 10000),'fity':models.gaussian(np.linspace(min(md), max(md), 10000), *best_vars)})
+                snr = max(self.params['plotting'][self.module][b]['fity'])/np.absolute(best_vars[0])
                 if snr > max_snr:
                     snr = max_snr
-                self.params['results']['estimates'][b+1].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
-                self.params['plotting']['estimates'][b].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
+                self.params['results'][self.module][b+1].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
+                self.params['plotting'][self.module][b].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
                 if self.params['verbose']:
                     print('Numax estimate %d: %.2f +/- %.2f'%(b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
                     print('S/N: %.2f' % snr)
@@ -935,6 +933,10 @@ class Target:
 
 
         """
+        # get+set seed for reproducible results
+        if self.params['seed'] is None:
+            self.set_seed()
+        np.random.seed(int(self.params['seed']))
         if 'results' not in self.params:
             self.params['results'] = {}
         if 'plotting' not in self.params:
@@ -971,6 +973,8 @@ class Target:
 
 
         """
+        if self.params['seed'] is None:
+            self.set_seed()
         self.module = 'parameters'
         self.frequency, self.power = np.copy(self.freq_os), np.copy(self.pow_os)
         self.params['resolution'] = self.frequency[1]-self.frequency[0]
@@ -991,10 +995,10 @@ class Target:
         self.random_pow = np.copy(self.power)
         # Get other relevant initial conditions
         self.i = 0
-        self.params['results']['parameters'] = {'numax_smooth':[],'A_smooth':[],'numax_gauss':[],'A_gauss':[],'FWHM':[],'dnu':[]}
+        self.params['results'][self.module] = {'numax_smooth':[],'A_smooth':[],'numax_gauss':[],'A_gauss':[],'FWHM':[],'dnu':[]}
         # Use scaling relations from sun to get starting points
         self.solar_scaling()
-        self.params['plotting']['parameters'] = {'exp_numax':self.params['exp_numax'],'nlaws_orig':len(self.params['mnu']),'mnu_orig':np.copy(self.params['mnu']),'b_orig':np.copy(self.params['b'])}
+        self.params['plotting'][self.module] = {'exp_numax':self.params['exp_numax'],'nlaws_orig':len(self.params['mnu']),'mnu_orig':np.copy(self.params['mnu']),'b_orig':np.copy(self.params['b'])}
         if self.params['verbose']:
             print('-----------------------------------------------------------\nGLOBAL FIT\n-----------------------------------------------------------')
 
@@ -1069,11 +1073,12 @@ class Target:
         if len(self.params['mnu']) > max_laws:
             self.params['b'] = self.params['b'][-max_laws:]
             self.params['mnu'] = self.params['mnu'][-max_laws:]
+        self.converge = True
         # Save copies for plotting after the analysis
         self.params['nlaws'], self.params['a'] = len(self.params['mnu']), []
 
 
-    def first_step(self, converge=False, background=True, globe=True,):
+    def first_step(self, background=True, globe=True,):
         """
 
         Processes a star for a single step, which applies additional analyses in the first
@@ -1144,7 +1149,7 @@ class Target:
                         self.pbar.close()
 
 
-    def single_step(self, converge=False,):
+    def single_step(self, converge=True,):
         """
 
         Similar to the first step, this function calls the same methods but uses the selected best-fit
@@ -1166,16 +1171,18 @@ class Target:
 
 
         """
+        self.converge = True
         self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
         # Background corrections
         self.estimate_background()
-        converge = self.get_background()
+        self.get_background()
         # Requires bg fit to converge before moving on
-        if not converge:
-            return False
         if self.params['globe']:
             self.fit_global()
-            return True
+        if not self.converge:
+            for parameter in self.params['results'][self.module]:
+                if len(self.params['results'][self.module][parameter]) > (self.i+1):
+                    p = self.params['results'][self.module][parameter].pop(-1)
 
 
     def fit_global(self, acf_mask=None):
@@ -1393,7 +1400,8 @@ class Target:
                 self.correct_background()
             # Otherwise raise error that fit did not converge
             else:
-                raise ProcessingError("Background fit failed to converge for any models.\n\n We recommend disabling this feature using our boolean background flag ('-b' )")
+                self.converge = False
+                raise utils.PySYDProcessingError("Background fit failed to converge for any models.\n\n We recommend disabling this feature using our boolean background flag ('-b' )")
         else:
             if self.params['verbose']:
                 print('-----------------------------------------------------------\nWARNING: estimating global parameters from raw PS:')
@@ -1444,16 +1452,16 @@ class Target:
             utils.save_file(self.frequency, self.bg_corr, os.path.join(self.params['path'], '%s_bg_corr.txt'%self.name), overwrite=self.params['overwrite'])
         # Create appropriate keys for star based on best-fit model
         for n in range(self.params['nlaws']):
-            self.params['results']['parameters']['tau_%d'%(n+1)] = []
-            self.params['results']['parameters']['sigma_%d'%(n+1)] = []
+            self.params['results'][self.module]['tau_%d'%(n+1)] = []
+            self.params['results'][self.module]['sigma_%d'%(n+1)] = []
         if not self.params['fix_wn']:
-            self.params['results']['parameters']['white'] = []
+            self.params['results'][self.module]['white'] = []
         # Save the final values
         for n in range(self.params['nlaws']):
-            self.params['results']['parameters']['tau_%d'%(n+1)].append(self.params['pars'][2*n]*10.**6)
-            self.params['results']['parameters']['sigma_%d'%(n+1)].append(self.params['pars'][2*n+1])
+            self.params['results'][self.module]['tau_%d'%(n+1)].append(self.params['pars'][2*n]*10.**6)
+            self.params['results'][self.module]['sigma_%d'%(n+1)].append(self.params['pars'][2*n+1])
         if not self.params['fix_wn']:
-            self.params['results']['parameters']['white'].append(self.params['pars'][-1])
+            self.params['results'][self.module]['white'].append(self.params['pars'][-1])
 
 
     def get_background(self):
@@ -1478,19 +1486,18 @@ class Target:
                     # If white noise is a free parameter, good to go!
                     self.params['pars'], _ = curve_fit(self.params['functions'][self.params['selected']], self.bin_freq, self.bin_pow, p0=self.params['guesses'], sigma=self.bin_err, bounds=self.params['bounds'])
             except RuntimeError as _:
-                return False
+                self.converge = False
             else:
                 self.bg_corr = self.random_pow/models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
                 # save final values for Harvey components
                 for n in range(self.params['nlaws']):
-                    self.params['results']['parameters']['tau_%d'%(n+1)].append(self.params['pars'][2*n]*10.**6)
-                    self.params['results']['parameters']['sigma_%d'%(n+1)].append(self.params['pars'][2*n+1])
+                    self.params['results'][self.module]['tau_%d'%(n+1)].append(self.params['pars'][2*n]*10.**6)
+                    self.params['results'][self.module]['sigma_%d'%(n+1)].append(self.params['pars'][2*n+1])
                 if not self.params['fix_wn']:
-                    self.params['results']['parameters']['white'].append(self.params['pars'][-1])
+                    self.params['results'][self.module]['white'].append(self.params['pars'][-1])
         else:
             self.bg_corr = np.copy(self.random_pow)/self.params['noise']
             self.params['pars'] = ([self.params['noise']])
-        return True
 
 
     def get_numax_smooth(self, sm_par=None,):
@@ -1520,11 +1527,10 @@ class Target:
         mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.params['ps_mask'][0], self.params['ps_mask'][1]))
         self.region_freq, self.region_pow = self.frequency[mask], self.pssm_bgcorr[mask]
         idx = utils.return_max(self.region_freq, self.region_pow, index=True)
-        self.params['results']['parameters']['numax_smooth'].append(self.region_freq[idx])
-        self.params['results']['parameters']['A_smooth'].append(self.region_pow[idx])
-        self.params['obs_numax'] = self.params['results']['parameters']['numax_smooth'][0]
+        self.params['results'][self.module]['numax_smooth'].append(self.region_freq[idx])
+        self.params['results'][self.module]['A_smooth'].append(self.region_pow[idx])
+        self.params['obs_numax'] = self.params['results'][self.module]['numax_smooth'][0]
         self.params['exp_dnu'] = utils.delta_nu(self.params['obs_numax'])
-
 
 
     def get_numax_gaussian(self):
@@ -1542,21 +1548,20 @@ class Target:
         guesses = [0.0, np.absolute(max(self.region_pow)), self.params['obs_numax'], (max(self.region_freq)-min(self.region_freq))/np.sqrt(8.0*np.log(2.0))]
         bb = ([-np.inf,0.0,0.01,0.01],[np.inf,np.inf,np.inf,np.inf])
         try:
-            gauss, _ = curve_fit(models.gaussian, self.region_freq, self.region_pow, p0=guesses, bounds=bb, maxfev=5000)
+            gauss, _ = curve_fit(models.gaussian, self.region_freq, self.region_pow, p0=guesses, bounds=bb, maxfev=1000)
         except RuntimeError as _:
+            self.converge = False
             if self.i == 0:
-                raise PySYDProcessingError("Gaussian fit for numax failed to converge.\n\nPlease check your power spectrum and try again.")
-            else:
-                pass
+                raise utils.PySYDProcessingError("Gaussian fit for numax failed to converge.\n\nPlease check your power spectrum and try again.")
         else:
-            # Save values
-            self.params['results']['parameters']['numax_gauss'].append(gauss[2])
-            self.params['results']['parameters']['A_gauss'].append(gauss[1])
-            self.params['results']['parameters']['FWHM'].append(gauss[3])
             if self.i == 0:
                 # Create an array with finer resolution for plotting
                 new_freq = np.linspace(min(self.region_freq), max(self.region_freq), 10000)
-                self.params['plotting']['parameters'].update({'new_freq':new_freq, 'numax_fit':models.gaussian(new_freq, *gauss)})
+                self.params['plotting'][self.module].update({'new_freq':new_freq, 'numax_fit':models.gaussian(new_freq, *gauss)})
+            # Save values
+            self.params['results'][self.module]['numax_gauss'].append(gauss[2])
+            self.params['results'][self.module]['A_gauss'].append(gauss[1])
+            self.params['results'][self.module]['FWHM'].append(gauss[3])
 
 
     def compute_acf(self, fft=True, smooth_ps=2.5, ps_mask=None,):
@@ -1699,10 +1704,10 @@ class Target:
         except RuntimeError as _:
             raise ProcessingError("Gaussian fit for dnu failed to converge.\n\nPlease check your power spectrum and try again.")
         else:
-            self.params['results']['parameters']['dnu'].append(gauss[2])
+            self.params['results'][self.module]['dnu'].append(gauss[2])
             self.params['obs_dnu'] = gauss[2]
             # Save for plotting
-            self.params['plotting']['parameters'].update({'obs_dnu':gauss[2], 
+            self.params['plotting'][self.module].update({'obs_dnu':gauss[2], 
               'new_lag':np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), 
               'dnu_fit':models.gaussian(np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), *gauss),})
 
@@ -1715,13 +1720,17 @@ class Target:
 
         Parameters
             clip_value : float
-                lower limit of distance modulus. Default value is `0.0`
+                lower limit of distance modulus (default = `0.0`)
 
         Attributes
-            xax
-            yax
-            zz
-            z
+            xax : numpy.ndarray
+                x-axis for collapsed ED ~[0, :math:`2\\times\\Delta\\nu`]
+            yax : numpy.ndarray
+                y-axis of collapsed ED == marginalized power (along y axis)
+            zz : numpy.meshgrid
+                copy of flattened (smoothed+summed) 2d power for ED
+            z : numpy.meshgrid
+                smoothed + summed 2d power for echelle diagram
 
 
         """
@@ -1733,15 +1742,15 @@ class Target:
         modx = self.frequency%self.params['obs_dnu']
         for k in range(n-1):
             mask = (modx >= xax[k])&(modx < xax[k+1])
-            if self.bg_corr[(modx >= xax[k])&(modx < xax[k+1])] != []:
-                xax[k] = np.median(modx[(modx >= xax[k])&(modx < xax[k+1])])
-                yax[k] = np.sum(self.bg_corr[(modx >= xax[k])&(modx < xax[k+1])])
+            if self.bg_corr[mask] != []:
+                xax[k] = np.median(modx[mask])
+                yax[k] = np.sum(self.bg_corr[mask])
         mask = np.ma.getmask(np.ma.masked_where(yax == 0.0, yax))
         xax, yax = xax[~mask], yax[~mask]
         self.xax = np.array(xax.tolist()+list(xax+self.params['obs_dnu']))
         self.yax = np.array(list(yax)+list(yax))-min(yax)
-        # Clip the lower bound (`clip_value`)
-        if int(self.params['clip_value']) != 0:
+        # Clip ED by 3x the median (default)
+        if int(np.ceil(self.params['clip_value'])) != 0:
             cut = np.nanmedian(copy)+(self.params['clip_value']*np.nanmedian(copy))
             copy[copy >= cut] = cut
         self.zz = copy
@@ -1750,21 +1759,24 @@ class Target:
         self.i += 1
 
 
-    def echelle(self, smooth_ech=None, nox=50, noy=0, hey=False, npb=10):
+    def echelle(self, smooth_ech=None, nox=50, noy='0+0', hey=False, npb=10, nshift=0,):
         """
-        Echelle diagram (ED)
 
-        Creates required arrays to plot the ED in the final figure
+        Creates the necessary arrays to create an :term:`echelle diagram`
 
         Parameters
             smooth_ech : float, optional
                 value to smooth (i.e. convolve) ED by
             nox : int
-                number of grid points in x-axis of echelle diagram (not implemented yet)
-            noy : int
-                number of orders (y-axis) to show in echelle diagram (not implemented yet)
+                number of grid points in x-axis of echelle diagram 
+            noy : str
+                number of orders (y-axis) to plot in echelle diagram
+            npb : int, optional
+                option to provide the number of points per bin as opposed to an arbitrary value (calculated from spacing and frequency resolution)
+            nshift : int, optional
+                number of orders to shift echelle diagram (i.e. + is up, - is down)
             hey : bool, optional
-                plugin for Dan Hey's echelle package (not currently implemented)
+                plugin for Dan Hey's echelle package **(not currently implemented)**
 
         Attributes
             x : numpy.ndarray
@@ -1776,16 +1788,6 @@ class Target:
             extent : List[float]
                 extent == [min(x), max(x), min(y), max(y)]
 
-        Returns
-            smoothed : numpy.meshgrid
-                resulting echelle diagram based on the observed $\delta \nu$ 
-            gridx : numpy.ndarray
-                grid of x-axis measurements (distance modulus) for echelle diagram
-            gridy : numpy.ndarray
-                grid of y-axis measurements (frequency) for echelle diagram
-            extent : List[float]
-                The bounding box in data coordinates that the image will fill. 
-                The image is stretched individually along x and y to fill the box.
 
         """
         if self.params['smooth_ech'] is not None:
@@ -1799,8 +1801,10 @@ class Target:
             ny = int(np.ceil(width/self.params['obs_dnu']))
             nshift = 0
         else:
-            ny, nshift = int(self.params['noy'][0]), int(self.params['noy'][-1])
+            if '+' in self.params['noy']:
+                ny, nshift = int(self.params['noy'].split('+')[0]), int(self.params['noy'].split('+')[-1])
             if '-' in self.params['noy']:
+                ny, nshift = int(self.params['noy'].split('-')[0]), int(self.params['noy'].split('-')[-1])
                 nshift *= -1            
         # Make sure n_across isn't finer than the actual resolution grid
         if self.params['nox'] is None or (self.params['nox'] >= int(np.ceil(self.params['obs_dnu']/self.params['resolution']))):
@@ -1843,7 +1847,7 @@ class Target:
         try:
             gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'], maxfev=1000)
         except RuntimeError:
-            pass
+            self.converge = False
         else:
             # the center of that Gaussian is our estimate for Dnu
-            self.params['results']['parameters']['dnu'].append(gauss[2]) 
+            self.params['results'][self.module]['dnu'].append(gauss[2]) 
