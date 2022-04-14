@@ -1632,17 +1632,17 @@ class Target:
         Compute the ACF of the smooth background corrected power spectrum.
 
         Parameters
-            fft : bool
-                if `True`, uses FFTs to compute the ACF, otherwise it will use :mod:`numpy.correlate`
-                (default = `True`)
-            smooth_ps : float, optional
-                convolve the background-corrected PS with a box filter of this width (:math:`\\rm \\mu Hz`)
+        ----------
+        fft : bool, default=True
+            if `True`, uses FFTs to compute the ACF, otherwise it will use :mod:`numpy.correlate`
+        smooth_ps : float, optional
+            convolve the background-corrected PS with a box filter of this width (:math:`\\rm \\mu Hz`)
 
         Attributes
-            bgcorr_smooth : numpy.ndarray
-                
-            lag
-            auto
+        ----------
+        bgcorr_smooth : numpy.ndarray        
+        lag
+        auto
 
 
         """
@@ -1680,21 +1680,21 @@ class Target:
         One can also "force" or provide a value for dnu.
 
         Parameters
-            method : str
-                which method to use, where: 
-                 - 'M' == Maryum == scipy's find_peaks module
-                 - 'A' == Ashley == Ashley's module from the functions script
-                 - 'D' == Dennis == weighting technique
-            n_peaks : int
-                the number of peaks to identify in the ACF
-            force : float, optional
-                option to "force" a dnu value, but is `None` by default.
+        ----------
+        method : {'M','A','D'}
+            which method to use, where: 
+             - 'M' == Maryum == scipy's find_peaks module
+             - 'A' == Ashley == Ashley's module from the functions script
+             - 'D' == Dennis == weighting technique
+        n_peaks : int
+            the number of peaks to identify in the ACF
 
         Attributes
-            peaks_l
-            peaks_a
-            best_lag
-            best_auto
+        ----------
+        peaks_l
+        peaks_a
+        best_lag
+        best_auto
 
         """
         if self.params['method'] == 'M':
@@ -1723,21 +1723,23 @@ class Target:
         from getting stuck in a local maximum (i.e. fractional harmonics)
 
         Parameters
-            threshold : float
-                the threshold is multiplied by the full-width half-maximum value, centered on the peak 
-                in the ACF to determine the width of the cutout region
-            acf_mask : List[float,float]
-                limits (i.e. lower, upper) to use for ACF "cutout"
+        ----------
+        threshold : float
+            the threshold is multiplied by the full-width half-maximum value, centered on the peak 
+            in the ACF to determine the width of the cutout region
+        acf_mask : List[float,float]
+            limits (i.e. lower, upper) to use for ACF "cutout"
 
         Attributes
-            zoom_lag
-            zoom_auto
-            acf_guesses
-            acf_bb
-            obs_dnu
-            new_lag
-            dnu_fit
-            obs_acf
+        ----------
+        zoom_lag
+        zoom_auto
+        acf_guesses
+        acf_bb
+        obs_dnu
+        new_lag
+        dnu_fit
+        obs_acf
        
 
         """
@@ -1782,18 +1784,22 @@ class Target:
         ridges -- TODO: still under development
 
         Parameters
-            clip_value : float
-                lower limit of distance modulus (default = `0.0`)
+        ----------
+        clip_value : float, default=3.0
+            lower limit of distance modulus 
 
         Attributes
-            xax : numpy.ndarray
-                x-axis for collapsed ED ~[0, :math:`2\\times\\Delta\\nu`]
-            yax : numpy.ndarray
-                y-axis of collapsed ED == marginalized power (along y axis)
-            zz : numpy.meshgrid
-                copy of flattened (smoothed+summed) 2d power for ED
-            z : numpy.meshgrid
-                smoothed + summed 2d power for echelle diagram
+        ----------
+        xax : numpy.ndarray
+            x-axis for collapsed ED ~[0, :math:`2\\times\\Delta\\nu`]
+        yax : numpy.ndarray
+            y-axis of collapsed ED == marginalized power (along y axis)
+        zz : numpy.meshgrid
+            copy of flattened (smoothed+summed) 2d power for ED
+        z : numpy.meshgrid
+            smoothed + summed 2d power for echelle diagram
+
+        .. important:: need to optimize this - currently does nothing
 
 
         """
