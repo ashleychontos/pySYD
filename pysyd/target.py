@@ -1779,7 +1779,7 @@ class Target:
     def echelle(self, smooth_ech=None, nox=None, noy='0+0', hey=False, npb=10, nshift=0,):
         """
 
-        Creates the necessary arrays to create an :term:`echelle diagram`
+        Creates the necessary arrays to make an :term:`echelle diagram`
 
         Parameters
             smooth_ech : float, default=None

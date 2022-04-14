@@ -1,8 +1,11 @@
+.. role:: underlined
+   :class: underlined
+
 .. _library-target:
 
-**************
-Target objects
-**************
+**************************
+:underlined:`Target class`
+**************************
 
 The heart & soul of the ``pySYD`` package
 
@@ -26,9 +29,6 @@ Examples
 
 ``pysyd.target`` API
 ####################
-
-.. automodule:: pysyd.target
-   :members:
 
 .. autoclass:: pysyd.target.Target
    :inherited-members:
