@@ -155,7 +155,13 @@ Many stars
 Regular mode
 ************
 
-hey
+Since this is optimized for running many stars via command line, the star names will be read in 
+and processed from `'info/todo.txt'` if nothing else is provided:
+
+.. code-block::
+
+    $ pysyd run
+
 
 Parallel mode
 *************
@@ -167,7 +173,7 @@ running many stars. This can be accessed through the following command:
 
     $ pysyd parallel 
 
-For parallel processing, ``pySYD`` will divide and group the list of stars based on the 
+For parallel processing, `pySYD` will divide and group the list of stars based on the 
 available number of threads. By default, this value is `0` but can be specified via 
 the command line. If it is *not* specified and you are running in parallel mode, 
 ``pySYD`` will use ``multiprocessing`` package to determine the number of CPUs 
@@ -180,20 +186,15 @@ the :term:`--nthreads<--nt, --nthread, --nthreads>` command:
 .. code-block::
 
     $ pysyd parallel --nthreads 10 --list path_to_star_list.txt
-
-.. note::
-
-    Remember that by default, the stars to be processed (i.e. todo) will read in from **info/todo.txt**
-    if no ``-list`` or ``-todo`` paths are provided.
    
 
 -----
 
 .. _user-guide-cli-examples-advanced:
 
-**************
-Advanced usage
-**************
+******************
+Advanced CLI usage
+******************
 
 
 Below are examples of different commands, including their before and after plots to demonstrate

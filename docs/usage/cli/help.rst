@@ -1,8 +1,8 @@
 .. _user-guide-cli-help:
 
-*****
-Intro
-*****
+****************************
+Command-line interface (CLI)
+****************************
 
 As we have alluded to throughout the documentation, `pySYD` was initially intended to be 
 ran as a command-line tool -- which means that the software is optimized for this usage and 
@@ -20,9 +20,10 @@ analyses.
    constantly adding new ones, which ultimately might break something. If this happens, we 
    encourage you to submit an issue here and thank you in advance for your help!
 
+-----
 
-CLI help
-########
+CLI intro
+#########
 
 To give you a glimpse into the insanely large amount of available features, open up a terminal
 window and run the help command for the main pipeline mode, `run` (aka :mod:`pysyd.pipeline.run`), 
