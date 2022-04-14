@@ -42,8 +42,8 @@ is too small!
    :caption: User Guide
    :hidden:
    
-   installation
-   quickstart
+   Installation & setup <installation>
+   Getting started <quickstart>
    library/index
    usage/index
    Glossary <glossary>

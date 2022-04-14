@@ -21,8 +21,7 @@ Imports
 Usage
 #####
 
-Examples
-########
+	
 
 
 .. _library-target-api:
