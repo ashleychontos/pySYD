@@ -26,27 +26,27 @@ class Target:
     """
 
     def __init__(self, name, args):
-        """
+        """Main pipeline target object
+
+        .. deprecated:: 1.6.0
+                  `Target.ok` will be removed in pySYD 6.0.0, it is replaced by
+                  new error handling, that will instead raise exceptions or warnings 
         
         A new instance (or star) is created for each target that is processed.
-        Initialization copies the relevant star dictionary and then will try to
-        load in data for the given star name.
-
-        Deprecated
-            Before it used to check for data and then check the Target.ok attribute
-            before processing the star but now it will raise an exception (InputError)
-            and therefore, there is no need to check the attribute anymore. This can
-            be updated.
-
-        Attributes
-            ok : bool
-                is the star 'ok' to proceed (i.e. does it pass the initial checks)
+        Instantiation copies the relevant, individual star dictionary and then will try to
+        load in data for the given star name
 
         Parameters
+        ----------
             name : str
                 which target to load in and/or process
             args : utilities.Parameters
                 container class of pysyd parameters
+
+        Attributes
+        ----------
+            params : Dict
+                copy of args.params[name] dictionary with pysyd parameters and options
 
 
         """
@@ -72,6 +72,7 @@ class Target:
         Adjusts default parameters for low vs high numax configurations
 
         Parameters
+        ----------
             star : str
                 individual star ID
             adjust : bool, optional
@@ -109,17 +110,27 @@ class Target:
 
 
     def process_star(self,):
-        """
+        """Run `pySYD`
 
-        Run the ``pySYD`` pipeline on a given star
+        Processes a single star from start to finish
 
         Parameters
+        ----------
             results : Dict[]
                 dictionary containing the results from the pipeline, with keys corresponding
                 to each of the steps (i.e. 'estimates', 'parameters', 'samples')
             plotting : Dict
                 same as the results, which saves all the information needed for plotting at 
                 the end
+
+        Methods
+        -------
+        estimate_parameters
+        derive_parameters
+        show_results
+
+
+        Run the ``pySYD`` pipeline on a given star
 
         """
         self.params['results'], self.params['plotting'] = {}, {}
@@ -132,6 +143,7 @@ class Target:
         """
 
         Parameters
+        ----------
             show : bool, optional
                 show output figures and text
             verbose : bool, optional
@@ -161,6 +173,7 @@ class Target:
         any other warnings or errors
 
         Attributes
+        ----------
             note : str, optional
                 verbose output
             lc : bool
@@ -171,6 +184,7 @@ class Target:
                 boolean if star is literally 'ok' to process
 
         Methods
+        -------
             :mod:`pysyd.target.Target.load_power_spectrum`
             :mod:`pysyd.target.Target.load_time_series`
             :mod:`pysyd.target.Target.get_warnings`
@@ -203,10 +217,12 @@ class Target:
         of the pipeline
 
         Parameters
+        ----------
             oversampling_factor : int, optional
                 oversampling factor of input power spectrum
 
         Attributes
+        ----------
             note : str, optional
                 verbose output
             lc : bool
@@ -272,6 +288,7 @@ class Target:
         cadence or nyquist frequency must be provided via CLI
 
         Parameters
+        ----------
             save : bool, optional
                 save all data products
             kep_corr : bool, optional
@@ -280,6 +297,7 @@ class Target:
                 use the module that corrects for large gaps in data
 
         Attributes
+        ----------
             note : str, optional
                 verbose output
             lc : bool
@@ -373,10 +391,12 @@ class Target:
         (dependent variable) arrays, where N is the length of the series.
 
         Parameters
+        ----------
             path : str
                 the file path of the data file
 
         Returns
+        -------
             x : numpy.array
                 the independent variable i.e. the time or frequency array 
             y : numpy.array
@@ -398,6 +418,7 @@ class Target:
         Check input data
 
         Parameters
+        ----------
             note : str, optional
                 verbose output
             long : int
@@ -405,6 +426,7 @@ class Target:
                 take pySYD longer to process
 
         Attributes
+        ----------
             resolution : float
                 frequency resolution of input power spectrum
 
@@ -430,18 +452,21 @@ class Target:
         For computation purposes and for special cases that this does not affect the integrity of the results,
         this module 'stitches' a light curve together for time series data with large gaps. For stochastic p-mode
         oscillations, this is justified if the lifetimes of the modes are smaller than the gap. 
+
+        Parameters
+        ----------
+            gap : int
+                how many consecutive missing cadences are considered a 'gap'
       
         Attributes
+        ----------
             time : numpy.ndarray
                 original time series array
             new_time : numpy.ndarray
                 corrected time series array
 
-        Parameters
-            gap : int
-                how many consecutive missing cadences are considered a 'gap'
-
         Return
+        ------
             warning : str
                 prints a warning when using this method
 
@@ -472,10 +497,12 @@ class Target:
         normalize the power spectrum to spectral density according to Parseval's theorem
 
         Parameters
+        ----------
             oversampling_factor : int
                 the oversampling factor to compute for the power spectrum 
 
         Returns
+        -------
             frequency : numpy.ndarray
                 the calculated frequency array in :math:`\\rm \\mu Hz`
             power : numpy.ndarray
@@ -507,18 +534,38 @@ class Target:
         of the original arrays
 
         Parameters
-            frequency : numpy.ndarray
-                input frequency array to correct
-            power : numpy.ndarray
-                input power spectrum to correct
-	    
+        ----------
+        frequency : numpy.ndarray
+            input frequency array to correct
+        power : numpy.ndarray
+            input power spectrum to correct
+        kep_corr : bool, default=False
+            correct for known *Kepler* short-cadence artefacts
+        ech_mask : bool, default=None
+            folded frequency bounds for mixed modes, has format ~[lower, upper]
+
+        Methods
+        -------
+        remove_artefact : mitigate known *Kepler* artefacts
+        whiten_mixed : mitigate mixed modes
+        remove_artefact, whiten_mixed
+        :mod:`whiten_mixed`
+        
+	   
         Returns
+        -------
             frequency : numpy.ndarray
                 copy of the corrected frequency array 
             power : numpy.ndarray
                 copy of the corrected power spectrum
 
         .. seealso:: :mod:`pysyd.target.Target.remove_artefact`, :mod:`pysyd.target.Target.whiten_mixed`
+
+        See Also
+        --------
+        pysyd.target.Target.remove_artefact
+            let's try this way
+        :mod:`pysyd.target.Target.whiten_mixed`
 
         """
         if self.params['kep_corr']:
@@ -536,14 +583,18 @@ class Target:
         """
         Set reproducible seed
     
-        For Kepler targets that require a correction via CLI (--kc), a random seed is generated
+        For *Kepler* targets that require a correction via CLI (--kc), a random seed is generated
         from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
 
         Parameters
-            lower : int 
-                lower limit for random seed value (default=`1`)
-            upper : int
-                arbitrary upper limit for random seed value (default=`10**7`)
+        ----------
+            lower : int, default=1
+                lower limit for random seed value
+            upper : int, default=:math:`10^{7}`
+                arbitrary upper limit for random seed value 
+
+        .. important:: this is now implemented for every star for every run (no longer used
+                        just for correcting)
 
 
         """
@@ -567,6 +618,7 @@ class Target:
         (using linear interpolation) following a chi-squared distribution. 
 
         Parameters
+        ----------
             freq : numpy.ndarray
                 input frequency array to correct
             pow : numpy.ndarray
@@ -583,6 +635,7 @@ class Target:
                 upper limit of high frequency artefact
 	    
         Returns
+        -------
             frequency : numpy.ndarray
                 copy of the corrected frequency array 
             power : numpy.ndarray
@@ -640,20 +693,22 @@ class Target:
         frequency separation
 
         Parameters
+        ----------
             freq : numpy.ndarray
                 input frequency array to correct
             pow : numpy.ndarray
                 input power spectrum to correct
             folded_freq : numpy.ndarray
                 frequency array modulo dnu (i.e. folded to the large separation, :math:`\\Delta\\nu`)
-            lower_ech : float, optional
+            lower_ech : float, default=None
                 lower frequency limit of mask to "whiten"
-            upper_ech : float, optional
+            upper_ech : float, default=None
                 upper frequency limit of mask to "whiten"
-            notching : bool, optional
+            notching : bool, default=False
                 if `True`, uses notching instead of generating white noise
 
         Returns
+        -------
             frequency : numpy.ndarray
                 copy of the corrected frequency array 
             power : numpy.ndarray
@@ -695,7 +750,8 @@ class Target:
         an initial starting point for :term:`numax` (:math:`\\nu_{\\mathrm{max}}`)
 
         Parameters
-            excess : bool, optional
+        ----------
+            excess : bool, default=True
                 if numax is already known, this will automatically be skipped since it is not needed
 
 
@@ -720,11 +776,12 @@ class Target:
         solar-like oscillations and estimates :term:`numax`
 
         Parameters
-            lower_ex : float, optional
+        ----------
+            lower_ex : float, default=1.0
                 the lower frequency limit of the PS used to estimate numax
-            upper_ex : float, optional
+            upper_ex : float, default=8000.0
                 the upper frequency limit of the PS used to estimate numax
-            max_trials : int, optional
+            max_trials : int, default=6
 	               the number of "guesses" or trials to perform to estimate numax
 
 
@@ -765,6 +822,7 @@ class Target:
         frequency-resolved, collapsed autocorrelation function (ACF)
 
         Parameters
+        ----------
             n_trials : int, optional
                 the number of trials. Default value is `3`.
             binning : float, optional
@@ -777,6 +835,7 @@ class Target:
                 If `True`, it will ask which trial to use as the estimate for numax.
 
         Attributes
+        ----------
             bin_freq
             bin_pow
             bin_pow_err
@@ -819,6 +878,7 @@ class Target:
         Computes a collapsed autocorrelation function (ACF).
 
         Parameters
+        ----------
             step : float
                 fractional step size to use for the collapsed ACF calculation
             max_snr : float, optional
@@ -878,6 +938,7 @@ class Target:
         Checks if there is a starting value for numax
 
         Parameters
+        ----------
             columns : List[str]
                 saved columns if the estimate_numax() function was run
 
@@ -922,14 +983,15 @@ class Target:
         to plotting/saving results
 
         Parameters
+        ----------
             mc_iter : int
                 the number of iterations to run
 
         Methods
-            :mod:`pysyd.target.Target.check_numax`
-            :mod:`pysyd.target.Target.initial_parameters`
-            :mod:`pysyd.target.Target.first_step`
-            :mod:`pysyd.target.Target.get_samples`
+            - :mod:`pysyd.target.Target.check_numax`
+            - :mod:`pysyd.target.Target.initial_parameters`
+            - :mod:`pysyd.target.Target.first_step`
+            - :mod:`pysyd.target.Target.get_samples`
 
 
         """
@@ -961,6 +1023,7 @@ class Target:
         filter (i.e. [lower,upper] mask) to use for this subroutine.
 
         Parameters
+        ----------
             lower_bg : float, optional
                 lower frequency limit of PS to use for the background fit
             upper_bg : float, optional
@@ -1015,6 +1078,7 @@ class Target:
          #. guess starting values for granulation time scales
 
         Parameters
+        ----------
             numax : float, optional
                 provide initial value for numax to bypass the first module
 	           scaling : str
@@ -1029,6 +1093,7 @@ class Target:
                 upper bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
 
         Attributes
+        ----------
             b : List[float]
                 list of starting points for
             b_orig : List[float]
@@ -1083,12 +1148,12 @@ class Target:
 
         Processes a star for a single step, which applies additional analyses in the first
         iteration for each of the two main steps (i.e. background model and global fit):
-        #. **background model:** the automated best-fit model selection is only performed in the
-           first step, the results which are saved for future purposes (including the 
-           background-corrected power spectrum)
-        #. **global fit:** while the :term:`ACF` is computed for every iteration, a mask is
-           created in the first step to prevent the estimate for dnu to latch on to a different 
-           (i.e. incorrect) peak, since this is a multi-modal parameter space
+         #. **background model:** the automated best-fit model selection is only performed in the
+            first step, the results which are saved for future purposes (including the 
+            background-corrected power spectrum)
+         #. **global fit:** while the :term:`ACF` is computed for every iteration, a mask is
+            created in the first step to prevent the estimate for dnu to latch on to a different 
+            (i.e. incorrect) peak, since this is a multi-modal parameter space
 
         Methods
             - :mod:`pysyd.target.Target.estimate_background`
