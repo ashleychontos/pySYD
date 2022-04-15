@@ -1,3 +1,6 @@
+.. role:: underlined
+   :class: underlined
+
 *******
 Results
 *******
@@ -153,7 +156,7 @@ and similar to the :ref:`file section <library-output-files>`, we describe each 
 .. _library-output-figures-estimates:
 
 1. `numax_estimates.png`
-++++++++++++++++++++++++
+************************
 
 | **Top left:** Original time series.  
 | **Top middle:** Original power spectrum (white) and heavily smoothed power spectrum (green). The latter is used as an initial (crude) background fit to search for oscillations.  
@@ -166,7 +169,7 @@ and similar to the :ref:`file section <library-output-files>`, we describe each 
 .. _library-output-figures-global:
 
 2. `global_fit.png`
-+++++++++++++++++++
+*******************
 
 | **Top left:** Original time series. 
 | **Top middle:** Original power spectrum (white), lightly smoothed power spectrum (red), and binned power spectrum (green). Blue lines show initial guesses of the fit to the granulation background. The grey region is excluded from the background fit based on the numax estimate provided to the module.
@@ -182,7 +185,7 @@ and similar to the :ref:`file section <library-output-files>`, we describe each 
 .. _library-output-figures-samples:
 
 3. `samples.png`
-++++++++++++++++
+****************
 
 Each panel shows the samples of parameter estimates from Monte-Carlo simulations. Reported uncertainties on each parameter are calculated by taking the robust standard deviation of each distribution.
 
