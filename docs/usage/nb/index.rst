@@ -8,7 +8,7 @@ If there's something you would like to learn more about, you can request a new
 topic or tutorial by submitting a pull request!
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Notebook tutorials
    
    singlestar.ipynb

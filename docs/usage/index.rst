@@ -12,8 +12,8 @@ share the software with you!
    :maxdepth: 2
    :caption: Contents
 
-   Command line <cli/help>
+   Intro & help <cli/help>
    cli/examples
-   cli/glossary
    Notebook tutorials <nb/index>
    Other usage <other/index>
+   cli/glossary

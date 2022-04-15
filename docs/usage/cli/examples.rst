@@ -3,9 +3,9 @@
 
 .. _user-guide-cli-examples:
 
-*************
-More examples
-*************
+************
+CLI examples
+************
 
 This page has command-line examples for the following cases:
 

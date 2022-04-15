@@ -1,8 +1,8 @@
 .. _user-guide-cli-help:
 
-****************************
-Command-line interface (CLI)
-****************************
+*******************
+Introduction & help
+*******************
 
 As we have alluded to throughout the documentation, `pySYD` was initially intended to be 
 ran as a command-line tool -- which means that the software is optimized for this usage and 
@@ -22,8 +22,8 @@ analyses.
 
 -----
 
-CLI intro
-#########
+Command-line help
+#################
 
 To give you a glimpse into the insanely large amount of available features, open up a terminal
 window and run the help command for the main pipeline mode, `run` (aka :mod:`pysyd.pipeline.run`), 
@@ -105,10 +105,10 @@ used very sparingly.
      --cli                 Running from command line (this should not be touched)
      -v, --verbose         Turn off verbose output
 
-**Glossary terms:** :term:`--cli<-c, --cli>`, :term:`--file<--file, --list, --todo>`, 
+**Glossary terms:** :term:`--cli<--cli>`, :term:`--file<--file, --list, --todo>`, 
 :term:`--in<--in, --input, --inpdir>`, :term:`--info<--info, --information>`, :term:`--information<--info, --information>`, 
 :term:`--inpdir<--in, --input, --inpdir>`, :term:`--input<--in, --input, --inpdir>`, :term:`--list<--file, --list, --todo>`, 
-:term:`--out<--out, --output, --outdir>`, :term:`--outdir<--out, --output, --outdir>`, :term:`--output<--out, --output, --outdir>`, 
+:term:`--notebook<--notebook>`, :term:`--out<--out, --output, --outdir>`, :term:`--outdir<--out, --output, --outdir>`, :term:`--output<--out, --output, --outdir>`, 
 :term:`--todo<--file, --list, --todo>`, :term:`-v<-v, --verbose>`, :term:`--verbose<-v, --verbose>`
 
 -----
@@ -155,21 +155,20 @@ the data as well as which modules to run.
                            modes
 
 **Glossary terms:**  
-:term:`-e<-e, --est, --excess>`, :term:`--est<-e, --est, --excess>`, :term:`--excess<-e, --est, --excess>`, :term:`-k<-k, --kc, --kepcorr>`, 
-:term:`--kc<-k, --kc, --kepcorr>`, :term:`--kepcorr<-k, --kc, --kepcorr>`, :term:`--ofa<--ofa, --ofactual>`, 
-:term:`-o<-o, --over, --overwrite>`, :term:`--of<--of, --over, --oversample>`, :term:`--over<--of, --over, --oversample>`, 
-:term:`--oversample<--of, --over, --oversample>`, :term:`--overwrite<-o, --overwrite>`, 
-:term:`-p<-p, --par, --parallel>`, :term:`--par<-p, --par, --parallel>`, :term:`--parallel<-p, --par, --parallel>`, 
-:term:`-s<-s, --save>`, :term:`--save<-s, --save>`, :term:`--star<--star, --stars>`, 
-:term:`--stars<--star, --stars>`, :term:`--stitch<-x, --stitch, --stitching>`, :term:`--stitching<-x, --stitch, --stitching>`,
+:term:`-e<-e, --est, --estimate>`, :term:`--est<-e, --est, --estimate>`, :term:`--estimate<-e, --est, --estimate>`, 
+:term:`-k<-k, --kc, --kepcorr>`, :term:`--kc<-k, --kc, --kepcorr>`, :term:`--kepcorr<-k, --kc, --kepcorr>`, 
+:term:`-o<-o, --overwrite>`, :term:`--of<--of, --over, --oversample>`, :term:`--over<--of, --over, --oversample>`, 
+:term:`--oversample<--of, --over, --oversample>`, :term:`--overwrite<-o, --overwrite>`, :term:`-s<-s, --save>`, 
+:term:`--save<-s, --save>`, :term:`--star<--star, --stars>`, :term:`--stars<--star, --stars>`, 
+:term:`--stitch<-x, --stitch, --stitching>`, :term:`--stitching<-x, --stitch, --stitching>`,
 :term:`-x<-x, --stitch, --stitching>`
 
 -----
 
 .. _user-guide-cli-help-est:
 
-Estimating numax
-################
+Estimates
+#########
 
 The following options are relevant for the first, optional module that is designed
 to estimate numax if it is not known: 
@@ -182,7 +181,7 @@ to estimate numax if it is not known:
                            Binning interval for PS (in muHz)
      --bm str, --mode str, --bmode str
                            Binning mode
-     -e, --est, --excess   Turn off the optional module that estimates numax
+     -e, --est, --estimate Turn off the optional module that estimates numax
      --lx [float [float ...]], --lowerx [float [float ...]]
                            Lower frequency limit of PS
      --step float, --steps float
@@ -234,12 +233,11 @@ Below is a complete list of parameters relevant to the background-fitting routin
 
 **Glossary terms:** :term:`-b<-b, --bg, --background>`, :term:`--background<-b, --bg, --background>`, 
 :term:`--bg<-b, --bg, --background>`, :term:`--basis`, :term:`--bf<--bf, --box, --boxfilter>`, 
-:term:`--box<--bf, --box, --boxfilter>`, :term:`--boxfilter<--bf, --box, --boxfilter>`, :term:`-f<-f, --fix, --fixwn, --wn>`, 
-:term:`--fixf<-f, --fix, --fixwn, --wn>`, :term:`--fixwn<-f, --fix, --fixwn, --wn>`, :term:`-i<-i, --include>`, 
-:term:`--include<-i, --include>`, :term:`--iw<--iw, --indwidth>`, :term:`--indwidth<--iw, --indwidth>`, 
+:term:`--box<--bf, --box, --boxfilter>`, :term:`--boxfilter<--bf, --box, --boxfilter>`, 
+:term:`--fixwn<-w, --wn, --fixwn>`, :term:`--iw<--iw, --indwidth>`, :term:`--indwidth<--iw, --indwidth>`, 
 :term:`--laws<--laws, --nlaws>`, :term:`--lb<--lb, --lowerb>`, :term:`--lowerb<--lb, --lowerb>`, :term:`--metric`, 
 :term:`--nrms<--rms, --nrms>`, :term:`--rms<--rms, --nrms>`, :term:`--nlaws<--laws, --nlaws>`, 
-:term:`--ub<--ub, --upperb>`, :term:`--upperb<--ub, --upperb>`, :term:`--wn<-f, --fix, --fixwn, --wn>`
+:term:`--ub<--ub, --upperb>`, :term:`--upperb<--ub, --upperb>`, :term:`-w<-w, --wn, --fixwn>`, :term:`--wn<-w, --wn, --fixwn>`
 
 -----
 
@@ -272,20 +270,14 @@ corresponding to maximum power:
                            numax (typically between 1-4) **developer use only**
      --sp float, --smoothps float
                            Box filter width [in muHz] of PS for ACF
-     --method str          Method to use to determine dnu, ~[M, A, D] **developer use only**
      --peak int, --peaks int, --npeaks int
                            Number of peaks to fit in the ACF
      --thresh float, --threshold float
                            Fractional value of FWHM to use for ACF
      --dnu [value [value ...]]
                            Brute force method to provide value for dnu
-     --method method       Method to use to determine dnu, ~[M, A, D]
      --peak n, --peaks n, --npeaks n
                            Number of peaks to fit in the ACF
-     --sp value, --smoothps value
-                           Box filter width [in muHz] of PS for ACF
-     --thresh value, --threshold value
-                           Fractional value of FWHM to use for ACF
 
 
 **Glossary terms:** :term:`--ew<--ew, --exwidth>`, :term:`--exwidth<--ew, --exwidth>`, :term:`-g<-g, --globe, --global>`, 
@@ -325,8 +317,8 @@ Plotting
                            Smooth ED using a box filter [in muHz]
 
 **Glossary terms:** :term:`-d<-d, --show, --display>`, :term:`--display<-d, --show, --display>`, :term:`--ce<--ce, --cm, --color>`, :term:`--cm<--ce, --cm, --color>`, :term:`--color<--ce, --cm, --color>`, 
-:term:`--cv<--cv, --value>`, :term:`-e<-e, --ie, --interpech>`, :term:`--hey<-y, --hey>`, :term:`--ie<-e, --ie, --interpech>`, 
-:term:`--interpech<-e, --ie, --interpech>`, :term:`--le<--le, --lowere>`, :term:`--lowere<--le, --lowere>`, 
+:term:`--cv<--cv, --value>`, :term:`-i<-i, --ie, --interpech>`, :term:`--hey<-y, --hey>`, :term:`--ie<-i, --ie, --interpech>`, 
+:term:`--interpech<-i, --ie, --interpech>`, :term:`--le<--le, --lowere>`, :term:`--lowere<--le, --lowere>`, 
 :term:`--nox<--nox, --nacross>`, :term:`--nacross<--nox, --nacross>`, :term:`--ndown<--noy, --ndown, --norders>`, 
 :term:`--norders<--noy, --ndown, --norders>`, :term:`--noy<--noy, --ndown, --norders>`, :term:`--se<--se, --smoothech>`, 
 :term:`--smoothech<--se, --smoothech>`,  :term:`--ue<--ue, --uppere>`, :term:`--uppere<--ue, --uppere>`,
