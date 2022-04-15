@@ -2,9 +2,9 @@
 
 .. _library:
 
-*****************
+***************
 `pySYD` library
-*****************
+***************
 
 Thanks for stopping by the ``pySYD`` documentation and taking an interest in
 learning more about how it all works -- we are so *thrilled* to share asteroseismology 

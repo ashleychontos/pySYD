@@ -11,8 +11,6 @@ Therefore we refer the reader to check out :ref:`this page <quickstart>`, the
 :ref:`comand-line examples <user-guide-cli-examples>` or the :ref:`notebook tutorials <user-guide-nb>`
 if more examples are desired.
 
------
-
 .. _library-output:
 
 Output
@@ -40,24 +38,20 @@ Files
 
 Listed are all the possible output files:
 
- #. :ref:`starname_PS.txt <library-output-files-text-ps>`
- #. :ref:`starname_bg_corr.txt <library-output-files-text-bgcorrps>`
- #. :ref:`estimates.csv <library-output-files-csv-estimates>`
- #. :ref:`global.csv <library-output-files-csv-global>`
- #. :ref:`samples.csv <library-output-files-csv-samples>`
+ #. :ref:`starname_PS.txt <library-output-files-ps>`
+ #. :ref:`starname_bg_corr.txt <library-output-files-bgcorrps>`
+ #. :ref:`estimates.csv <library-output-files-estimates>`
+ #. :ref:`global.csv <library-output-files-global>`
+ #. :ref:`samples.csv <library-output-files-samples>`
 
 which we describe in more detail below, including the frequency and likely scenarios they 
 arise from.
 
-.. _library-output-files-text:
-
-Text files
-**********
-
-.. _library-output-files-text-ps:
+.. _library-output-files-ps:
 
 1. `starname_PS.txt`
-++++++++++++++++++++
+********************
+
 **(special cases)**
 
 This file is created in the case where *only* the time series data was provided for a target and
@@ -81,10 +75,11 @@ you can always copy and paste it to the specific star's result directory if you'
     normalize the power spectrum, we can make direct comparisons between power spectra of not
     only different stars, but from different instruments as well!
 
-.. _library-output-files-text-bgcorrps:
+.. _library-output-files-bgcorrps:
 
 2. `starname_bg_corr.txt`
-+++++++++++++++++++++++++
+*************************
+
 **(all cases)**
 
 After the best-fit background model is selected and saved, the model is generated and then
@@ -99,15 +94,12 @@ background-corrected power spectrum (:term:`BCPS`). The BCPS is used in subseque
 computing global parameters (:math:`\rm \nu_{max}` and :math:`\Delta\nu`) and for constructing
 the :term:`echelle diagram`. Therefore, we thought it might be useful to have a copy of this!
 
-.. _library-output-files-csv:
 
-CSV files
-*********
-
-.. _library-output-files-csv-estimates:
+.. _library-output-files-estimates:
 
 3. `estimates.csv`
-++++++++++++++++++
+******************
+
 **(most cases)**
 
 By default, a module will run to estimate an initial value for the frequency corresponding to 
@@ -124,16 +116,18 @@ yourself. In the cases where this estimating routine is skipped, this file will 
 
 **Note:** The numax estimate is *important* for the main fitting routine. 
 
-.. _library-output-files-csv-global:
+.. _library-output-files-global:
 
 4. `global.csv`
-+++++++++++++++
+***************
+
 **(all cases)**
 
-.. _library-output-files-csv-samples:
+.. _library-output-files-samples:
 
 5. `samples.csv`
-++++++++++++++++
+****************
+
 **(special cases)**
 
 If the monte-carlo sampling is used to calculate 
@@ -150,18 +144,13 @@ Figures
 
 Listed are all possible output figures for running a single star:
 
- #. :ref:`numax_estimates.png <library-output-figures-png-estimates>`
- #. :ref:`global_fit.png <library-output-figures-png-global>`
- #. :ref:`samples.png <library-output-figures-png-samples>`
+ #. :ref:`numax_estimates.png <library-output-figures-estimates>`
+ #. :ref:`global_fit.png <library-output-figures-global>`
+ #. :ref:`samples.png <library-output-figures-samples>`
 
 and similar to the :ref:`file section <library-output-files>`, we describe each in more detail below.
 
-.. _library-output-figures-png:
-
-PNG files
-*********
-
-.. _library-output-figures-png-estimates:
+.. _library-output-figures-estimates:
 
 1. `numax_estimates.png`
 ++++++++++++++++++++++++
@@ -174,7 +163,7 @@ PNG files
 | **Bottom right:** Same as bottom left but for the large step size (optimized for main-sequence stars).
 
 
-.. _library-output-figures-png-global:
+.. _library-output-figures-global:
 
 2. `global_fit.png`
 +++++++++++++++++++
@@ -190,7 +179,7 @@ PNG files
 | **Bottom right:** Echelle diagram collapsed along the frequency direction.
 
 
-.. _library-output-figures-png-samples:
+.. _library-output-figures-samples:
 
 3. `samples.png`
 ++++++++++++++++

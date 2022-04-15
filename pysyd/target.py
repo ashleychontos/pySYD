@@ -1439,7 +1439,7 @@ class Target:
 
         Corrects for the stellar background contribution in the power spectrum by dividing
         this out (`bg_corr`, :term:`background-corrected power spectrum`) and saves a copy
-        to :ref:`ID_bg_corr.txt <library-output-files-text-bgcorrps>`
+        to :ref:`ID_bg_corr.txt <library-output-files-bgcorrps>`
         
         Parameters
             metric : str, default='bic'
