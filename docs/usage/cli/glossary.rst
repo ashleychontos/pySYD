@@ -85,21 +85,22 @@ List of options
          * action = ``store_true``
     
     ``--dnu``
-        brute force method to provide value for dnu. **Note:** if using the ``pysyd.utils.whiten_mixed`` 
-        modes module, this will need to be provided along with :term:`--le` and :term:`--ue`.
+        option to provide the spacing to fold the power spectrum and "whiten" effects due to
+        mixed modes (:mod:`pysyd.target.Target.whiten_mixed`), which also requires a lower and
+        upper folded frequency (i.e. <= dnu) via :term:`--le<--le, --lowere>` and :term:`--ue<--ue, --uppere>`
          * dest = ``args.dnu``
          * type = `float`
          * nargs = `'*'`
          * default = `None`
          * **REQUIRES:** :term:`--le<--le, --lowere>`/:term:`--lowere<--le, --lowere>` *and* :term:`--ue<--ue, --uppere>`/:term:`--uppere<--ue, --uppere>`
 
-    ``-e, --est, --excess``
-        turn off the find excess module -- this will automatically happen if :term:`numax`
-        is provided **I think this has been deprecated**
-         * dest = ``args.excess``
+    ``-e, --est, --estimate``
+        turn off the first module that searches and idenities power excess due to solar-like
+        oscillations, which will automatically happen if :term:`numax` is provided 
+         * dest = `args.estimate`
          * type = `bool`
          * default = `True`
-         * action = ``store_false``
+         * action = `store_false`
     
     ``--ew, --exwidth``
         the fractional value of the width to use surrounding the power excess, which is computed using a solar
@@ -110,13 +111,12 @@ List of options
          * unit = fractional :math:`\mu \mathrm{Hz}`
          * **see also:** :term:`--lp<--lp, --lowerp>`, :term:`--lowerp<--lp, --lowerp>`, :term:`--up<--up, --upperp>`, :term:`--upperp<--up, --upperp>`
            
-    ``-f, --fix, --fixwn, --wn``
-        fix the white noise level in the background fitting **NOT operational yet**
-        this still needs to be tested
-         * dest = ``args.fix``
+    ``-f, --fft``
+        use the :mod:`numpy.correlate` module instead of :term:`FFTs<FFT>` to compute the ACF
+         * dest = `args.fft`
          * type = `bool`
-         * default = `False`
-         * action = ``store_true``
+         * default = `True`
+         * action = `store_false`
 
     ``--file, --list, --todo``
         the path to the text file that contains the list of stars to process, which is convenient
@@ -195,6 +195,7 @@ List of options
          * dest = ``args.n_laws``
          * type = `int`
          * default = `None`
+         * **see also:** :term:`-w<-w, --wn, --fixwn>`, :term:`-wn<-w, --wn, --fixwn>`, :term:`--fixwn<-w, --wn, --fixwn>`
 
     ``--lb, --lowerb``
         the lower frequency limit of the power spectrum to use in the background-fitting
@@ -254,24 +255,25 @@ List of options
          * type = `int`
          * default = `1`
 
-    ``--method``
-        development option to change the method used to determine dnu, choices are
-        ~[`'M'`,`'A'`,`'D'`] for Maryum, Ashley and Dennis (respectively)
-         * dest = ``args.method``
-         * type = `str`
-         * default = `'D'`
-
     ``--metric``
         which model metric to use for the best-fit background model, current choices are
         ~[`'bic'`, `'aic'`] but **still being developed and tested**
-         * dest = ``args.metric``
+         * dest = `args.metric`
          * type = `str`
-         * default = `'aic'`
+         * default = `'bic'`
     
     ``-n, --notch``
         use notching technique to reduce effects from mixes modes (pretty sure this is not
         full functional yet, creates weird effects for higher SNR cases)
          * dest = ``args.notching``
+         * type = `bool`
+         * default = `False`
+         * action = ``store_true``
+
+    ``--notebook``
+        similar to :term:`--cli`, this should not need to be touched and is primarily for internal 
+        workings and how to retrieve parameters
+         * dest = `args.notebook`
          * type = `bool`
          * default = `False`
          * action = ``store_true``
@@ -282,18 +284,27 @@ List of options
         resolution of the power spectrum as well as the characteristic frequency separation.
         This is another example where, if you don't know what this means, you probably should
         not change it.
-         * dest = ``args.nox``
+         * dest = `args.nox`
          * type = `int`
-         * default = `50`
-         * **see also:** :term:`--noy<--noy, --ndown, --norders>`, :term:`--ndown<--noy, --ndown, --norders>`, :term:`--norders<--noy, --ndown, --norders>`
+         * default = `None`
+         * **see also:** :term:`--noy<--noy, --ndown, --norders>`, :term:`--ndown<--noy, --ndown, --norders>`, :term:`--norders<--noy, --ndown, --norders>`, :term:`--npb`
     
     ``--noy, --ndown, --norders``
-        similar to :term:`nox`, this specifies the number of bins (i.e. orders) to use on the
-        y-axis of the echelle diagram
-         * dest = ``args.noy``
+        specifies the number of bins (or radial orders) to use on the y-axis of the echelle diagram
+        **NEW:** option to shift the entire figure by n orders - the first part of the string is the
+        number of orders to plot and the +/- n is the number orders to shift the ED by
+         * dest = `args.noy`
+         * type = `str`
+         * default = `0+0`
+         * **see also:** :term:`--nox<--nox, --nacross>`, :term:`--nacross<--nox, --nacross>`, :term:`--npb`
+
+    ``--npb``
+        option for echelle diagram to use information from the spacing and frequency resolution
+        to calculate a better grid resolution (npb == number per bin)
+         * dest = `args.npb`
          * type = `int`
-         * default = `0`
-         * **see also:** :term:`--nox<--nox, --nacross>`, :term:`--nacross<--nox, --nacross>`
+         * default = `10`
+         * **see also:** :term:`--nox<--nox, --nacross>`, :term:`--nacross<--nox, --nacross>`, :term:`--noy<--noy, --ndown, --norders>`, :term:`--ndown<--noy, --ndown, --norders>`, :term:`--norders<--noy, --ndown, --norders>`
     
     ``--nt, --nthread, --nthreads``
         the number of processes to run in parallel. If nothing is provided when you run in ``pysyd.parallel``
@@ -324,24 +335,16 @@ List of options
     ``--of, --over, --oversample``
         the oversampling factor of the provided power spectrum. Default is `0`, which means it is calculated from
         the time series data. **Note:** this needs to be provided if there is no time series data!
-         * dest = ``args.oversampling_factor``
+         * dest = `args.oversampling_factor`
          * type = `int`
          * default = `None`
          
     ``--out, --output, --outdir``
         path to save 
         results to
-         * dest = ``args.outdir``
+         * dest = `args.outdir`
          * type = `str`
          * default = `'OUTDIR'`
-    
-    ``-p, --par, --parallel``
-        run ``pySYD`` in 
-        parallel mode
-         * dest = ``args.parallel``
-         * type = `bool`
-         * default = `False`
-         * action = ``store_true``
     
     ``--peak, --peaks, --npeaks``
         the number of peaks to identify 
@@ -489,6 +492,14 @@ List of options
          * type = `bool`
          * default = `False`
          * action = ``store_true``
+
+    ``-w, --wn, --fixwn``
+        fix the white noise level in the background fitting **TODO: this still needs to be tested**
+         * dest = `args.fix`
+         * type = `bool`
+         * default = `False`
+         * action = `store_true`
+         * **see also:** :term:`--laws<--laws, --nlaws>`, :term:`--nlaws<--laws, --nlaws>`
 
     ``-x, --stitch, --stitching``
         correct for large gaps in time series data by 'stitching' the light curve

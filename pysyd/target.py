@@ -704,15 +704,19 @@ class Target:
 ##########################################################################################
 
 
-    def estimate_parameters(self, excess=True,):
-        """
+    def estimate_parameters(self, estimate=True,):
+        """Estimate parameters
 
-        Automated routine to identify power excess due to solar-like oscillations and estimate
-        an initial starting point for :term:`numax` (:math:`\\nu_{\\mathrm{max}}`)
+        Calls all methods related to the first module 
 
         Parameters
-            excess : bool, default=True
+            estimate : bool, default=True
                 if numax is already known, this will automatically be skipped since it is not needed
+
+        Methods
+            - :mod:`pysyd.target.Target.initial_estimates`
+            - :mod:`pysyd.target.Target.estimate_numax`
+            - :mod:`pysyd.utils.save_estimates`
 
 
         """
@@ -720,7 +724,7 @@ class Target:
             self.params['results'] = {}
         if 'plotting' not in self.params:
             self.params['plotting'] = {}
-        if self.params['excess']:
+        if self.params['estimate']:
             # get initial values and fix data
             self.initial_estimates()
             # execute function
@@ -729,8 +733,8 @@ class Target:
             self = utils.save_estimates(self)
 
 
-    def initial_estimates(self, lower_ex=1.0, upper_ex=8000.0, max_trials=6):
-        """
+    def initial_estimates(self, lower_ex=1.0, upper_ex=8000.0, max_trials=6,):
+        """Initial estimates
     
         Prepares data and parameters associated with the first module that identifies 
         solar-like oscillations and estimates :term:`numax`
@@ -741,7 +745,19 @@ class Target:
             upper_ex : float, default=8000.0
                 the upper frequency limit of the PS used to estimate numax
             max_trials : int, default=6
-	               the number of "guesses" or trials to perform to estimate numax
+	               (arbitrary) maximum number of "guesses" or trials to perform to estimate numax
+
+        Attributes
+            module : str, default='estimates'
+                which of the two main parts of the pipeline is running
+            frequency : numpy.ndarray
+                copy of the full oversampled frequency array (`Target.freq_os`)
+            power : numpy.ndarray
+                copy of the full oversampled power density (`Target.pow_os`)
+            freq : numpy.ndarray
+                frequency array after the mask~[lower_ex,upper_ex] is applied
+            pow : numpy.ndarray
+                power array after the mask~[lower_ex,upper_ex] is applied
 
 
         """
@@ -771,18 +787,13 @@ class Target:
         self.params['plotting'][self.module], self.params['results'][self.module] = {}, {}
 
 
-    def estimate_numax(self, n_trials=3, binning=0.005, bin_mode='mean', smooth_width=20.0, ask=False,):
-        """
+    def estimate_numax(self, binning=0.005, bin_mode='mean', smooth_width=20.0, ask=False,):
+        """Estimate numax
 
-        Automated routine to identify power excess due to solar-like oscillations or :term:`numax`
-        (:math:`\\nu_{\\mathrm{max}}`)
-
-        Automatically finds power excess due to solar-like oscillations using a
-        frequency-resolved, collapsed autocorrelation function (ACF)
+        Automated routine to identify power excess due to solar-like oscillations and estimate
+        an initial starting point for :term:`numax` (:math:`\\nu_{\\mathrm{max}}`)
 
         Parameters
-            n_trials : int, default=3
-                the number of trials to run
             binning : float, default=0.005
                 logarithmic binning width (i.e. evenly spaced in log space)
             bin_mode : {'mean', 'median', 'gaussian'}
@@ -793,26 +804,35 @@ class Target:
                 If `True`, it will ask which trial to use as the estimate for numax
 
         Attributes
-            bin_freq
-            bin_pow
-            bin_pow_err
-            smooth_freq
-            smooth_pow
-            smooth_pow_err
-            interp_pow
-            bgcorr_pow
+            bin_freq : numpy.ndarray
+                binned frequency array (log space)
+            bin_pow : numpy.ndarray
+                binned power array (log space)
+            smooth_freq : numpy.ndarray
+                binned frequency array (linear space)
+            smooth_pow : numpy.ndarray
+                binned power array (linear space)
+            interp_pow : numpy.ndarray
+                interpolated power of smoothed_pow array 
+            bgcorr_pow : numpy.ndarray
+                crude background-divided power spectrum (using interp_pow)
+
+        Methods
+            - :mod:`pysyd.target.Target.collapsed_acf`
 
 
         """
         # Smooth the power in log-space
-        self.bin_freq, self.bin_pow, self.bin_pow_err = utils.bin_data(self.freq, self.pow, width=self.params['binning'], log=True, mode=self.params['bin_mode'])
+        self.bin_freq, self.bin_pow, _ = utils.bin_data(self.freq, self.pow, width=self.params['binning'], log=True, mode=self.params['bin_mode'])
         # Smooth the power in linear-space
-        self.smooth_freq, self.smooth_pow, self.smooth_pow_err = utils.bin_data(self.bin_freq, self.bin_pow, width=self.params['smooth_width'])
+        self.smooth_freq, self.smooth_pow, _ = utils.bin_data(self.bin_freq, self.bin_pow, width=self.params['smooth_width'])
         if self.params['verbose']:
             print('-----------------------------------------------------------\nPS binned to %d datapoints\n\nNumax estimates\n---------------' % len(self.smooth_freq))
         # Mask out frequency values that are lower than the smoothing width to avoid weird looking fits
-        mask = (self.smooth_freq >= (min(self.freq)+self.params['smooth_width'])) & (self.smooth_freq <= (max(self.freq)-self.params['smooth_width']))
-        s = InterpolatedUnivariateSpline(self.smooth_freq[mask], self.smooth_pow[mask], k=1)
+        if min(self.freq) < self.params['smooth_width']:
+            mask = (self.smooth_freq >= self.params['smooth_width'])
+            self.smooth_freq, self.smooth_pow = self.smooth_freq[mask], self.smooth_pow[mask]
+        s = InterpolatedUnivariateSpline(self.smooth_freq, self.smooth_pow, k=1)
         # Interpolate and divide to get a crude background-corrected power spectrum
         self.interp_pow = s(self.freq)
         self.bgcorr_pow = self.pow/self.interp_pow
@@ -828,22 +848,19 @@ class Target:
             self = plots.select_trial(self)
 
 
-    def collapsed_acf(self, step=0.25, max_snr=100.0):
-        """
-        Collapsed ACF
+    def collapsed_acf(self, n_trials=3, step=0.25, max_snr=100.0,):
+        """Collapsed ACF
 
-        Computes a collapsed autocorrelation function (ACF).
+        Computes a collapsed autocorrelation function (ACF) using n different box sizes in
+        n different trials (i.e. `n_trials`)
 
         Parameters
+            n_trials : int, default=3
+                the number of trials to run
             step : float, default=0.25
                 fractional step size to use for the collapsed ACF calculation
             max_snr : float, default=100.0
                 the maximum signal-to-noise of the estimate (this is primarily for plot formatting)
-
-        Attributes
-            compare : List[float]
-                list of SNR results from the different trials
-
 
         """
         self.params['compare'] = []
@@ -897,9 +914,11 @@ class Target:
             columns : List[str]
                 saved columns if the estimate_numax() function was run
 
-        Returns
-            return : bool
-                will return `True` if there is prior value for numax otherwise `False`
+        Raises
+            PySYDInputError
+                if an invalid value was provided as input for numax
+            PySYDProcessingError
+                if it still cannot find any estimate for :term:`numax`
 
         .. seealso:: modules :py:mod:`pysyd.target.Target.estimate_numax`, :py:mod:`pysyd.target.Target.initial_estimates`
 
@@ -908,7 +927,7 @@ class Target:
         # Check if numax was provided as input
         if self.params['numax'] is not None:
             if np.isnan(float(self.params['numax'])):
-                raise utils.PySYDProcessingError("ERROR: invalid value for numax")
+                raise utils.PySYDInputError("ERROR: invalid value for numax")
         else:
             # If not, checks if estimate_numax module was run
             if glob.glob(os.path.join(self.params['path'],'estimates*')):
@@ -982,6 +1001,21 @@ class Target:
             upper_bg : float, default=8000.0
                 upper frequency limit of PS to use for the background fit
 
+        Attributes
+            module : str, default='parameters'
+                which of the two main parts of the pipeline is running
+            power : numpy.ndarray
+                copy of the full oversampled power density (`Target.pow_os`) 
+            frequency : numpy.ndarray
+                copy of the oversampled frequency array (`Target.freq_os`) with the mask~[lower_bg,upper_bg] applied
+            random_pow : numpy.ndarray
+                copy of the oversampled power density after the mask~[lower_bg,upper_bg] is applied
+            i : int, default=0
+                iteration number
+
+        Methods
+            - :mod:`pysyd.target.Target.solar_scaling`
+
         .. warning::
 
             This is typically sufficient for most stars but may affect evolved stars and
@@ -1021,12 +1055,11 @@ class Target:
 
     def solar_scaling(self, numax=None, scaling='tau_sun_single', max_laws=3, ex_width=1.0,
                       lower_ps=None, upper_ps=None,):
-        """
+        """Initial values
         
         Using the initial starting value for :math:`\\rm \\nu_{max}`, estimates the rest of
-        the parameters needed for *both* the background and global fits 
-    
-        Uses scaling relations from the Sun to:
+        the parameters needed for *both* the background and global fits. Uses scaling relations 
+        from the Sun to:
          #. estimate the width of the region of oscillations using numax
          #. guess starting values for granulation time scales
 
@@ -1045,18 +1078,9 @@ class Target:
                 upper bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
 
         Attributes
-            b : List[float]
-                list of starting points for
-            b_orig : List[float]
-                copy of the list of starting points for
-            mnu : List[float]
-                list of starting points for 
-            mnu_orig : List[float]
-                copy of list of starting points for 
-            nlaws : int
-                estimated number of Harvey-like components 
-	           nlaws_orig : int
-                copy of the estimated number of Harvey-like components 
+            converge : bool, default=True
+                `True` if all fitting converges
+
 
         """
         self.params['exp_numax'] = self.params['numax']
@@ -1072,7 +1096,7 @@ class Target:
         scale = self.constants['numax_sun']/self.params['exp_numax']
         # make sure interval is not empty
         if not list(self.frequency[(self.frequency>=self.params['ps_mask'][0])&(self.frequency<=self.params['ps_mask'][1])]):
-            raise InputError("ERROR: frequency region for power excess is null\nPlease specify an appropriate numax and/or frequency limits for the power excess (via --lp/--up)")
+            raise PySYDInputError("ERROR: frequency region for power excess is null\nPlease specify an appropriate numax and/or frequency limits for the power excess (via --lp/--up)")
         # Estimate granulation time scales
         if scaling == 'tau_sun_single':
             taus = np.array(self.constants['tau_sun_single'])*scale
@@ -1095,10 +1119,10 @@ class Target:
 
 
     def first_step(self, background=True, globe=True,):
-        """
+        """First step
 
-        Processes a star for a single step, which applies additional analyses in the first
-        iteration for each of the two main steps (i.e. background model and global fit):
+        Processes a given target for the first step, which has extra steps for each of the two 
+        main parts of this method (i.e. background model and global fit):
          #. **background model:** the automated best-fit model selection is only performed in the
             first step, the results which are saved for future purposes (including the 
             background-corrected power spectrum)
@@ -1106,43 +1130,81 @@ class Target:
             created in the first step to prevent the estimate for dnu to latch on to a different 
             (i.e. incorrect) peak, since this is a multi-modal parameter space
 
+        Parameters
+            background : bool, default=True
+                run the automated background-fitting routine
+            globe : bool, default=True
+                perform global asteroseismic analysis (really only relevant if interested in the background model *only*)
+
         Methods
-            - :mod:`pysyd.target.Target.estimate_background`
+            - :mod:`pysyd.target.Target.estimate_initial`
             - :mod:`pysyd.target.Target.model_background`
             - :mod:`pysyd.target.Target.fit_global`
-
-        Parameters
-            converge : bool
-                returns `True` if background fit converged 
-            background : bool, optional
-                disable the background model selection and fit global properties to raw PS
-            globe : bool, optional
-                really only relevant if interested in the background model *only* (and not global properties)
 
         .. seealso:: :mod:`pysyd.target.Target.single_step`
 
         """
         # Background corrections
-        self.estimate_background()
-        self.model_background()
+        self._estimate_initial()
+        self._model_background()
         # Global fit
         if self.params['globe']:
             # global fit
-            self.fit_global()
+            self.global_fit()
             if self.params['verbose'] and self.params['mc_iter'] > 1:
                 print('-----------------------------------------------------------\nSampling routine:')
 
 
-    def get_samples(self,):
+    def single_step(self,):
+        """Single step
+
+        Similar to the first step, this function calls the same methods but uses the selected best-fit
+        background model from the first step to estimate the parameters
+
+        Attributes
+            converge : bool
+                removes any saved parameters if any fits did not converge (i.e. `False`) 
+
+        Methods
+            - :mod:`pysyd.target.Target.estimate_background`
+            - :mod:`pysyd.target.Target.get_background`
+            - :mod:`pysyd.target.Target.fit_global`
+
         """
+        self.converge = True
+        self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
+        # Background corrections
+        self.estimate_initial()
+        self.estimate_background()
+        # Requires bg fit to converge before moving on
+        if self.params['globe']:
+            self.global_fit()
+        if not self.converge:
+            for parameter in self.params['results'][self.module]:
+                if len(self.params['results'][self.module][parameter]) > (self.i+1):
+                    p = self.params['results'][self.module][parameter].pop(-1)
+
+
+    def get_samples(self,):
+        """Get samples
 
         Estimates uncertainties for parameters by randomizing the power spectrum and
         attempting to recover the same parameters by calling the :mod:`pysyd.target.Target.single_step`
+
+        Attributes
+            frequency : numpy.ndarray
+                copy of the critically-sampled frequency array (`Target.freq_cs`) with the mask~[lower_bg,upper_bg] applied
+            power : numpy.ndarray
+                copy of the critically-sampled power density (`Target.pow_cs`) with the mask~[lower_bg,upper_bg] applied
+            pbar : tqdm.tqdm, optional
+                optional progress bar used with verbose output when running multiple iterations 
 
         .. note:: 
 
            all iterations except for the first step are applied to the :term:`critically-sampled power spectrum`
            and *not* the :term:`oversampled power spectrum`
+
+        .. important:: if the verbose option is enabled, the `tqdm` package is required
 
 
         """
@@ -1165,78 +1227,36 @@ class Target:
                         self.pbar.close()
 
 
-    def single_step(self, converge=True,):
-        """
+    def global_fit(self,):
+        """Global fit
 
-        Similar to the first step, this function calls the same methods but uses the selected best-fit
-        background model from the first step to estimate the parameters. 
+        Fits global asteroseismic parameters :math:`\\rm \\nu{max}` and :math:`\\Delta\\nu`
 
         Methods
-            - :mod:`pysyd.target.Target.estimate_background`
-            - :mod:`pysyd.target.Target.get_background`
-            - :mod:`pysyd.target.Target.fit_global`
-
-        Parameters
-            converge : bool
-                returns `True` if background fit converged 
-            background : bool, optional
-                fit global properties to raw PS (*not* background-corrected PS)
-            globe : bool, optional
-                disable global fit if interested in the background model *only*
-
-
-
-        """
-        self.converge = True
-        self.random_pow = (np.random.chisquare(2, len(self.frequency))*self.power)/2.
-        # Background corrections
-        self.estimate_background()
-        self.get_background()
-        # Requires bg fit to converge before moving on
-        if self.params['globe']:
-            self.fit_global()
-        if not self.converge:
-            for parameter in self.params['results'][self.module]:
-                if len(self.params['results'][self.module][parameter]) > (self.i+1):
-                    p = self.params['results'][self.module][parameter].pop(-1)
-
-
-    def fit_global(self, acf_mask=None):
-        """
-
-        Fits for global asteroseismic parameters :math:`\\rm \\nu{max}` and :math:`\\Delta\\nu`
-
-        Parameters
-            acf_mask : [float,float]
-                
-
-        .. seealso:: :mod:`pysyd.target.Target.get_numax_smooth`, 
-                     :mod:`pysyd.target.Target.get_numax_gaussian`, and
-                     :mod:`pysyd.target.Target.estimate_dnu`
+            - :mod:`estimate_numax_smooth`
+            - :mod:`estimate_numax_gaussian`
+            - :mod:`compute_acf`
+            - :mod:`estimate_dnu`
 
 
         """
         # get numax
-        self.get_numax_smooth()
-        self.get_numax_gaussian()
+        self.estimate_numax_smooth()
+        self.estimate_numax_gaussian()
         # get dnu
         self.compute_acf()
-        if self.i == 0:
-            self.initial_dnu()
-            self.get_acf_cutout()
-            self.get_ridges()
-        else:
-            self.estimate_dnu()
+        self.estimate_dnu()
 
 
-    def estimate_background(self, ind_width=20.0,):
-        """
+    def estimate_initial(self, ind_width=20.0,):
+        """Background estimates
 
-        Estimates initial guesses for the stellar background 
+        Estimates initial guesses for the stellar background contributions for both the
+        red and white noise components
 
         Parameters
-            ind_width : float
-                the independent average smoothing width (default = `20.0` :math:`\\rm \\mu Hz`)
+            ind_width : float, default=20.0
+                the independent average smoothing width (:math:`\\rm \\mu Hz`)
 
         Attributes
             bin_freq : numpy.ndarray
@@ -1246,10 +1266,6 @@ class Target:
             bin_err : numpy.ndarray
                 binned power error array 
 
-        Returns
-            return : bool
-                will return `True` if the model converged
-
         """
         # Bin power spectrum to model stellar background/correlated red noise components
         self.bin_freq, self.bin_pow, self.bin_err = utils.bin_data(self.frequency, self.random_pow, width=self.params['ind_width'], mode=self.params['bin_mode'])
@@ -1257,47 +1273,37 @@ class Target:
         mask = np.ma.getmask(np.ma.masked_outside(self.bin_freq, self.params['ps_mask'][0], self.params['ps_mask'][1]))
         self.bin_freq, self.bin_pow, self.bin_err = self.bin_freq[mask], self.bin_pow[mask], self.bin_err[mask]
         # Estimate white noise level
-        self.get_white_noise()
+        self.estimate_white_noise()
         # Get initial guesses for the optimization of the background model
-        self.estimate_initial_red()
+        self.estimate_red_noise()
 
 
-    def get_white_noise(self):
-        """
+    def estimate_white_noise(self):
+        """Estimate white noise
 
         Estimate the white noise level by taking the mean of the last 10% of the power spectrum
-
-        Attributes
-            noise : float
-                estimate of white or frequency-independent noise level
 
         """
         mask = (self.frequency > (max(self.frequency)-0.1*max(self.frequency)))&(self.frequency < max(self.frequency))
         self.params['noise'] = np.mean(self.random_pow[mask])
 
 
-    def estimate_initial_red(self, box_filter=1.0, n_rms=20,):
-        """
+    def estimate_red_noise(self, box_filter=1.0, n_rms=20,):
+        """Estimate red noise
 
         Estimates amplitudes of red noise components by using a smoothed version of the power
         spectrum with the power excess region masked out -- which will take the mean of a specified 
         number of points (via -nrms, default=20) for each Harvey-like component
 
         Parameters
-            box_filter : float
-                the size of the 1D box smoothing filter (default = `1.0` :math:`\rm \mu Hz`)
-            n_rms : int
-                number of data points to estimate red noise contributions (default = `20`)
+            box_filter : float, default=1.0
+                the size of the 1D box smoothing filter
+            n_rms : int, default=20
+                number of data points to average over to estimate red noise amplitudes 
 
         Attributes
             smooth_pow : numpy.ndarray
                 smoothed power spectrum after applying the box filter
-            guesses : numpy.ndarray
-                initial guesses for background model fitting
-            a : List[float]
-                initial guesses for the amplitudes of all Harvey components
-            a_orig : numpy.ndarray
-                copy of the original guesses for Harvey amplitudes
 
 
         """
@@ -1323,32 +1329,35 @@ class Target:
 
 
     def model_background(self, n_laws=None, fix_wn=False, basis='tau_sigma',):
-        """
-        Determines the best-fit model for the stellar granulation background in the power spectrum
-        by iterating through several models, where the initial guess for the number of Harvey-like 
-        component(s) to model is estimated from a solar scaling relation.
+        """Model stellar background
+
+        If nothing is fixed, this method iterates through :math:`2\\dot(n_{\\mathrm{laws}}+1)` 
+        models to determine the best-fit background model due to stellar granulation processes,
+        which uses a solar scaling relation to estimate the number of Harvey-like component(s) 
+        (or `n_laws`)
 
         Parameters
-            n_laws : int
-                force number of Harvey-like components in background fit (default = `None`)
-            fix_wn : bool
-                fix the white noise level in the background fit (default = `False`)
-            basis : str
-                which basis to use for background fitting, e.g. {a,b} parametrization (default = `tau_sigma`) **Note:** not yet operational
+            n_laws : int, default=None
+                specify number of Harvey-like components to use in background fit 
+            fix_wn : bool, default=False
+                option to fix the white noise instead of it being an additional free parameter 
+            basis : str, default='tau_sigma'
+                which basis to use for background fitting, e.g. {a,b} parametrization **TODO: not yet operational**
 
-        Attributes
-            bounds : list
-                the parameter bounds for a given model
-            bic : list
-                the BIC statistic
-            aic : list
-                the AIC statistic
-            paras : list
-                the best-fit parameters for a given model 
+        Methods
+            - :mod:`pysyd.models.background`
+            - :mod:`scipy.curve_fit`
+            - :mod:`pysyd.models._compute_aic`
+            - :mod:`pysyd.models._compute_bic`
+            - :mod:`pysyd.target.Target.correct_background`
 
         Returns
-            return : bool
-                will return `True` if fitting failed and the iteration must be repeated, otherwise `False`.
+            converge : bool
+                returns `False` if background model fails to converge
+
+        Raises
+            PySYDProcessingError
+                if this failed to converge on a single model during the first iteration
 
 
         """
@@ -1426,24 +1435,21 @@ class Target:
 
 
     def correct_background(self, metric='bic'):
-        """
-        Saves information on the selected best-fit background model, corrects for this
-        in the power spectrum (i.e. :term:`background-corrected power spectrum`), and saves
-        a copy to :ref:`starid_bg_corr.txt <library-output-files-text-bgcorrps>`
+        """Correct background
+
+        Corrects for the stellar background contribution in the power spectrum by dividing
+        this out (`bg_corr`, :term:`background-corrected power spectrum`) and saves a copy
+        to :ref:`ID_bg_corr.txt <library-output-files-text-bgcorrps>`
         
         Parameters
-            metric : str
-                which metric to use (i.e. bic or aic) for model selection (default = `'bic'`)
+            metric : str, default='bic'
+                which metric to use (i.e. bic or aic) for model selection
 
         Attributes
             bg_corr : numpy.ndarray
                 background-corrected power spectrum -> currently background-DIVIDED
-            model : int
-                selected best-fit background model
-            pars : numpy.ndarray
-                derived parameters for best-fit background model
 
-        .. seealso:: :mod:`pysyd.target.Target.model_background`
+        .. seealso:: :mod:`pysyd.target.Target.get_background`
 
 
         """
@@ -1480,16 +1486,17 @@ class Target:
             self.params['results'][self.module]['white'].append(self.params['pars'][-1])
 
 
-    def get_background(self):
-        """
+    def estimate_background(self):
+        """Get background
 
-        Calculates the red noise levels in a power spectrum due to the background 
-        stellar contribution
+        Attempts to recover background model parameters in later iterations by using the
+        :mod:`scipy.curve_fit` module using the same best-fit background model settings 
 
         Returns
-            return : bool
-                returns `True` if model converges
-   
+            converge : bool
+                returns `False` if background model fails to converge
+
+        .. seealso:: :mod:`pysyd.target.Target.correct_background`
      
         """
         if self.params['background']:
@@ -1516,18 +1523,28 @@ class Target:
             self.params['pars'] = ([self.params['noise']])
 
 
-    def get_numax_smooth(self, sm_par=None,):
-        """
-        Smooth :math:`\\nu_{\\mathrm{max}}`
+    def estimate_numax_smooth(self, sm_par=None,):
+        """Smooth :math:`\\nu_{\\mathrm{max}}`
 
         Estimate numax taking the peak of the smoothed power spectrum
 
-        Attributes
-            pssm
-            pssm_bgcorr
-            obs_numax
-            exp_dnu
+        Parameters
+            sm_par : float, optional
+                smoothing width for power spectrum calculated from solar scaling relation (typically ~1-4)
 
+        Attributes
+            pssm : numpy.ndarray
+                smoothed power spectrum
+            pssm_bgcorr : numpy.ndarray
+                smoothed :term:`background-subtracted power spectrum`
+            region_freq : numpy.ndarray
+                copy of the frequency array after applying the mask~[lower_ps,upper_ps]
+            region_pow : numpy.ndarray
+                copy of the smoothed background-subtracted power spectrum after applying the mask~[lower_ps,upper_ps]
+            obs_numax : float
+                the 'observed' numax (i.e. the peak of the smoothed power spectrum)
+            exp_dnu : float
+                the 'expected' dnu based on a scaling relation using the `obs_numax`
 
         """
         # Smoothing width for determining numax
@@ -1549,15 +1566,19 @@ class Target:
         self.params['exp_dnu'] = utils.delta_nu(self.params['obs_numax'])
 
 
-    def get_numax_gaussian(self):
-        """
-        Gaussian :math:`\\nu_{\\mathrm{max}}`
+    def estimate_numax_gaussian(self):
+        """Gaussian :math:`\\nu_{\\mathrm{max}}`
 
-        Estimate numax by fitting a Gaussian to the power spectrum and adopting the center value
-    
-        Attributes
-            new_freq
-            numax_fit
+        Estimate numax by fitting a Gaussian to the "zoomed-in" power spectrum (i.e. `region_freq`
+        and `region_pow`) using :mod:`scipy.curve_fit`
+
+        Returns
+            converge : bool
+                returns `False` if background model fails to converge
+
+        Raises
+            PySYDProcessingError
+                if the Gaussian fit does not converge for the first step
 
 
         """
@@ -1580,23 +1601,27 @@ class Target:
             self.params['results'][self.module]['FWHM'].append(gauss[3])
 
 
-    def compute_acf(self, fft=True, smooth_ps=2.5, ps_mask=None,):
-        """
-        Compute the ACF of the smooth background corrected power spectrum.
+    def compute_acf(self, fft=True, smooth_ps=2.5,):
+        """Compute the ACF
+
+        Compute the autocorrelation function (:term:`ACF`) of the background-divided power 
+        spectrum (i.e. `bg_corr`), with an option to smooth the :term:`BCPS` first
 
         Parameters
             fft : bool, default=True
                 if `True`, uses FFTs to compute the ACF, otherwise it will use :mod:`numpy.correlate`
             smooth_ps : float, optional
                 convolve the background-corrected PS with a box filter of this width (:math:`\\rm \\mu Hz`)
-            ps_mask : List[lower,upper]
-                region of power spectrum used to compute ACF
 
         Attributes
-            bgcorr_smooth : numpy.ndarray        
-            lag
-            auto
-
+            guess : float
+                uses estimate for dnu if provided in advance
+            bgcorr_smooth : numpy.ndarray
+                smoothed background-corrected power spectrum if `smooth_ps != 0` else copy of `bg_corr`     
+            lag : numpy.ndarray
+                frequency spacing array or lag (x-axis) of ACF
+            auto : numpy.ndarray
+                autocorrelation function array
 
         """
         if self.params['dnu'] is not None:
@@ -1612,7 +1637,7 @@ class Target:
         # Use only power near the expected numax to reduce additional noise in ACF
         power = self.bgcorr_smooth[(self.frequency >= self.params['ps_mask'][0])&(self.frequency <= self.params['ps_mask'][1])]
         lag = np.arange(0.0, len(power))*self.params['resolution']
-        if fft:
+        if self.params['fft']:
             auto = np.real(np.fft.fft(np.fft.ifft(power)*np.conj(np.fft.ifft(power))))
         else:
             auto = np.correlate(power-np.mean(power), power-np.mean(power), "full")
@@ -1625,50 +1650,69 @@ class Target:
         self.lag, self.auto = np.copy(lag), np.copy(auto)
 
 
-    def initial_dnu(self, force=None, method='D', n_peaks=10,):
-        """
+    def estimate_dnu(self, n_peaks=10,):
+        """Estimate :math:`\\Delta\\nu`
 
-        More modular functions to estimate dnu on the first iteration given
-        different methods. By default, we have been using a Gaussian weighting
-        centered on the expected value for dnu (determine from the pipeline).
-        One can also "force" or provide a value for dnu.
+        Estimates the large frequency separation (or :math:`\\Delta\\nu') by fitting a 
+        Gaussian to the peak of the ACF using :mod:`scipy.curve_fit`. 
 
         Parameters
-            method : {'M','A','D'}
-                which method to use, where: 
-                 - 'M' == Maryum == scipy's find_peaks module
-                 - 'A' == Ashley == Ashley's module from the functions script
-                 - 'D' == Dennis == weighting technique
-            n_peaks : int
+            n_peaks : int, default=10
                 the number of peaks to identify in the ACF
 
         Attributes
-            peaks_l
-            peaks_a
-            best_lag
-            best_auto
+            peaks_l, peaks_a : numpy.ndarray
+                the n highest peaks (`n_peaks`) in the ACF
+            zoom_lag, zoom_auto : numpy.ndarray
+                cutout from the ACF of the peak near dnu
+
+        Returns
+            converge : bool
+                returns `False` if a Gaussian could not be fit within the `1000` iterations
+
+        Raises
+            PySYDProcessingError
+                if a Gaussian could not be fit to the provided peak
+
+        .. note:: 
+
+           For the first step, a Gaussian weighting (centered on the expected value for dnu, or `exp_dnu`) is 
+           automatically computed and applied by the pipeline to prevent the fit from latching 
+           on to a peak that is a harmonic and not the actual spacing
+
 
         """
-        if self.params['method'] == 'M':
-            # Get peaks from ACF using scipy package
-            peak_idx, _ = find_peaks(self.auto)
-            peaks_l0, peaks_a0 = self.lag[peak_idx], self.auto[peak_idx]
-            # Pick n highest peaks
-            self.peaks_l, self.peaks_a = utils.max_elements(peaks_l0, peaks_a0, npeaks=self.params['n_peaks'])
-        elif self.params['method'] == 'A':
-            # Get peaks from ACF using Ashley's module 
-            self.peaks_l, self.peaks_a = utils.max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'])
-        elif self.params['method'] == 'D':
+        if self.i == 0:
             # Get peaks from ACF by providing dnu to weight the array (aka Dennis' routine)
             self.peaks_l, self.peaks_a = utils.max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], exp_dnu=self.guess)
+            # Pick "best" peak in ACF (i.e. closest to expected dnu)
+            idx = utils.return_max(self.peaks_l, self.peaks_a, index=True, exp_dnu=self.guess)
+            self.params['best_lag'], self.params['best_auto'] = self.peaks_l[idx], self.peaks_a[idx]
+            self.get_acf_cutout()
+        self.zoom_lag = self.lag[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
+        self.zoom_auto = self.auto[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
+        # fit a Gaussian to the peak to estimate dnu
+        try:
+            gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'], maxfev=1000)
+        # did the fit converge
+        except RuntimeError:
+            self.converge = False
+            if self.i == 0:
+            # Raise error if it's the first step
+                raise utils.PySYDProcessingError("Gaussian fit for dnu failed to converge.\n\nPlease check your power spectrum and try again.")
+        # if fit converged, save appropriate results
         else:
-            pass
-        # Pick "best" peak in ACF (i.e. closest to expected dnu)
-        idx = utils.return_max(self.peaks_l, self.peaks_a, index=True, exp_dnu=self.guess)
-        self.params['best_lag'], self.params['best_auto'] = self.peaks_l[idx], self.peaks_a[idx]
+            self.params['results'][self.module]['dnu'].append(gauss[2]) 
+            if self.i == 0:
+                self.params['obs_dnu'] = gauss[2]
+                self.params['plotting'][self.module].update({'obs_dnu':gauss[2], 
+                  'new_lag':np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), 
+                  'dnu_fit':models.gaussian(np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), *gauss),})
+                self.make_echelle()
+                self.get_ridges()
 
 
-    def get_acf_cutout(self, threshold=1.0, acf_mask=None,):
+    def get_acf_cutout(self, threshold=1.0,):
         """
 
         Gets the region in the ACF centered on the correct peak to prevent pySYD
@@ -1678,19 +1722,7 @@ class Target:
             threshold : float
                 the threshold is multiplied by the full-width half-maximum value, centered on the peak 
                 in the ACF to determine the width of the cutout region
-            acf_mask : List[float,float]
-                limits (i.e. lower, upper) to use for ACF "cutout"
 
-        Attributes
-            zoom_lag
-            zoom_auto
-            acf_guesses
-            acf_bb
-            obs_dnu
-            new_lag
-            dnu_fit
-            obs_acf
-       
 
         """
         # Calculate FWHM
@@ -1708,78 +1740,18 @@ class Target:
             right_auto = self.auto[-1]
         # Lag limits to use for ACF mask or "cutout"
         self.params['acf_mask']=[self.params['best_lag']-(self.params['best_lag']-left_lag)*self.params['threshold'], self.params['best_lag']+(right_lag-self.params['best_lag'])*self.params['threshold']]
-        self.zoom_lag = self.lag[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
-        self.zoom_auto = self.auto[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
+        zoom_lag = self.lag[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
+        zoom_auto = self.auto[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
         # Boundary conditions and initial guesses stay the same for all iterations
-        self.params['acf_guesses'] = [np.mean(self.zoom_auto), self.params['best_auto'], self.params['best_lag'], self.params['best_lag']*0.01*2.]
-        self.params['acf_bb'] = ([-np.inf,0.,min(self.zoom_lag),10**-2.],[np.inf,np.inf,max(self.zoom_lag),2.*(max(self.zoom_lag)-min(self.zoom_lag))]) 
-        # Fit a Gaussian function to the selected peak in the ACF to get dnu
-        try:
-            gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'], maxfev=1000)
-        except RuntimeError as _:
-            raise ProcessingError("Gaussian fit for dnu failed to converge.\n\nPlease check your power spectrum and try again.")
-        else:
-            self.params['results'][self.module]['dnu'].append(gauss[2])
-            self.params['obs_dnu'] = gauss[2]
-            # Save for plotting
-            self.params['plotting'][self.module].update({'obs_dnu':gauss[2], 
-              'new_lag':np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), 
-              'dnu_fit':models.gaussian(np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), *gauss),})
+        self.params['acf_guesses'] = [np.mean(zoom_auto), self.params['best_auto'], self.params['best_lag'], self.params['best_lag']*0.01*2.]
+        self.params['acf_bb'] = ([-np.inf,0.,min(zoom_lag),10**-2.],[np.inf,np.inf,max(zoom_lag),2.*(max(zoom_lag)-min(zoom_lag))]) 
 
 
-    def get_ridges(self, clip_value=3.0,):
-        """
+    def make_echelle(self, smooth_ech=None, nox=None, noy='0+0', hey=False, npb=10, nshift=0, clip_value=3.0,):
+        """Echelle diagram
 
-        Determine the best frequency spacing by determining which forms the "best"
-        ridges -- TODO: still under development
-
-        Parameters
-            clip_value : float, default=3.0
-                lower limit of distance modulus 
-
-        Attributes
-            xax : numpy.ndarray
-                x-axis for collapsed ED ~[0, :math:`2\\times\\Delta\\nu`]
-            yax : numpy.ndarray
-                y-axis of collapsed ED == marginalized power (along y axis)
-            zz : numpy.meshgrid
-                copy of flattened (smoothed+summed) 2d power for ED
-            z : numpy.meshgrid
-                smoothed + summed 2d power for echelle diagram
-
-        .. important:: need to optimize this - currently does nothing
-
-
-        """
-        self.echelle()
-        copy = self.z.flatten()
-        n = int(np.ceil(self.params['obs_dnu']/self.params['resolution']))
-        xax = np.linspace(0.0, self.params['obs_dnu'], n)
-        yax = np.zeros_like(xax)
-        modx = self.frequency%self.params['obs_dnu']
-        for k in range(n-1):
-            mask = (modx >= xax[k])&(modx < xax[k+1])
-            if self.bg_corr[mask] != []:
-                xax[k] = np.median(modx[mask])
-                yax[k] = np.sum(self.bg_corr[mask])
-        mask = np.ma.getmask(np.ma.masked_where(yax == 0.0, yax))
-        xax, yax = xax[~mask], yax[~mask]
-        self.xax = np.array(xax.tolist()+list(xax+self.params['obs_dnu']))
-        self.yax = np.array(list(yax)+list(yax))-min(yax)
-        # Clip ED by 3x the median (default)
-        if int(np.ceil(self.params['clip_value'])) != 0:
-            cut = np.nanmedian(copy)+(self.params['clip_value']*np.nanmedian(copy))
-            copy[copy >= cut] = cut
-        self.zz = copy
-        self.z = copy.reshape((self.z.shape[0], self.z.shape[1]))
-        self = utils.save_plotting(self)
-        self.i += 1
-
-
-    def echelle(self, smooth_ech=None, nox=None, noy='0+0', hey=False, npb=10, nshift=0,):
-        """
-
-        Creates the necessary arrays to make an :term:`echelle diagram`
+        Calculates everything required to plot an :term:`echelle diagram` **Note:** this does not
+        currently have the `get_ridges` method attached (i.e. not optimizing the spacing or stepechelle)
 
         Parameters
             smooth_ech : float, default=None
@@ -1794,17 +1766,14 @@ class Target:
                 number of orders to shift echelle diagram (i.e. + is up, - is down)
             hey : bool, default=False
                 plugin for Dan Hey's echelle package **(not currently implemented)**
+            clip_value : float, default=3.0
+                to clip any peaks higher than Nx the median value
 
         Attributes
-            x : numpy.ndarray
-                folded frequencies (x-axis) for echelle diagram
-            y : numpy.ndarray
-                frequency array (y-axis) for echelle diagram
-            z : numpy.meshgrid
+            ed : numpy.meshgrid
                 smoothed + summed 2d power for echelle diagram
             extent : List[float]
-                extent == [min(x), max(x), min(y), max(y)]
-
+                bounding box for echelle diagram
 
         """
         if self.params['smooth_ech'] is not None:
@@ -1829,42 +1798,61 @@ class Target:
             nx = int(np.ceil(self.params['obs_dnu']/self.params['resolution']/self.params['npb']))
         else:
             nx = int(self.params['nox'])
-        self.x = np.linspace(0.0, 2*self.params['obs_dnu'], 2*nx+1)
+        x = np.linspace(0.0, 2*self.params['obs_dnu'], 2*nx+1)
         yy = np.arange(min(self.frequency),max(self.frequency),self.params['obs_dnu'])
         lower = self.params['obs_numax']-(self.params['obs_dnu']*(ny/2.))+(self.params['obs_dnu']*(nshift+0))
         upper = self.params['obs_numax']+(self.params['obs_dnu']*(ny/2.))+(self.params['obs_dnu']*(nshift+1))
-        self.y = yy[(yy >= lower)&(yy <= upper)]
+        y = yy[(yy >= lower)&(yy <= upper)]
         z = np.zeros((ny+1,2*nx))
         for i in range(1,ny+1):
-            y_mask = ((self.frequency >= self.y[i-1]) & (self.frequency < self.y[i]))
+            y_mask = ((self.frequency >= y[i-1]) & (self.frequency < y[i]))
             for j in range(nx):
-                x_mask = ((self.frequency%(self.params['obs_dnu']) >= self.x[j]) & (self.frequency%(self.params['obs_dnu']) < self.x[j+1]))
-                if smooth_y[x_mask & y_mask] != []:
+                x_mask = ((self.frequency%(self.params['obs_dnu']) >= x[j]) & (self.frequency%(self.params['obs_dnu']) < x[j+1]))
+                if smooth_y[x_mask & y_mask]:
                     z[i][j] = np.sum(smooth_y[x_mask & y_mask])
                 else:
                     z[i][j] = np.nan
         z[0][:nx], z[-1][nx:] = np.nan, np.nan
         for k in range(ny):
             z[k][nx:] = z[k+1][:nx]
-        self.z = np.copy(z)
-        self.extent = [min(self.x),max(self.x),min(self.y),max(self.y)]
+        self.ed = np.copy(z)
+        self.extent = [min(x),max(x),min(y),max(y)]
+        # make copy of ED to flatten and clip outliers
+        ed_copy = self.ed.flatten()
+        if int(np.ceil(self.params['clip_value'])) != 0:
+            cut = np.nanmedian(ed_copy)+(self.params['clip_value']*np.nanmedian(ed_copy))
+            ed_copy[ed_copy >= cut] = cut
+        self.ed = ed_copy.reshape((self.ed.shape[0], self.ed.shape[1]))
 
 
-    def estimate_dnu(self):
+    def get_ridges(self,):
+        """Get ridges
+
+        Optimizes the large frequency separation by determining which spacing creates the
+        "best" ridges (but is currently under development) think similar to a step-echelle
+        but quicker and more hands off?
+
+        Attributes
+            x : numpy.ndarray
+                x-axis for the collapsed ED ~[0, :math:`2\\times\\Delta\\nu`]
+            y : numpy.ndarray
+                marginalized power along the y-axis (i.e. collapsed on to the x-axis)
+
+        .. important:: need to optimize this - currently does nothing really
+
         """
-
-        Estimates the spacing (:math:`\\Delta\\nu`) by fitting a Gaussian to the relevant
-        peak in the autocorrelation function (:term:`ACF`)
-
-        """
-        # define the peak in the ACF
-        self.zoom_lag = self.lag[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
-        self.zoom_auto = self.auto[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
-        # fit a Gaussian function to the selected peak in the ACF
-        try:
-            gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'], maxfev=1000)
-        except RuntimeError:
-            self.converge = False
-        else:
-            # the center of that Gaussian is our estimate for Dnu
-            self.params['results'][self.module]['dnu'].append(gauss[2]) 
+        n = int(np.ceil(self.params['obs_dnu']/self.params['resolution']))
+        xx = np.linspace(0.0, self.params['obs_dnu'], n)
+        yy = np.zeros_like(xx)
+        modx = self.frequency%self.params['obs_dnu']
+        for k in range(n-1):
+            mask = (modx >= xx[k])&(modx < xx[k+1])
+            if self.bg_corr[mask]:
+                xx[k] = np.median(modx[mask])
+                yy[k] = np.sum(self.bg_corr[mask])
+        mask = np.ma.getmask(np.ma.masked_where(yy == 0.0, yy))
+        xx, yy = xx[~mask], yy[~mask]
+        self.x = np.array(xx.tolist()+list(xx+self.params['obs_dnu']))
+        self.y = np.array(list(yy)+list(yy))-min(yy)
+        self = utils.save_plotting(self)
+        self.i += 1

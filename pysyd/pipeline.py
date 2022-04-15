@@ -286,5 +286,4 @@ def test(args):
     for star in ['1435467', '2309595', '11618103']:
         print('KIC %s\n%s\n'%(star, '-'*(len(star)+4)))        
         answers = examples[star]['results']
-    print('\n####################################################################\n#                   Test(s) successfully completed.                    #')
-
+    print('####################################################################\n#                                                                  #\n#                   TESTING SUCCESSFULLY COMPLETED                 #\n#                                                                  #\n####################################################################\n')

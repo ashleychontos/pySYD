@@ -169,8 +169,8 @@ def main():
 ####
 
     estimate = main_parser.add_argument_group('Estimate parameters')
-    estimate.add_argument('-e', '--est', '--excess',
-                          dest='excess',
+    estimate.add_argument('-e', '--est', '--estimate',
+                          dest='estimate',
                           help='Turn off the optional module that estimates numax',
                           default=True,
                           action='store_false',
@@ -289,7 +289,7 @@ def main():
                             default=None, 
                             type=int,
     )
-    background.add_argument('-f', '--fix', '--fixwn',
+    background.add_argument('-w', '--wn', '--fixwn',
                             dest='fix_wn',
                             help='Fix the white noise level',
                             default=False,
@@ -373,19 +373,18 @@ def main():
                        type=float,
                        default=2.5,
     )
+    globe.add_argument('-f', '--fft',
+                       dest='fft',
+                       help='Use :mod:`numpy.correlate` instead of fast fourier transforms to compute the ACF',
+                       default=True,
+                       action='store_false',
+    )
     globe.add_argument('--thresh', '--threshold',
                        metavar='float', 
                        dest='threshold',
                        help='fractional value of FWHM to use for ACF',
                        default=1.0,
                        type=float,
-    )
-    globe.add_argument('--method',
-                       metavar='str',
-                       dest='method',
-                       help='method to use to determine dnu, ~[M, A, D] **development purposes only**',
-                       default='D',
-                       type=str,
     )
     globe.add_argument('--peak', '--peaks', '--npeaks',
                        metavar='int', 
@@ -430,7 +429,7 @@ def main():
     plotting.add_argument('--cm', '--color', 
                          metavar='str',
                          dest='cmap',
-                         help='Change colormap of ED, which is `binary` by default.',
+                         help='Change colormap of ED, which is `binary` by default',
                          default='binary', 
                          type=str,
     )

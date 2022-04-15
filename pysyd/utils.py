@@ -260,7 +260,7 @@ class Parameters(Constants):
 
 
         """
-        # Initialize parameters for the find excess routine
+        # Initialize parameters for the estimate routine
         self.get_estimate()
         # Initialize parameters for the fit background routine
         self.get_background()
@@ -271,14 +271,14 @@ class Parameters(Constants):
         self.params.update({'n_threads':n_threads})
 
 
-    def get_estimate(self, excess=True, smooth_width=10.0, binning=0.005, bin_mode='mean', 
+    def get_estimate(self, estimate=True, smooth_width=10.0, binning=0.005, bin_mode='mean', 
                      step=0.25, n_trials=3, ask=False, lower_ex=1.0, upper_ex=8000.0,):
         """
     
-        Get the parameters for the find excess routine.
+        Get the parameters for the estimate routine
 
         Parameters
-            excess : bool, optional
+            estimate : bool, optional
                 disable the module that estimates numax
             smooth_width: float, optional
                 box filter width (in :math:`\rm \mu Hz`) to smooth power spectrum
@@ -305,7 +305,7 @@ class Parameters(Constants):
 
         """
         estimate = dict(
-            excess = excess,
+            estimate = estimate,
             smooth_width = smooth_width,
             binning = binning,
             bin_mode = bin_mode,
@@ -371,7 +371,7 @@ class Parameters(Constants):
 
 
     def get_global(self, globe=True, numax=None, lower_ps=None, upper_ps=None, ex_width=1.0, 
-                   sm_par=None, smooth_ps=2.5, threshold=1.0, method='D', n_peaks=5,):
+                   sm_par=None, smooth_ps=2.5, fft=True, dnu=None, threshold=1.0, n_peaks=10,):
         """
     
         Get defaults for deriving global asteroseismic parameters :math:`\\rm \\nu_{max}` 
@@ -413,6 +413,7 @@ class Parameters(Constants):
             ex_width = ex_width,
             sm_par = sm_par,
             smooth_ps = smooth_ps,
+            fft = fft,
             threshold = threshold,
             method = method,
             n_peaks = n_peaks,
@@ -576,7 +577,7 @@ class Parameters(Constants):
         self.get_info()
         for star in self.params['stars']:
             if self.params[star]['numax'] is not None:
-                self.params[star]['excess'] = False
+                self.params[star]['estimate'] = False
                 if self.params[star]['dnu'] is not None:
                     self.params[star]['force'] = self.params[star]['dnu']
                 self.params[star]['dnu'] = delta_nu(self.params[star]['numax'])

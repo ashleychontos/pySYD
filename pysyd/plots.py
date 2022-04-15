@@ -65,7 +65,7 @@ def select_trial(star):
     plt.style.use(MPLSTYLE)
     n = 1
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Current numax guesses for %s"%star.name, figsize=d[n_panels]['size'])
+    fig = plt.figure("Numax guesses for %s"%star.name, figsize=d[n_panels]['size'])
 
     params = star.params['plotting']['estimates']
     # ACF trials to determine numax
@@ -111,8 +111,8 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
             the pySYD pipeline object
         filename : str
             the path or extension to save the figure to
-        highlight : bool, optional
-            if `True`, highlights the selected estimate
+        highlight : bool, default=True
+            option to highlight the selected estimate
 
     
     """
@@ -122,7 +122,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
         n_panels -= 1
     n = 0
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Estimate numax results for %s"%star.name, figsize=d[n_panels]['size'])
+    fig = plt.figure("Estimates for %s"%star.name, figsize=d[n_panels]['size'])
 
     params = star.params['plotting']['estimates']
     n += 1
@@ -214,6 +214,10 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
             the path or extension to save the figure to
         n_peaks : int
             the number of peaks to highlight in the zoomed-in power spectrum
+
+    .. note::
+
+       **NEW:** will *not* plot an empty panel if the time series data is not provided
 
 
     """
