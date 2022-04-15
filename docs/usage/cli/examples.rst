@@ -3,9 +3,9 @@
 
 .. _user-guide-cli-examples:
 
-************
-CLI examples
-************
+****************
+More CL examples
+****************
 
 This page has command-line examples for the following cases:
 
@@ -192,9 +192,9 @@ the :term:`--nthreads<--nt, --nthread, --nthreads>` command:
 
 .. _user-guide-cli-examples-advanced:
 
-******************
-Advanced CLI usage
-******************
+**************
+Advanced usage
+**************
 
 
 Below are examples of different commands, including their before and after plots to demonstrate
