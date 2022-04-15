@@ -22,7 +22,6 @@ There are three main ways you can install the software:
     **The recommended way to install this package is from PyPI via** `pip`, **since**
     **it will automatically enforce the proper dependencies and versions**
 
------
 
 .. _install-pip:
 
@@ -44,7 +43,6 @@ running the following command:
 
     python setup.py install
 
------
 
 .. _install-conda:
 
@@ -68,7 +66,6 @@ Then activate the environment and install ``pySYD``:
     conda activate astero
     pip install git+https://github.com/ashleychontos/pySYD
 
------
 
 .. _install-git:
 
@@ -90,6 +87,38 @@ The next step is to build and install the project:
 
 which needs to be executed from the top-level directory inside the 
 cloned ``pySYD`` repo.
+
+
+.. _install-test:
+
+Testing 
+*******
+
+You can test your installation by simply using the help command in a terminal
+window, which should display the following output:
+
+::
+
+    $ pysyd --help
+
+    usage: pySYD [-h] [--version] {check,load,parallel,run,setup,test} ...
+
+    pySYD: automated measurements of global asteroseismic parameters
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --version             Print version number and exit.
+
+    pySYD modes:
+      {check,load,parallel,run,setup,test}
+        check               Check data for a target or other relevant information
+        load                Load in data for a given target
+        parallel            Run pySYD in parallel
+        run                 Run the main pySYD pipeline
+        setup               Easy setup of relevant directories and files
+        test                Test different utilities (currently under development)
+
+
 
 -----
 
@@ -128,35 +157,6 @@ Testing
 ^^^^^^^
 
 -----
-
-.. _install-test:
-
-Testing 
-#######
-
-You can test your installation by simply using the help command in a terminal
-window, which should display the following output:
-
-::
-
-    $ pysyd --help
-
-    usage: pySYD [-h] [--version] {check,load,parallel,run,setup,test} ...
-
-    pySYD: automated measurements of global asteroseismic parameters
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      --version             Print version number and exit.
-
-    pySYD modes:
-      {check,load,parallel,run,setup,test}
-        check               Check data for a target or other relevant information
-        load                Load in data for a given target
-        parallel            Run pySYD in parallel
-        run                 Run the main pySYD pipeline
-        setup               Easy setup of relevant directories and files
-        test                Test different utilities (currently under development)
 
 
 -----

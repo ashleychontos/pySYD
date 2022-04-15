@@ -4,10 +4,10 @@
 Introduction & help
 *******************
 
-As we have alluded to throughout the documentation, `pySYD` was initially intended to be 
-ran as a command-line tool -- which means that the software is optimized for this usage and 
-therefore, has many of the best defaults already in place. Here, "best" just means that the 
-setup is what works *best* for a majority of stars. 
+As we have alluded to throughout the documentation, `pySYD` was intended to be used through 
+its command-line interface (CLI) -- which means that the software is specifically optimized 
+for this usage and hence, nearly all parameters/options likely have the best defaults already
+set. Here, "best" just means that the setup is what works *best* for a majority of stars. 
 
 However, that does not necessarily mean that your star(s) or setting(s) are expected to 
 conform or adhere to these settings. In fact, we recommend playing around with some of the 
@@ -16,18 +16,18 @@ analyses.
 
 .. note:: 
 
-   Please keep in mind that we have extensively tested most (if not all) options but we are 
-   constantly adding new ones, which ultimately might break something. If this happens, we 
+   Please keep in mind that, while we have extensively tested a majority of our options, we are 
+   continuously adding new ones and ultimately, something might break. If this happens, we 
    encourage you to submit an issue here and thank you in advance for your help!
 
 -----
 
-Command-line help
-#################
+CLI help
+########
 
-To give you a glimpse into the insanely large amount of available features, open up a terminal
-window and run the help command for the main pipeline mode, `run` (aka :mod:`pysyd.pipeline.run`), 
-since this mode inherits all command-line parsers:
+To give you a glimpse into the insanely large amount of available options, open up a terminal
+window and enter the help command for the main pipeline execution (`run` aka :mod:`pysyd.pipeline.run`), 
+since this mode inherits all command-line parsers.
 
 .. code-block::
 
@@ -51,34 +51,36 @@ since this mode inherits all command-line parsers:
     optional arguments:
       -h, --help            show this help message and exit
 
-This was actually just a teaser! If you ran it from your end, you probably noticed an 
-output that was a factor of ~5-10 longer! It may seem like an overwhelming amount but 
-do not fret, this is for good reason -- and that's to make your asteroseismic experience 
-as customized as possible.
+This was actually just a teaser! 
+
+If you ran it from your end, you probably noticed an output that was a factor of ~5-10 longer! 
+It may seem like an overwhelming amount but do not fret, this is for good reason -- and that's 
+to make your asteroseismic experience as customized as possible.
 
 **Note:** As you are navigating this page, keep in mind that we also have a special 
 :ref:`glossary <usage-cli-glossary>` for all our command-line options. This includes everything
 from the variable type, default value and relevant units to how it's stored within the 
 software itself. These glossary links are provided at the bottom of each relevant section.
 
-Jump to:
-********
+We have broken everything up into smaller groups that are related through some appropriate means.
+For example, all parameters related to the loading and manipulating of data are grouped together 
+in its own `data_analysis` :ref:`parser <user-guide-intro-data>`. However the main parser, which 
+is used any time a star is processed, is enormous and therefore we've grouped subparsers by relevant 
+steps (e.g., :ref:`background <user-guide-intro-bg>` and :ref:`global <user-guide-intro-globe>` fits). 
+Ultimately we hope this will make it a bit easier to ingest!
 
-We have broken up the parsers and commands by relevant groups (and/or analyses) to make it 
-easier to understand:
-
- - :ref:`high-level functions <user-guide-cli-help-high>`
- - :ref:`data analyses <user-guide-cli-help-data>`
- - :ref:`estimate initial values <user-guide-cli-help-est>`
- - :ref:`background fit <user-guide-cli-help-bg>`
- - :ref:`global fit <user-guide-cli-help-globe>`
- - :ref:`plotting <user-guide-cli-help-plot>`
- - :ref:`estimate uncertainties <user-guide-cli-help-mc>`
- - :ref:`parallel processing <user-guide-cli-help-pp>`
+ - :ref:`high-level functions <user-guide-intro-high>`
+ - :ref:`data analyses <user-guide-into-data>`
+ - :ref:`search & estimate <user-guide-intro-est>`
+ - :ref:`background fit <user-guide-intro-bg>`
+ - :ref:`global fit <user-guide-intro-globe>`
+ - :ref:`plotting <user-guide-intro-plot>`
+ - :ref:`estimate uncertainties <user-guide-intro-mc>`
+ - :ref:`parallel processing <user-guide-intro-pp>`
 
 -----
 
-.. _user-guide-cli-help-high:
+.. _user-guide-intro-high:
 
 High-level functions
 ####################
@@ -106,14 +108,17 @@ used very sparingly.
      -v, --verbose         Turn off verbose output
 
 **Glossary terms:** :term:`--cli<--cli>`, :term:`--file<--file, --list, --todo>`, 
-:term:`--in<--in, --input, --inpdir>`, :term:`--info<--info, --information>`, :term:`--information<--info, --information>`, 
-:term:`--inpdir<--in, --input, --inpdir>`, :term:`--input<--in, --input, --inpdir>`, :term:`--list<--file, --list, --todo>`, 
-:term:`--notebook<--notebook>`, :term:`--out<--out, --output, --outdir>`, :term:`--outdir<--out, --output, --outdir>`, :term:`--output<--out, --output, --outdir>`, 
-:term:`--todo<--file, --list, --todo>`, :term:`-v<-v, --verbose>`, :term:`--verbose<-v, --verbose>`
+:term:`--in<--in, --input, --inpdir>`, :term:`--info<--info, --information>`, 
+:term:`--information<--info, --information>`, :term:`--inpdir<--in, --input, --inpdir>`, 
+:term:`--input<--in, --input, --inpdir>`, :term:`--list<--file, --list, --todo>`, 
+:term:`--notebook<--notebook>`, :term:`--out<--out, --output, --outdir>`, 
+:term:`--outdir<--out, --output, --outdir>`, :term:`--output<--out, --output, --outdir>`, 
+:term:`--todo<--file, --list, --todo>`, :term:`-v<-v, --verbose>`, 
+:term:`--verbose<-v, --verbose>`
 
 -----
 
-.. _user-guide-cli-help-data:
+.. _user-guide-intro-data:
 
 Initial data analyses
 #####################
@@ -155,23 +160,25 @@ the data as well as which modules to run.
                            modes
 
 **Glossary terms:**  
-:term:`-e<-e, --est, --estimate>`, :term:`--est<-e, --est, --estimate>`, :term:`--estimate<-e, --est, --estimate>`, 
-:term:`-k<-k, --kc, --kepcorr>`, :term:`--kc<-k, --kc, --kepcorr>`, :term:`--kepcorr<-k, --kc, --kepcorr>`, 
-:term:`-o<-o, --overwrite>`, :term:`--of<--of, --over, --oversample>`, :term:`--over<--of, --over, --oversample>`, 
-:term:`--oversample<--of, --over, --oversample>`, :term:`--overwrite<-o, --overwrite>`, :term:`-s<-s, --save>`, 
-:term:`--save<-s, --save>`, :term:`--star<--star, --stars>`, :term:`--stars<--star, --stars>`, 
-:term:`--stitch<-x, --stitch, --stitching>`, :term:`--stitching<-x, --stitch, --stitching>`,
-:term:`-x<-x, --stitch, --stitching>`
+:term:`-e<-e, --est, --estimate>`, :term:`--est<-e, --est, --estimate>`, 
+:term:`--estimate<-e, --est, --estimate>`, :term:`-k<-k, --kc, --kepcorr>`, 
+:term:`--kc<-k, --kc, --kepcorr>`, :term:`--kepcorr<-k, --kc, --kepcorr>`, :term:`-o<-o, --overwrite>`, 
+:term:`--of<--of, --over, --oversample>`, :term:`--over<--of, --over, --oversample>`, 
+:term:`--oversample<--of, --over, --oversample>`, :term:`--overwrite<-o, --overwrite>`, 
+:term:`-s<-s, --save>`, :term:`--save<-s, --save>`, :term:`--star<--star, --stars>`, 
+:term:`--stars<--star, --stars>`, :term:`--stitch<-x, --stitch, --stitching>`, 
+:term:`--stitching<-x, --stitch, --stitching>`, :term:`-x<-x, --stitch, --stitching>`
 
 -----
 
-.. _user-guide-cli-help-est:
+.. _user-guide-intro-est:
 
-Estimates
-#########
+Identify & estimate
+###################
 
-The following options are relevant for the first, optional module that is designed
-to estimate numax if it is not known: 
+The following options are relevant for the first, optional module that is designed to search
+for power excess due to solar-like oscillations and estimate rough starting points for its
+main properties.
 
 .. code-block::
 
@@ -195,12 +202,12 @@ to estimate numax if it is not known:
 :term:`--binning<--bin, --binning>`, :term:`--bm<--bm, --mode, --bmode>`, :term:`--bmode<--bm, --mode, --bmode>`, 
 :term:`--lowerx<--lx, --lowerx>`, :term:`--lx<--lx, --lowerx>`, :term:`--mode<--bm, --mode, --bmode>`, 
 :term:`--ntrials<--trials, --ntrials>`, :term:`--step<--step, --steps>`, :term:`--steps<--step, --steps>`, 
-:term:`--sw<--sw, --smoothwidth>`, :term:`--smoothwidth<--sw, --smoothwidth>`, :term:`--trials<--trials, --ntrials>`, 
-:term:`--upperx<--ux, --upperx>`, :term:`--ux<--ux, --upperx>`
+:term:`--sw<--sw, --smoothwidth>`, :term:`--smoothwidth<--sw, --smoothwidth>`, 
+:term:`--trials<--trials, --ntrials>`, :term:`--upperx<--ux, --upperx>`, :term:`--ux<--ux, --upperx>`
 
 -----
 
-.. _user-guide-cli-help-bg:
+.. _user-guide-intro-bg:
 
 Background fit
 ##############
@@ -222,7 +229,6 @@ Below is a complete list of parameters relevant to the background-fitting routin
      --rms int, --nrms int
                            Number of points to estimate the amplitude of red-
                            noise component(s)
-     -f, --fix, --fixwn    Fix the white noise level
      --laws int, --nlaws int
                            Force number of red-noise component(s)
      --metric str          Which model metric to use, choices=['bic','aic']
@@ -230,24 +236,26 @@ Below is a complete list of parameters relevant to the background-fitting routin
                            Lower frequency limit of PS
      --ub [float [float ...]], --upperb [float [float ...]]
                            Upper frequency limit of PS
+     -w, --wn, --fixwn     Fix the white noise level
 
 **Glossary terms:** :term:`-b<-b, --bg, --background>`, :term:`--background<-b, --bg, --background>`, 
 :term:`--bg<-b, --bg, --background>`, :term:`--basis`, :term:`--bf<--bf, --box, --boxfilter>`, 
 :term:`--box<--bf, --box, --boxfilter>`, :term:`--boxfilter<--bf, --box, --boxfilter>`, 
 :term:`--fixwn<-w, --wn, --fixwn>`, :term:`--iw<--iw, --indwidth>`, :term:`--indwidth<--iw, --indwidth>`, 
-:term:`--laws<--laws, --nlaws>`, :term:`--lb<--lb, --lowerb>`, :term:`--lowerb<--lb, --lowerb>`, :term:`--metric`, 
-:term:`--nrms<--rms, --nrms>`, :term:`--rms<--rms, --nrms>`, :term:`--nlaws<--laws, --nlaws>`, 
-:term:`--ub<--ub, --upperb>`, :term:`--upperb<--ub, --upperb>`, :term:`-w<-w, --wn, --fixwn>`, :term:`--wn<-w, --wn, --fixwn>`
+:term:`--laws<--laws, --nlaws>`, :term:`--lb<--lb, --lowerb>`, :term:`--lowerb<--lb, --lowerb>`, 
+:term:`--metric`, :term:`--nrms<--rms, --nrms>`, :term:`--rms<--rms, --nrms>`, 
+:term:`--nlaws<--laws, --nlaws>`, :term:`--ub<--ub, --upperb>`, :term:`--upperb<--ub, --upperb>`, 
+:term:`-w<-w, --wn, --fixwn>`, :term:`--wn<-w, --wn, --fixwn>`
 
 -----
 
-.. _user-guide-cli-help-globe:
+.. _user-guide-intro-globe:
 
 Global fit
 ##########
 
-All of the following parameters are related to deriving numax, or the frequency
-corresponding to maximum power:
+All of the following are related to deriving global asteroseismic parameters, :term:`numax`
+(:math:`\\rm \\nu_{max}`) and :term:`dnu` (:math:`\\Delta\\nu`). 
 
 .. code-block::
 
@@ -280,9 +288,10 @@ corresponding to maximum power:
                            Number of peaks to fit in the ACF
 
 
-**Glossary terms:** :term:`--ew<--ew, --exwidth>`, :term:`--exwidth<--ew, --exwidth>`, :term:`-g<-g, --globe, --global>`, 
-:term:`--global<-g, --globe, --global>`, :term:`--globe<-g, --globe, --global>`, :term:`--lp<--lp, --lowerp>`, 
-:term:`--lowerp<--lp, --lowerp>`, :term:`--numax`, :term:`--sm<--sm, --smpar>`, :term:`--smpar<--sm, --smpar>`, 
+**Glossary terms:** :term:`--ew<--ew, --exwidth>`, :term:`--exwidth<--ew, --exwidth>`, 
+:term:`-g<-g, --globe, --global>`, :term:`--global<-g, --globe, --global>`, 
+:term:`--globe<-g, --globe, --global>`, :term:`--lp<--lp, --lowerp>`, :term:`--lowerp<--lp, --lowerp>`, 
+:term:`--numax`, :term:`--sm<--sm, --smpar>`, :term:`--smpar<--sm, --smpar>`, 
 :term:`--up<--up, --upperp>`, :term:`--upperp<--up, --upperp>` :term:`--dnu`, :term:`--method`, 
 :term:`--npeaks<--peak, --peaks, --npeaks>`, :term:`--peak<--peak, --peaks, --npeaks>`, 
 :term:`--peaks<--peak, --peaks, --npeaks>`, :term:`--sp<--sp, --smoothps>`, 
@@ -295,34 +304,41 @@ corresponding to maximum power:
 Plotting
 ########
 
+Anything related to the plotting of results for *any* of the modules is in this parser. Its 
+currently a little heavy on the :term:`echelle diagram` end because this part of the plot is
+harder to hack, so we tried to make it as easily customizable as possible.
+
 .. code-block::
 
    Plotting:
      -d, --show, --display
-                           Show output figures
-     --all, --showall      Plot background comparison figure
+                           display output figures in real time
+     --all, --showall      make background comparison figure
      --ce str, --cm str, --color str
-                           Change colormap of ED, which is `binary` by default.
+                           colormap of echelle diagram (default=`binary`)
      --cv float, --value float
-                           Clip value multiplier to use for echelle diagram (ED).
-                           Default is 3x the median, where clip_value == `3`.
-     -y, --hey             Use Daniel Hey's plugin for echelle **not currently implemented**
+                           clip value multiplier to use for ED, which is currently 3x the median
+     -y, --hey             use Daniel Hey's plugin for echelle **not currently implemented**
      -i, --ie, --interpech
                            Turn on the interpolation of the output ED
      --nox int, --nacross int
-                           Number of bins to use on the x-axis of the ED
+                           number of bins to use on the x-axis of the ED
      --noy int, --ndown int, --norders int
-                           The number of orders to plot on the ED y-axis
+                           number of orders to plot on the ED y-axis
+     --npb int             related to `--nox` but uses information about the spacing and resolution 
+                           to estimate a reasonable number of bins to use for the x-axis of the ED
      --se float, --smoothech float
-                           Smooth ED using a box filter [in muHz]
+                           smooth ED using a box filter [in muHz]
 
-**Glossary terms:** :term:`-d<-d, --show, --display>`, :term:`--display<-d, --show, --display>`, :term:`--ce<--ce, --cm, --color>`, :term:`--cm<--ce, --cm, --color>`, :term:`--color<--ce, --cm, --color>`, 
-:term:`--cv<--cv, --value>`, :term:`-i<-i, --ie, --interpech>`, :term:`--hey<-y, --hey>`, :term:`--ie<-i, --ie, --interpech>`, 
-:term:`--interpech<-i, --ie, --interpech>`, :term:`--le<--le, --lowere>`, :term:`--lowere<--le, --lowere>`, 
-:term:`--nox<--nox, --nacross>`, :term:`--nacross<--nox, --nacross>`, :term:`--ndown<--noy, --ndown, --norders>`, 
-:term:`--norders<--noy, --ndown, --norders>`, :term:`--noy<--noy, --ndown, --norders>`, :term:`--se<--se, --smoothech>`, 
-:term:`--smoothech<--se, --smoothech>`,  :term:`--ue<--ue, --uppere>`, :term:`--uppere<--ue, --uppere>`,
-:term:`--value<--cv, --value>`, :term:`-y<-y, --hey>`
+**Glossary terms:** :term:`-d<-d, --show, --display>`, :term:`--display<-d, --show, --display>`, 
+:term:`--ce<--ce, --cm, --color>`, :term:`--cm<--ce, --cm, --color>`, :term:`--color<--ce, --cm, --color>`, 
+:term:`--cv<--cv, --value>`, :term:`-i<-i, --ie, --interpech>`, :term:`--hey<-y, --hey>`, 
+:term:`--ie<-i, --ie, --interpech>`, :term:`--interpech<-i, --ie, --interpech>`, 
+:term:`--le<--le, --lowere>`, :term:`--lowere<--le, --lowere>`, :term:`--nox<--nox, --nacross>`, 
+:term:`--nacross<--nox, --nacross>`, :term:`--ndown<--noy, --ndown, --norders>`, 
+:term:`--norders<--noy, --ndown, --norders>`, :term:`--noy<--noy, --ndown, --norders>`, 
+:term:`--se<--se, --smoothech>`, :term:`--smoothech<--se, --smoothech>`,  :term:`--ue<--ue, --uppere>`, 
+:term:`--uppere<--ue, --uppere>`, :term:`--value<--cv, --value>`, :term:`-y<-y, --hey>`
 
 -----
 
@@ -340,8 +356,9 @@ All CLI options relevant for the Monte-Carlo sampling in order to estimate uncer
                            Number of Monte-Carlo iterations
      -m, --samples         Save samples from the Monte-Carlo sampling
 
-**Glossary terms:** :term:`--iter<--mc, --iter, --mciter>`, :term:`-m<-m, --samples>`, :term:`--mc<--mc, --iter, --mciter>`, 
-:term:`--mciter<--mc, --iter, --mciter>`, :term:`--samples<-m, --samples>`
+**Glossary terms:** :term:`--iter<--mc, --iter, --mciter>`, :term:`-m<-m, --samples>`, 
+:term:`--mc<--mc, --iter, --mciter>`, :term:`--mciter<--mc, --iter, --mciter>`, 
+:term:`--samples<-m, --samples>`
 
 -----
 
