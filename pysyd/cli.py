@@ -198,7 +198,7 @@ def main():
                           metavar='float', 
                           dest='smooth_width',
                           help='Box filter width (in muHz) for smoothing the PS',
-                          default=10.0,
+                          default=20.0,
                           type=float,
     )
     estimate.add_argument('--bin', '--binning',
@@ -278,7 +278,7 @@ def main():
                             metavar='float', 
                             dest='ind_width', 
                             help='Width of binning for PS [in muHz]',
-                            default=10.0, 
+                            default=20.0, 
                             type=float,
     )
     background.add_argument('--rms', '--nrms', 

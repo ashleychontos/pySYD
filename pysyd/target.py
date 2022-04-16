@@ -1148,7 +1148,7 @@ class Target:
         self.estimate_background()
         self.get_background()
         # Requires bg fit to converge before moving on
-        if self.params['globe']:
+        if self.params['globe'] and self.converge:
             self.global_fit()
         if not self.converge:
             for parameter in self.params['results'][self.module]:
@@ -1474,6 +1474,7 @@ class Target:
             except RuntimeError as _:
                 self.converge = False
             else:
+                self.converge = True
                 self.bg_corr = self.random_pow/models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
                 # save final values for Harvey components
                 for n in range(self.params['nlaws']):
