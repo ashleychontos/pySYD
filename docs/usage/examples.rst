@@ -1,7 +1,10 @@
 .. role:: bash(code)
    :language: bash
 
-.. _user-guide-cli-examples:
+.. role:: underlined
+   :class: underlined
+
+.. _user-guide-examples:
 
 *************
 More examples
@@ -11,19 +14,19 @@ This page has command-line examples for the following cases:
 
  -  single star applications of varying signal-to-noise (SNR) detections:
 
-     -  :ref:`High SNR <user-guide-cli-examples-single-high>`
-     -  :ref:`Medium SNR <user-guide-cli-examples-single-medium>`
-     -  :ref:`Low SNR <user-guide-cli-examples-single-low>`
-     -  :ref:`No SNR <user-guide-cli-examples-single-no>`
+     -  :ref:`High SNR <user-guide-examples-single-high>`
+     -  :ref:`Medium SNR <user-guide-examples-single-medium>`
+     -  :ref:`Low SNR <user-guide-examples-single-low>`
+     -  :ref:`No SNR <user-guide-examples-single-no>`
 
- -  running :ref:`many stars <user-guide-cli-examples-multiple>`
- -  :ref:`advanced examples <user-guide-cli-examples-advanced>` for special commands 
+ -  running :ref:`many stars <user-guide-examples-multiple>`
+ -  :ref:`advanced examples <user-guide-advanced>` for special commands 
 
 including what to look for in each case.
 
 -----
 
-.. _user-guide-cli-examples-single:
+.. _user-guide-examples-single:
 
 Single star applications
 ########################
@@ -36,10 +39,10 @@ on what to look for for each case.
 
 -----
 
-.. _user-guide-cli-examples-single-high:
+.. _user-guide-examples-single-high:
 
-High SNR: KIC 11618103
-**********************
+:underlined:`High SNR: KIC 11618103`
+************************************
 
 KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
@@ -68,10 +71,10 @@ KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
 -----
 
-.. _user-guide-cli-examples-single-medium:
+.. _user-guide-examples-single-medium:
 
-Medium SNR: KIC 1435467
-***********************
+:underlined:`Medium SNR: KIC 1435467`
+*************************************
 
 We used this example for new users just getting started and therefore we will only show
 the output and figures. Feel free to visit that page :ref:`getting started <>`, which 
@@ -94,10 +97,10 @@ KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \m
 
 -----
 
-.. _user-guide-cli-examples-single-low:
+.. _user-guide-examples-single-low:
 
-Low SNR: KIC 8801316
-********************
+:underlined:`Low SNR: KIC 8801316`
+**********************************
 
 As if asteroseismology wasn't hard enough, let's make it even more difficult for you!
 
@@ -126,10 +129,10 @@ This would be classified as a detection despite the low SNR due to the following
 
 -----
 
-.. _user-guide-cli-examples-single-no:
+.. _user-guide-examples-single-no:
 
-No SNR: KIC 6278992
-*******************
+:underlined:`No SNR: KIC 6278992`
+*********************************
 
 KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
@@ -147,7 +150,7 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 -----
 
-.. _user-guide-cli-examples-multiple:
+.. _user-guide-examples-multiple:
 
 Many stars
 ##########

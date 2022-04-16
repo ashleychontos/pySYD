@@ -4,7 +4,7 @@
 .. role:: underlined
    :class: underlined
 
-.. _user-guide-cli-examples-advanced:
+.. _user-guide-advanced:
 
 **************
 Advanced usage
