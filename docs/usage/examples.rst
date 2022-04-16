@@ -6,9 +6,8 @@
 
 .. _user-guide-examples:
 
-*************
-More examples
-*************
+
+**CLI examples**
 
 This page has command-line examples for the following cases:
 
@@ -28,8 +27,9 @@ including what to look for in each case.
 
 .. _user-guide-examples-single:
 
-Single star applications
-########################
+********************
+Single star examples
+********************
 
 For applications to single stars, we will start with a very easy, high signal-to-noise (SNR)
 example, followed by medium, low, and no SNR examples. These examples will not be as detailed 
@@ -37,24 +37,22 @@ as the :ref:`quickstart example <quickstart-script>` -- our goal here is to prov
 on what to look for for each case. 
 
 
------
-
 .. _user-guide-examples-single-high:
 
 :underlined:`High SNR: KIC 11618103`
-************************************
+####################################
 
 KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
-.. image:: ../../_static/examples/11618103_excess.png
+.. image:: ../_static/examples/11618103_excess.png
   :width: 680
   :alt: KIC 11618103 estimates
 
-.. image:: ../../_static/examples/11618103_background.png
+.. image:: ../_static/examples/11618103_background.png
   :width: 680
   :alt: KIC 11618103 global fit
 
-.. image:: ../../_static/examples/11618103_samples.png
+.. image:: ../_static/examples/11618103_samples.png
   :width: 680
   :alt: KIC 11618103 parameter posteriors
 
@@ -74,7 +72,7 @@ KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 .. _user-guide-examples-single-medium:
 
 :underlined:`Medium SNR: KIC 1435467`
-*************************************
+#####################################
 
 We used this example for new users just getting started and therefore we will only show
 the output and figures. Feel free to visit that page :ref:`getting started <>`, which 
@@ -82,15 +80,15 @@ breaks down every step and output for this example.
 
 KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \mu Hz`.
 
-.. image:: ../../_static/examples/1435467_estimates.png
+.. image:: ../_static/examples/1435467_estimates.png
   :width: 680
   :alt: KIC 1435467 estimates
 
-.. image:: ../../_static/examples/1435467_global.png
+.. image:: ../_static/examples/1435467_global.png
   :width: 680
   :alt: KIC 1435467 global fit
 
-.. image:: ../../_static/examples/1435467_samples.png
+.. image:: ../_static/examples/1435467_samples.png
   :width: 680
   :alt: KIC 1435467 parameter posteriors
 
@@ -100,21 +98,21 @@ KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \m
 .. _user-guide-examples-single-low:
 
 :underlined:`Low SNR: KIC 8801316`
-**********************************
+##################################
 
 As if asteroseismology wasn't hard enough, let's make it even more difficult for you!
 
 KIC 8801316 is a subgiant with a numax ~1100 muHz, shown in the figures below. 
 
-.. image:: ../../_static/examples/8801316_estimates.png
+.. image:: ../_static/examples/8801316_estimates.png
   :width: 680
   :alt: KIC 8801316 estimates
 
-.. image:: ../../_static/examples/8801316_global.png
+.. image:: ../_static/examples/8801316_global.png
   :width: 680
   :alt: KIC 8801316 global fit
 
-.. image:: ../../_static/examples/8801316_samples.png
+.. image:: ../_static/examples/8801316_samples.png
   :width: 680
   :alt: KIC 8801316 parameter posteriors
 
@@ -132,19 +130,19 @@ This would be classified as a detection despite the low SNR due to the following
 .. _user-guide-examples-single-no:
 
 :underlined:`No SNR: KIC 6278992`
-*********************************
+#################################
 
 KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
-.. image:: ../../_static/examples/6278992_estimates.png
+.. image:: ../_static/examples/6278992_estimates.png
   :width: 680
   :alt: KIC 6278992 estimates
 
-.. image:: ../../_static/examples/6278992_global.png
+.. image:: ../_static/examples/6278992_global.png
   :width: 680
   :alt: KIC 6278992 global fit
 
-.. image:: ../../_static/examples/6278992_samples.png
+.. image:: ../_static/examples/6278992_samples.png
   :width: 680
   :alt: KIC 6278992 parameter posteriors
 
@@ -152,11 +150,14 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 .. _user-guide-examples-multiple:
 
-Many stars
-##########
+********************
+An ensemble of stars
+********************
+
+Depending on how large your sample is, you may choose to do it one of two ways.
 
 Regular mode
-************
+############
 
 Since this is optimized for running many stars via command line, the star names will be read in 
 and processed from `'info/todo.txt'` if nothing else is provided:
@@ -167,7 +168,7 @@ and processed from `'info/todo.txt'` if nothing else is provided:
 
 
 Parallel mode
-*************
+#############
 
 There is a parallel processing option included in the software, which is helpful for
 running many stars. This can be accessed through the following command:

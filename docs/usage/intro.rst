@@ -1,8 +1,11 @@
-.. _user-guide-cli-help:
+.. role:: underlined
+   :class: underlined
 
-*******************
-Introduction & help
-*******************
+.. _user-guide-intro:
+
+************
+Introduction
+************
 
 As we have alluded to throughout the documentation, `pySYD` was intended to be used through 
 its command-line interface (CLI) -- which means that the software is specifically optimized 
@@ -21,7 +24,8 @@ analyses.
    encourage you to submit an issue `here <https://github.com/ashleychontos/pySYD/issues/new?assignees=&labels=&template=bug_report.md>`_ 
    and thank you in advance for helping make `pySYD` even better!
 
------
+
+.. _user-guide-help:
 
 CLI help
 ########
@@ -85,8 +89,11 @@ discussed within that subsection.
 
 .. _user-guide-intro-parent:
 
-Parent parser
-#############
+High-level functionality
+########################
+
+c/o the parent parser
+*********************
 
 **for all your high-level functionality needs**
 
@@ -109,7 +116,9 @@ old files with the same extension, etc.)
       --notebook            Running from a jupyter notebook (this should not be
                             touched)
 
-**Glossary terms:** 
+:underlined:`Glossary terms` (in alphabetical order): 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 :term:`--cli<--cli>`, 
 :term:`--file<--file, --list, --todo>`, 
 :term:`--in<--in, --input, --inpdir>`, 
@@ -134,8 +143,13 @@ old files with the same extension, etc.)
 
 .. _user-guide-intro-data:
 
-Data parser
-###########
+Data analyses
+#############
+
+aka `data_parser`
+*****************
+
+**for anything and everything related to input data and manipulation**
 
 The following features are primarily related to the input data and when applicable, what 
 tools to apply to the data. All data manipulation relevant to this step happens *prior*
@@ -175,7 +189,9 @@ working on implementing time-domain tools as well!**
                             higher SNR cases??)
 
 
-**Glossary terms** (alphabetical order): 
+:underlined:`Glossary terms` (in alphabetical order): 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 :term:`--dnu`
 :term:`-k<-k, --kc, --kepcorr>`, 
 :term:`--le<--le, --lowere>`, 
@@ -199,6 +215,8 @@ working on implementing time-domain tools as well!**
 
 Main parser
 ###########
+
+**for the core asteroseismic analyses**
 
 The main parser holds a majority of the parameters that are relevant to core functions of
 the software. Since it is so large, it is broken down into four different "groups" which
@@ -391,7 +409,9 @@ All CLI options relevant for the Monte-Carlo sampling in order to estimate uncer
       -m, --samples         save samples from the Monte-Carlo sampling
 
 
-**Glossary terms** (alphabetical order): 
+:underlined:`Glossary terms` (in alphabetical order): 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 :term:`--iter<--mc, --iter, --mciter>`, 
 :term:`-m<-m, --samples>`, 
 :term:`--mc<--mc, --iter, --mciter>`, 
@@ -402,8 +422,13 @@ All CLI options relevant for the Monte-Carlo sampling in order to estimate uncer
 
 .. _user-guide-intro-plot:
 
-Plot parser
-###########
+Plotting
+########
+
+aka `plot_parser`
+*****************
+
+**for anything related to output plots**
 
 Anything related to the plotting of results for *any* of the modules is in this parser. Its 
 currently a little heavy on the :term:`echelle diagram` end because this part of the plot is
@@ -437,7 +462,9 @@ harder to hack, so we tried to make it as easily customizable as possible.
                             Smooth ED using a box filter [in muHz]
 
 
-**Glossary terms** (alphabetical order): 
+:underlined:`Glossary terms` (in alphabetical order): 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 :term:`--ce<--ce, --cm, --color>`, 
 :term:`--cm<--ce, --cm, --color>`, 
 :term:`--color<--ce, --cm, --color>`, 

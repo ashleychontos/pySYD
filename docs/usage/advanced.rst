@@ -1,9 +1,6 @@
 .. role:: bash(code)
    :language: bash
 
-.. role:: underlined
-   :class: underlined
-
 .. _user-guide-advanced:
 
 **************
@@ -16,8 +13,11 @@ the desired effects.
 
 -----
 
-:term:`--ew<--ew, --exwidth>` & :term:`--exwidth<--ew, --exwidth>`
-##################################################################
+Changing the fractional width of the power excess
+#################################################
+
+via :term:`--ew<--ew, --exwidth>` & :term:`--exwidth<--ew, --exwidth>`
+**********************************************************************
 
 Fractional amount to scale the width of the oscillations envelope by -- which is normally calculated
 w.r.t. solar values.
@@ -33,8 +33,11 @@ w.r.t. solar values.
 
 -----
 
-:term:`-k<-k, --kc, --kepcorr>`, :term:`--kc<-k, --kc, --kepcorr>` & :term:`--kepcorr<-k, --kc, --kepcorr>`
-###########################################################################################################
+Mitigating known *Kepler* artefacts
+###################################
+
+via :term:`-k<-k, --kc, --kepcorr>`, :term:`--kc<-k, --kc, --kepcorr>` & :term:`--kepcorr<-k, --kc, --kepcorr>`
+***************************************************************************************************************
 
 Remove the well-known *Kepler* short-cadence artefact that occurs at/near the long-cadence :term:`nyquist frequency` 
 (:math:`\sim 270 \mu \mathrm{Hz}`) by simulating white noise
@@ -50,8 +53,11 @@ Remove the well-known *Kepler* short-cadence artefact that occurs at/near the lo
 
 -----
 
-:term:`--lp<--lp, --lowerp>` & :term:`--lowerp<--lp, --lowerp>`
-###############################################################
+Hard-wiring the lower/upper limits of the power excess
+######################################################
+
+via :term:`--lp<--lp, --lowerp>` & :term:`--lowerp<--lp, --lowerp>`
+*******************************************************************
 
 Manually set the lower frequency bound (or limit) of the power excess, which is helpful
 in the following scenarios:
@@ -72,8 +78,11 @@ in the following scenarios:
 
 -----
 
-:term:`--npeaks<--peaks, --npeaks>` & :term:`--peaks<--peaks, --npeaks>`
-########################################################################
+I'm not sure how I feel about this one
+#######################################
+
+via :term:`--npeaks<--peaks, --npeaks>` & :term:`--peaks<--peaks, --npeaks>`
+****************************************************************************
 
 Change the number of peaks chosen in the autocorrelation function (:term:`ACF`) - this is especially
 helpful for low S/N cases, where the spectrum is noisy and the ACF has many peaks close the expected
@@ -90,8 +99,15 @@ spacing (**FIX THIS**)
 
 -----
 
-:term:`--numax<--numax>`
-########################
+Provide estimate for numax and save some time
+#############################################
+
+via :term:`--numax<--numax>`
+****************************
+
+Turns out that a majority of the scaling relations used in this software can be written in terms
+of numax and therefore with the single estimate, we can guess the rest of the parameters (and fairly
+well, at that!)
 
 If the value of :math:`\rm \nu_{max}` is known, this can be provided to bypass the first module and save some time. 
 There are also other ways to go about doing this, please see our notebook tutorial that goes through these different
@@ -108,8 +124,11 @@ ways.
 
 -----
 
-:term:`--ux<--ux, --upperx>` & :term:`--upperx<--ux, --upperx>`
+Setting different frequency limits for the 
 ###############################################################
+
+via :term:`--ux<--ux, --upperx>` & :term:`--upperx<--ux, --upperx>`
+*******************************************************************
 
 Set the upper frequency limit in the power spectrum when estimating :math:`\rm \nu_{max}` before the main fitting
 routine. This is helpful if there are high frequency artefacts that the software latches on to.
@@ -125,8 +144,11 @@ routine. This is helpful if there are high frequency artefacts that the software
 
 -----
 
-:term:`-i<-i, --ie, --interpech>`, :term:`--ie<-i, --ie, --interpech>` & :term:`--interpech<-i, --ie, --interpech>`
-###################################################################################################################
+Smooth the echelle diagram by using matplotlib's built-in interpolator
+######################################################################
+
+via :term:`-i<-i, --ie, --interpech>`, :term:`--ie<-i, --ie, --interpech>` & :term:`--interpech<-i, --ie, --interpech>`
+***********************************************************************************************************************
 
 Smooth the echelle diagram output by turning on the (bilinear) interpolation, which is helpful for identifying
 ridges in low S/N cases
