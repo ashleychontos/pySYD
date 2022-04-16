@@ -309,7 +309,7 @@ recommend by default when analyzing a star for the first time).
 .. note::
 
    For more information about what each panel is showing in any of these figures, please visit 
-   :ref:`this page <library-output-figures-png>`.
+   :ref:`this page <library-output-figures>`.
 
 If this was run in its default setting, with ``--mc`` = `1`, for a single iteration, the output
 parameters would look like that below. **We urge folks to run new stars for a single step first 

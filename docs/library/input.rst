@@ -29,7 +29,7 @@ peep its API (:mod:`pysyd.pipeline.setup`).
 The only thing really *required* to run the software is the data. For a given star ID, 
 input data are:
  #. the light curve (`'ID_LC.txt'`) &
- #. the power spectrum (`'ID_PS.txt`).
+ #. the power spectrum (`'ID_PS.txt'`).
 
 .. _library-input-required-lc:
 
@@ -38,8 +38,8 @@ Light curve
 
 The *Kepler*, K2 & TESS missions have provided *billions* of stellar light curves, or a 
 measure of the object's brightness (or flux) in time. Like most other standard photometric 
-data, we require that the time array is in units of days. **This will be really important
-for the processing of the data, which we'll discuss in detail in a little bit.**
+data, we require that the time array is in units of days. **This is really important if
+the software is calculating the power spectrum for you!**
 
 For the time series data, the y-axis is less critical here. It can be anything from units 
 of fraction flux or brightness as a function of time, along with any other normalization(s).
@@ -49,7 +49,7 @@ of fraction flux or brightness as a function of time, along with any other norma
 Power spectrum
 **************
 
-What *REALLY* matters for asteroseismology is how the time series data looks in frequency space, 
+The power spectrum is what's most important for asteroseismology. *REALLY* matters for asteroseismology is how the time series data looks in frequency space, 
 which is generally calculated by taking the fourier transform (and often referred to as the
 :term:`power spectrum`). Thanks to open-source languages like Python, we have powerful
 community-driven software packages like `astropy` that can fortunately compute these things for us.
@@ -67,8 +67,8 @@ community-driven software packages like `astropy` that can fortunately compute t
 :underlined:`Optional`
 ######################
 
-There are two main information files which can be provided but both are optional -- whether
-or not you choose to use them ultimately depends on how you will run the software. 
+There are two main information files that can be provided but both are optional -- whether
+you choose to use them or not is ultimately up to you! 
 
 .. _library-input-optional-todo:
 

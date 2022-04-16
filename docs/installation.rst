@@ -92,10 +92,10 @@ cloned ``pySYD`` repo.
 .. _install-test:
 
 Testing 
-*******
+#######
 
 You can test your installation by simply using the help command in a terminal
-window, which should display the following output:
+window, which should display something similar to the following output:
 
 ::
 
@@ -127,37 +127,20 @@ window, which should display the following output:
 Dependencies
 ############
 
+This package has the following dependencies:
+
+ * `Python <https://www.python.org>`_ (>=3)
+ * `Numpy <https://numpy.org>`_
+ * `pandas <https://pandas.pydata.org>`_ 
+ * `Astropy <https://www.astropy.org>`_
+ * `scipy <https://docs.scipy.org/doc/>`_
+ * `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
+ * `tqdm <https://tqdm.github.io>`_
+
+
 Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
 and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
 `conda` should install and enforce these versions automatically. 
-
-Required
-********
-
-This package has the following dependencies:
-
-* `Python <https://www.python.org>`_ (>=3)
-* `Numpy <https://numpy.org>`_
-* `pandas <https://pandas.pydata.org>`_ 
-* `Astropy <https://www.astropy.org>`_
-* `scipy <https://docs.scipy.org/doc/>`_
-
-Optional
-********
-
-Printed output and/or figures for regular `pySYD` applications will also require: 
-
-* `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
-* `tqdm <https://tqdm.github.io>`_
-
-Development
-^^^^^^^^^^^
-
-Testing
-^^^^^^^
-
------
-
 
 -----
 
@@ -201,10 +184,10 @@ Now all you need to do is change into that directory, run the following command 
 
 .. code-block::
 
-    pysyd setup
+    pysyd setup --verbose
 
-In setup 'mode', the :term:`verbose<-v, --verbose>` output is `True` by default -- this way you can see what is
-being downloaded and where it can be found:
+We used the :term:`verbose<-v, --verbose>` command so you can see what is being downloaded
+and where it is being downloaded to.
 
 .. code-block::
     

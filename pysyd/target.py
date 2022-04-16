@@ -19,12 +19,6 @@ from . import models
 
 class Target:
 
-    """
-
-    Main pipeline target object
-
-    """
-
     def __init__(self, name, args):
         """Main pipeline target object
 
@@ -109,15 +103,7 @@ class Target:
     def process_star(self,):
         """Run `pySYD`
 
-        Processes the main `pySYD` pipeline on a given star from start to finish
-
-        Parameters
-            results : Dict[]
-                dictionary containing the results from the pipeline, with keys corresponding
-                to each of the steps (i.e. 'estimates', 'parameters', 'samples')
-            plotting : Dict
-                same as the results, which saves all the information needed for plotting at 
-                the end
+        Processes a given star with `pySYD`
 
         Methods
             - :mod:`estimate_parameters`
@@ -156,7 +142,7 @@ class Target:
 
 
     def load_star(self, ps=False, lc=False, note='',):
-        """Load star data
+        """Input star data
 
         Load data in for a single star by first checking to see if the power spectrum exists
         and then loads in the time series data, which will compute a power spectrum in the
@@ -208,18 +194,17 @@ class Target:
                 verbose output
             ps : bool
                 `True` if object has power spectrum
-            frequency : numpy.ndarray
-                copy of original frequency array
-            power : numpy.ndarray
-                copy of original power spectrum
-            freq_os : numpy.ndarray
-                final version of oversampled frequency array
-            pow_os : numpy.ndarray
-                final version of oversampled power spectrum
-            freq_cs : numpy.ndarray
-                final version of critically-sampled frequency array
-            pow_cs : numpy.ndarray
-                final version of critically-sampled power spectrum
+
+        Yields
+            frequency, power : numpy.ndarray
+                input power spectrum
+            freq_os, pow_os : numpy.ndarray
+                copy of the oversampled power spectrum (i.e. `frequency` & `power`)
+            freq_cs, pow_cs : numpy.ndarray
+                copy of the critically-sampled power spectrum (i.e. `frequency` & `power`) 
+                iff the :term:`oversampling_factor<--of, --over, --oversample>` is provided, 
+                otherwise these arrays are just copies of `freq_os` & `pow_os` since this factor
+                isn't known and needs to be assumed
 
         Raises
             PySYDInputWarning
@@ -267,10 +252,6 @@ class Target:
                 verbose output
             lc : bool
                 `True` if object has light curve
-            time : numpy.ndarray
-                time array in days
-            flux : numpy.ndarray
-                relative or normalized flux array
             cadence : int
                 median cadence of time series data ( :math:`\\Delta t`)
             nyquist : float
@@ -281,18 +262,14 @@ class Target:
                 upper limit of the modeled time scales set by baseline/2
 
         Yields
-            frequency : numpy.ndarray
-                newly-computed (and normalized) frequency array
-            power : numpy.ndarray
-                newly-computed (and normalized) power spectrum
-            freq_os : numpy.ndarray
-                final version of oversampled frequency array
-            pow_os : numpy.ndarray
-                final version of oversampled power spectrum
-            freq_cs : numpy.ndarray
-                final version of critically-sampled frequency array
-            pow_cs : numpy.ndarray
-                final version of critically-sampled power spectrum
+            time, flux : numpy.ndarray
+                input time series data
+            frequency, power : numpy.ndarray
+                newly-computed frequency array using the time series array (i.e. `time` & `flux`)
+            freq_os, pow_os : numpy.ndarray
+                copy of the oversampled power spectrum (i.e. `frequency` & `power`)
+            freq_cs, pow_cs : numpy.ndarray
+                copy of the critically-sampled power spectrum (i.e. `frequency` & `power`)
 
         Raises
             PySYDInputWarning
@@ -356,7 +333,7 @@ class Target:
 
 
     def load_file(self, path):
-        """Generic load function from text file
+        """Load text file
     
         Load a light curve or a power spectrum from a basic 2xN txt file
         and stores the data into the `x` (independent variable) and `y`
@@ -367,10 +344,9 @@ class Target:
                 the file path of the data file
 
         Returns
-            x : numpy.ndarray
-                the independent variable i.e. the time or frequency array 
-            y : numpy.ndarray
-                the dependent variable, in this case either the flux or power array
+            x, y : numpy.ndarray
+                the independent and dependent variables, respectively
+
 
         """
 
@@ -432,9 +408,9 @@ class Target:
       
         Attributes
             time : numpy.ndarray
-                original time series array
+                original time series array to correct
             new_time : numpy.ndarray
-                corrected time series array
+                the corrected time series array
 
         Raises
             PySYDInputWarning
@@ -445,6 +421,7 @@ class Target:
             two reasons:
              #. you lose phase information *and* 
              #. can be problematic if mode lifetimes are shorter than gaps (i.e. more evolved stars)
+
 
         .. note::
             temporary solution for handling very long gaps in TESS data -- still need to
@@ -466,20 +443,28 @@ class Target:
         normalize the power spectrum to spectral density according to Parseval's theorem
 
         Parameters
-            oversampling_factor : int
+            oversampling_factor : int, default=1
                 the oversampling factor to use when computing the power spectrum 
 
+        Yields
+            frequency, power : numpy.ndarray
+                power spectrum computed from the input time series data (i.e. `time` & `flux`)
+                using the :mod:`astropy.timeseries.LombScargle` module
+
         Returns
-            frequency : numpy.ndarray
-                the calculated frequency array in :math:`\\rm \\mu Hz`
-            power : numpy.ndarray
-                the calculated power density in :math:`\\rm ppm^{2} \\mu Hz^{-1}`
+            frequency, power : numpy.ndarray
+                the newly-computed and normalized power spectrum (in units of :math:`\\rm \\mu Hz` vs. :math:`\\rm ppm^{2} \\mu Hz^{-1}`)
+
 
         .. important::
 
             If you are unsure if your power spectrum is in the proper units, we recommend
             using this new module to compute and normalize for you. This will ensure the
             accuracy of the results.
+
+        .. todo::
+
+           add equation for conversion
 
 
         """
@@ -493,45 +478,29 @@ class Target:
 
 
     def fix_data(self, frequency, power, kep_corr=False, ech_mask=None,):
-        """Frequency domain tools
+        """Fix frequency domain data
 
         Runs power spectra through our optional tools like :mod:`pysyd.target.Target.remove_artefact` and 
         :mod:`pysyd.target.Target.white_mixed`. If neither of these options are used, it will return a copy
         of the original arrays
 
         Parameters
-            frequency : numpy.ndarray
-                input frequency array to correct
-            power : numpy.ndarray
-                input power spectrum to correct
             save : bool, default=True
                 save all data products
             kep_corr : bool, default=False
                 correct for known *Kepler* short-cadence artefacts
-            ech_mask : bool, default=None
-                folded frequency bounds for mixed modes, has format ~[lower, upper]
+            frequency, power : numpy.ndarray
+                input power spectrum to be corrected 
 
         Methods
-            remove_artefact
+            :mod:`pysyd.target.Target.remove_artefact`
                 mitigate known *Kepler* artefacts
-            whiten_mixed 
+            :mod:`pysyd.target.Target.whiten_mixed` 
                 mitigate mixed modes
-            :mod:`remove_artefact`, :mod:`whiten_mixed`
-            :mod:`Target.whiten_mixed`
 	   
         Returns
-            frequency : numpy.ndarray
-                copy of the corrected frequency array 
-            power : numpy.ndarray
+            frequency, power : numpy.ndarray
                 copy of the corrected power spectrum
-
-        .. seealso:: :mod:`pysyd.target.Target.remove_artefact`, :mod:`pysyd.target.Target.whiten_mixed`
-
-        See Also
-        --------
-        pysyd.target.Target.remove_artefact
-            let's try this way
-        :mod:`pysyd.target.Target.whiten_mixed`
 
         """
         if self.params['kep_corr']:
@@ -546,8 +515,7 @@ class Target:
 
 
     def set_seed(self, lower=1, upper=10**7):
-        """
-        Set reproducible seed
+        """Set seed
     
         For *Kepler* targets that require a correction via CLI (--kc), a random seed is generated
         from U~[1,10^7] and stored in stars_info.csv for reproducible results in later runs.
@@ -576,37 +544,33 @@ class Target:
                         lf_lower=[240.0,500.0], lf_upper=[380.0,530.0], 
                         hf_lower = [4530.0,5011.0,5097.0,5575.0,7020.0,7440.0,7864.0],
                         hf_upper = [4534.0,5020.0,5099.0,5585.0,7030.0,7450.0,7867.0],):
-        """
-        Remove Kepler short-cadence artefact
+        """Remove *Kepler* artefacts
     
-        Module to remove artefacts found in Kepler power spectra by replacing them with noise 
-        (using linear interpolation) following a chi-squared distribution. 
+        Module to remove artefacts found in *Kepler* data by replacing known frequency 
+        ranges with simulated noise 
 
         Parameters
-            freq : numpy.ndarray
-                input frequency array to correct
-            pow : numpy.ndarray
-                input power spectrum to correct
             lcp : float
-                long cadence period in Msec
+                long cadence period (in Msec)
             lf_lower : List[float]
-                lower limit of low frequency artefact
+                lower limits of low-frequency artefacts
             lf_upper : List[float]
-                upper limit of low frequency artefact
+                upper limits of low-frequency artefacts
             hf_lower : List[float]
                 lower limit of high frequency artefact
             hf_upper : List[float]
                 upper limit of high frequency artefact
+            freq, pow : numpy.ndarray
+                input data that needs to be corrected 
+
 	    
         Returns
-            frequency : numpy.ndarray
-                copy of the corrected frequency array 
-            power : numpy.ndarray
+            frequency, power : numpy.ndarray
                 copy of the corrected power spectrum
 
         .. note::
 
-            Known artefacts are:
+            Known *Kepler* artefacts include:
              #. long-cadence harmonics
              #. sharp, high-frequency artefacts (:math:`\\rm >5000 \\mu Hz`)
              #. low frequency artefacts 250-400 muHz (mostly present in Q0 and Q3 data)
@@ -649,31 +613,29 @@ class Target:
 
 
     def whiten_mixed(self, freq, pow, dnu=None, lower_ech=None, upper_ech=None, notching=False,):
-        """
+        """White mixed modes
     
         Module to help reduce the effects of mixed modes random white noise in place of 
         :math:`\\ell=1` for subgiants with mixed modes to better constrain the large 
         frequency separation
 
         Parameters
-            freq : numpy.ndarray
-                input frequency array to correct
-            pow : numpy.ndarray
-                input power spectrum to correct
-            folded_freq : numpy.ndarray
-                frequency array modulo dnu (i.e. folded to the large separation, :math:`\\Delta\\nu`)
+            dnu : float, default=None
+                the so-called large frequency separation to fold the PS to
             lower_ech : float, default=None
                 lower frequency limit of mask to "whiten"
             upper_ech : float, default=None
                 upper frequency limit of mask to "whiten"
             notching : bool, default=False
                 if `True`, uses notching instead of generating white noise
+            freq, pow : numpy.ndarray
+                input data that needs to be corrected 
+            folded_freq : numpy.ndarray
+                frequency array modulo dnu (i.e. folded to the large separation, :math:`\\Delta\\nu`)
 
         Returns
-            frequency : numpy.ndarray
-                copy of the corrected frequency array 
-            power : numpy.ndarray
-                copy of the corrected power array
+            frequency, power : numpy.ndarray
+                copy of the corrected power spectrum
 
         """
         frequency, power = np.copy(freq), np.copy(pow)
@@ -748,16 +710,12 @@ class Target:
 	               (arbitrary) maximum number of "guesses" or trials to perform to estimate numax
 
         Attributes
-            module : str, default='estimates'
-                which of the two main parts of the pipeline is running
-            frequency : numpy.ndarray
-                copy of the full oversampled frequency array (`Target.freq_os`)
-            power : numpy.ndarray
-                copy of the full oversampled power density (`Target.pow_os`)
-            freq : numpy.ndarray
-                frequency array after the mask~[lower_ex,upper_ex] is applied
-            pow : numpy.ndarray
-                power array after the mask~[lower_ex,upper_ex] is applied
+            frequency, power : numpy.ndarray
+                copy of the entire oversampled (or critically-sampled) power spectrum (i.e. `freq_os` & `pow_os`) 
+            freq, pow : numpy.ndarray
+                copy of the entire oversampled (or critically-sampled) power spectrum (i.e. `freq_os` & `pow_os`) after applying the mask~[lower_ex,upper_ex]
+            module : str, default='parameters'
+                which part of the pipeline is currently being used
 
 
         """
@@ -804,18 +762,14 @@ class Target:
                 If `True`, it will ask which trial to use as the estimate for numax
 
         Attributes
-            bin_freq : numpy.ndarray
-                binned frequency array (log space)
-            bin_pow : numpy.ndarray
-                binned power array (log space)
-            smooth_freq : numpy.ndarray
-                binned frequency array (linear space)
-            smooth_pow : numpy.ndarray
-                binned power array (linear space)
-            interp_pow : numpy.ndarray
-                interpolated power of smoothed_pow array 
-            bgcorr_pow : numpy.ndarray
-                crude background-divided power spectrum (using interp_pow)
+            bin_freq, bin_pow : numpy.ndarray
+                copy of the power spectrum (i.e. `freq` & `pow`) binned equally in logarithmic space
+            smooth_freq, smooth_pow : numpy.ndarray
+                copy of the binned power spectrum (i.e. `bin_freq` & `bin_pow`) binned equally in linear space -- *yes, this is doubly binned intentionally*
+            freq, interp_pow : numpy.ndarray
+                the smoothed power spectrum (i.e. `smooth_freq` & `smooth_pow`) interpolated back to the original frequency array (also referred to as "crude background model")
+            freq, bgcorr_pow : numpy.ndarray
+                approximate :term:`background-corrected power spectrum` computed by dividing the original PS (`pow`) by the interpolated PS (`interp_pow`) 
 
         Methods
             - :mod:`pysyd.target.Target.collapsed_acf`
@@ -862,6 +816,7 @@ class Target:
             max_snr : float, default=100.0
                 the maximum signal-to-noise of the estimate (this is primarily for plot formatting)
 
+
         """
         self.params['compare'] = []
         # Computes a collapsed ACF using different "box" (or bin) sizes
@@ -906,9 +861,9 @@ class Target:
 
 
     def check_numax(self, columns=['numax', 'dnu', 'snr']):
-        """
+        """Check :math:`\\rm \\nu_{max}`
     
-        Checks if there is a starting value for numax
+        Checks if there is an initial starting point or estimate for :term:`numax`
 
         Parameters
             columns : List[str]
@@ -920,7 +875,6 @@ class Target:
             PySYDProcessingError
                 if it still cannot find any estimate for :term:`numax`
 
-        .. seealso:: modules :py:mod:`pysyd.target.Target.estimate_numax`, :py:mod:`pysyd.target.Target.initial_estimates`
 
         """
         # THIS MUST BE FIXED TOO
@@ -1002,14 +956,12 @@ class Target:
                 upper frequency limit of PS to use for the background fit
 
         Attributes
+            frequency, power : numpy.ndarray
+                copy of the entire oversampled (or critically-sampled) power spectrum (i.e. `freq_os` & `pow_os`) 
+            frequency, random_pow : numpy.ndarray
+                copy of the entire oversampled (or critically-sampled) power spectrum (i.e. `freq_os` & `pow_os`) after applying the mask~[lower_bg,upper_bg]
             module : str, default='parameters'
-                which of the two main parts of the pipeline is running
-            power : numpy.ndarray
-                copy of the full oversampled power density (`Target.pow_os`) 
-            frequency : numpy.ndarray
-                copy of the oversampled frequency array (`Target.freq_os`) with the mask~[lower_bg,upper_bg] applied
-            random_pow : numpy.ndarray
-                copy of the oversampled power density after the mask~[lower_bg,upper_bg] is applied
+                which part of the pipeline is currently being used
             i : int, default=0
                 iteration number
 
@@ -1064,17 +1016,17 @@ class Target:
          #. guess starting values for granulation time scales
 
         Parameters
-            numax : float, optional
+            numax : float, default=None
                 provide initial value for numax to bypass the first module
-	           scaling : str
+	           scaling : str, default='tau_sun_single'
 	               which solar scaling relation to use
-            max_laws : int
+            max_laws : int, default=3
                 the maximum number of resolvable Harvey-like components
-            ex_width : float
+            ex_width : float, default=1.0
                 fractional width to use for power excess centered on :term:`numax`
-            lower_ps : float, optional
+            lower_ps : float, default=None
                 lower bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
-            upper_ps : float
+            upper_ps : float, default=None
                 upper bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
 
         Attributes
@@ -1192,10 +1144,8 @@ class Target:
         attempting to recover the same parameters by calling the :mod:`pysyd.target.Target.single_step`
 
         Attributes
-            frequency : numpy.ndarray
-                copy of the critically-sampled frequency array (`Target.freq_cs`) with the mask~[lower_bg,upper_bg] applied
-            power : numpy.ndarray
-                copy of the critically-sampled power density (`Target.pow_cs`) with the mask~[lower_bg,upper_bg] applied
+            frequency, power : numpy.ndarray
+                copy of the critically-sampled power spectrum (i.e. `freq_cs` & `pow_cs`) after applying the mask~[lower_bg,upper_bg]
             pbar : tqdm.tqdm, optional
                 optional progress bar used with verbose output when running multiple iterations 
 
@@ -1259,12 +1209,9 @@ class Target:
                 the independent average smoothing width (:math:`\\rm \\mu Hz`)
 
         Attributes
-            bin_freq : numpy.ndarray
-                binned frequency array 
-            bin_pow : numpy.ndarray
-                binned power array using a bin size set by ind_width
-            bin_err : numpy.ndarray
-                binned power error array 
+            bin_freq, bin_pow, bin_err : numpy.ndarray
+                binned power spectrum using the :term:`ind_width<--iw, --indwidth>` bin size   
+
 
         """
         # Bin power spectrum to model stellar background/correlated red noise components
@@ -1537,10 +1484,8 @@ class Target:
                 smoothed power spectrum
             pssm_bgcorr : numpy.ndarray
                 smoothed :term:`background-subtracted power spectrum`
-            region_freq : numpy.ndarray
-                copy of the frequency array after applying the mask~[lower_ps,upper_ps]
-            region_pow : numpy.ndarray
-                copy of the smoothed background-subtracted power spectrum after applying the mask~[lower_ps,upper_ps]
+            region_freq, region_pow : numpy.ndarray
+                oscillation region of the power spectrum ("zoomed in") by applying the mask~[lower_ps,upper_ps]
             obs_numax : float
                 the 'observed' numax (i.e. the peak of the smoothed power spectrum)
             exp_dnu : float
@@ -1602,7 +1547,7 @@ class Target:
 
 
     def compute_acf(self, fft=True, smooth_ps=2.5,):
-        """Compute the ACF
+        """ACF
 
         Compute the autocorrelation function (:term:`ACF`) of the background-divided power 
         spectrum (i.e. `bg_corr`), with an option to smooth the :term:`BCPS` first
@@ -1618,10 +1563,8 @@ class Target:
                 uses estimate for dnu if provided in advance
             bgcorr_smooth : numpy.ndarray
                 smoothed background-corrected power spectrum if `smooth_ps != 0` else copy of `bg_corr`     
-            lag : numpy.ndarray
-                frequency spacing array or lag (x-axis) of ACF
-            auto : numpy.ndarray
-                autocorrelation function array
+            lag, auto : numpy.ndarray
+                the autocorrelation of the "zoomed-in" power spectrum
 
         """
         if self.params['dnu'] is not None:
@@ -1653,7 +1596,7 @@ class Target:
     def estimate_dnu(self, n_peaks=10,):
         """Estimate :math:`\\Delta\\nu`
 
-        Estimates the large frequency separation (or :math:`\\Delta\\nu') by fitting a 
+        Estimates the large frequency separation (or :math:`\\Delta\\nu`) by fitting a 
         Gaussian to the peak of the ACF using :mod:`scipy.curve_fit`. 
 
         Parameters
@@ -1683,7 +1626,7 @@ class Target:
 
         """
         if self.i == 0:
-            # Get peaks from ACF by providing dnu to weight the array (aka Dennis' routine)
+            # Get peaks from ACF by providing dnu to weight the array 
             self.peaks_l, self.peaks_a = utils._max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], exp_dnu=self.guess)
             # Pick "best" peak in ACF (i.e. closest to expected dnu)
             idx = utils._return_max(self.peaks_l, self.peaks_a, index=True, exp_dnu=self.guess)
@@ -1713,7 +1656,7 @@ class Target:
 
 
     def get_acf_cutout(self, threshold=1.0,):
-        """
+        """ACF cutout
 
         Gets the region in the ACF centered on the correct peak to prevent pySYD
         from getting stuck in a local maximum (i.e. fractional harmonics)
@@ -1725,7 +1668,7 @@ class Target:
 
 
         """
-        # Calculate FWHM
+        # Literally calculate FWHM
         if list(self.lag[(self.lag<self.params['best_lag'])&(self.auto<=self.params['best_auto']/2.)]):
             left_lag = self.lag[(self.lag<self.params['best_lag'])&(self.auto<=self.params['best_auto']/2.)][-1]
             left_auto = self.auto[(self.lag<self.params['best_lag'])&(self.auto<=self.params['best_auto']/2.)][-1]
