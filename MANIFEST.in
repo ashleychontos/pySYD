@@ -1,8 +1,13 @@
 include README.md
 include CONTRIBUTING.md
 include CODE_OF_CONDUCT.md
+include LICENSE.md
+include docs/CONTRIBUTORS.rst
+include docs/COLLABORATORS.rst
 include requirements.txt
 include data/pysyd*
 include data/*txt
 include dicts/*.dict
 exclude examples/*
+exclude dev/*
+exclude paper/*

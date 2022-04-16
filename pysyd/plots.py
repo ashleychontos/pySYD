@@ -33,18 +33,18 @@ def make_plots(star, showall=False,):
     # set defaults
     plt.style.use(MPLSTYLE)
     if 'estimates' in star.params['plotting']:
-        plot_estimates(star)
+        _plot_estimates(star)
     if 'parameters' in star.params['plotting']:
-        plot_parameters(star)
+        _plot_parameters(star)
         if star.params['showall']:
-            plot_bgfits(star)
+            _plot_bgfits(star)
     if 'samples' in star.params['plotting']:
-        plot_samples(star)
+        _plot_samples(star)
     if star.params['show']:
         plt.show(block=False)
 
 
-def select_trial(star):
+def _select_trial(star):
     """
     This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
     This feature used to be called as part of a method in the `pysyd.target.Target` class but left a
@@ -102,7 +102,7 @@ def select_trial(star):
     return star
 
 
-def plot_estimates(star, filename='numax_estimates.png', highlight=True):
+def _plot_estimates(star, filename='numax_estimates.png', highlight=True):
     """
     Creates a plot summarizing the results of the find excess routine.
 
@@ -201,7 +201,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
         plt.close()
 
 
-def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10, cmap='binary',):
+def _plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10, cmap='binary',):
     """
     Creates a plot summarizing all derived parameters
 
@@ -326,10 +326,10 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     # PANEL 4: smoothed power excess 
     ax4 = fig.add_subplot(x, y, n)
     ax4.plot(params['region_freq'], params['region_pow'], 'w-', zorder=0)
-    idx = utils.return_max(params['region_freq'], params['region_pow'], index=True)
+    idx = utils._return_max(params['region_freq'], params['region_pow'], index=True)
     ax4.plot([params['region_freq'][idx]], [params['region_pow'][idx]], color='red', marker='s', markersize=7.5, zorder=0)
     ax4.axvline([params['region_freq'][idx]], color='white', linestyle='--', linewidth=1.5, zorder=0)
-    xx, yy = utils.return_max(params['new_freq'], params['numax_fit'])
+    xx, yy = utils._return_max(params['new_freq'], params['numax_fit'])
     ax4.plot(params['new_freq'], params['numax_fit'], 'b-', zorder=3)
     ax4.axvline(xx, color='blue', linestyle=':', linewidth=1.5, zorder=2)
     ax4.plot([xx], [yy], color='b', marker='D', markersize=7.5, zorder=1)
@@ -341,7 +341,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     mask = np.ma.getmask(np.ma.masked_inside(params['frequency'], star.params['ps_mask'][0], star.params['ps_mask'][1]))
     freq = params['frequency'][mask]
     psd = params['bgcorr_smooth'][mask]
-    peaks_f, peaks_p = utils.max_elements(freq, psd, star.params['n_peaks'])
+    peaks_f, peaks_p = utils._max_elements(freq, psd, star.params['n_peaks'])
     n += 1
     # PANEL 5: background-corrected power spectrum 
     ax5 = fig.add_subplot(x, y, n)
@@ -393,7 +393,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     n += 1
     # PANEL 8: echelle diagram
     ax8 = fig.add_subplot(x, y, n)
-    ax8.imshow(params['z'], extent=params['extent'], interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap(star.params['cmap']))
+    ax8.imshow(params['ed'], extent=params['extent'], interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap(star.params['cmap']))
     ax8.axvline([params['obs_dnu']], color='white', linestyle='--', linewidth=1.5, dashes=(5, 5))
     ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
     ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % params['obs_dnu'])
@@ -401,16 +401,16 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax8.set_xlim([params['extent'][0], params['extent'][1]])
     ax8.set_ylim([params['extent'][2], params['extent'][3]])
 
-    yrange = max(params['yax'])-min(params['yax'])
+    yrange = max(params['y'])-min(params['y'])
     n += 1
     # PANEL 9: collapsed ED
     ax9 = fig.add_subplot(x, y, n)
-    ax9.plot(params['xax'], params['yax'], color='white', linestyle='-', linewidth=0.75)
+    ax9.plot(params['x'], params['y'], color='white', linestyle='-', linewidth=0.75)
     ax9.set_title(r'$\rm Collapsed \,\, ED$')
     ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % params['obs_dnu'])
     ax9.set_ylabel(r'$\rm Collapsed \,\, power$')
     ax9.set_xlim([0.0, 2.0*params['obs_dnu']])
-    ax9.set_ylim([min(params['yax'])-0.025*(yrange), max(params['yax'])+0.05*(yrange)])
+    ax9.set_ylim([min(params['y'])-0.025*(yrange), max(params['y'])+0.05*(yrange)])
 
     plt.tight_layout()
     if star.params['save']:
@@ -422,7 +422,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
         plt.close()
 
 
-def plot_samples(star, filename='samples.png'):
+def _plot_samples(star, filename='samples.png'):
     """
     Plot results of the Monte-Carlo sampling
 
@@ -457,7 +457,7 @@ def plot_samples(star, filename='samples.png'):
         plt.close()
 
 
-def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
+def _plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
     """
     Comparison of the background model fits 
 
@@ -709,7 +709,7 @@ def _dnu_comparison(star, filename='dnu_comparison.png', methods=['M','A','D'], 
 
 
 
-def _check_data(star, args, show=True):
+def check_data(star, args, show=True):
     """
 
     Plot input data for a target

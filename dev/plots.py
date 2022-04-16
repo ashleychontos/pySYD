@@ -19,9 +19,11 @@ import matplotlib.pyplot as plt
 # Development mode
 import utils
 import models
-MPLSTYLE = os.path.join(os.path.abspath(os.getcwd()), 'data', 'pysyd.mplstyle')
+MPLSTYLE = os.path.join(os.path.abspath(os.getcwd()), 'info', 'pysyd.mplstyle')
 
 plt.style.use(MPLSTYLE)
+
+
 
 def make_plots(star, showall=False,):
     """
@@ -39,18 +41,18 @@ def make_plots(star, showall=False,):
     # set defaults
     plt.style.use(MPLSTYLE)
     if 'estimates' in star.params['plotting']:
-        plot_estimates(star)
+        _plot_estimates(star)
     if 'parameters' in star.params['plotting']:
-        plot_parameters(star)
+        _plot_parameters(star)
         if star.params['showall']:
-            plot_bgfits(star)
+            _plot_bgfits(star)
     if 'samples' in star.params['plotting']:
-        plot_samples(star)
+        _plot_samples(star)
     if star.params['show']:
         plt.show(block=False)
 
 
-def select_trial(star):
+def _select_trial(star):
     """
     This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
     This feature used to be called as part of a method in the `pysyd.target.Target` class but left a
@@ -71,7 +73,7 @@ def select_trial(star):
     plt.style.use(MPLSTYLE)
     n = 1
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Current numax guesses for %s"%star.name, figsize=d[n_panels]['size'])
+    fig = plt.figure("Numax guesses for %s"%star.name, figsize=d[n_panels]['size'])
 
     params = star.params['plotting']['estimates']
     # ACF trials to determine numax
@@ -108,7 +110,7 @@ def select_trial(star):
     return star
 
 
-def plot_estimates(star, filename='numax_estimates.png', highlight=True):
+def _plot_estimates(star, filename='numax_estimates.png', highlight=True):
     """
     Creates a plot summarizing the results of the find excess routine.
 
@@ -117,8 +119,8 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
             the pySYD pipeline object
         filename : str
             the path or extension to save the figure to
-        highlight : bool, optional
-            if `True`, highlights the selected estimate
+        highlight : bool, default=True
+            option to highlight the selected estimate
 
     
     """
@@ -128,12 +130,12 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
         n_panels -= 1
     n = 0
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Estimate numax results for %s"%star.name, figsize=d[n_panels]['size'])
+    fig = plt.figure("Estimates for %s"%star.name, figsize=d[n_panels]['size'])
 
     params = star.params['plotting']['estimates']
     n += 1
     if star.lc:
-        # Time series data
+        # PANEL 1: time series data
         ax1 = plt.subplot(y, x, n)
         ax1.plot(params['time'], params['flux'], 'w-')
         ax1.set_xlim([min(params['time']), max(params['time'])])
@@ -144,7 +146,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
         n -= 1
 
     n += 1
-    # log-log power spectrum with crude background fit
+    # PANEL 2: log-log PS with crude background fit
     ax2 = plt.subplot(y, x, n)
     ax2.loglog(params['freq'], params['pow'], 'w-')
     ax2.set_xlim([min(params['freq']), max(params['freq'])])
@@ -156,7 +158,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
     ax2.loglog(params['freq'], params['interp_pow'], color='lime', linestyle='-', lw=2.0)
 
     n += 1
-    # Crude background-corrected power spectrum
+    # PANEL 3: background-corrected power spectrum
     ax3 = plt.subplot(y, x, n)
     ax3.plot(params['freq'], params['bgcorr_pow'], 'w-')
     ax3.set_xlim([min(params['freq']), max(params['freq'])])
@@ -166,7 +168,7 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
     ax3.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
 
     n += 1
-    # ACF trials to determine numax
+    # PANEL 4-6: ACF trials 
     for i in range(star.params['n_trials']):
         ax = plt.subplot(y, x, n+i)
         ax.plot(params[i]['x'], params[i]['y'], 'w-')
@@ -201,13 +203,13 @@ def plot_estimates(star, filename='numax_estimates.png', highlight=True):
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
-            path = utils.get_next(path)
+            path = utils._get_next(path)
         plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 
 
-def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10, cmap='binary',):
+def _plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=10, cmap='binary',):
     """
     Creates a plot summarizing all derived parameters
 
@@ -220,6 +222,10 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
             the path or extension to save the figure to
         n_peaks : int
             the number of peaks to highlight in the zoomed-in power spectrum
+
+    .. note::
+
+       **NEW:** will *not* plot an empty panel if the time series data is not provided
 
 
     """
@@ -237,7 +243,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     params = star.params['plotting']['parameters']
 
     n += 1
-    # Time series data
+    # PANEL 1: time series data
     if star.lc:
         ax1 = fig.add_subplot(x, y, n)
         ax1.plot(params['time'], params['flux'], 'w-')
@@ -249,7 +255,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
         n -= 1
 
     n += 1
-    # Initial background guesses
+    # PANEL 2: initial background guesses
     ax2 = fig.add_subplot(x, y, n)
     ax2.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
     ax2.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['random_pow'][params['frequency'] < star.params['ps_mask'][0]], 'w-', zorder=1)
@@ -277,7 +283,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax2.set_yscale('log')
 
     n += 1
-    # Fitted background
+    # PANEL 3: fitted background
     ax3 = fig.add_subplot(x, y, n)
     ax3.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
     ax3.plot(params['frequency'][params['frequency'] < star.params['ps_mask'][0]], params['random_pow'][params['frequency'] < star.params['ps_mask'][0]], 'w-', zorder=1)
@@ -318,20 +324,20 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
         plt.tight_layout()
         path = os.path.join(star.params['path'],subfilename)
         if not star.params['overwrite']:
-            path = utils.get_next(path)
+            path = utils._get_next(path)
         plt.savefig(path, dpi=300)
         if not star.params['show']:
             plt.close()
         return
 
     n += 1
-    # Smoothed power excess w/ gaussian
+    # PANEL 4: smoothed power excess 
     ax4 = fig.add_subplot(x, y, n)
     ax4.plot(params['region_freq'], params['region_pow'], 'w-', zorder=0)
-    idx = utils.return_max(params['region_freq'], params['region_pow'], index=True)
+    idx = utils._return_max(params['region_freq'], params['region_pow'], index=True)
     ax4.plot([params['region_freq'][idx]], [params['region_pow'][idx]], color='red', marker='s', markersize=7.5, zorder=0)
     ax4.axvline([params['region_freq'][idx]], color='white', linestyle='--', linewidth=1.5, zorder=0)
-    xx, yy = utils.return_max(params['new_freq'], params['numax_fit'])
+    xx, yy = utils._return_max(params['new_freq'], params['numax_fit'])
     ax4.plot(params['new_freq'], params['numax_fit'], 'b-', zorder=3)
     ax4.axvline(xx, color='blue', linestyle=':', linewidth=1.5, zorder=2)
     ax4.plot([xx], [yy], color='b', marker='D', markersize=7.5, zorder=1)
@@ -343,9 +349,9 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     mask = np.ma.getmask(np.ma.masked_inside(params['frequency'], star.params['ps_mask'][0], star.params['ps_mask'][1]))
     freq = params['frequency'][mask]
     psd = params['bgcorr_smooth'][mask]
-    peaks_f, peaks_p = utils.max_elements(freq, psd, star.params['n_peaks'])
+    peaks_f, peaks_p = utils._max_elements(freq, psd, star.params['n_peaks'])
     n += 1
-    # Background-corrected power spectrum with n highest peaks
+    # PANEL 5: background-corrected power spectrum 
     ax5 = fig.add_subplot(x, y, n)
     ax5.plot(freq, psd, 'w-', zorder=0, linewidth=1.0)
     ax5.scatter(peaks_f, peaks_p, s=25.0, edgecolor='r', marker='s', facecolor='none', linewidths=1.0)
@@ -360,8 +366,9 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     new_weights = weights/max(weights)
     diff = list(np.absolute(params['lag']-params['obs_dnu']))
     idx = diff.index(min(diff))
+
     n += 1
-    # ACF for determining dnu
+    # PANEL 6: ACF 
     ax6 = fig.add_subplot(x, y, n)
     ax6.plot(params['lag'], params['auto'], 'w-', zorder=0, linewidth=1.)
     ax6.scatter(params['peaks_l'], params['peaks_a'], s=30.0, edgecolor='r', marker='^', facecolor='none', linewidths=1.0)
@@ -376,7 +383,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax6.set_ylim([min(params['auto'])-0.05*(max(params['auto'])-min(params['auto'])), max(params['auto'])+0.1*(max(params['auto'])-min(params['auto']))])
 
     n += 1
-    # dnu fit
+    # PANEL 7: dnu fit
     ax7 = fig.add_subplot(x, y, n)
     ax7.plot(params['zoom_lag'], params['zoom_auto'], 'w-', zorder=0, linewidth=1.0)
     ax7.axvline(params['obs_dnu'], color='lime', linestyle='--', linewidth=1.5, zorder=2)
@@ -392,9 +399,9 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     else:
         interpolation='nearest'
     n += 1
-    # echelle diagram
+    # PANEL 8: echelle diagram
     ax8 = fig.add_subplot(x, y, n)
-    ax8.imshow(params['z'], extent=params['extent'], interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap(star.params['cmap']))
+    ax8.imshow(params['ed'], extent=params['extent'], interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap(star.params['cmap']))
     ax8.axvline([params['obs_dnu']], color='white', linestyle='--', linewidth=1.5, dashes=(5, 5))
     ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
     ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % params['obs_dnu'])
@@ -402,27 +409,28 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax8.set_xlim([params['extent'][0], params['extent'][1]])
     ax8.set_ylim([params['extent'][2], params['extent'][3]])
 
-    yrange = max(params['yax'])-min(params['yax'])
+    yrange = max(params['y'])-min(params['y'])
     n += 1
+    # PANEL 9: collapsed ED
     ax9 = fig.add_subplot(x, y, n)
-    ax9.plot(params['xax'], params['yax'], color='white', linestyle='-', linewidth=0.75)
+    ax9.plot(params['x'], params['y'], color='white', linestyle='-', linewidth=0.75)
     ax9.set_title(r'$\rm Collapsed \,\, ED$')
     ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % params['obs_dnu'])
     ax9.set_ylabel(r'$\rm Collapsed \,\, power$')
     ax9.set_xlim([0.0, 2.0*params['obs_dnu']])
-    ax9.set_ylim([min(params['yax'])-0.025*(yrange), max(params['yax'])+0.05*(yrange)])
+    ax9.set_ylim([min(params['y'])-0.025*(yrange), max(params['y'])+0.05*(yrange)])
 
     plt.tight_layout()
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
-            path = utils.get_next(path)
+            path = utils._get_next(path)
         plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 
 
-def plot_samples(star, filename='samples.png'):
+def _plot_samples(star, filename='samples.png'):
     """
     Plot results of the Monte-Carlo sampling
 
@@ -451,13 +459,13 @@ def plot_samples(star, filename='samples.png'):
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
-            path = utils.get_next(path)
+            path = utils._get_next(path)
         plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 
 
-def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
+def _plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
     """
     Comparison of the background model fits 
 
@@ -558,14 +566,14 @@ def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
-            path = utils.get_next(path)
+            path = utils._get_next(path)
         plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 
 
-def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'], show=False, 
-                           save=True, overwrite=False, npanels=2,):
+def _create_comparison_plot(filename='comparison.png', variables=['numax','dnu'], show=False, 
+                            save=True, overwrite=False, npanels=2,):
     """
     Compare ensemble results between the ``pySYD`` and ``SYD`` pipelines
     for the *Kepler* legacy sample
@@ -641,15 +649,15 @@ def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'],
     if save:
         path = os.path.join(os.path.abspath(os.getcwd()), filename)
         if not overwrite:
-            path = utils.get_next(path)
+            path = utils._get_next(path)
         plt.savefig(path, dpi=300, facecolor='white', edgecolor='white')
     if show:
         plt.show()
     plt.close()
 
 
-def _dnu_comparison(star, methods=['M','A','D'], markers=['o','D','^'], styles=['--','-.',':'],
-                   colors=['#FF9408','#00A9E0','g'], names=['Maryum','Ashley','Dennis'], npanels=2):
+def _dnu_comparison(star, filename='dnu_comparison.png', methods=['M','A','D'], markers=['o','D','^'], 
+                   styles=['--','-.',':'], colors=['#FF9408','#00A9E0','g'], npanels=2):
 
     sig = 0.35*star.exp_dnu/2.35482 
     weights = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(star.lag-star.exp_dnu)**2./(2.*sig**2))
@@ -698,11 +706,12 @@ def _dnu_comparison(star, methods=['M','A','D'], markers=['o','D','^'], styles=[
     ax1.legend(fontsize=24, loc='upper right', scatteryoffsets=[0.5], handletextpad=0.25, markerscale=1.5, handlelength=0.75, labelspacing=0.3, columnspacing=0.1)
     ax2.legend(fontsize=24)
     plt.tight_layout()
+    plt.tight_layout()
     if star.params['save']:
+        path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
-            plt.savefig(utils.get_next(star,'dnu_comparisons.png'), dpi=300)
-        else:
-            plt.savefig(os.path.join(star.params[star.name]['path'],'dnu_comparisons.png'), dpi=300)
+            path = utils._get_next(path)
+        plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 
@@ -716,11 +725,11 @@ def check_data(star, args, show=True):
     """
     if star.params['verbose']:
         print(' - displaying figures')
-    set_plot_params()
+    plt.style.use(MPLSTYLE)
     if star.lc:
-        plot_light_curve(star, args)
+        _plot_light_curve(star, args)
     if star.ps:
-        plot_power_spectrum(star, args)
+        _plot_power_spectrum(star, args)
     if star.params['show']:
         plt.show(block=False)
         input(' - press any key to exit')
@@ -728,7 +737,7 @@ def check_data(star, args, show=True):
     plt.close()
 
 
-def plot_light_curve(star, args, filename='time_series.png', npanels=1):
+def _plot_light_curve(star, args, filename='time_series.png', npanels=1):
     """
     Plot the light curve data
 
@@ -766,13 +775,13 @@ def plot_light_curve(star, args, filename='time_series.png', npanels=1):
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
-            path = utils.get_next(path)
+            path = utils._get_next(path)
         plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
 
 
-def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
+def _plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
     """
     Plot the power spectrum data
 
@@ -813,7 +822,7 @@ def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
-            path = utils.get_next(path)
+            path = utils._get_next(path)
         plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()

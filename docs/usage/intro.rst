@@ -103,7 +103,6 @@ old files with the same extension, etc.)
 
 .. code-block::
 
-    High-level functions:
       --in str, --input str, --inpdir str
                             Input directory
       --infdir str          Path to relevant pySYD information
@@ -158,7 +157,6 @@ working on implementing time-domain tools as well!**
 
 .. code-block::
 
-    Data analyses:
       --star [str [str ...]], --stars [str [str ...]]
                             list of stars to process
       --file str, --list str, --todo str
@@ -233,7 +231,6 @@ main properties.
 
 .. code-block::
 
-    Search parameters:
       -e, --est, --estimate
                             Turn off the optional module that estimates numax
       -j, --adjust          Adjusts default parameters based on region of
@@ -288,7 +285,6 @@ Below is a complete list of parameters relevant to the background-fitting routin
 
 .. code-block::
 
-    Background parameters:
       -b, --bg, --background
                             Turn off the routine that determines the stellar
                             background contribution
@@ -345,7 +341,6 @@ All of the following are related to deriving global asteroseismic parameters, :t
 
 .. code-block::
 
-    Global parameters:
       -g, --globe, --global
                             Disable the main global-fitting routine
       --numax [float [float ...]]
@@ -402,7 +397,6 @@ All CLI options relevant for the Monte-Carlo sampling in order to estimate uncer
 
 .. code-block::
 
-    Sampling parameters:
       --mc int, --iter int, --mciter int
                             number of Monte-Carlo iterations to run for estimating
                             uncertainties (typically 200 is sufficient)
@@ -436,7 +430,6 @@ harder to hack, so we tried to make it as easily customizable as possible.
 
 .. code-block::
 
-    Plotting parameters:
       --all, --showall      plot background comparison figure
       -d, --show, --display
                             show output figures

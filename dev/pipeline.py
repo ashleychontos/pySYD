@@ -22,6 +22,7 @@ import plots
 from target import Target
 
 
+
 def check(args):
     """
     
@@ -39,7 +40,7 @@ def check(args):
     
     """
     star, args = load(args)
-    plots.check_data(star, args)
+    plots._check_data(star, args)
 
 
 def load(args):
@@ -53,7 +54,7 @@ def load(args):
         information that is required to run any ``pySYD`` mode successfully
         (with the exception of ``pysyd.pipeline.setup``)
 
-    **Parameters**
+    Parameters
         args : argparse.Namespace
             the command line arguments
         star : object, optional
@@ -63,11 +64,11 @@ def load(args):
         command : str, optional
             which of the 5 ``pysyd.pipeline`` modes to execute from the notebook
 
-    **Returns**
+    Returns
         single : target.Target
             current data available for the provided target
 
-    **Deprecated**
+    Deprecated
         single : target.Target
             current data available for the provided target
 
@@ -96,6 +97,11 @@ def parallel(args):
     Parameters
         args : argparse.Namespace
             the command line arguments
+
+    Methods
+        pipe
+
+    .. seealso:: :mod:`pysyd.pipeline.run`
     
     """
     # Import relevant (external) python modules
@@ -118,21 +124,21 @@ def parallel(args):
 
 def pipe(group, args):
     """
-    
-    This function is called by both ``pysyd.pipeline.run`` and ``pysyd.pipeline.parallel``
-    modes to initiate the ``pySYD`` pipeline for a group of stars
+
+    .. deprecated:: 6.0.0
+        `count` is no longer needed to keep track of how many stars have been successfully processed    
+
+    This function is called by both :mod:`pysyd.pipeline.run` and :mod:`pysyd.pipeline.parallel`
+    to initialize the pipeline for a `'group'` of stars
 
     Parameters
-        group : List[object]
+        group : List[str]
             list of stars to be processed as a group
         args : argparse.Namespace
             the command line arguments
         count : int
             the number of successful stars processed by the pipeline for a given group (default = `0`)
 
-    Returns
-        count : int
-            the number of successful stars processed by ``pySYD`` for a given group of stars
     """
     # Iterate through and run stars in a given star 'group'
     for name in group:
@@ -140,10 +146,6 @@ def pipe(group, args):
         # Makes sure a target is 'ok' before processing
         if star.ok:
             star.process_star()
-        else:
-            # Only print data warnings when running pySYD in regular mode (i.e. not in parallel)
-            if star.mode != 'parallel':
-                print(' - cannot find data for %s'%star.name)
 
 
 def plot(args):
@@ -157,30 +159,17 @@ def plot(args):
         information that is required to run any ``pySYD`` mode successfully
         (with the exception of ``pysyd.pipeline.setup``)
 
-    **Parameters**
+    Parameters
         args : argparse.Namespace
             the command line arguments
-        star : object, optional
-            pretty sure this is only used from jupyter notebook
-        verbose : bool, optional
-            again, this is only used if not using command line
-        command : str, optional
-            which of the 5 ``pysyd.pipeline`` modes to execute from the notebook
 
-    **Returns**
-        single : target.Target
-            current data available for the provided target
-
-    **Deprecated**
-        single : target.Target
-            current data available for the provided target
 
     """
     if args.compare:
-        plots.create_comparison_plot(show=args.show, save=args.save, overwrite=args.overwrite,)
+        plots._create_comparison_plot(show=args.show, save=args.save, overwrite=args.overwrite,)
     if args.results:
         if args.stars is None:
-            raise utils.InputError("Please provide a star to plot results for")
+            raise utils.PySYDInputError("Please provide a star to plot results for")
         else:
             assert len(args.stars) == 1, "No more than one star can be checked at a time."
         assert os.path.exists(os.path.join(args.params['outdir'],args.stars[0]))
@@ -198,6 +187,11 @@ def run(args):
         args : argparse.Namespace
             the command line arguments
 
+    Methods
+        pipe
+
+    .. seealso:: :mod:`pysyd.pipeline.parallel`
+
 
     """
     # Load relevant pySYD parameters
@@ -211,7 +205,7 @@ def run(args):
     utils.scrape_output(args)
 
 
-def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/examples/'):
+def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
     """
     
     Running this after installation will create the appropriate directories in the current working
@@ -291,5 +285,11 @@ def test(args):
         
     
     """
+    print('####################################################################\n#                                                                  #\n#                   Testing pySYD functionality                    #\n#                                                                  #\n####################################################################\n')
+    subprocess.call(['pysyd run --star %s --mc 200'%star], shell=True)
     # Load relevant pySYD parameters
-    args = utils.Parameters(args)
+    examples = utils.get_dict(type='tests')
+    for star in ['1435467', '2309595', '11618103']:
+        print('KIC %s\n%s\n'%(star, '-'*(len(star)+4)))        
+        answers = examples[star]['results']
+    print('####################################################################\n#                                                                  #\n#                   TESTING SUCCESSFULLY COMPLETED                 #\n#                                                                  #\n####################################################################\n')

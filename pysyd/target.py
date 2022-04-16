@@ -51,7 +51,7 @@ class Target:
             # if not available, loads defaults
             args.add_stars(stars=[name])
             self.params = args.params[name]
-        self.load_star()
+        self._load_star()
 
 
     def __repr__(self):
@@ -141,7 +141,7 @@ class Target:
 ##########################################################################################
 
 
-    def load_star(self, ps=False, lc=False, note='',):
+    def _load_star(self, ps=False, lc=False,):
         """Input star data
 
         Load data in for a single star by first checking to see if the power spectrum exists
@@ -149,17 +149,15 @@ class Target:
         event that there is not one
 
         Attributes
-            note : str, default=''
-                verbose output
             lc : bool, default=False
                 `True` if object has light curve
             ps : bool, default=False
                 `True` if object has power spectrum
 
         Methods
-            - :mod:`pysyd.target.Target.load_power_spectrum`
-            - :mod:`pysyd.target.Target.load_time_series`
-            - :mod:`pysyd.target.Target.get_warnings`   
+            :mod:`pysyd.target.Target.load_power_spectrum`
+            :mod:`pysyd.target.Target.load_time_series`
+            :mod:`pysyd.target.Target._get_warnings`   
 
         Raises
             PySYDInputError
@@ -179,7 +177,7 @@ class Target:
         #     ->  cannot process, return user error
         if not self.ps:
             raise utils.PySYDInputError("ERROR: no data found for target %s"%self.name)
-        self.get_warnings() 
+        self._get_warnings() 
 
 
     def load_power_spectrum(self,):
@@ -193,7 +191,7 @@ class Target:
             note : str, optional
                 verbose output
             ps : bool
-                `True` if object has power spectrum
+                `True` if star ID has an available (or newly-computed) power spectrum
 
         Yields
             frequency, power : numpy.ndarray, numpy.ndarray
@@ -214,7 +212,7 @@ class Target:
         # Try loading the power spectrum
         if os.path.exists(os.path.join(self.params['inpdir'], '%s_PS.txt' % str(self.name))):
             self.ps = True
-            self.frequency, self.power = self.load_file(os.path.join(self.params['inpdir'], '%s_PS.txt' % str(self.name)))
+            self.frequency, self.power = self._load_file(os.path.join(self.params['inpdir'], '%s_PS.txt' % str(self.name)))
             self.note += '# POWER SPECTRUM: %d lines of data read\n'%len(self.frequency)
             # Only use provided oversampling factor if there is no light curve to calculate it from 
             # CASE 1: POWER SPECTRUM AND NO LIGHT CURVE
@@ -251,15 +249,16 @@ class Target:
             note : str, optional
                 verbose output
             lc : bool
-                `True` if object has light curve
+                `True` if star ID has light curve data available
             cadence : int
-                median cadence of time series data ( :math:`\\Delta t`)
+                median cadence of time series data (:math:`\\Delta t`)
             nyquist : float
                 nyquist frequency of the power spectrum (calculated from time series cadence)
             baseline : float
-                total time series duration ( :math:`\\Delta T`)
+                total time series duration (:math:`\\Delta T`)
             tau_upper : float
-                upper limit of the modeled time scales set by baseline/2
+                upper limit of the granulation time scales, which is set by the total duration
+                of the time series (divided in half)
 
         Yields
             time, flux : numpy.ndarray, numpy.ndarray
@@ -285,7 +284,7 @@ class Target:
         # Try loading the light curve
         if os.path.exists(os.path.join(self.params['inpdir'], '%s_LC.txt' % str(self.name))):
             self.lc = True
-            self.time, self.flux = self.load_file(os.path.join(self.params['inpdir'], '%s_LC.txt' % str(self.name)))
+            self.time, self.flux = self._load_file(os.path.join(self.params['inpdir'], '%s_LC.txt' % str(self.name)))
             self.time -= min(self.time)
             self.cadence = int(round(np.nanmedian(np.diff(self.time)*24.0*60.0*60.0),0))
             self.nyquist = 10**6./(2.0*self.cadence)
@@ -332,7 +331,7 @@ class Target:
                 print(other)
 
 
-    def load_file(self, path):
+    def _load_file(self, path):
         """Load text file
     
         Load a light curve or a power spectrum from a basic 2xN txt file
@@ -359,14 +358,12 @@ class Target:
         return x, y
 
 
-    def get_warnings(self, long=10**6, note='',):
+    def _get_warnings(self, long=10**6,):
         """Check input data
 
         Prints relevant warnings about the input data
 
         Parameters
-            note : str, default=''
-                verbose output
             long : int, default= :math:`10^{6}`
                 arbitrary number to let user know if a "long" PS was given, as it will
                 take pySYD longer to process
@@ -488,6 +485,8 @@ class Target:
                 save all data products
             kep_corr : bool, default=False
                 correct for known *Kepler* short-cadence artefacts
+            ech_mask : List[lower_ech,upper_ech], default=None
+                corrects for dipole mixed modes if not `None`
             frequency, power : numpy.ndarray, numpy.ndarray
                 input power spectrum to be corrected 
 
@@ -513,7 +512,7 @@ class Target:
         return frequency, power
 
 
-    def set_seed(self, lower=1, upper=10**7):
+    def _set_seed(self, lower=1, upper=10**7):
         """Set seed
     
         For *Kepler* targets that require a correction via CLI (--kc), a random seed is generated
@@ -579,7 +578,7 @@ class Target:
         frequency, power = np.copy(freq), np.copy(pow)
         resolution = frequency[1]-frequency[0]
         if self.params['seed'] is None:
-            self.set_seed()
+            self._set_seed()
         # LC period in Msec -> 1/LC ~muHz
         artefact = (1.0+np.arange(14))*lcp
         # Estimate white noise
@@ -639,7 +638,7 @@ class Target:
         """
         frequency, power = np.copy(freq), np.copy(pow)
         if self.params['seed'] is None:
-            self.set_seed()
+            self._set_seed()
         # Estimate white noise
         if not self.params['notching']:
             white = np.mean(power[(frequency >= max(frequency)-100.0)&(frequency <= max(frequency)-50.0)])
@@ -798,7 +797,7 @@ class Target:
                 print('Selecting model %d' % self.params['best'])
         # Or ask which estimate to use
         else:
-            self = plots.select_trial(self)
+            self = plots._select_trial(self)
 
 
     def collapsed_acf(self, n_trials=3, step=0.25, max_snr=100.0,):
@@ -931,7 +930,7 @@ class Target:
         """
         # get+set seed for reproducible results
         if self.params['seed'] is None:
-            self.set_seed()
+            self._set_seed()
         np.random.seed(int(self.params['seed']))
         if 'results' not in self.params:
             self.params['results'] = {}
@@ -1771,7 +1770,7 @@ class Target:
             y_mask = ((self.frequency >= y[i-1]) & (self.frequency < y[i]))
             for j in range(nx):
                 x_mask = ((self.frequency%(self.params['obs_dnu']) >= x[j]) & (self.frequency%(self.params['obs_dnu']) < x[j+1]))
-                if smooth_y[x_mask & y_mask]:
+                if smooth_y[x_mask & y_mask] != []:
                     z[i][j] = np.sum(smooth_y[x_mask & y_mask])
                 else:
                     z[i][j] = np.nan
@@ -1810,7 +1809,7 @@ class Target:
         modx = self.frequency%self.params['obs_dnu']
         for k in range(n-1):
             mask = (modx >= xx[k])&(modx < xx[k+1])
-            if self.bg_corr[mask]:
+            if self.bg_corr[mask] != []:
                 xx[k] = np.median(modx[mask])
                 yy[k] = np.sum(self.bg_corr[mask])
         mask = np.ma.getmask(np.ma.masked_where(yy == 0.0, yy))

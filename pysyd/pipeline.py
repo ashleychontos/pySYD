@@ -120,7 +120,9 @@ def pipe(group, args):
     """
 
     .. deprecated:: 6.0.0
-        `count` is no longer needed to keep track of how many stars have been successfully processed    
+        `ok` is no longer an attribute of the :mod:`pysyd.target.Target` object, since it
+        raise relevant warnings and errors instead of needing to check if all tests passed
+        (== `star.ok`)
 
     This function is called by both :mod:`pysyd.pipeline.run` and :mod:`pysyd.pipeline.parallel`
     to initialize the pipeline for a `'group'` of stars
@@ -130,16 +132,12 @@ def pipe(group, args):
             list of stars to be processed as a group
         args : argparse.Namespace
             the command line arguments
-        count : int
-            the number of successful stars processed by the pipeline for a given group (default = `0`)
 
     """
     # Iterate through and run stars in a given star 'group'
     for name in group:
         star = Target(name, args)
-        # Makes sure a target is 'ok' before processing
-        if star.ok:
-            star.process_star()
+        star.process_star()
 
 
 def plot(args):

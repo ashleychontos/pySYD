@@ -414,7 +414,6 @@ class Parameters(Constants):
             smooth_ps = smooth_ps,
             fft = fft,
             threshold = threshold,
-            method = method,
             n_peaks = n_peaks,
         )
         self.params.update(globe)
@@ -517,7 +516,7 @@ class Parameters(Constants):
             if self.params['save'] and not os.path.exists(self.params[star]['path']):
                 os.makedirs(self.params[star]['path'])
         self._get_groups()
-        self.add_info()
+        self._add_info()
 
 
     def star_list(self,):
@@ -824,7 +823,7 @@ def _save_estimates(star, variables=['star', 'numax', 'dnu', 'snr']):
         if not star.params['overwrite']:
             save_path = _get_next(save_path)
         ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
-    star = save_plotting(star)
+    star = _save_plotting(star)
     return star
 
 
@@ -879,10 +878,10 @@ def _save_plotting(star):
             best_lag = star.params['best_lag'],
             best_auto = star.params['best_auto'],
             obs_acf = max(star.params['plotting'][star.module]['dnu_fit']),
-            z = np.copy(star.z),
+            ed = np.copy(star.ed),
             extent = np.copy(star.extent),
-            xax = np.copy(star.xax),
-            yax = np.copy(star.yax),
+            x = np.copy(star.x),
+            y = np.copy(star.y),
             a_orig = np.copy(star.params['a']),
             obs_numax = star.params['obs_numax'],
             exp_dnu = star.params['exp_dnu'],
