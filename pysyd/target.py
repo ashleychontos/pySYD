@@ -27,13 +27,13 @@ class Target:
                   new error handling, that will instead raise exceptions or warnings 
         
         A new instance (or star) is created for each target that is processed.
-        Instantiation copies the relevant, individual star dictionary and then will try to
-        load in data for the given star name
+        Instantiation copies the relevant, individual star dictionary (and the inherited 
+        constants) and will then load in data using the provided star `name`
 
         Parameters
             name : str
                 which target to load in and/or process
-            args : utilities.Parameters
+            args : :mod:`pysyd.utils.Parameters`
                 container class of pysyd parameters
 
         Attributes
