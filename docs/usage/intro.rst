@@ -7,11 +7,11 @@ Introduction & help
 As we have alluded to throughout the documentation, `pySYD` was intended to be used through 
 its command-line interface (CLI) -- which means that the software is specifically optimized 
 for this usage and therefore most options probably have the best defaults already
-set. Here, "best" just means that the setup is what works *best* for a majority of stars. 
+set. Here, "best" just means that the defaults work *best* for most stars. 
 
 However, that does not necessarily mean that your star(s) or setting(s) are expected to 
 conform or adhere to these settings. In fact, we recommend playing around with some of the 
-settings to see how it affects your results. This will help build your intution for seismic 
+settings to see how it affects the results, which might help build your intuition for seismic 
 analyses. 
 
 .. note:: 
@@ -28,8 +28,7 @@ CLI help
 
 To give you a glimpse into the insanely large amount of available options, open up a terminal
 window and enter the help command for the main pipeline execution (`run` aka :mod:`pysyd.pipeline.run`), 
-since this mode inherits all command-line parsers. **BTW** visit :ref:`this page <library-pipeline-modes>`
-for more information on which parsers a given pipeline mode inherits.
+since this mode inherits all command-line parsers. 
 
 .. code-block::
 
@@ -59,42 +58,40 @@ If you ran it from your end, you probably noticed an output that was a factor of
 It may seem like an overwhelming amount but do not fret, this is for good reason -- and that's 
 to make your asteroseismic experience as customized as possible.
 
+Currently `pySYD` has four parsers: the `parent_parser` for high-level functionality, the
+`data_parser` for anything related to data loading and manipulating, the `main_parser` for
+everything related to the core analyses, and the `plot_parser` for (yes, you guessed it!)
+plotting. In fact, the main parser is so large that comprises four subgroups, each related to
+the corresponding steps in the main pipeline execution. **BTW** see :ref:`here <library-pipeline-modes>` 
+for more information on which parsers a given pipeline mode inherits.
+
+ - :ref:`parent parser <user-guide-intro-high>`
+ - :ref:`data parser <user-guide-intro-data>`
+ - :ref:`main parser <user-guide-intro-main>`
+    - :ref:`search & estimate <user-guide-intro-est>`
+    - :ref:`background fit <user-guide-intro-bg>`
+    - :ref:`global fit <user-guide-intro-globe>`
+    - :ref:`estimate uncertainties <user-guide-intro-mc>`
+ - :ref:`plotting parser <user-guide-intro-plot>`
+
 **Note:** as you are navigating this page, keep in mind that we also have a special 
 :ref:`glossary <user-guide-glossary>` for all our command-line options. This includes everything
 from the variable type, default value and relevant units to how it's stored within the 
 software itself. There are glossary links at the bottom of every section for each of the parameters 
 discussed within that subsection.
 
-We have broken everything up into smaller groups that are related through some appropriate means.
-For example, all parameters related to the loading and manipulating of data are grouped together 
-in its own `data_analysis` :ref:`parser <user-guide-intro-data>`. However the main parser, which 
-is used any time a star is processed, is enormous and therefore we've grouped subparsers by relevant 
-steps (e.g., :ref:`background <user-guide-intro-bg>` and :ref:`global <user-guide-intro-globe>` fits). 
-We hope this will make it a bit easier to remember!
-
- - :ref:`high-level functions <user-guide-intro-high>`
- - :ref:`data analyses <user-guide-into-data>`
- - :ref:`search & estimate <user-guide-intro-est>`
- - :ref:`background fit <user-guide-intro-bg>`
- - :ref:`global fit <user-guide-intro-globe>`
- - :ref:`plotting <user-guide-intro-plot>`
- - :ref:`estimate uncertainties <user-guide-intro-mc>`
-
 -----
 
 .. _user-guide-intro-high:
 
-High-level functions
-####################
+Parent parser
+#############
 
-Below is the first part of the output, which is primarily related to the higher level functionality.
-Within the software, these are defined by the parent and main parsers, which are inevitably inherited
-by all `pySYD` modes that handle the data.
+**for all your high-level functionality needs**
 
-All `pySYD` modes inherent the parent parser, which includes the properties 
-enumerated below. With the exception of the `verbose` command, most of these
-features are related to the initial (setup) paths and directories and should be
-used very sparingly. 
+All `pySYD` modes inherent the `parent_parser` and therefore, mostly pertains to paths and
+how you choose to run the software (i.e. save files and if so, whether or not to overwrite 
+old files with the same extension, etc.) 
 
 .. code-block::
 
@@ -109,25 +106,38 @@ used very sparingly.
      --cli                 Running from command line (this should not be touched)
      -v, --verbose         Turn off verbose output
 
-**Glossary terms:** :term:`--cli<--cli>`, :term:`--file<--file, --list, --todo>`, 
-:term:`--in<--in, --input, --inpdir>`, :term:`--info<--info, --information>`, 
-:term:`--information<--info, --information>`, :term:`--inpdir<--in, --input, --inpdir>`, 
-:term:`--input<--in, --input, --inpdir>`, :term:`--list<--file, --list, --todo>`, 
-:term:`--notebook<--notebook>`, :term:`--out<--out, --output, --outdir>`, 
-:term:`--outdir<--out, --output, --outdir>`, :term:`--output<--out, --output, --outdir>`, 
-:term:`--todo<--file, --list, --todo>`, :term:`-v<-v, --verbose>`, 
+**Glossary terms:** 
+:term:`--cli<--cli>`, 
+:term:`--file<--file, --list, --todo>`, 
+:term:`--in<--in, --input, --inpdir>`, 
+:term:`--info<--info, --information>`, 
+:term:`--information<--info, --information>`, 
+:term:`--inpdir<--in, --input, --inpdir>`, 
+:term:`--input<--in, --input, --inpdir>`, 
+:term:`--list<--file, --list, --todo>`, 
+:term:`--notebook<--notebook>`, 
+:term:`-o<-o, --overwrite>`, 
+:term:`--out<--out, --output, --outdir>`, 
+:term:`--overwrite<-o, --overwrite>`, 
+:term:`-s<-s, --save>`, 
+:term:`--save<-s, --save>`,
+:term:`--outdir<--out, --output, --outdir>`, 
+:term:`--output<--out, --output, --outdir>`, 
+:term:`--todo<--file, --list, --todo>`, 
+:term:`-v<-v, --verbose>`, 
 :term:`--verbose<-v, --verbose>`
 
 -----
 
 .. _user-guide-intro-data:
 
-Initial data analyses
-#####################
+Data parser
+###########
 
-The following features are primarily related to the initial and final treatment of
-data products, including information about the input data, how to process and save
-the data as well as which modules to run.
+The following features are primarily related to the input data and when applicable, what 
+tools to apply to the data. All data manipulation relevant in this step happens *prior*
+to any pipeline analysis. **Currently this is mostly frequency-domain tools but we are 
+working on implementing some time-domain tools too!**
 
 .. code-block::
 
@@ -161,19 +171,32 @@ the data as well as which modules to run.
                            Upper frequency limit of folded PS to whiten mixed
                            modes
 
-**Glossary terms:**  
-:term:`-e<-e, --est, --estimate>`, :term:`--est<-e, --est, --estimate>`, 
-:term:`--estimate<-e, --est, --estimate>`, :term:`-k<-k, --kc, --kepcorr>`, 
-:term:`--kc<-k, --kc, --kepcorr>`, :term:`--kepcorr<-k, --kc, --kepcorr>`, :term:`-o<-o, --overwrite>`, 
-:term:`--of<--of, --over, --oversample>`, :term:`--over<--of, --over, --oversample>`, 
-:term:`--oversample<--of, --over, --oversample>`, :term:`--overwrite<-o, --overwrite>`, 
-:term:`-s<-s, --save>`, :term:`--save<-s, --save>`, :term:`--star<--star, --stars>`, 
-:term:`--stars<--star, --stars>`, :term:`--stitch<-x, --stitch, --stitching>`, 
-:term:`--stitching<-x, --stitch, --stitching>`, :term:`-x<-x, --stitch, --stitching>`
+**Glossary terms** (alphabetical order): 
+:term:`--dnu`
+:term:`-k<-k, --kc, --kepcorr>`, 
+:term:`--le<--le, --lowere>`, 
+:term:`--lowere<--le, --lowere>`,
+:term:`--kc<-k, --kc, --kepcorr>`, 
+:term:`--kepcorr<-k, --kc, --kepcorr>`, 
+:term:`--of<--of, --over, --oversample>`, 
+:term:`--over<--of, --over, --oversample>`, 
+:term:`--oversample<--of, --over, --oversample>`,  
+:term:`--star<--star, --stars>`, 
+:term:`--stars<--star, --stars>`, 
+:term:`--stitch<-x, --stitch, --stitching>`, 
+:term:`--stitching<-x, --stitch, --stitching>`, 
+:term:`--ue<--ue, --uppere>`, 
+:term:`--uppere<--ue, --uppere>`, 
+:term:`-x<-x, --stitch, --stitching>`
 
 -----
 
 .. _user-guide-intro-est:
+
+Core functions aka `main_parser`
+################################
+
+aka `main_parser`
 
 Identify & estimate
 ###################
@@ -200,12 +223,27 @@ main properties.
      --ux [float [float ...]], --upperx [float [float ...]]
                            Upper frequency limit of PS
                             
-**Glossary terms:** :term:`-a<-a, --ask>`, :term:`--ask<-a, --ask>`, :term:`--bin<--bin, --binning>`, 
-:term:`--binning<--bin, --binning>`, :term:`--bm<--bm, --mode, --bmode>`, :term:`--bmode<--bm, --mode, --bmode>`, 
-:term:`--lowerx<--lx, --lowerx>`, :term:`--lx<--lx, --lowerx>`, :term:`--mode<--bm, --mode, --bmode>`, 
-:term:`--ntrials<--trials, --ntrials>`, :term:`--step<--step, --steps>`, :term:`--steps<--step, --steps>`, 
-:term:`--sw<--sw, --smoothwidth>`, :term:`--smoothwidth<--sw, --smoothwidth>`, 
-:term:`--trials<--trials, --ntrials>`, :term:`--upperx<--ux, --upperx>`, :term:`--ux<--ux, --upperx>`
+**Glossary terms** (alphabetical order): 
+:term:`-a<-a, --ask>`, 
+:term:`--ask<-a, --ask>`, 
+:term:`--bin<--bin, --binning>`, 
+:term:`--binning<--bin, --binning>`, 
+:term:`--bm<--bm, --mode, --bmode>`, 
+:term:`--bmode<--bm, --mode, --bmode>`, 
+:term:`-e<-e, --est, --estimate>`, 
+:term:`--est<-e, --est, --estimate>`, 
+:term:`--estimate<-e, --est, --estimate>`,
+:term:`--lowerx<--lx, --lowerx>`, 
+:term:`--lx<--lx, --lowerx>`, 
+:term:`--mode<--bm, --mode, --bmode>`, 
+:term:`--ntrials<--trials, --ntrials>`, 
+:term:`--step<--step, --steps>`, 
+:term:`--steps<--step, --steps>`, 
+:term:`--sw<--sw, --smoothwidth>`, 
+:term:`--smoothwidth<--sw, --smoothwidth>`, 
+:term:`--trials<--trials, --ntrials>`, 
+:term:`--upperx<--ux, --upperx>`, 
+:term:`--ux<--ux, --upperx>`
 
 -----
 
@@ -240,14 +278,28 @@ Below is a complete list of parameters relevant to the background-fitting routin
                            Upper frequency limit of PS
      -w, --wn, --fixwn     Fix the white noise level
 
-**Glossary terms:** :term:`-b<-b, --bg, --background>`, :term:`--background<-b, --bg, --background>`, 
-:term:`--bg<-b, --bg, --background>`, :term:`--basis`, :term:`--bf<--bf, --box, --boxfilter>`, 
-:term:`--box<--bf, --box, --boxfilter>`, :term:`--boxfilter<--bf, --box, --boxfilter>`, 
-:term:`--fixwn<-w, --wn, --fixwn>`, :term:`--iw<--iw, --indwidth>`, :term:`--indwidth<--iw, --indwidth>`, 
-:term:`--laws<--laws, --nlaws>`, :term:`--lb<--lb, --lowerb>`, :term:`--lowerb<--lb, --lowerb>`, 
-:term:`--metric`, :term:`--nrms<--rms, --nrms>`, :term:`--rms<--rms, --nrms>`, 
-:term:`--nlaws<--laws, --nlaws>`, :term:`--ub<--ub, --upperb>`, :term:`--upperb<--ub, --upperb>`, 
-:term:`-w<-w, --wn, --fixwn>`, :term:`--wn<-w, --wn, --fixwn>`
+**Glossary terms** (alphabetical order):  
+:term:`-b<-b, --bg, --background>`, 
+:term:`--background<-b, --bg, --background>`, 
+:term:`--basis`,
+:term:`--bf<--bf, --box, --boxfilter>`,
+:term:`--bg<-b, --bg, --background>`,   
+:term:`--box<--bf, --box, --boxfilter>`, 
+:term:`--boxfilter<--bf, --box, --boxfilter>`, 
+:term:`--fixwn<-w, --wn, --fixwn>`, 
+:term:`--iw<--iw, --indwidth>`, 
+:term:`--indwidth<--iw, --indwidth>`, 
+:term:`--laws<--laws, --nlaws>`, 
+:term:`--lb<--lb, --lowerb>`, 
+:term:`--lowerb<--lb, --lowerb>`, 
+:term:`--metric`, 
+:term:`--nrms<--rms, --nrms>`, 
+:term:`--rms<--rms, --nrms>`, 
+:term:`--nlaws<--laws, --nlaws>`, 
+:term:`--ub<--ub, --upperb>`, 
+:term:`--upperb<--ub, --upperb>`, 
+:term:`-w<-w, --wn, --fixwn>`, 
+:term:`--wn<-w, --wn, --fixwn>`
 
 -----
 
@@ -290,21 +342,57 @@ All of the following are related to deriving global asteroseismic parameters, :t
                            Number of peaks to fit in the ACF
 
 
-**Glossary terms:** :term:`--ew<--ew, --exwidth>`, :term:`--exwidth<--ew, --exwidth>`, 
-:term:`-g<-g, --globe, --global>`, :term:`--global<-g, --globe, --global>`, 
-:term:`--globe<-g, --globe, --global>`, :term:`--lp<--lp, --lowerp>`, :term:`--lowerp<--lp, --lowerp>`, 
-:term:`--numax`, :term:`--sm<--sm, --smpar>`, :term:`--smpar<--sm, --smpar>`, 
-:term:`--up<--up, --upperp>`, :term:`--upperp<--up, --upperp>` :term:`--dnu`,  
-:term:`--npeaks<--peak, --peaks, --npeaks>`, :term:`--peak<--peak, --peaks, --npeaks>`, 
-:term:`--peaks<--peak, --peaks, --npeaks>`, :term:`--sp<--sp, --smoothps>`, 
-:term:`--smoothps<--sp, --smoothps>`, :term:`--thresh<--thresh, --threshold>`
+**Glossary terms** (alphabetical order): 
+:term:`--ew<--ew, --exwidth>`, 
+:term:`--exwidth<--ew, --exwidth>`, 
+:term:`-g<-g, --globe, --global>`, 
+:term:`--global<-g, --globe, --global>`, 
+:term:`--globe<-g, --globe, --global>`, 
+:term:`--lp<--lp, --lowerp>`, 
+:term:`--lowerp<--lp, --lowerp>`, 
+:term:`--npeaks<--peak, --peaks, --npeaks>`, 
+:term:`--numax`, 
+:term:`--peak<--peak, --peaks, --npeaks>`, 
+:term:`--peaks<--peak, --peaks, --npeaks>`, 
+:term:`--sm<--sm, --smpar>`, 
+:term:`--smpar<--sm, --smpar>`, 
+:term:`--up<--up, --upperp>`, 
+:term:`--upperp<--up, --upperp>` :term:`--dnu`,  
+:term:`--sp<--sp, --smoothps>`, 
+:term:`--smoothps<--sp, --smoothps>`, 
+:term:`--thresh<--thresh, --threshold>`
+
+-----
+
+.. _user-guide-intro-mc:
+
+Sampling
+########
+
+All CLI options relevant for the Monte-Carlo sampling in order to estimate uncertainties:
+
+.. code-block::
+
+   Estimate uncertainties:
+     --mc int, --iter int, --mciter int
+                           Number of Monte-Carlo iterations
+     -m, --samples         Save samples from the Monte-Carlo sampling
+
+**Glossary terms** (alphabetical order): 
+:term:`--iter<--mc, --iter, --mciter>`, 
+:term:`-m<-m, --samples>`, 
+:term:`--mc<--mc, --iter, --mciter>`, 
+:term:`--mciter<--mc, --iter, --mciter>`, 
+:term:`--samples<-m, --samples>`
 
 -----
 
 .. _user-guide-intro-plot:
 
-Plotting
-########
+Plot parser
+###########
+
+aka `plot_parser`
 
 Anything related to the plotting of results for *any* of the modules is in this parser. Its 
 currently a little heavy on the :term:`echelle diagram` end because this part of the plot is
@@ -332,35 +420,28 @@ harder to hack, so we tried to make it as easily customizable as possible.
      --se float, --smoothech float
                            smooth ED using a box filter [in muHz]
 
-**Glossary terms:** :term:`-d<-d, --show, --display>`, :term:`--display<-d, --show, --display>`, 
-:term:`--ce<--ce, --cm, --color>`, :term:`--cm<--ce, --cm, --color>`, :term:`--color<--ce, --cm, --color>`, 
-:term:`--cv<--cv, --value>`, :term:`-i<-i, --ie, --interpech>`, :term:`--hey<-y, --hey>`, 
-:term:`--ie<-i, --ie, --interpech>`, :term:`--interpech<-i, --ie, --interpech>`, 
-:term:`--le<--le, --lowere>`, :term:`--lowere<--le, --lowere>`, :term:`--nox<--nox, --nacross>`, 
-:term:`--nacross<--nox, --nacross>`, :term:`--ndown<--noy, --ndown, --norders>`, 
-:term:`--norders<--noy, --ndown, --norders>`, :term:`--noy<--noy, --ndown, --norders>`, 
-:term:`--se<--se, --smoothech>`, :term:`--smoothech<--se, --smoothech>`,  :term:`--ue<--ue, --uppere>`, 
-:term:`--uppere<--ue, --uppere>`, :term:`--value<--cv, --value>`, :term:`-y<-y, --hey>`
-
------
-
-.. _user-guide-intro-mc:
-
-Sampling
-########
-
-All CLI options relevant for the Monte-Carlo sampling in order to estimate uncertainties:
-
-.. code-block::
-
-   Estimate uncertainties:
-     --mc int, --iter int, --mciter int
-                           Number of Monte-Carlo iterations
-     -m, --samples         Save samples from the Monte-Carlo sampling
-
-**Glossary terms:** :term:`--iter<--mc, --iter, --mciter>`, :term:`-m<-m, --samples>`, 
-:term:`--mc<--mc, --iter, --mciter>`, :term:`--mciter<--mc, --iter, --mciter>`, 
-:term:`--samples<-m, --samples>`
+**Glossary terms** (alphabetical order): 
+:term:`--ce<--ce, --cm, --color>`, 
+:term:`--cm<--ce, --cm, --color>`, 
+:term:`--color<--ce, --cm, --color>`, 
+:term:`--cv<--cv, --value>`, 
+:term:`-d<-d, --show, --display>`, 
+:term:`--display<-d, --show, --display>`, 
+:term:`--hey<-y, --hey>`, 
+:term:`-i<-i, --ie, --interpech>`, 
+:term:`--ie<-i, --ie, --interpech>`, 
+:term:`--interpech<-i, --ie, --interpech>`, 
+:term:`--nox<--nox, --nacross>`, 
+:term:`--nacross<--nox, --nacross>`, 
+:term:`--ndown<--noy, --ndown, --norders>`, 
+:term:`--norders<--noy, --ndown, --norders>`, 
+:term:`--noy<--noy, --ndown, --norders>`, 
+:term:`--npb`, 
+:term:`--se<--se, --smoothech>`, 
+:term:`--show<-d, --show, --display>`, 
+:term:`--smoothech<--se, --smoothech>`, 
+:term:`--value<--cv, --value>`, 
+:term:`-y<-y, --hey>`
 
 -----
 

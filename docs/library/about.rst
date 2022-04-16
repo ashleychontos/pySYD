@@ -40,8 +40,6 @@ The same time series and power spectra were used for both analyses, which are pu
 and hosted online c/o KASOC [#]_. The resulting values are compared for the two methods below for 
 :term:`numax` (:math:`\rm \nu_{max}`, left) and :term:`dnu` (:math:`\Delta\nu`, right). 
 
-.. [#] `Kepler Asteroseismic Science Operations Center <https://kasoc.phys.au.dk>`_
-
 .. image:: ../_static/comparison.png
   :width: 680
   :alt: Comparison of the `pySYD` and `SYD` pipelines
@@ -52,6 +50,8 @@ package `pySYD` provides consistent results with the legacy IDL version that has
 used extensively in the literature.
 
 .. TODO:: Add script or jupyter notebook to reproduce this figure.
+
+.. [#] `Kepler Asteroseismic Science Operations Center <https://kasoc.phys.au.dk>`_
 
 -----
 

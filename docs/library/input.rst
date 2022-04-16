@@ -26,10 +26,10 @@ peep its API (:mod:`pysyd.pipeline.setup`).
 :underlined:`Required` 
 ######################
 
-The only thing really *required* to run the software is the data. For a given star with ID, 
+The only thing really *required* to run the software is the data. For a given star ID, 
 input data are:
- #. the light curve, and
- #. the power spectrum.
+ #. the light curve (`'ID_LC.txt'`) &
+ #. the power spectrum (`'ID_PS.txt`).
 
 .. _library-input-required-lc:
 
