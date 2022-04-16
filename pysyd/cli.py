@@ -174,7 +174,7 @@ def main():
 
 ####
 
-    estimate = main_parser.add_argument_group('Estimate parameters')
+    estimate = main_parser.add_argument_group('Search parameters')
     estimate.add_argument('-e', '--est', '--estimate',
                           dest='estimate',
                           help='Turn off the optional module that estimates numax',
@@ -253,7 +253,7 @@ def main():
 
 ####
 
-    background = main_parser.add_argument_group('Background fits')
+    background = main_parser.add_argument_group('Background parameters')
     background.add_argument('-b', '--bg', '--background',
                             dest='background',
                             help='Turn off the routine that determines the stellar background contribution',
@@ -402,7 +402,7 @@ def main():
 
 ####
 
-    mcmc = main_parser.add_argument_group('Estimate uncertainties')
+    mcmc = main_parser.add_argument_group('Sampling parameters')
     mcmc.add_argument('--mc', '--iter', '--mciter', 
                       metavar='int', 
                       dest='mc_iter', 
@@ -627,24 +627,12 @@ def main():
                               default=False, 
                               action='store_true',
     )
-    parser_setup.add_argument('--dir', '--directory',
+    parser_setup.add_argument('--path', '--dir', '--directory',
                               metavar='str',
                               dest='dir',
                               help='Path to save setup files to (default=os.getcwd())',
                               type=str,
                               default=os.path.abspath(os.getcwd()),
-    )
-    parser_setup.add_argument('-f', '--files',
-                              dest='files',
-                              help='Disable auto-saving of example input files',
-                              default=True, 
-                              action='store_false',
-    )
-    parser_setup.add_argument('--path', '--dir', '--directory',
-                              dest='new',
-                              help='Set up new path in pysyd init file',
-                              default=False,
-                              action='store_true',
     )
     parser_setup.set_defaults(func=pipeline.setup)
 

@@ -1,12 +1,12 @@
 import numpy as np
 
 
-
-
-
-
-
-
+#
+# NEEDS A LOT OF WORK
+#
+# presumably can be made into a class and add components to the Model class
+# including a power law too
+#
 
 
 

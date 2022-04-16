@@ -34,21 +34,22 @@ since this mode inherits all command-line parsers.
 
     $ pysyd run --help
     
-    usage: pySYD run [-h] [--file str] [--in str] [--infdir str] [--info str]
-                     [--out str] [--gap int] [-k] [--le [float [float ...]]] [-n]
-                     [--of int] [-o] [-s] [--star [str [str ...]]]
-                     [--ue [float [float ...]]] [-x] [-a] [--bin float] [--bm str]
-                     [-e] [--lx [float [float ...]]] [--step float] [--trials int]
-                     [--sw float] [--ux [float [float ...]]] [--all] [--basis str] 
-                     [-b] [--bf float] [-f] [--iw float] [--laws int]
-                     [--lb [float [float ...]]] [--metric str] [--rms int]
-                     [--ub [float [float ...]]] [--dnu [float [float ...]]]
-                     [--ew float] [-g] [--lp [float [float ...]]] [--method str]
-                     [--numax [float [float ...]]] [--peak int] [--sm float]
-                     [--sp float] [--thresh float] [--up [float [float ...]]]
-                     [--ce str] [--cv float] [-y] [-i] [--nox int] [--noy int]
-                     [--se float] [--mc int] [-m] [--cli] [-d] [-v]
-   
+    usage: pySYD run [-h] [--in str] [--infdir str] [--out str] [-s] [-o] [-v]
+                     [--cli] [--notebook] [--star [str [str ...]]] [--file str]
+                     [--info str] [--gap int] [-x] [--of int] [-k]
+                     [--dnu [float [float ...]]] [--le [float [float ...]]]
+                     [--ue [float [float ...]]] [-n] [-e] [-j] [--def str]
+                     [--sw float] [--bin float] [--bm str] [--step float]
+                     [--trials int] [-a] [--lx [float [float ...]]]
+                     [--ux [float [float ...]]] [-b] [--basis str] [--bf float]
+                     [--iw float] [--rms int] [--laws int] [-w] [--metric str]
+                     [--lb [float [float ...]]] [--ub [float [float ...]]] [-g]
+                     [--numax [float [float ...]]] [--lp [float [float ...]]]
+                     [--up [float [float ...]]] [--ew float] [--sm float]
+                     [--sp float] [-f] [--thresh float] [--peak int] [--mc int]
+                     [-m] [--all] [-d] [--cm str] [--cv float] [-y] [-i]
+                     [--nox int] [--noy str] [--npb int] [--se float]
+
     optional arguments:
       -h, --help            show this help message and exit
 
@@ -59,13 +60,13 @@ It may seem like an overwhelming amount but do not fret, this is for good reason
 to make your asteroseismic experience as customized as possible.
 
 Currently `pySYD` has four parsers: the `parent_parser` for high-level functionality, the
-`data_parser` for anything related to data loading and manipulating, the `main_parser` for
+`data_parser` for anything related to data loading and manipulation, the `main_parser` for
 everything related to the core analyses, and the `plot_parser` for (yes, you guessed it!)
 plotting. In fact, the main parser is so large that comprises four subgroups, each related to
 the corresponding steps in the main pipeline execution. **BTW** see :ref:`here <library-pipeline-modes>` 
 for more information on which parsers a given pipeline mode inherits.
 
- - :ref:`parent parser <user-guide-intro-high>`
+ - :ref:`parent parser <user-guide-intro-parent>`
  - :ref:`data parser <user-guide-intro-data>`
  - :ref:`main parser <user-guide-intro-main>`
     - :ref:`search & estimate <user-guide-intro-est>`
@@ -82,7 +83,7 @@ discussed within that subsection.
 
 -----
 
-.. _user-guide-intro-high:
+.. _user-guide-intro-parent:
 
 Parent parser
 #############
@@ -95,16 +96,18 @@ old files with the same extension, etc.)
 
 .. code-block::
 
-   High-level functions:
-     --in str, --input str, --inpdir str
-                           Input directory
-     --infdir str          Path to relevant pySYD information
-     --out str, --outdir str, --output str
-                           Output directory
-     -o, --overwrite       Overwrite existing files with the same name/path
-     -s, --save            Do not save output figures and results
-     --cli                 Running from command line (this should not be touched)
-     -v, --verbose         Turn off verbose output
+    High-level functions:
+      --in str, --input str, --inpdir str
+                            Input directory
+      --infdir str          Path to relevant pySYD information
+      --out str, --outdir str, --output str
+                            Output directory
+      -s, --save            Do not save output figures and results.
+      -o, --overwrite       Overwrite existing files with the same name/path
+      -v, --verbose         turn on verbose output
+      --cli                 Running from command line (this should not be touched)
+      --notebook            Running from a jupyter notebook (this should not be
+                            touched)
 
 **Glossary terms:** 
 :term:`--cli<--cli>`, 
@@ -135,41 +138,42 @@ Data parser
 ###########
 
 The following features are primarily related to the input data and when applicable, what 
-tools to apply to the data. All data manipulation relevant in this step happens *prior*
-to any pipeline analysis. **Currently this is mostly frequency-domain tools but we are 
-working on implementing some time-domain tools too!**
+tools to apply to the data. All data manipulation relevant to this step happens *prior*
+to any pipeline analyses. **Currently this is mostly frequency-domain tools but we are 
+working on implementing time-domain tools as well!**
 
 .. code-block::
 
-   Data analyses:
-     --file str, --list str, --todo str
-                           List of stars to process
-     --info str, --information str
-                           List of stellar parameters and options
-     --star [str [str ...]], --stars [str [str ...]]
-                           List of stars to process
-     --gap int, --gaps int
-                           What constitutes a time series 'gap' (i.e. n x the
-                           cadence)
-     -x, --stitch, --stitching
-                           Correct for large gaps in time series data by
-                           'stitching' the light curve
-     -k, --kc, --kepcorr   Turn on the Kepler short-cadence artefact correction
-                           routine
-     -n, --notch           Use notching technique to reduce effects from mixed
-                           modes (not fully functional, creates weirds effects
-                           for higher SNR cases)
-     --of int, --over int, --oversample int
-                           The oversampling factor (OF) of the input power
-                           spectrum
-     --dnu [float [float ...]]
-                           Brute force method to provide value for dnu
-     --le [float [float ...]], --lowere [float [float ...]]
-                           Lower frequency limit of folded PS to whiten mixed
-                           modes
-     --ue [float [float ...]], --uppere [float [float ...]]
-                           Upper frequency limit of folded PS to whiten mixed
-                           modes
+    Data analyses:
+      --star [str [str ...]], --stars [str [str ...]]
+                            list of stars to process
+      --file str, --list str, --todo str
+                            list of stars to process
+      --info str, --information str
+                            list of stellar parameters and options
+      --gap int, --gaps int
+                            What constitutes a time series 'gap' (i.e. n x the
+                            cadence)
+      -x, --stitch, --stitching
+                            Correct for large gaps in time series data by
+                            'stitching' the light curve
+      --of int, --over int, --oversample int
+                            The oversampling factor (OF) of the input power
+                            spectrum
+      -k, --kc, --kepcorr   Turn on the Kepler short-cadence artefact correction
+                            routine
+      --dnu [float [float ...]]
+                            spacing to fold PS for mitigating mixed modes
+      --le [float [float ...]], --lowere [float [float ...]]
+                            lower frequency limit of folded PS to whiten mixed
+                            modes
+      --ue [float [float ...]], --uppere [float [float ...]]
+                            upper frequency limit of folded PS to whiten mixed
+                            modes
+      -n, --notch           another technique to mitigate effects from mixed modes
+                            (not fully functional, creates weirds effects for
+                            higher SNR cases??)
+
 
 **Glossary terms** (alphabetical order): 
 :term:`--dnu`
@@ -191,15 +195,19 @@ working on implementing some time-domain tools too!**
 
 -----
 
+.. _user-guide-intro-main:
+
+Main parser
+###########
+
+The main parser holds a majority of the parameters that are relevant to core functions of
+the software. Since it is so large, it is broken down into four different "groups" which
+are related to their application.
+
 .. _user-guide-intro-est:
 
-Core functions aka `main_parser`
-################################
-
-aka `main_parser`
-
-Identify & estimate
-###################
+Search & estimate
+*****************
 
 The following options are relevant for the first, optional module that is designed to search
 for power excess due to solar-like oscillations and estimate rough starting points for its
@@ -207,22 +215,29 @@ main properties.
 
 .. code-block::
 
-   Estimate parameters:
-     -a, --ask             Ask which trial to use
-     --bin float, --binning float
-                           Binning interval for PS (in muHz)
-     --bm str, --mode str, --bmode str
-                           Binning mode
-     -e, --est, --estimate Turn off the optional module that estimates numax
-     --lx [float [float ...]], --lowerx [float [float ...]]
-                           Lower frequency limit of PS
-     --step float, --steps float
-     --trials int, --ntrials int
-     --sw float, --smoothwidth float
-                           Box filter width [in muHz] for smoothing the PS
-     --ux [float [float ...]], --upperx [float [float ...]]
-                           Upper frequency limit of PS
-                            
+    Search parameters:
+      -e, --est, --estimate
+                            Turn off the optional module that estimates numax
+      -j, --adjust          Adjusts default parameters based on region of
+                            oscillations
+      --def str, --defaults str
+                            Adjust defaults for low vs. high numax values (e.g.,
+                            smoothing filters)
+      --sw float, --smoothwidth float
+                            Box filter width (in muHz) for smoothing the PS
+      --bin float, --binning float
+                            Binning interval for PS (in muHz)
+      --bm str, --mode str, --bmode str
+                            Binning mode
+      --step float, --steps float
+      --trials int, --ntrials int
+      -a, --ask             Ask which trial to use
+      --lx [float [float ...]], --lowerx [float [float ...]]
+                            Lower frequency limit of PS
+      --ux [float [float ...]], --upperx [float [float ...]]
+                            Upper frequency limit of PS
+ 
+                           
 **Glossary terms** (alphabetical order): 
 :term:`-a<-a, --ask>`, 
 :term:`--ask<-a, --ask>`, 
@@ -245,38 +260,38 @@ main properties.
 :term:`--upperx<--ux, --upperx>`, 
 :term:`--ux<--ux, --upperx>`
 
------
 
 .. _user-guide-intro-bg:
 
 Background fit
-##############
+**************
 
 Below is a complete list of parameters relevant to the background-fitting routine:
 
 .. code-block::
 
-   Background fits:
-     -b, --bg, --background
-                           Turn off the routine that determines the stellar
-                           background contribution
-     --basis str           Which basis to use for background fit (i.e. 'a_b',
-                           'pgran_tau', 'tau_sigma'), *** NOT implemented yet ***
-     --iw float, --indwidth float
-                           Width of binning for PS [in muHz]
-     --bf float, --box float, --boxfilter float
-                           Box filter width [in muHz] for plotting the PS
-     --rms int, --nrms int
-                           Number of points to estimate the amplitude of red-
-                           noise component(s)
-     --laws int, --nlaws int
-                           Force number of red-noise component(s)
-     --metric str          Which model metric to use, choices=['bic','aic']
-     --lb [float [float ...]], --lowerb [float [float ...]]
-                           Lower frequency limit of PS
-     --ub [float [float ...]], --upperb [float [float ...]]
-                           Upper frequency limit of PS
-     -w, --wn, --fixwn     Fix the white noise level
+    Background parameters:
+      -b, --bg, --background
+                            Turn off the routine that determines the stellar
+                            background contribution
+      --basis str           Which basis to use for background fit (i.e. 'a_b',
+                            'pgran_tau', 'tau_sigma'), *** NOT operational yet ***
+      --bf float, --box float, --boxfilter float
+                            Box filter width [in muHz] for plotting the PS
+      --iw float, --indwidth float
+                            Width of binning for PS [in muHz]
+      --rms int, --nrms int
+                            Number of points to estimate the amplitude of red-
+                            noise component(s)
+      --laws int, --nlaws int
+                            Force number of red-noise component(s)
+      -w, --wn, --fixwn     Fix the white noise level
+      --metric str          Which model metric to use, choices=['bic','aic']
+      --lb [float [float ...]], --lowerb [float [float ...]]
+                            Lower frequency limit of PS
+      --ub [float [float ...]], --upperb [float [float ...]]
+                            Upper frequency limit of PS
+
 
 **Glossary terms** (alphabetical order):  
 :term:`-b<-b, --bg, --background>`, 
@@ -301,45 +316,42 @@ Below is a complete list of parameters relevant to the background-fitting routin
 :term:`-w<-w, --wn, --fixwn>`, 
 :term:`--wn<-w, --wn, --fixwn>`
 
------
 
 .. _user-guide-intro-globe:
 
 Global fit
-##########
+**********
 
 All of the following are related to deriving global asteroseismic parameters, :term:`numax`
 (:math:`\rm \nu_{max}`) and :term:`dnu` (:math:`\Delta\nu`). 
 
 .. code-block::
 
-   Global parameters:
-     -g, --globe, --global
-                           Turn off the main module that estimates global
-                           properties
-     --numax [float [float ...]]
-                           Skip find excess module and force numax
-     --lp [float [float ...]], --lowerp [float [float ...]]
-                           Lower frequency limit for zoomed in PS
-     --up [float [float ...]], --upperp [float [float ...]]
-                           Upper frequency limit for zoomed in PS
-     --ew float, --exwidth float
-                           Fractional value of width to use for power excess,
-                           where width is computed using a solar scaling
-                           relation
-     --sm float, --smpar float
-                           Value of smoothing parameter to estimate smoothed
-                           numax (typically between 1-4) **developer use only**
-     --sp float, --smoothps float
-                           Box filter width [in muHz] of PS for ACF
-     --peak int, --peaks int, --npeaks int
-                           Number of peaks to fit in the ACF
-     --thresh float, --threshold float
-                           Fractional value of FWHM to use for ACF
-     --dnu [value [value ...]]
-                           Brute force method to provide value for dnu
-     --peak n, --peaks n, --npeaks n
-                           Number of peaks to fit in the ACF
+    Global parameters:
+      -g, --globe, --global
+                            Disable the main global-fitting routine
+      --numax [float [float ...]]
+                            initial estimate for numax to bypass the forst module
+      --lp [float [float ...]], --lowerp [float [float ...]]
+                            lower frequency limit for the envelope of oscillations
+      --up [float [float ...]], --upperp [float [float ...]]
+                            upper frequency limit for the envelope of oscillations
+      --ew float, --exwidth float
+                            fractional value of width to use for power excess,
+                            where width is computed using a solar scaling
+                            relation.
+      --sm float, --smpar float
+                            smoothing parameter used to estimate the smoothed
+                            numax (typically before 1-4 through experience --
+                            **development purposes only**)
+      --sp float, --smoothps float
+                            box filter width [in muHz] of PS for ACF
+      -f, --fft             Use :mod:`numpy.correlate` instead of fast fourier
+                            transforms to compute the ACF
+      --thresh float, --threshold float
+                            fractional value of FWHM to use for ACF
+      --peak int, --peaks int, --npeaks int
+                            number of peaks to fit in the ACF
 
 
 **Glossary terms** (alphabetical order): 
@@ -362,21 +374,22 @@ All of the following are related to deriving global asteroseismic parameters, :t
 :term:`--smoothps<--sp, --smoothps>`, 
 :term:`--thresh<--thresh, --threshold>`
 
------
 
 .. _user-guide-intro-mc:
 
-Sampling
-########
+Estimating uncertainties
+************************
 
 All CLI options relevant for the Monte-Carlo sampling in order to estimate uncertainties:
 
 .. code-block::
 
-   Estimate uncertainties:
-     --mc int, --iter int, --mciter int
-                           Number of Monte-Carlo iterations
-     -m, --samples         Save samples from the Monte-Carlo sampling
+    Sampling parameters:
+      --mc int, --iter int, --mciter int
+                            number of Monte-Carlo iterations to run for estimating
+                            uncertainties (typically 200 is sufficient)
+      -m, --samples         save samples from the Monte-Carlo sampling
+
 
 **Glossary terms** (alphabetical order): 
 :term:`--iter<--mc, --iter, --mciter>`, 
@@ -392,33 +405,37 @@ All CLI options relevant for the Monte-Carlo sampling in order to estimate uncer
 Plot parser
 ###########
 
-aka `plot_parser`
-
 Anything related to the plotting of results for *any* of the modules is in this parser. Its 
 currently a little heavy on the :term:`echelle diagram` end because this part of the plot is
 harder to hack, so we tried to make it as easily customizable as possible.
 
 .. code-block::
 
-   Plotting:
-     -d, --show, --display
-                           display output figures in real time
-     --all, --showall      make background comparison figure
-     --ce str, --cm str, --color str
-                           colormap of echelle diagram (default=`binary`)
-     --cv float, --value float
-                           clip value multiplier to use for ED, which is currently 3x the median
-     -y, --hey             use Daniel Hey's plugin for echelle **not currently implemented**
-     -i, --ie, --interpech
-                           Turn on the interpolation of the output ED
-     --nox int, --nacross int
-                           number of bins to use on the x-axis of the ED
-     --noy int, --ndown int, --norders int
-                           number of orders to plot on the ED y-axis
-     --npb int             related to `--nox` but uses information about the spacing and resolution 
-                           to estimate a reasonable number of bins to use for the x-axis of the ED
-     --se float, --smoothech float
-                           smooth ED using a box filter [in muHz]
+    Plotting parameters:
+      --all, --showall      plot background comparison figure
+      -d, --show, --display
+                            show output figures
+      --cm str, --color str
+                            Change colormap of ED, which is `binary` by default
+      --cv float, --value float
+                            Clip value multiplier to use for echelle diagram (ED).
+                            Default is 3x the median, where clip_value == `3`.
+      -y, --hey             plugin for Daniel Hey's echelle package **not
+                            currently implemented**
+      -i, --ie, --interpech
+                            turn on the interpolation of the output ED
+      --nox int, --nacross int
+                            number of bins to use on the x-axis of the ED
+                            (currently being tested)
+      --noy str, --ndown str, --norders str
+                            NEW!! Number of orders to plot pm how many orders to
+                            shift (if ED is not centered)
+      --npb int             NEW!! npb == "number per bin", which is option instead
+                            of nox that uses the frequency resolution and spacing
+                            to compute an appropriate bin size for the ED
+      --se float, --smoothech float
+                            Smooth ED using a box filter [in muHz]
+
 
 **Glossary terms** (alphabetical order): 
 :term:`--ce<--ce, --cm, --color>`, 
@@ -445,7 +462,8 @@ harder to hack, so we tried to make it as easily customizable as possible.
 
 -----
 
-In the next topic, we will show some examples using these options.
+On the next page, we will show applications for some of these options in command-line examples. 
 
-We have additional examples for some of these options in action to in :ref:`advanced usage<advanced>` 
-and also have included a brief :ref:`tutorial` below that describes some of these commands.
+We also have our :ref:`advanced usage<advanced>` page, which is specifically designed to 
+show these in action by providing before and after references. You can also find
+descriptions of certain commands available in the notebook tutorials. 

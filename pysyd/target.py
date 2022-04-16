@@ -144,7 +144,7 @@ class Target:
         """
         # Print results
         if self.params['verbose']:
-            utils.verbose_output(self)
+            utils._verbose_output(self)
             if self.params['show']:
                 print(' - displaying figures')
         plots.make_plots(self)
@@ -325,7 +325,7 @@ class Target:
                 self.ps, self.params['oversampling_factor'] = True, 5
                 self.frequency, self.power = self.compute_spectrum(oversampling_factor=self.params['oversampling_factor'])
                 if self.params['save']:
-                    utils.save_file(self.frequency, self.power, os.path.join(self.params['inpdir'], '%s_PS.txt'%self.name), overwrite=self.params['overwrite'])
+                    utils._save_file(self.frequency, self.power, os.path.join(self.params['inpdir'], '%s_PS.txt'%self.name), overwrite=self.params['overwrite'])
                 note += '# NEWLY COMPUTED POWER SPECTRUM has length of %d\n'%int(len(self.frequency)/5)
             else:
                 # CASE 3: LIGHT CURVE AND POWER SPECTRUM
@@ -716,7 +716,7 @@ class Target:
         Methods
             - :mod:`pysyd.target.Target.initial_estimates`
             - :mod:`pysyd.target.Target.estimate_numax`
-            - :mod:`pysyd.utils.save_estimates`
+            - :mod:`pysyd.utils._save_estimates`
 
 
         """
@@ -730,7 +730,7 @@ class Target:
             # execute function
             self.estimate_numax()
             # save results
-            self = utils.save_estimates(self)
+            self = utils._save_estimates(self)
 
 
     def initial_estimates(self, lower_ex=1.0, upper_ex=8000.0, max_trials=6,):
@@ -823,9 +823,9 @@ class Target:
 
         """
         # Smooth the power in log-space
-        self.bin_freq, self.bin_pow, _ = utils.bin_data(self.freq, self.pow, width=self.params['binning'], log=True, mode=self.params['bin_mode'])
+        self.bin_freq, self.bin_pow, _ = utils._bin_data(self.freq, self.pow, width=self.params['binning'], log=True, mode=self.params['bin_mode'])
         # Smooth the power in linear-space
-        self.smooth_freq, self.smooth_pow, _ = utils.bin_data(self.bin_freq, self.bin_pow, width=self.params['smooth_width'])
+        self.smooth_freq, self.smooth_pow, _ = utils._bin_data(self.bin_freq, self.bin_pow, width=self.params['smooth_width'])
         if self.params['verbose']:
             print('-----------------------------------------------------------\nPS binned to %d datapoints\n\nNumax estimates\n---------------' % len(self.smooth_freq))
         # Mask out frequency values that are lower than the smoothing width to avoid weird looking fits
@@ -897,8 +897,8 @@ class Target:
                 snr = max(self.params['plotting'][self.module][b]['fity'])/np.absolute(best_vars[0])
                 if snr > max_snr:
                     snr = max_snr
-                self.params['results'][self.module][b+1].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
-                self.params['plotting'][self.module][b].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
+                self.params['results'][self.module][b+1].update({'numax':best_vars[2], 'dnu':utils._delta_nu(best_vars[2]), 'snr':snr})
+                self.params['plotting'][self.module][b].update({'numax':best_vars[2], 'dnu':utils._delta_nu(best_vars[2]), 'snr':snr})
                 if self.params['verbose']:
                     print('Numax estimate %d: %.2f +/- %.2f'%(b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
                     print('S/N: %.2f' % snr)
@@ -985,7 +985,7 @@ class Target:
         if self.params['mc_iter'] > 1:
             self.get_samples()
         # Save results
-        utils.save_parameters(self)
+        utils._save_parameters(self)
 
 
     def initial_parameters(self, lower_bg=1.0, upper_bg=8000.0,):
@@ -1268,7 +1268,7 @@ class Target:
 
         """
         # Bin power spectrum to model stellar background/correlated red noise components
-        self.bin_freq, self.bin_pow, self.bin_err = utils.bin_data(self.frequency, self.random_pow, width=self.params['ind_width'], mode=self.params['bin_mode'])
+        self.bin_freq, self.bin_pow, self.bin_err = utils._bin_data(self.frequency, self.random_pow, width=self.params['ind_width'], mode=self.params['bin_mode'])
         # Mask out region with power excess
         mask = np.ma.getmask(np.ma.masked_outside(self.bin_freq, self.params['ps_mask'][0], self.params['ps_mask'][1]))
         self.bin_freq, self.bin_pow, self.bin_err = self.bin_freq[mask], self.bin_pow[mask], self.bin_err[mask]
@@ -1471,7 +1471,7 @@ class Target:
         self.bg_corr = self.random_pow/models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
         # Save background-corrected power spectrum
         if self.params['save']:
-            utils.save_file(self.frequency, self.bg_corr, os.path.join(self.params['path'], '%s_bg_corr.txt'%self.name), overwrite=self.params['overwrite'])
+            utils._save_file(self.frequency, self.bg_corr, os.path.join(self.params['path'], '%s_bg_corr.txt'%self.name), overwrite=self.params['overwrite'])
         # Create appropriate keys for star based on best-fit model
         for n in range(self.params['nlaws']):
             self.params['results'][self.module]['tau_%d'%(n+1)] = []
@@ -1559,11 +1559,11 @@ class Target:
         self.pssm_bgcorr = self.pssm-models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
         mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.params['ps_mask'][0], self.params['ps_mask'][1]))
         self.region_freq, self.region_pow = self.frequency[mask], self.pssm_bgcorr[mask]
-        idx = utils.return_max(self.region_freq, self.region_pow, index=True)
+        idx = utils._return_max(self.region_freq, self.region_pow, index=True)
         self.params['results'][self.module]['numax_smooth'].append(self.region_freq[idx])
         self.params['results'][self.module]['A_smooth'].append(self.region_pow[idx])
         self.params['obs_numax'] = self.params['results'][self.module]['numax_smooth'][0]
-        self.params['exp_dnu'] = utils.delta_nu(self.params['obs_numax'])
+        self.params['exp_dnu'] = utils._delta_nu(self.params['obs_numax'])
 
 
     def estimate_numax_gaussian(self):
@@ -1684,9 +1684,9 @@ class Target:
         """
         if self.i == 0:
             # Get peaks from ACF by providing dnu to weight the array (aka Dennis' routine)
-            self.peaks_l, self.peaks_a = utils.max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], exp_dnu=self.guess)
+            self.peaks_l, self.peaks_a = utils._max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], exp_dnu=self.guess)
             # Pick "best" peak in ACF (i.e. closest to expected dnu)
-            idx = utils.return_max(self.peaks_l, self.peaks_a, index=True, exp_dnu=self.guess)
+            idx = utils._return_max(self.peaks_l, self.peaks_a, index=True, exp_dnu=self.guess)
             self.params['best_lag'], self.params['best_auto'] = self.peaks_l[idx], self.peaks_a[idx]
             self.get_acf_cutout()
         self.zoom_lag = self.lag[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
@@ -1854,5 +1854,5 @@ class Target:
         xx, yy = xx[~mask], yy[~mask]
         self.x = np.array(xx.tolist()+list(xx+self.params['obs_dnu']))
         self.y = np.array(list(yy)+list(yy))-min(yy)
-        self = utils.save_plotting(self)
+        self = utils._save_plotting(self)
         self.i += 1
