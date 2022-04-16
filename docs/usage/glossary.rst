@@ -1,4 +1,4 @@
-.. _user-guide-cli-glossary:
+.. _user-guide-glossary:
 
 ***********************
 `pySYD` option glossary

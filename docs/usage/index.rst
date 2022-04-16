@@ -19,9 +19,8 @@ share the software with you!
    glossary
 
 
-******
 et al.
-******
+######
 
 Please share with us how we can make your experience even better!
 

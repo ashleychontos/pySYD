@@ -6,7 +6,7 @@ Introduction & help
 
 As we have alluded to throughout the documentation, `pySYD` was intended to be used through 
 its command-line interface (CLI) -- which means that the software is specifically optimized 
-for this usage and hence, nearly all parameters/options likely have the best defaults already
+for this usage and therefore most options probably have the best defaults already
 set. Here, "best" just means that the setup is what works *best* for a majority of stars. 
 
 However, that does not necessarily mean that your star(s) or setting(s) are expected to 
@@ -17,8 +17,9 @@ analyses.
 .. note:: 
 
    Please keep in mind that, while we have extensively tested a majority of our options, we are 
-   continuously adding new ones and ultimately, something might break. If this happens, we 
-   encourage you to submit an issue here and thank you in advance for your help!
+   continuously adding new ones which ultimately might break something. If this happens, we 
+   encourage you to submit an issue `here <https://github.com/ashleychontos/pySYD/issues/new?assignees=&labels=&template=bug_report.md>`_ 
+   and thank you in advance for helping make `pySYD` even better!
 
 -----
 
@@ -27,7 +28,8 @@ CLI help
 
 To give you a glimpse into the insanely large amount of available options, open up a terminal
 window and enter the help command for the main pipeline execution (`run` aka :mod:`pysyd.pipeline.run`), 
-since this mode inherits all command-line parsers.
+since this mode inherits all command-line parsers. **BTW** visit :ref:`this page <library-pipeline-modes>`
+for more information on which parsers a given pipeline mode inherits.
 
 .. code-block::
 
@@ -57,17 +59,18 @@ If you ran it from your end, you probably noticed an output that was a factor of
 It may seem like an overwhelming amount but do not fret, this is for good reason -- and that's 
 to make your asteroseismic experience as customized as possible.
 
-**Note:** As you are navigating this page, keep in mind that we also have a special 
-:ref:`glossary <usage-cli-glossary>` for all our command-line options. This includes everything
+**Note:** as you are navigating this page, keep in mind that we also have a special 
+:ref:`glossary <user-guide-glossary>` for all our command-line options. This includes everything
 from the variable type, default value and relevant units to how it's stored within the 
-software itself. These glossary links are provided at the bottom of each relevant section.
+software itself. There are glossary links at the bottom of every section for each of the parameters 
+discussed within that subsection.
 
 We have broken everything up into smaller groups that are related through some appropriate means.
 For example, all parameters related to the loading and manipulating of data are grouped together 
 in its own `data_analysis` :ref:`parser <user-guide-intro-data>`. However the main parser, which 
 is used any time a star is processed, is enormous and therefore we've grouped subparsers by relevant 
 steps (e.g., :ref:`background <user-guide-intro-bg>` and :ref:`global <user-guide-intro-globe>` fits). 
-Ultimately we hope this will make it a bit easier to ingest!
+We hope this will make it a bit easier to remember!
 
  - :ref:`high-level functions <user-guide-intro-high>`
  - :ref:`data analyses <user-guide-into-data>`
@@ -76,7 +79,6 @@ Ultimately we hope this will make it a bit easier to ingest!
  - :ref:`global fit <user-guide-intro-globe>`
  - :ref:`plotting <user-guide-intro-plot>`
  - :ref:`estimate uncertainties <user-guide-intro-mc>`
- - :ref:`parallel processing <user-guide-intro-pp>`
 
 -----
 
@@ -87,10 +89,10 @@ High-level functions
 
 Below is the first part of the output, which is primarily related to the higher level functionality.
 Within the software, these are defined by the parent and main parsers, which are inevitably inherited
-by all ``pySYD`` modes that handle the data.
+by all `pySYD` modes that handle the data.
 
-All ``pySYD`` modes inherent the parent parser, which includes the properties 
-enumerated below. With the exception of the ``verbose`` command, most of these
+All `pySYD` modes inherent the parent parser, which includes the properties 
+enumerated below. With the exception of the `verbose` command, most of these
 features are related to the initial (setup) paths and directories and should be
 used very sparingly. 
 
@@ -255,7 +257,7 @@ Global fit
 ##########
 
 All of the following are related to deriving global asteroseismic parameters, :term:`numax`
-(:math:`\\rm \\nu_{max}`) and :term:`dnu` (:math:`\\Delta\\nu`). 
+(:math:`\rm \nu_{max}`) and :term:`dnu` (:math:`\Delta\nu`). 
 
 .. code-block::
 
@@ -292,14 +294,14 @@ All of the following are related to deriving global asteroseismic parameters, :t
 :term:`-g<-g, --globe, --global>`, :term:`--global<-g, --globe, --global>`, 
 :term:`--globe<-g, --globe, --global>`, :term:`--lp<--lp, --lowerp>`, :term:`--lowerp<--lp, --lowerp>`, 
 :term:`--numax`, :term:`--sm<--sm, --smpar>`, :term:`--smpar<--sm, --smpar>`, 
-:term:`--up<--up, --upperp>`, :term:`--upperp<--up, --upperp>` :term:`--dnu`, :term:`--method`, 
+:term:`--up<--up, --upperp>`, :term:`--upperp<--up, --upperp>` :term:`--dnu`,  
 :term:`--npeaks<--peak, --peaks, --npeaks>`, :term:`--peak<--peak, --peaks, --npeaks>`, 
 :term:`--peaks<--peak, --peaks, --npeaks>`, :term:`--sp<--sp, --smoothps>`, 
 :term:`--smoothps<--sp, --smoothps>`, :term:`--thresh<--thresh, --threshold>`
 
 -----
 
-.. _user-guide-cli-help-plot:
+.. _user-guide-intro-plot:
 
 Plotting
 ########
@@ -342,7 +344,7 @@ harder to hack, so we tried to make it as easily customizable as possible.
 
 -----
 
-.. _user-guide-cli-help-mc:
+.. _user-guide-intro-mc:
 
 Sampling
 ########
