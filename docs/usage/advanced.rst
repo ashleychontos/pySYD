@@ -1,6 +1,9 @@
 .. role:: bash(code)
    :language: bash
 
+.. role:: underlined
+   :class: underlined
+
 .. _user-guide-advanced:
 
 **************

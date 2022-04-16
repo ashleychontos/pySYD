@@ -1,3 +1,6 @@
+.. role:: underlined
+   :class: underlined
+
 .. _user-guide-glossary:
 
 ***********************
@@ -12,7 +15,7 @@
          * type = `bool`
          * default = `False`
          * action = ``store_true``
-         * **see also:** :term:`--trials<--trials, --ntrials>`, :term:`--ntrials<--trials, --ntrials>`
+         * **:underlined:`see also`:** :term:`--trials<--trials, --ntrials>`, :term:`--ntrials<--trials, --ntrials>`
     
     ``-b, --bg, --background``
         controls the background-fitting procedure -- BUT this should never be touched
@@ -64,25 +67,25 @@
         the clip value to use for the output echelle diagram if and only if ``args.clip_ech`` is
         ``True``. If none is provided, it will use a value that is 3x the median value of the folded
         power spectrum
-         * dest = ``args.clip_value``
+         * dest = `args.clip_value`
          * type = `float`
          * default = `3.0`
          * unit = fractional psd
     
     ``--cli``
         this should never be touched - for internal workings on how to retrieve and save parameters
-         * dest = ``args.cli``
+         * dest = `args.cli`
          * type = `bool`
          * default = `True`
-         * action = ``store_true``
+         * action = `store_true`
 
     ``-d, --show, --display``
         show output figures, which is 
         not recommended if running many stars
-         * dest = ``args.show``
+         * dest = `args.show`
          * type = `bool`
          * default = `False`
-         * action = ``store_true``
+         * action = `store_true`
     
     ``--dnu``
         option to provide the spacing to fold the power spectrum and "whiten" effects due to
@@ -92,7 +95,7 @@
          * type = `float`
          * nargs = `'*'`
          * default = `None`
-         * **REQUIRES:** :term:`--le<--le, --lowere>`/:term:`--lowere<--le, --lowere>` *and* :term:`--ue<--ue, --uppere>`/:term:`--uppere<--ue, --uppere>`
+         * :underlined:`**REQUIRES:**` :term:`--le<--le, --lowere>`/:term:`--lowere<--le, --lowere>` *and* :term:`--ue<--ue, --uppere>`/:term:`--uppere<--ue, --uppere>`
 
     ``-e, --est, --estimate``
         turn off the first module that searches and idenities power excess due to solar-like
