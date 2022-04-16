@@ -7,24 +7,27 @@
 `pySYD` option glossary
 ***********************
 
+Below is a complete list of `pySYD` parameters in alphabetical order.
+
 .. glossary::
+
 
     ``-a, --ask``
         the option to select which trial (or estimate) of numax to use from the first module
-         * dest = ``args.ask``
+         * dest = `args.ask`
          * type = `bool`
          * default = `False`
-         * action = ``store_true``
-         * **:underlined:`see also`:** :term:`--trials<--trials, --ntrials>`, :term:`--ntrials<--trials, --ntrials>`
+         * action = `store_true`
+         * **see also:** :term:`--trials<--trials, --ntrials>`, :term:`--ntrials<--trials, --ntrials>`
     
     ``-b, --bg, --background``
         controls the background-fitting procedure -- BUT this should never be touched
         since a majority of the work done in the software happens here and it should 
         not need to be turned off
-         * dest = ``args.background``
+         * dest = `args.background`
          * type = `bool`
          * default = `True`
-         * action = ``store_false``
+         * action = `store_false`
     
     ``--basis``
         which basis to use for the background fitting (i.e. `'a_b'`, `'pgran_tau'`, 
