@@ -1,9 +1,6 @@
 .. role:: bash(code)
    :language: bash
 
-.. role:: underlined
-   :class: underlined
-
 .. _user-guide-advanced:
 
 **************
@@ -16,8 +13,8 @@ the desired effects.
 
 -----
 
-:underlined:`:term:`--ew<--ew, --exwidth>` & :term:`--exwidth<--ew, --exwidth>``
-################################################################################
+:term:`--ew<--ew, --exwidth>` & :term:`--exwidth<--ew, --exwidth>`
+##################################################################
 
 Fractional amount to scale the width of the oscillations envelope by -- which is normally calculated
 w.r.t. solar values.
