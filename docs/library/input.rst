@@ -40,16 +40,32 @@ Additionally, we will list these in the recommended order, where the top is the 
 and the bottom is the least.
 
 **CASE 1: light curve** :bolditalic:`and` **power spectrum**
-Here, everything can be inferred and/or calculated from the data when both are provided. This
-includes the time series :term:`cadence`, which is relevant for the :term:`nyquist frequency`,
-or how high our sampling rate is. The total duration of the time series sets an upper limit
-on the time scales we can measure and also sets the resolution of the power spectrum. Therefore
-from this, we can determine if the power spectrum is oversampled or critically-sampled and
-make the appropriate arrays for all input data.
+- :underlined:`Summary`: here, everything can be inferred and/or calculated from the data when both are provided. This
+  includes the time series :term:`cadence`, which is relevant for the :term:`nyquist frequency`,
+  or how high our sampling rate is. The total duration of the time series sets an upper limit
+  on the time scales we can measure and also sets the resolution of the power spectrum. Therefore
+  from this, we can determine if the power spectrum is oversampled or critically-sampled and
+  make the appropriate arrays for all input data.
+- :underlined:`Calculation(s)`:
+   - time series cadence (:math:`\Delta t`)
+   - nyquist frequency (:math:`\rm \nu_{nyq}`)
+   - time series duration or baseline (:math:`\Delta T`)
+   - frequency resolution (:math:`\Delta frequency`)
+   - oversampling factor (i.e. critically-sampled has an `of=1`)
+   - critically-sampled power spectrum
+- :underlined:`Issue(s)`: 
+   - the only problem that can arise from this case is if the power spectrum is not 
+     normalized correctly or in the proper units (i.e. frequency is in :math:`\rm \mu Hz` and power 
+     is in :math:`\rm ppm^{2} \mu Hz^{-1}`). This is actually more common than you think so if this 
+     *might* be the case, we recommend trying CASE 2 instead.
 
 **CASE 2:** light curve *only*
+- summary: Again we can determine the baseline and cadence, which set important features in the 
+  frequency domain as well. Since the power spectrum is not yet calculated, we can control
+  if it's oversampled or critically-sampled
 
 **CASE 3:** power spectrum *only*
+This case *can* be alright, as long as additional data is provided.
 
 **CASE 4:** well, we all know what happens when zero input is provided...
 
