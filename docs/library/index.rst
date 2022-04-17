@@ -18,7 +18,7 @@ with you!
    about
    input
    pipeline
-   target	      
+   Target star <target>    
    utils
    output
 

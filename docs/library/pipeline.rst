@@ -4,15 +4,8 @@
 Pipeline modes
 **************
 
-The software generally operates in four main steps:
- #. :ref:`Loads in parameters and data <stepone>`
- #. :ref:`Gets initial values <steptwo>`
- #. :ref:`Fits global parameters <stepthree>`
- #. :ref:`Estimates uncertainties <stepfour>`
 
-but also depends on how you run `pySYD`.
 
------
 
 .. _library-pipeline-script:
 

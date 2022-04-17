@@ -1,9 +1,9 @@
 .. role:: underlined
    :class: underlined
 
-*******
-Results
-*******
+*****************
+Results & outputs
+*****************
 
 Although saving things are optional, we will assume you are running the software to learn more
 about the star -- which can only be done by saving and interpreting the results. 
@@ -15,9 +15,6 @@ Therefore we refer the reader to check out :ref:`this page <quickstart>`, the
 if more examples are desired.
 
 .. _library-output:
-
-Output
-######
 
 Subdirectories are automatically created for each star that is processed. Based on the way
 you use ``pySYD``, there are a number of different outputs which are saved by default. Here
@@ -36,8 +33,8 @@ example if you'd like more information about the printed `verbose` output.
 
 .. _library-output-files:
 
-Files
-#####
+:underlined:`Files`
+###################
 
 Listed are all the possible output files:
 
@@ -142,8 +139,8 @@ See :ref:`examples` for a guide on what the output plots are showing.
 
 .. _library-output-figures:
 
-Figures
-#######
+:underlined:`Figures`
+#####################
 
 Listed are all possible output figures for running a single star:
 
