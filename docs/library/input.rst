@@ -1,3 +1,6 @@
+.. role:: bolditalic
+   :class: bolditalic
+
 .. note::
 
    The initial `pySYD` release required *both* the light curve and power spectrum *but*
@@ -26,10 +29,29 @@ peep its API (:mod:`pysyd.pipeline.setup`).
 :underlined:`Required` 
 ######################
 
-The only thing really *required* to run the software is the data. For a given star ID, 
-input data are:
- #. the light curve (`'ID_LC.txt'`) &
- #. the power spectrum (`'ID_PS.txt'`).
+The only thing really *required* to run the software is the data. 
+
+For a given star `ID`, possible input data are the light curve (`'ID_LC.txt'`) and/or 
+the power spectrum (`'ID_PS.txt'`). Therefore for a given star, there are four different
+scenarios that arise from a combination of these two inputs and we describe how the
+software handles each of these cases.
+
+Additionally, we will list these in the recommended order, where the top is the most preferred
+and the bottom is the least.
+
+**CASE 1: light curve** :bolditalic:`and` **power spectrum**
+Here, everything can be inferred and/or calculated from the data when both are provided. This
+includes the time series :term:`cadence`, which is relevant for the :term:`nyquist frequency`,
+or how high our sampling rate is. The total duration of the time series sets an upper limit
+on the time scales we can measure and also sets the resolution of the power spectrum. Therefore
+from this, we can determine if the power spectrum is oversampled or critically-sampled and
+make the appropriate arrays for all input data.
+
+**CASE 2:** light curve *only*
+
+**CASE 3:** power spectrum *only*
+
+**CASE 4:** well, we all know what happens when zero input is provided...
 
 .. _library-input-required-lc:
 
@@ -49,17 +71,14 @@ of fraction flux or brightness as a function of time, along with any other norma
 Power spectrum
 **************
 
-The power spectrum is what's most important for asteroseismology. *REALLY* matters for asteroseismology is how the time series data looks in frequency space, 
-which is generally calculated by taking the fourier transform (and often referred to as the
-:term:`power spectrum`). Thanks to open-source languages like Python, we have powerful
+The frequency series or :term:`power spectrum` is what's most important for the asteroseismic analyses 
+applied and performed in this software. Thanks to open-source languages like `Python`, we have powerful
 community-driven software packages like `astropy` that can fortunately compute these things for us.
 
-.. warning::
-
-    Again, it is **critical** that these files are in the proper units in order for ``pySYD`` 
-    to work properly. If you are unsure about any of these units, your best bet is to
-    provide a light curve (in days) and let us calculate the power spectrum for you! 
-
+If you have both data series available but are not sure if the power spectrum is in the proper units,
+we recommend that you provide the time series data as the only input (but of course still in the proper units).
+That way, the software will calculate and normalize the power spectrum for you, which ensures
+reliable results. 
 
 
 .. _library-input-optional:
