@@ -122,11 +122,8 @@ def parallel(args):
     utils.scrape_output(args)
 
 
-def pipe(group, args):
+def pipe(group, args, progress=False):
     """
-
-    .. deprecated:: 6.0.0
-        `count` is no longer needed to keep track of how many stars have been successfully processed    
 
     This function is called by both :mod:`pysyd.pipeline.run` and :mod:`pysyd.pipeline.parallel`
     to initialize the pipeline for a `'group'` of stars
@@ -136,16 +133,22 @@ def pipe(group, args):
             list of stars to be processed as a group
         args : argparse.Namespace
             the command line arguments
-        count : int
-            the number of successful stars processed by the pipeline for a given group (default = `0`)
 
     """
+    if len(group) > 1 and args.params['mode'] == 'run' and not args.params['verbose']:
+        progress=True
+        print("\nProcessing %d stars:"%len(group))
+        from tqdm import tqdm 
+        pbar = tqdm(total=len(group))
     # Iterate through and run stars in a given star 'group'
     for name in group:
         star = Target(name, args)
-        # Makes sure a target is 'ok' before processing
-        if star.ok:
-            star.process_star()
+        star.process_star()
+        if progress:
+            pbar.update(1)
+    if progress:
+        pbar.close()
+        print("\n -- process complete --\n\n")
 
 
 def plot(args):

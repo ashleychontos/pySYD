@@ -6,35 +6,22 @@
 
 .. _user-guide-examples:
 
-
 **CLI examples**
 
-This page has command-line examples for the following cases:
-
- -  single star applications of varying signal-to-noise (SNR) detections:
-
-     -  :ref:`High SNR <user-guide-examples-single-high>`
-     -  :ref:`Medium SNR <user-guide-examples-single-medium>`
-     -  :ref:`Low SNR <user-guide-examples-single-low>`
-     -  :ref:`No SNR <user-guide-examples-single-no>`
-
- -  running :ref:`many stars <user-guide-examples-multiple>`
- -  :ref:`advanced examples <user-guide-advanced>` for special commands 
-
-including what to look for in each case.
-
------
+This page has command-line examples for different software applications, including single
+star examples and running an ensemble of stars. 
 
 .. _user-guide-examples-single:
 
-********************
-Single star examples
-********************
+************
+Single stars
+************
 
 For applications to single stars, we will start with a very easy, high signal-to-noise (SNR)
-example, followed by medium, low, and no SNR examples. These examples will not be as detailed 
-as the :ref:`quickstart example <quickstart-script>` -- our goal here is to provide pointers 
-on what to look for for each case. 
+example, followed by medium and low SNR examples as well as a null detection. These examples 
+will not be as detailed as the :ref:`quickstart example <quickstart-script>` -- our goal 
+here is to provide pointers on what to look for in each case. 
+
 
 
 .. _user-guide-examples-single-high:
@@ -150,9 +137,9 @@ KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
 .. _user-guide-examples-multiple:
 
-********************
-An ensemble of stars
-********************
+***********
+Star sample
+***********
 
 Depending on how large your sample is, you may choose to do it one of two ways.
 

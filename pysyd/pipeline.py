@@ -116,13 +116,8 @@ def parallel(args):
     utils.scrape_output(args)
 
 
-def pipe(group, args):
+def pipe(group, args, progress=False):
     """
-
-    .. deprecated:: 6.0.0
-        `ok` is no longer an attribute of the :mod:`pysyd.target.Target` object, since it
-        raise relevant warnings and errors instead of needing to check if all tests passed
-        (== `star.ok`)
 
     This function is called by both :mod:`pysyd.pipeline.run` and :mod:`pysyd.pipeline.parallel`
     to initialize the pipeline for a `'group'` of stars
@@ -134,10 +129,20 @@ def pipe(group, args):
             the command line arguments
 
     """
+    if len(group) > 1 and args.params['mode'] == 'run' and not args.params['verbose']:
+        progress=True
+        print("\nProcessing %d stars:"%len(group))
+        from tqdm import tqdm 
+        pbar = tqdm(total=len(group))
     # Iterate through and run stars in a given star 'group'
     for name in group:
         star = Target(name, args)
         star.process_star()
+        if progress:
+            pbar.update(1)
+    if progress:
+        pbar.close()
+        print("\n -- process complete --\n\n")
 
 
 def plot(args):

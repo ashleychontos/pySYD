@@ -370,7 +370,7 @@ class Parameters(Constants):
 
 
     def get_global(self, globe=True, numax=None, lower_ps=None, upper_ps=None, ex_width=1.0, 
-                   sm_par=None, smooth_ps=2.5, fft=True, threshold=1.0, n_peaks=10,):
+                   sm_par=None, smooth_ps=2.5, fft=True, threshold=1.0, n_peaks=5,):
         """Global fitting parameters
     
         Get default parameters that are relevant for deriving global asteroseismic parameters 
@@ -869,6 +869,8 @@ def _save_plotting(star):
             bin_err = np.copy(star.bin_err),
             region_freq = np.copy(star.region_freq),
             region_pow = np.copy(star.region_pow),
+            zoom_freq = np.copy(star.zoom_freq),
+            zoom_pow = np.copy(star.zoom_pow),
             lag = np.copy(star.lag),
             auto = np.copy(star.auto),
             zoom_lag = np.copy(star.zoom_lag),

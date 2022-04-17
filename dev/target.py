@@ -1134,7 +1134,11 @@ class Target:
 
         Attributes
             converge : bool
-                removes any saved parameters if any fits did not converge (i.e. `False`) 
+                removes any saved parameters if any fits did not converge (i.e. `False`)
+
+        Returns
+            converge : bool
+                returns `True` if all relevant fits converged
 
         Methods
             :mod:`pysyd.target.Target.estimate_background`
@@ -1160,6 +1164,7 @@ class Target:
             for parameter in self.params['results'][self.module]:
                 if len(self.params['results'][self.module][parameter]) > (self.i+1):
                     p = self.params['results'][self.module][parameter].pop(-1)
+        return self.converge
 
 
     def get_samples(self,):
@@ -1193,35 +1198,12 @@ class Target:
             self.pbar.update(1)
         # iterate for x steps
         while self.i < self.params['mc_iter']:
-            # TODO: SET SEED
             if self.single_step():
                 self.i += 1
                 if self.params['verbose']:
                     self.pbar.update(1)
                     if self.i == self.params['mc_iter']:
                         self.pbar.close()
-
-
-    def global_fit(self,):
-        """Global fit
-
-        Fits global asteroseismic parameters :math:`\\rm \\nu{max}` and :math:`\\Delta\\nu`,
-        where the former is estimated two different ways.
-
-        Methods
-            :mod:`numax_smooth`
-            :mod:`numax_gaussian`
-            :mod:`compute_acf`
-            :mod:`frequency_spacing`
-
-
-        """
-        # get numax
-        self.numax_smooth()
-        self.numax_gaussian()
-        # get dnu
-        self.compute_acf()
-        self.frequency_spacing()
 
 
     def estimate_background(self, ind_width=20.0,):
@@ -1492,6 +1474,28 @@ class Target:
             self.params['pars'] = ([self.params['noise']])
 
 
+    def global_fit(self,):
+        """Global fit
+
+        Fits global asteroseismic parameters :math:`\\rm \\nu{max}` and :math:`\\Delta\\nu`,
+        where the former is estimated two different ways.
+
+        Methods
+            :mod:`numax_smooth`
+            :mod:`numax_gaussian`
+            :mod:`compute_acf`
+            :mod:`frequency_spacing`
+
+
+        """
+        # get numax
+        self.numax_smooth()
+        self.numax_gaussian()
+        # get dnu
+        self.compute_acf()
+        self.frequency_spacing()
+
+
     def numax_smooth(self, sm_par=None,):
         """Smooth :math:`\\nu_{\\mathrm{max}}`
 
@@ -1613,6 +1617,10 @@ class Target:
         auto -= min(auto)
         auto /= max(auto)
         self.lag, self.auto = np.copy(lag), np.copy(auto)
+        if self.i == 0:
+            mask = (self.frequency >= self.params['ps_mask'][0]) & (self.frequency <= self.params['ps_mask'][1])
+            self.zoom_freq = self.frequency[mask]
+            self.zoom_pow = self.bgcorr_smooth[mask]
 
 
     def frequency_spacing(self, n_peaks=10,):

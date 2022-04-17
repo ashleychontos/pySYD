@@ -70,14 +70,17 @@ plotting. In fact, the main parser is so large that comprises four subgroups, ea
 the corresponding steps in the main pipeline execution. **BTW** see :ref:`here <library-pipeline-modes>` 
 for more information on which parsers a given pipeline mode inherits.
 
- - :ref:`parent parser <user-guide-intro-parent>`
- - :ref:`data parser <user-guide-intro-data>`
- - :ref:`main parser <user-guide-intro-main>`
+:underlined:`Sections`
+**********************
+
+ - :ref:`high-level functionality <user-guide-intro-parent>`
+ - :ref:`data analyses <user-guide-intro-data>`
+ - :ref:`core pipeline functions <user-guide-intro-main>`
     - :ref:`search & estimate <user-guide-intro-est>`
     - :ref:`background fit <user-guide-intro-bg>`
     - :ref:`global fit <user-guide-intro-globe>`
-    - :ref:`estimate uncertainties <user-guide-intro-mc>`
- - :ref:`plotting parser <user-guide-intro-plot>`
+    - :ref:`sampling <user-guide-intro-mc>`
+ - :ref:`plotting <user-guide-intro-plot>`
 
 **Note:** as you are navigating this page, keep in mind that we also have a special 
 :ref:`glossary <user-guide-glossary>` for all our command-line options. This includes everything
@@ -92,10 +95,8 @@ discussed within that subsection.
 High-level functionality
 ########################
 
-c/o the parent parser
-*********************
-
-**for all your high-level functionality needs**
+aka the `parent_parser`
+***********************
 
 All `pySYD` modes inherent the `parent_parser` and therefore, mostly pertains to paths and
 how you choose to run the software (i.e. save files and if so, whether or not to overwrite 
@@ -115,9 +116,7 @@ old files with the same extension, etc.)
       --notebook            Running from a jupyter notebook (this should not be
                             touched)
 
-:underlined:`Glossary terms` (in alphabetical order): 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+**Glossary terms** (alphabetical order): 
 :term:`--cli<--cli>`, 
 :term:`--file<--file, --list, --todo>`, 
 :term:`--in<--in, --input, --inpdir>`, 
@@ -145,10 +144,8 @@ old files with the same extension, etc.)
 Data analyses
 #############
 
-aka `data_parser`
-*****************
-
-**for anything and everything related to input data and manipulation**
+aka the `data_parser`
+*********************
 
 The following features are primarily related to the input data and when applicable, what 
 tools to apply to the data. All data manipulation relevant to this step happens *prior*
@@ -187,9 +184,7 @@ working on implementing time-domain tools as well!**
                             higher SNR cases??)
 
 
-:underlined:`Glossary terms` (in alphabetical order): 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+**Glossary terms** (alphabetical order): 
 :term:`--dnu`
 :term:`-k<-k, --kc, --kepcorr>`, 
 :term:`--le<--le, --lowere>`, 
@@ -211,10 +206,11 @@ working on implementing time-domain tools as well!**
 
 .. _user-guide-intro-main:
 
-Main parser
-###########
+Core asteroseismic analyses
+###########################
 
-**for the core asteroseismic analyses**
+aka the `main_parser`
+*********************
 
 The main parser holds a majority of the parameters that are relevant to core functions of
 the software. Since it is so large, it is broken down into four different "groups" which
@@ -222,8 +218,8 @@ are related to their application.
 
 .. _user-guide-intro-est:
 
-Search & estimate
-*****************
+:underlined:`Search & estimate`
+*******************************
 
 The following options are relevant for the first, optional module that is designed to search
 for power excess due to solar-like oscillations and estimate rough starting points for its
@@ -278,8 +274,8 @@ main properties.
 
 .. _user-guide-intro-bg:
 
-Background fit
-**************
+:underlined:`Background fit`
+****************************
 
 Below is a complete list of parameters relevant to the background-fitting routine:
 
@@ -333,8 +329,8 @@ Below is a complete list of parameters relevant to the background-fitting routin
 
 .. _user-guide-intro-globe:
 
-Global fit
-**********
+:underlined:`Global parameters`
+*******************************
 
 All of the following are related to deriving global asteroseismic parameters, :term:`numax`
 (:math:`\rm \nu_{max}`) and :term:`dnu` (:math:`\Delta\nu`). 
@@ -390,8 +386,8 @@ All of the following are related to deriving global asteroseismic parameters, :t
 
 .. _user-guide-intro-mc:
 
-Estimating uncertainties
-************************
+:underlined:`Sampling & uncertainties`
+**************************************
 
 All CLI options relevant for the Monte-Carlo sampling in order to estimate uncertainties:
 
@@ -403,9 +399,7 @@ All CLI options relevant for the Monte-Carlo sampling in order to estimate uncer
       -m, --samples         save samples from the Monte-Carlo sampling
 
 
-:underlined:`Glossary terms` (in alphabetical order): 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+**Glossary terms** (alphabetical order): 
 :term:`--iter<--mc, --iter, --mciter>`, 
 :term:`-m<-m, --samples>`, 
 :term:`--mc<--mc, --iter, --mciter>`, 
@@ -419,10 +413,8 @@ All CLI options relevant for the Monte-Carlo sampling in order to estimate uncer
 Plotting
 ########
 
-aka `plot_parser`
-*****************
-
-**for anything related to output plots**
+aka the `plot_parser`
+*********************
 
 Anything related to the plotting of results for *any* of the modules is in this parser. Its 
 currently a little heavy on the :term:`echelle diagram` end because this part of the plot is
@@ -455,9 +447,7 @@ harder to hack, so we tried to make it as easily customizable as possible.
                             Smooth ED using a box filter [in muHz]
 
 
-:underlined:`Glossary terms` (in alphabetical order): 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+**Glossary terms** (alphabetical order): 
 :term:`--ce<--ce, --cm, --color>`, 
 :term:`--cm<--ce, --cm, --color>`, 
 :term:`--color<--ce, --cm, --color>`, 

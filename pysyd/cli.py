@@ -396,7 +396,7 @@ def main():
                        metavar='int', 
                        dest='n_peaks', 
                        help='number of peaks to fit in the ACF',
-                       default=10, 
+                       default=5, 
                        type=int,
     )
 

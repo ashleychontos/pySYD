@@ -3,15 +3,14 @@
 
 .. _user-guide-advanced:
 
-**************
-Advanced usage
-**************
+*********************
+Advanced option usage
+*********************
 
 
 Below are examples of different commands, including their before and after plots to demonstrate
 the desired effects.
 
------
 
 Changing the fractional width of the power excess
 #################################################
