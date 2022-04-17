@@ -31,13 +31,56 @@ peep its API (:mod:`pysyd.pipeline.setup`).
 
 The only thing really *required* to run the software is the data. 
 
-For a given star `ID`, possible input data are the light curve (`'ID_LC.txt'`) and/or 
-the power spectrum (`'ID_PS.txt'`). Therefore for a given star, there are four different
-scenarios that arise from a combination of these two inputs and we describe how the
-software handles each of these cases.
+For a given star `ID`, possible input data are:
+ #. :underlined:`the light curve` (`'ID_LC.txt'`): the *Kepler*, K2 & TESS missions have 
+    provided *billions* of stellar light curves, or a measure of the object's brightness 
+    (or flux) in time. Like most standard photometric data, we require that the time array 
+    is in units of days. **This is really important if the software is calculating the power 
+    spectrum for you!** The y-axis is less critical here -- it can be anything from units of 
+    fractional flux or brightness as a function of time, along with any other normalization(s).
+ #. :underlined:`the power spectrum` (`'ID_PS.txt'`): the frequency series or :term:`power spectrum` 
+    is what's most important for the asteroseismic analyses applied and performed in this package. 
+    In fact thanks to open-source languages like `Python`, we have many powerful community-driven 
+    libraries like `astropy` that can fortunately compute these things for us (which is what we
+    use here).
+
+**:underlined:`Light curve`:** The *Kepler*, K2 & TESS missions have provided *billions* of stellar light curves, or a 
+measure of the object's brightness (or flux) in time. Like most standard photometric 
+data, we require that the time array is in units of days. **This is really important if
+the software is calculating the power spectrum for you!** The y-axis is less critical here -- 
+it can be anything from units of fraction flux or brightness as a function of time, along 
+with any other normalization(s).
+
+**Power spectrum:** the frequency series or :term:`power spectrum` is what's most important for 
+the asteroseismic analyses applied and performed in this software. Thanks to open-source languages 
+like `Python`, we have many powerful community-driven libraries like `astropy` that can fortunately 
+compute these things for us.
+
+Note: If you have both data series available but are not sure if the power spectrum is in the proper units,
+we recommend that you provide the time series data as the only input (but of course still in the proper units).
+That way, the software will calculate and normalize the power spectrum for you, which ensures
+reliable results. **Please read below for more details about this!**
+
+Cases
+*****
+
+Therefore for a given star, there are four different scenarios that arise from a combination of 
+these two inputs and we describe how the software handles each of these cases.
 
 Additionally, we will list these in the recommended order, where the top is the most preferred
 and the bottom is the least.
+
+Case 1: light curve *and* power spectrum
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Case 2: light curve *only*
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Case 3: power spectrum *only*
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Case 4: no data
+^^^^^^^^^^^^^^^
 
 **CASE 1: light curve** :bolditalic:`and` **power spectrum**
 - :underlined:`Summary`: here, everything can be inferred and/or calculated from the data when both are provided. This
@@ -65,36 +108,12 @@ and the bottom is the least.
   if it's oversampled or critically-sampled
 
 **CASE 3:** power spectrum *only*
-This case *can* be alright, as long as additional data is provided.
+This case *can* be alright, as long as additional information is provided.
+Issue(s): 1) if oversampling factor not provided
+          2) if not normalized properly
 
-**CASE 4:** well, we all know what happens when zero input is provided...
-
-.. _library-input-required-lc:
-
-Light curve
-***********
-
-The *Kepler*, K2 & TESS missions have provided *billions* of stellar light curves, or a 
-measure of the object's brightness (or flux) in time. Like most other standard photometric 
-data, we require that the time array is in units of days. **This is really important if
-the software is calculating the power spectrum for you!**
-
-For the time series data, the y-axis is less critical here. It can be anything from units 
-of fraction flux or brightness as a function of time, along with any other normalization(s).
-
-.. _library-input-required-ps:
-
-Power spectrum
-**************
-
-The frequency series or :term:`power spectrum` is what's most important for the asteroseismic analyses 
-applied and performed in this software. Thanks to open-source languages like `Python`, we have powerful
-community-driven software packages like `astropy` that can fortunately compute these things for us.
-
-If you have both data series available but are not sure if the power spectrum is in the proper units,
-we recommend that you provide the time series data as the only input (but of course still in the proper units).
-That way, the software will calculate and normalize the power spectrum for you, which ensures
-reliable results. 
+**CASE 4:** well, we all know what happens when zero input is provided... but just in case,
+this will raise a `PySYDInputError`.
 
 
 .. _library-input-optional:
