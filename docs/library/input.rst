@@ -29,22 +29,13 @@ peep its API (:mod:`pysyd.pipeline.setup`).
 :underlined:`Required` 
 ######################
 
-The only thing really *required* to run the software is the data. 
+The only thing that's really *required* is the data. 
 
-For a given star `ID`, possible input data are:
- #. :underlined:`the light curve` (`'ID_LC.txt'`): the *Kepler*, K2 & TESS missions have 
-    provided *billions* of stellar light curves, or a measure of the object's brightness 
-    (or flux) in time. Like most standard photometric data, we require that the time array 
-    is in units of days. **This is really important if the software is calculating the power 
-    spectrum for you!** The y-axis is less critical here -- it can be anything from units of 
-    fractional flux or brightness as a function of time, along with any other normalization(s).
- #. :underlined:`the power spectrum` (`'ID_PS.txt'`): the frequency series or :term:`power spectrum` 
-    is what's most important for the asteroseismic analyses applied and performed in this package. 
-    In fact thanks to open-source languages like `Python`, we have many powerful community-driven 
-    libraries like `astropy` that can fortunately compute these things for us (which is what we
-    use here).
+For a given star `ID`, possible input data are its:
+ #. light curve (`'ID_LC.txt'`) and/or
+ #. power spectrum (`'ID_PS.txt'`).
 
-**:underlined:`Light curve`:** The *Kepler*, K2 & TESS missions have provided *billions* of stellar light curves, or a 
+**Light curve:** The *Kepler*, K2 & TESS missions have provided *billions* of stellar light curves, or a 
 measure of the object's brightness (or flux) in time. Like most standard photometric 
 data, we require that the time array is in units of days. **This is really important if
 the software is calculating the power spectrum for you!** The y-axis is less critical here -- 
@@ -70,25 +61,77 @@ these two inputs and we describe how the software handles each of these cases.
 Additionally, we will list these in the recommended order, where the top is the most preferred
 and the bottom is the least.
 
-Case 1: light curve *and* power spectrum
+:underlined:`Case 1: light curve *and* power spectrum`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Here, everything can be inferred and/or calculated from the data when both are provided. This
+includes the time series :term:`cadence`, which is relevant for the :term:`nyquist frequency`,
+or how high our sampling rate is. The total duration of the time series sets an upper limit
+on the time scales we can measure and also sets the resolution of the power spectrum. Therefore
+from this, we can determine if the power spectrum is oversampled or critically-sampled and
+make the appropriate arrays for all input data.
+
+Calculation(s)
+ - Parameter(s):
+   - time series cadence (:math:`\Delta t`)
+   - nyquist frequency (:math:`\rm \nu_{nyq}`)
+   - time series duration or baseline (:math:`\Delta T`)
+   - frequency resolution (:math:`\Delta frequency`)
+   - oversampling factor (i.e. critically-sampled has an `of=1`)
+ - Array(s):
+   - downsampled power density spectrum (when applicable)
+   - critically-sampled power density spectrum
+
+Issue(s)
+ #. the only problem that can arise from this case is if the power spectrum is not 
+    normalized correctly or in the proper units (i.e. frequency is in :math:`\rm \mu Hz` and power 
+    is in :math:`\rm ppm^{2} \mu Hz^{-1}`). This is actually more common than you think so if this 
+    *might* be the case, we recommend trying CASE 2 instead
+
+:underlined:`Case 2: light curve *only*`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Case 2: light curve *only*
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Again we can determine the baseline and cadence, which set important features in the 
+frequency domain as well. Since the power spectrum is not yet calculated, we can control
+if it's oversampled or critically-sampled
 
-Case 3: power spectrum *only*
+Calculation(s)
+ - Parameter(s):
+   - time series cadence (:math:`\Delta t`)
+   - nyquist frequency (:math:`\rm \nu_{nyq}`)
+   - time series duration or baseline (:math:`\Delta T`)
+   - frequency resolution (:math:`\Delta frequency`)
+   - oversampling factor (i.e. critically-sampled has an `of=1`)
+ - Array(s):
+   - oversampled power density spectrum
+   - critically-sampled power density spectrum
+
+Issue(s)
+ #. 
+
+:underlined:`Case 3: power spectrum *only*`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This case can be *o-k*, as long as additional information is provided.
+
+Calculation(s)
+ - Parameter(s):
+ - Array(s):
+
+Issue(s)
+ #. 
+
+Issue(s): 1) if oversampling factor not provided
+          2) if not normalized properly
+
+:underlined:`Case 4: no data`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Case 4: no data
-^^^^^^^^^^^^^^^
+well, we all know what happens when zero input is provided... but just in case,
+this will raise a `PySYDInputError`
 
 **CASE 1: light curve** :bolditalic:`and` **power spectrum**
-- :underlined:`Summary`: here, everything can be inferred and/or calculated from the data when both are provided. This
-  includes the time series :term:`cadence`, which is relevant for the :term:`nyquist frequency`,
-  or how high our sampling rate is. The total duration of the time series sets an upper limit
-  on the time scales we can measure and also sets the resolution of the power spectrum. Therefore
-  from this, we can determine if the power spectrum is oversampled or critically-sampled and
-  make the appropriate arrays for all input data.
+- :underlined:`Summary`: 
 - :underlined:`Calculation(s)`:
    - time series cadence (:math:`\Delta t`)
    - nyquist frequency (:math:`\rm \nu_{nyq}`)
@@ -112,8 +155,6 @@ This case *can* be alright, as long as additional information is provided.
 Issue(s): 1) if oversampling factor not provided
           2) if not normalized properly
 
-**CASE 4:** well, we all know what happens when zero input is provided... but just in case,
-this will raise a `PySYDInputError`.
 
 
 .. _library-input-optional:
