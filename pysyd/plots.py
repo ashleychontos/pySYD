@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import find_peaks
+
 
 
 
@@ -359,14 +359,11 @@ def _plot_parameters(star, subfilename='background_only.png', filename='global_f
     diff = list(np.absolute(params['lag']-params['obs_dnu']))
     idx = diff.index(min(diff))
 
-    peaks_idx, _ = find_peaks(params['auto'], distance=star.params['obs_dnu']/4.)
-    peaks_l, peaks_a = params['lag'][peaks_idx], params['auto'][peaks_idx]
-    pl, pa = utils._max_elements(peaks_l, peaks_a, star.params['n_peaks'])
     n += 1
     # PANEL 6: ACF 
     ax6 = fig.add_subplot(x, y, n)
     ax6.plot(params['lag'], params['auto'], 'w-', zorder=0, linewidth=1.)
-    ax6.scatter(pl, pa, s=30.0, edgecolor='lime', marker='D', facecolor='none', linewidths=1.0,)
+    ax6.scatter(pl, pa, s=30.0, edgecolor='red', marker='^', facecolor='none', linewidths=1.0,)
     ax6.axvline(params['obs_dnu'], color='lime', linestyle='--', linewidth=1.5, zorder=2)
     ax6.scatter(params['lag'][idx], params['auto'][idx], s=45.0, edgecolor='lime', marker='s', facecolor='none', linewidths=1.0)
     ax6.plot(params['zoom_lag'], params['zoom_auto'], 'r-', zorder=5, linewidth=1.0)

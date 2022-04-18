@@ -1,12 +1,12 @@
 .. role:: underlined
    :class: underlined
 
-*****************
-Results & outputs
-*****************
+*************
+Saved outputs
+*************
 
-Although saving things are optional, we will assume you are running the software to learn more
-about the star -- which can only be done by saving and interpreting the results. 
+While saving output files and figures are totally optional, we wanted to document them 
+on this page since there's a lot of information to unpack there. 
 
 Since we have already shown many examples for different stellar types, we will not include 
 any additional examples on this page but instead, list and describe each of the output files. 
@@ -38,8 +38,8 @@ example if you'd like more information about the printed `verbose` output.
 
 Listed are all the possible output files:
 
- #. :ref:`starname_PS.txt <library-output-files-ps>`
- #. :ref:`starname_bg_corr.txt <library-output-files-bgcorrps>`
+ #. :ref:`ID_PS.txt <library-output-files-ps>`
+ #. :ref:`ID_bg_corr.txt <library-output-files-bgcorrps>`
  #. :ref:`estimates.csv <library-output-files-estimates>`
  #. :ref:`global.csv <library-output-files-global>`
  #. :ref:`samples.csv <library-output-files-samples>`
@@ -49,15 +49,15 @@ arise from.
 
 .. _library-output-files-ps:
 
-1. `starname_PS.txt`
-********************
+1. `ID_PS.txt`
+**************
 
 **(special cases)**
 
 This file is created in the case where *only* the time series data was provided for a target and
-``pySYD`` computed a power spectrum. This optional, extra step is important to make sure that
-the power spectrum the software analyzes is both normalized correctly and has arrays with
-the proper units -- this *ensures* accurate and reliable results. 
+`pySYD` computed a power spectrum. This optional, extra step is important to make sure that
+the power spectrum used through the analyzes is both normalized correctly and has the proper 
+units -- this *ensures* accurate and reliable results. 
 
 **Note:** unlike every other output file, this is instead saved to the data (or input directory)
 so that the software can find it in later runs, which will save some time down the road. Of course
@@ -77,8 +77,8 @@ you can always copy and paste it to the specific star's result directory if you'
 
 .. _library-output-files-bgcorrps:
 
-2. `starname_bg_corr.txt`
-*************************
+2. `ID_bg_corr.txt`
+*******************
 
 **(all cases)**
 

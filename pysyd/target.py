@@ -849,8 +849,8 @@ class Target:
                 snr = max(self.params['plotting'][self.module][b]['fity'])/np.absolute(best_vars[0])
                 if snr > max_snr:
                     snr = max_snr
-                self.params['results'][self.module][b+1].update({'numax':best_vars[2], 'dnu':utils._delta_nu(best_vars[2]), 'snr':snr})
-                self.params['plotting'][self.module][b].update({'numax':best_vars[2], 'dnu':utils._delta_nu(best_vars[2]), 'snr':snr})
+                self.params['results'][self.module][b+1].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
+                self.params['plotting'][self.module][b].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
                 if self.params['verbose']:
                     print('Numax estimate %d: %.2f +/- %.2f'%(b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
                     print('S/N: %.2f' % snr)
@@ -1523,11 +1523,11 @@ class Target:
         self.pssm_bgcorr = self.pssm-models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
         mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.params['ps_mask'][0], self.params['ps_mask'][1]))
         self.region_freq, self.region_pow = self.frequency[mask], self.pssm_bgcorr[mask]
-        idx = utils._return_max(self.region_freq, self.region_pow, index=True)
-        self.params['results'][self.module]['numax_smooth'].append(self.region_freq[idx])
-        self.params['results'][self.module]['A_smooth'].append(self.region_pow[idx])
+        idx, max_freq, max_pow = utils.return_max(self.region_freq, self.region_pow)
+        self.params['results'][self.module]['numax_smooth'].append(max_freq)
+        self.params['results'][self.module]['A_smooth'].append(max_pow)
         self.params['obs_numax'] = self.params['results'][self.module]['numax_smooth'][0]
-        self.params['exp_dnu'] = utils._delta_nu(self.params['obs_numax'])
+        self.params['exp_dnu'] = utils.delta_nu(self.params['obs_numax'])
 
 
     def numax_gaussian(self):
@@ -1616,6 +1616,7 @@ class Target:
             self.zoom_pow = self.bgcorr_smooth[mask]
 
 
+
     def frequency_spacing(self, n_peaks=10,):
         """Estimate :math:`\\Delta\\nu`
 
@@ -1653,13 +1654,13 @@ class Target:
         """
         if self.i == 0:
             # Get peaks from ACF by providing dnu to weight the array 
-            self.peaks_l, self.peaks_a = utils._max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], exp_dnu=self.guess)
+            self.peaks_l, self.peaks_a = utils.max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], exp_dnu=self.guess)
             # Pick "best" peak in ACF (i.e. closest to expected dnu)
-            idx = utils._return_max(self.peaks_l, self.peaks_a, index=True, exp_dnu=self.guess)
-            self.params['best_lag'], self.params['best_auto'] = self.peaks_l[idx], self.peaks_a[idx]
+            idx , best_lag, best_auto = utils.return_max(self.peaks_l, self.peaks_a, exp_dnu=self.guess)
+            self.params['best_lag'], self.params['best_auto'] = self.peaks_l.pop(idx), self.peaks_a.pop(idx)
             self.acf_cutout()
-        self.zoom_lag = self.lag[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
-        self.zoom_auto = self.auto[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
+        self.zoom_lag = self.lag[(self.lag >= self.params['acf_mask'][0]) & (self.lag <= self.params['acf_mask'][1])]
+        self.zoom_auto = self.auto[(self.lag >= self.params['acf_mask'][0]) & (self.lag <= self.params['acf_mask'][1])]
         # fit a Gaussian to the peak to estimate dnu
         try:
             gauss, _ = curve_fit(models.gaussian, self.zoom_lag, self.zoom_auto, p0=self.params['acf_guesses'], bounds=self.params['acf_bb'], maxfev=1000)
@@ -1674,6 +1675,7 @@ class Target:
             self.params['results'][self.module]['dnu'].append(gauss[2]) 
             if self.i == 0:
                 self.params['obs_dnu'] = gauss[2]
+                idx, self.peaks_f, self.peaks_p = utils.max_elements(self.zoom_freq, self.zoom_pow, npeaks=self.params['n_peaks'], distance=self.params['obs_dnu']/4.)
                 self.params['plotting'][self.module].update({'obs_dnu':gauss[2], 
                   'new_lag':np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), 
                   'dnu_fit':models.gaussian(np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), *gauss),})
@@ -1708,7 +1710,7 @@ class Target:
             right_lag = self.lag[-1]
             right_auto = self.auto[-1]
         # Lag limits to use for ACF mask or "cutout"
-        self.params['acf_mask']=[self.params['best_lag']-(self.params['best_lag']-left_lag)*self.params['threshold'], self.params['best_lag']+(right_lag-self.params['best_lag'])*self.params['threshold']]
+        self.params['acf_mask'] = [self.params['best_lag']-(self.params['best_lag']-left_lag)*self.params['threshold'], self.params['best_lag']+(right_lag-self.params['best_lag'])*self.params['threshold']]
         zoom_lag = self.lag[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
         zoom_auto = self.auto[(self.lag>=self.params['acf_mask'][0])&(self.lag<=self.params['acf_mask'][1])]
         # Boundary conditions and initial guesses stay the same for all iterations

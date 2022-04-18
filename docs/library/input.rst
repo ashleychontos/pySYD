@@ -14,7 +14,7 @@
 .. _library-input:
 
 **************
-`pySYD` Inputs
+`pySYD` inputs
 **************
 
 In case you missed it -- there is a convenient way for you to get started right
