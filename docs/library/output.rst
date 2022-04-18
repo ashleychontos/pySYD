@@ -5,14 +5,16 @@
 Saved outputs
 *************
 
-While saving output files and figures are totally optional, we wanted to document them 
-on this page since there's a lot of information to unpack there. 
-
-Since we have already shown many examples for different stellar types, we will not include 
+We have shown examples applied to stars of various sample sizes, for different stellar types, 
+of varying SNR detections, both single star
+and many star we will not include 
 any additional examples on this page but instead, list and describe each of the output files. 
 Therefore we refer the reader to check out :ref:`this page <quickstart>`, the 
 :ref:`comand-line examples <user-guide-cli-examples>` or the :ref:`notebook tutorials <user-guide-nb>`
 if more examples are desired.
+
+So while saving output files and figures is totally optional, we wanted to document them 
+on this page since there's a lot of information to unpack. 
 
 .. _library-output:
 
@@ -130,10 +132,12 @@ yourself. In the cases where this estimating routine is skipped, this file will 
 
 **(special cases)**
 
-If the monte-carlo sampling is used to calculate 
-uncertainties, an additional figure will plot the posterior distributions for the estimated 
-parameters. An optional feature (i.e. ``--samples``) is available to save the samples if desired. 
-See :ref:`examples` for a guide on what the output plots are showing.
+If the monte-carlo sampling is used to estimate uncertainties, an optional feature is available
+(i.e. :term:`--sampling`) to save the samples if desired.
+
+**Note:** there is a *new* feature that saves and sets a random seed any time you are running
+a target for the first time and therefore, you should be able to reproduce the samples in the
+event that you forget to save the samples.
 
 -----
 
@@ -185,6 +189,17 @@ and similar to the :ref:`file section <library-output-files>`, we describe each 
 ****************
 
 Each panel shows the samples of parameter estimates from Monte-Carlo simulations. Reported uncertainties on each parameter are calculated by taking the robust standard deviation of each distribution.
+
+.. _library-output-figures-bgfit:
+
+4. `bgmodel_fits.png`
+*********************
+
+5. `time_series.png`
+********************
+
+6. `power_spectrum.png`
+***********************
 
 Takeaway
 ########
