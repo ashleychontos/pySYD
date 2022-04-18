@@ -146,31 +146,38 @@ event that you forget to save the samples.
 :underlined:`Figures`
 #####################
 
-Listed are all possible output figures for running a single star:
+Listed are all possible output figures for running a single star in alphabetical order:
 
- #. :ref:`numax_estimates.png <library-output-figures-estimates>`
+ #. :ref:`background_only.png <library-output-figures-bgonly>`
+ #. :ref:`bgmodel_fits.png <library-output-figures-bgfit>`
  #. :ref:`global_fit.png <library-output-figures-global>`
+ #. :ref:`power_spectrum.png <library-output-figures-ps>`
  #. :ref:`samples.png <library-output-figures-samples>`
+ #. :ref:`search_&_estimate.png <library-output-figures-estimates>`
+ #. :ref:`time_series.png <library-output-figures-ts>`
 
 and similar to the :ref:`file section <library-output-files>`, we describe each in more detail below.
 
-.. _library-output-figures-estimates:
+.. _library-output-figures-bgonly:
 
-1. `numax_estimates.png`
+1. `background_only.png`
 ************************
 
-| **Top left:** Original time series.  
-| **Top middle:** Original power spectrum (white) and heavily smoothed power spectrum (green). The latter is used as an initial (crude) background fit to search for oscillations.  
-| **Top right:** Power spectrum after correcting the crude background fit.  
-| **Bottom left:** Frequency-resolved, collapsed autocorrelation function of the background-corrected power spectrum using a small step size. This step size is optimized for low-frequency oscillators. The green line is a Gaussian fit to the data, which provides the initial numax estimate.  
-| **Bottom middle:** Same as bottom left but for the medium step size (optimized for subgiant stars).  
-| **Bottom right:** Same as bottom left but for the large step size (optimized for main-sequence stars).
+**(special cases)**
 
+.. _library-output-figures-bgfit:
+
+2. `bgmodel_fits.png`
+*********************
+
+**(special cases)**
 
 .. _library-output-figures-global:
 
-2. `global_fit.png`
+3. `global_fit.png`
 *******************
+
+**(almost all cases)**
 
 | **Top left:** Original time series. 
 | **Top middle:** Original power spectrum (white), lightly smoothed power spectrum (red), and binned power spectrum (green). Blue lines show initial guesses of the fit to the granulation background. The grey region is excluded from the background fit based on the numax estimate provided to the module.
@@ -183,23 +190,46 @@ and similar to the :ref:`file section <library-output-files>`, we describe each 
 | **Bottom right:** Echelle diagram collapsed along the frequency direction.
 
 
+.. _library-output-figures-ps:
+
+4. `power_spectrum.png`
+***********************
+
+**(special cases)**
+
+
 .. _library-output-figures-samples:
 
-3. `samples.png`
+5. `samples.png`
 ****************
+
+**(many cases)**
 
 Each panel shows the samples of parameter estimates from Monte-Carlo simulations. Reported uncertainties on each parameter are calculated by taking the robust standard deviation of each distribution.
 
-.. _library-output-figures-bgfit:
 
-4. `bgmodel_fits.png`
-*********************
+.. _library-output-figures-estimates:
 
-5. `time_series.png`
+6. `search_&_estimate.png`
+**************************
+
+**(most cases)**
+
+| **Top left:** Original time series.  
+| **Top middle:** Original power spectrum (white) and heavily smoothed power spectrum (green). The latter is used as an initial (crude) background fit to search for oscillations.  
+| **Top right:** Power spectrum after correcting the crude background fit.  
+| **Bottom left:** Frequency-resolved, collapsed autocorrelation function of the background-corrected power spectrum using a small step size. This step size is optimized for low-frequency oscillators. The green line is a Gaussian fit to the data, which provides the initial numax estimate.  
+| **Bottom middle:** Same as bottom left but for the medium step size (optimized for subgiant stars).  
+| **Bottom right:** Same as bottom left but for the large step size (optimized for main-sequence stars).
+
+
+.. _library-output-figures-ts:
+
+7. `time_series.png`
 ********************
 
-6. `power_spectrum.png`
-***********************
+**(special cases)**
+
 
 Takeaway
 ########

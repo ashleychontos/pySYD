@@ -18,12 +18,13 @@ from . import MPLSTYLE
 
 
 def make_plots(star, showall=False,):
-    """
+    """Make plots
+
     Function that establishes the default plotting parameters and then calls each
     of the relevant plotting routines
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the pySYD pipeline object
         showall : bool, optional
             option to plot, save and show the different background models (default=`False`)
@@ -44,8 +45,9 @@ def make_plots(star, showall=False,):
         plt.show(block=False)
 
 
-def _select_trial(star):
-    """
+def select_trial(star):
+    """Select trial
+
     This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
     This feature used to be called as part of a method in the `pysyd.target.Target` class but left a
     stale figure open -- this way it can be closed after the value is selected
@@ -102,7 +104,7 @@ def _select_trial(star):
     return star
 
 
-def _plot_estimates(star, filename='numax_estimates.png', highlight=True):
+def _plot_estimates(star, filename='search_&_estimate.png', highlight=True):
     """
     Creates a plot summarizing the results of the find excess routine.
 

@@ -1,13 +1,6 @@
 .. role:: bolditalic
    :class: bolditalic
 
-.. note::
-
-   The initial `pySYD` release required *both* the light curve and power spectrum *but*
-   this has since changed! For example, time-domain utilities in more recent implementations 
-   have become available -- which is exciting but we are also still furiously working away on 
-   this. **STAY TUNED FOR NEW TOOLS!** 
-
 .. role:: underlined
    :class: underlined
 
@@ -17,12 +10,9 @@
 `pySYD` inputs
 **************
 
-In case you missed it -- there is a convenient way for you to get started right
-away -- which is by running the ``pySYD`` setup feature. Running the command will provide 
-*all* of the relevant files that are discussed in detail on this page. 
-
-To read more details about the setup feature, please visit :ref:`this page <install-setup>` *or*
-peep its API (:mod:`pysyd.pipeline.setup`). 
+**For what it's worth** and if you haven't done so already, running the `pySYD` 
+:ref:`setup feature <install-setup>` will conveniently provide *all* of files which are 
+discussed in detail on this page. 
 
 .. _library-input-required:
 
@@ -40,17 +30,13 @@ measure of the object's brightness (or flux) in time. Like most standard photome
 data, we require that the time array is in units of days. **This is really important if
 the software is calculating the power spectrum for you!** The y-axis is less critical here -- 
 it can be anything from units of fraction flux or brightness as a function of time, along 
-with any other normalization(s).
+with any other normalization(s). **Units:** time (days) vs. normalized flux (ppm)
 
 **Power spectrum:** the frequency series or :term:`power spectrum` is what's most important for 
 the asteroseismic analyses applied and performed in this software. Thanks to open-source languages 
 like `Python`, we have many powerful community-driven libraries like `astropy` that can fortunately 
-compute these things for us.
-
-Note: If you have both data series available but are not sure if the power spectrum is in the proper units,
-we recommend that you provide the time series data as the only input (but of course still in the proper units).
-That way, the software will calculate and normalize the power spectrum for you, which ensures
-reliable results. **Please read below for more details about this!**
+compute these things for us. **Units:** frequency (:math:`\rm \mu Hz`) vs. power density 
+(:math:`\rm ppm^{2} \mu Hz^{-1}`)
 
 Cases
 *****
@@ -61,8 +47,8 @@ these two inputs and we describe how the software handles each of these cases.
 Additionally, we will list these in the recommended order, where the top is the most preferred
 and the bottom is the least.
 
-:underlined:`Case 1: light curve *and* power spectrum`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Case 1: light curve *and* power spectrum
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Here, everything can be inferred and/or calculated from the data when both are provided. This
 includes the time series :term:`cadence`, which is relevant for the :term:`nyquist frequency`,
@@ -71,48 +57,68 @@ on the time scales we can measure and also sets the resolution of the power spec
 from this, we can determine if the power spectrum is oversampled or critically-sampled and
 make the appropriate arrays for all input data.
 
-Calculation(s)
- - Parameter(s):
-   - time series cadence (:math:`\Delta t`)
-   - nyquist frequency (:math:`\rm \nu_{nyq}`)
-   - time series duration or baseline (:math:`\Delta T`)
-   - frequency resolution (:math:`\Delta frequency`)
-   - oversampling factor (i.e. critically-sampled has an `of=1`)
+The following are attributes saved to the `pysyd.target.Target` object in this scenario:
+
+ - Parameter(s): 
+
+   - time series cadence (`star.cadence`)
+   - nyquist frequency (`star.nyquist`)
+   - total time series length or baseline (`star.baseline`)
+   - upper limit for granulation time scales (`star.tau_upper`)
+   - frequency resolution (`star.resolution`)
+   - oversampling factor (`star.oversampling_factor`)
+
  - Array(s):
-   - downsampled power density spectrum (when applicable)
-   - critically-sampled power density spectrum
+
+   - time series (`star.time` & `star.flux`)
+   - power spectrum (`star.frequency` & `star.power`)
+   - copy of input power spectrum (`star.freq_os` & `star.pow_os`)
+   - critically-sampled power spectrum (`star.freq_cs` & `star.pow_cs`)
 
 Issue(s)
+
  #. the only problem that can arise from this case is if the power spectrum is not 
     normalized correctly or in the proper units (i.e. frequency is in :math:`\rm \mu Hz` and power 
     is in :math:`\rm ppm^{2} \mu Hz^{-1}`). This is actually more common than you think so if this 
     *might* be the case, we recommend trying CASE 2 instead
 
-:underlined:`Case 2: light curve *only*`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Case 2: light curve *only*
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Again we can determine the baseline and cadence, which set important features in the 
 frequency domain as well. Since the power spectrum is not yet calculated, we can control
-if it's oversampled or critically-sampled
+if it's oversampled or critically-sampled. So basically for this case, we can calculate
+all the same things as in Case 1 *but* we just have a few more steps that may take a little
+more time to do. 
 
-Calculation(s)
- - Parameter(s):
-   - time series cadence (:math:`\Delta t`)
-   - nyquist frequency (:math:`\rm \nu_{nyq}`)
-   - time series duration or baseline (:math:`\Delta T`)
-   - frequency resolution (:math:`\Delta frequency`)
-   - oversampling factor (i.e. critically-sampled has an `of=1`)
+The following are attributes saved to the `pysyd.target.Target` object in this scenario:
+
+ - Parameter(s): 
+
+   - time series cadence (`star.cadence`)
+   - nyquist frequency (`star.nyquist`)
+   - total time series length or baseline (`star.baseline`)
+   - upper limit for granulation time scales (`star.tau_upper`)
+   - frequency resolution (`star.resolution`)
+   - oversampling factor (`star.oversampling_factor`)
+
  - Array(s):
-   - oversampled power density spectrum
-   - critically-sampled power density spectrum
+
+   - time series (`star.time` & `star.flux`)
+   - newly-computed power spectrum (`star.frequency` & `star.power`)
+   - copy of oversampled power spectrum (`star.freq_os` & `star.pow_os`)
+   - critically-sampled power spectrum (`star.freq_cs` & `star.pow_cs`)
 
 Issue(s)
+
  #. 
 
-:underlined:`Case 3: power spectrum *only*`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This case can be *o-k*, as long as additional information is provided.
+Case 3: power spectrum *only*
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This case can be *o-k*, so long as additional information is provided.
 
 Calculation(s)
  - Parameter(s):
@@ -124,8 +130,8 @@ Issue(s)
 Issue(s): 1) if oversampling factor not provided
           2) if not normalized properly
 
-:underlined:`Case 4: no data`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Case 4: no data
+^^^^^^^^^^^^^^^
 
 well, we all know what happens when zero input is provided... but just in case,
 this will raise a `PySYDInputError`
@@ -155,6 +161,18 @@ This case *can* be alright, as long as additional information is provided.
 Issue(s): 1) if oversampling factor not provided
           2) if not normalized properly
 
+
+.. important::
+
+    For the saved power spectrum, the frequency array has units of :math:`\rm \mu Hz` and the
+    power array is power density, which has units of :math:`\rm ppm^{2} \, \mu Hz^{-1}`. We 
+    normalize the power spectrum according to Parseval's Theorem, which loosely means that the 
+    fourier transform is unitary. This last bit is incredibly important for two main reasons,
+    but both that tie to the noise properties in the power spectrum: 1) different instruments
+    (e.g., *Kepler*, TESS) have different systematics and hence, noise properties, and 2) the 
+    amplitude of the noise becomes smaller as your time series gets longer. Therefore when we 
+    normalize the power spectrum, we can make direct comparisons between power spectra of not
+    only different stars, but from different instruments as well!
 
 
 .. _library-input-optional:
