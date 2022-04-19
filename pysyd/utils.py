@@ -444,7 +444,7 @@ class Parameters(Constants):
 
 
 
-    def get_plot(self, showall=False, show=False, cmap='binary', clip_value=3.0, hey=False,
+    def get_plot(self, show_all=False, show=False, cmap='binary', clip_value=3.0, hey=False,
                  interp_ech=False, nox=None, noy='0+0', npb=10, smooth_ech=None,):
         """Get plot parser
     
@@ -479,7 +479,7 @@ class Parameters(Constants):
 
         """
         plot = dict(
-            showall = showall,
+            show_all = show_all,
             show = show,
             cmap = cmap,
             hey = hey,
@@ -823,83 +823,6 @@ def _save_estimates(star, variables=['star', 'numax', 'dnu', 'snr']):
         if not star.params['overwrite']:
             save_path = _get_next(save_path)
         ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
-    star = _save_plotting(star)
-    return star
-
-
-def _save_plotting(star):
-    """
-    
-    Saves all the relevant information for plotting (from the first iteration) so that it can 
-    be done at the end now, as opposed to interrupting the workflow like it did before
-
-    Parameters
-        star : pysyd.target.Target
-            processed pipeline target
-        star.params['plotting'] : Dict[str,Dict[str,...]]
-            constructs parameter plotting dictionary using the star instance
-    Returns
-        star : pysyd.target.Target
-            updated pipeline target
-
-    """
-
-    if star.module == 'estimates':
-        params = dict(
-            time = np.copy(star.time),
-            flux = np.copy(star.flux),
-            freq = np.copy(star.freq),
-            pow = np.copy(star.pow),
-            bin_freq = np.copy(star.bin_freq),
-            bin_pow = np.copy(star.bin_pow),
-            interp_pow = np.copy(star.interp_pow),
-            bgcorr_pow = np.copy(star.bgcorr_pow),
-            )
-    elif star.module == 'parameters':
-        params = dict(
-            time = np.copy(star.time),
-            flux = np.copy(star.flux),
-            frequency = np.copy(star.frequency),
-            random_pow = np.copy(star.random_pow),
-            smooth_pow = np.copy(star.smooth_pow),
-            pssm = np.copy(star.pssm),
-            bgcorr_smooth = np.copy(star.bgcorr_smooth),
-            bin_freq = np.copy(star.bin_freq),
-            bin_pow = np.copy(star.bin_pow),
-            bin_err = np.copy(star.bin_err),
-            region_freq = np.copy(star.region_freq),
-            region_pow = np.copy(star.region_pow),
-            zoom_freq = np.copy(star.zoom_freq),
-            zoom_pow = np.copy(star.zoom_pow),
-            lag = np.copy(star.lag),
-            auto = np.copy(star.auto),
-            zoom_lag = np.copy(star.zoom_lag),
-            zoom_auto = np.copy(star.zoom_auto),
-            peaks_l = np.copy(star.peaks_l),
-            peaks_a = np.copy(star.peaks_a),
-            best_lag = star.params['best_lag'],
-            best_auto = star.params['best_auto'],
-            obs_acf = max(star.params['plotting'][star.module]['dnu_fit']),
-            ed = np.copy(star.ed),
-            extent = np.copy(star.extent),
-            x = np.copy(star.x),
-            y = np.copy(star.y),
-            a_orig = np.copy(star.params['a']),
-            obs_numax = star.params['obs_numax'],
-            exp_dnu = star.params['exp_dnu'],
-            noise = star.params['noise'],
-            pars = star.params['pars'],
-            models = star.params['models'],
-            paras = star.params['paras'],
-            model = star.params['selected'],
-            aic = star.params['aic'],
-            bic = star.params['bic'],
-            )
-    else:
-        pass
-    star.params['plotting'][star.module].update(params)
-    return star
-
 
 
 def _save_parameters(star, results={}, cols=['parameter', 'value', 'uncertainty']):
@@ -1075,12 +998,13 @@ def max_elements(x, y, npeaks, distance=None, exp_dnu=None):
         peaks_idx, _ = find_peaks(yy, distance=distance)
     else:
         peaks_idx, _ = find_peaks(yy)
-    px, py = xx[peaks_idx], yy[peaks_idx]
+    # take from original (unweighted) arrays 
+    px, py = x[peaks_idx], y[peaks_idx]
     # sort by n highest peaks
     s = np.argsort(py)
     peaks_y = py[s][-int(npeaks):][::-1]
     peaks_x = px[s][-int(npeaks):][::-1]
-    return peaks_x, peaks_y
+    return list(peaks_x), list(peaks_y), weights
 
 
 def return_max(x, y, exp_dnu=None,):

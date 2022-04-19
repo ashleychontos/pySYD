@@ -421,7 +421,7 @@ def main():
 
     plot_parser = argparse.ArgumentParser(add_help=False)
     plot_parser.add_argument('--all', '--showall',
-                             dest='showall',
+                             dest='show_all',
                              help='plot background comparison figure',
                              default=False,
                              action='store_true',
@@ -617,7 +617,7 @@ def main():
 ####
 
     parser_setup = sub_parser.add_parser('setup', 
-                                         parents=[parent_parser], 
+                                         parents=[parent_parser, data_parser], 
                                          formatter_class=argparse.MetavarTypeHelpFormatter,
                                          help='Easy setup of relevant directories and files',
                                          )
@@ -630,7 +630,7 @@ def main():
     parser_setup.add_argument('--path', '--dir', '--directory',
                               metavar='str',
                               dest='dir',
-                              help='Path to save setup files to (default=os.getcwd())',
+                              help='Path to save setup files to (default=os.getcwd()) **not functional yet',
                               type=str,
                               default=os.path.abspath(os.getcwd()),
     )

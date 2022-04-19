@@ -2,14 +2,13 @@ import os
 import argparse
 
 
-
-
-
-
-
-
-
-
+from version import __version__ 
+SYDFILE = os.path.join(os.path.abspath(os.getcwd()), 'data', 'syd_results.txt')
+PYSYDFILE = os.path.join(os.path.abspath(os.getcwd()), 'data', 'pysyd_results.csv')
+_ROOT = '/Users/ashleychontos/Documents/Research/Code/special/pySYD/dev'
+INFDIR = os.path.join(_ROOT, 'info')
+INPDIR = os.path.join(_ROOT, 'data')
+OUTDIR = os.path.join(_ROOT, 'results')
 # Package mode
 #import pysyd
 #from pysyd import pipeline
@@ -30,7 +29,7 @@ def main():
     )
     parser.add_argument('--version',
                         action='version',
-                        version="%(prog)s {}".format(pysyd.__version__),
+                        version="%(prog)s {}".format(__version__),
                         help="Print version number and exit.",
     )
 

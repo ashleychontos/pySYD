@@ -11,7 +11,6 @@ Below is a complete list of `pySYD` parameters in alphabetical order.
 
 .. glossary::
 
-
     ``-a, --ask``
         the option to select which trial (or estimate) of numax to use from the first module
          * dest = `args.ask`
@@ -20,6 +19,14 @@ Below is a complete list of `pySYD` parameters in alphabetical order.
          * action = `store_true`
          * **see also:** :term:`--trials<--trials, --ntrials>`, :term:`--ntrials<--trials, --ntrials>`
     
+    ``--all, --showall``
+        creates an additional figure that shows all the iterated background models, which 
+        will highlight the selected model
+         * dest = `args.showall`
+         * type = `bool`
+         * default = `False`
+         * action = `store_true`
+
     ``-b, --bg, --background``
         controls the background-fitting procedure -- BUT this should never be touched
         since a majority of the work done in the software happens here and it should 

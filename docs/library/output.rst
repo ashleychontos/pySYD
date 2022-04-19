@@ -65,18 +65,6 @@ units -- this *ensures* accurate and reliable results.
 so that the software can find it in later runs, which will save some time down the road. Of course
 you can always copy and paste it to the specific star's result directory if you'd like.
 
-.. important::
-
-    For the saved power spectrum, the frequency array has units of :math:`\rm \mu Hz` and the
-    power array is power density, which has units of :math:`\rm ppm^{2} \, \mu Hz^{-1}`. We 
-    normalize the power spectrum according to Parseval's Theorem, which loosely means that the 
-    fourier transform is unitary. This last bit is incredibly important for two main reasons,
-    but both that tie to the noise properties in the power spectrum: 1) different instruments
-    (e.g., *Kepler*, TESS) have different systematics and hence, noise properties, and 2) the 
-    amplitude of the noise becomes smaller as your time series gets longer. Therefore when we 
-    normalize the power spectrum, we can make direct comparisons between power spectra of not
-    only different stars, but from different instruments as well!
-
 .. _library-output-files-bgcorrps:
 
 2. `ID_bg_corr.txt`
@@ -146,7 +134,7 @@ event that you forget to save the samples.
 :underlined:`Figures`
 #####################
 
-Listed are all possible output figures for running a single star in alphabetical order:
+Listed are all possible output figures for a given star (in alphabetical order):
 
  #. :ref:`background_only.png <library-output-figures-bgonly>`
  #. :ref:`bgmodel_fits.png <library-output-figures-bgfit>`
@@ -156,7 +144,8 @@ Listed are all possible output figures for running a single star in alphabetical
  #. :ref:`search_&_estimate.png <library-output-figures-estimates>`
  #. :ref:`time_series.png <library-output-figures-ts>`
 
-and similar to the :ref:`file section <library-output-files>`, we describe each in more detail below.
+and similar to the :ref:`file section <library-output-files>` above, we describe each in 
+more detail below.
 
 .. _library-output-figures-bgonly:
 
@@ -196,6 +185,13 @@ and similar to the :ref:`file section <library-output-files>`, we describe each 
 ***********************
 
 **(special cases)**
+
+This is still in its developmental stage but the idea is that one is supposed to "check"
+a target before attempting to process the pipeline on any data. That means checking
+the input data for sketchy looking features. For example, *Kepler* short-cadence data
+has known artefacts present near the nyquist frequency for *Kepler* long-cadence data
+(:math:`\sim 270 \mu \mathrm{Hz}`). In these cases, we have special frequency-domain tools
+that are meant to help mitigate such things (e.g., see :mod:`pysyd.target.Target.remove_artefact`)
 
 
 .. _library-output-figures-samples:

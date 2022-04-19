@@ -202,7 +202,7 @@ def run(args):
     utils.scrape_output(args)
 
 
-def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
+def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
     """
     
     Running this after installation will create the appropriate directories in the current working
@@ -216,54 +216,68 @@ def setup(args, note='', raw='https://raw.githubusercontent.com/ashleychontos/py
         raw : str
             path to download "raw" package data and examples from the ``pySYD`` source directory
 
-    """
-    # downloading data will generate output in terminal, so include this statement regardless
-    if args.example:
-        print('\n\nDownloading relevant data from source directory:\n')
 
-    # INFDIR
-    # create info directory
+    """
+    note, save, dl = '', False, {}
+
+    # INFO DIRECTORY
+    # create info directory (INFDIR)
     if not os.path.exists(args.infdir):
         os.mkdir(args.infdir)
-        note+=' - created input file directory: %s \n'%args.infdir
-    if args.files:
-        # get example input files
-        infile1 = '%sinfo/todo.txt'%raw
-        outfile1 = os.path.join(args.infdir, args.todo)
-        subprocess.call(['curl %s > %s'%(infile1, outfile1)], shell=True)
-        infile2 = '%sinfo/star_info.csv'%raw
-        outfile2 = os.path.join(args.infdir, args.info)
-        subprocess.call(['curl %s > %s'%(infile2, outfile2)], shell=True)
-        if args.makeall:
-            df_temp = pd.read_csv(outfile2)
-            df = pd.DataFrame(columns=utils.get_dict('columns')['all'])
-            for col in df_temp.columns.values.tolist():
-                if col in df.columns.values.tolist():
-                    df[col] = df_temp[col]
-            df.to_csv(outfile2, index=False)
+        note+=' - created input file directory at %s \n'%args.infdir
+    # example input files   
+    outfile1 = os.path.join(args.infdir, args.todo)               # example star list file
+    if not os.path.exists(outfile1):
+        dl.update({'%sinfo/todo.txt'%raw:outfile1})
+        note+=' - saved an example of a star list\n'                               
+    outfile2 = os.path.join(args.infdir, args.info)               # example star info file
+    if not os.path.exists(outfile2):
+        dl.update({'%sinfo/star_info.csv'%raw:outfile2})
+        note+=' - saved an example for the star information file\n'
 
-    # INPDIR
-    # create data directory
+    # DATA DIRECTORY
+    # create data directory (INPDIR)
     if not os.path.exists(args.inpdir):
         os.mkdir(args.inpdir)
         note+=' - created data directory at %s \n'%args.inpdir
-    if args.examples:
-        # get example data
-        for target in ['1435467', '2309595', '11618103']:
-            for ext in ['LC', 'PS']:
-                infile='%sdata/%s_%s.txt'%(raw, target, ext)
-                outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
-                subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
-        print('\n')
-        note+=' - example data saved\n'
-    
-    # OUTDIR
-    # create results directory
+    # example data
+    for target in ['1435467', '2309595', '11618103']:
+        for ext in ['LC', 'PS']:
+            infile='%sdata/%s_%s.txt'%(raw, target, ext)
+            outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
+            if not os.path.exists(outfile):
+                save=True
+                dl.update({infile:outfile})
+    if save:
+        note+=' - example data saved to data directory\n'
+
+    # RESULTS DIRECTORY
+    # create results directory (OUTDIR)
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
-    note+=' - results will be saved to %s \n\n'%args.outdir
+        note+=' - results will be saved to %s \n\n'%args.outdir
+
+    # Download files that do not already exist
+    if dl:
+        # downloading example data will generate output in terminal, so always include this regardless
+        print('\nDownloading relevant data from source directory:')
+        for infile, outfile in dl.items():
+            subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
+
+    # option to get ALL columns since only subset is included in the example
+    if args.makeall:
+        df_temp = pd.read_csv(outfile2)
+        df = pd.DataFrame(columns=utils.get_dict('columns')['setup'])
+        for col in df_temp.columns.values.tolist():
+            if col in df.columns.values.tolist():
+                df[col] = df_temp[col]
+        df.to_csv(outfile2, index=False)
+
     if args.verbose:
-        print(note)
+        if note == '':
+            print("\nLooks like you've probably done this\nbefore since you already have everything!\n")
+        else:
+            print('\nOther notes:\n%s'%note)
 
 
 def test(args):
