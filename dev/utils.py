@@ -6,26 +6,15 @@ import pandas as pd
 from astropy.io import ascii
 import multiprocessing as mp
 from astropy.stats import mad_std
-
-
-
-
-# Package mode
-#from . import models
-#from . import SYDFILE, PYSYDFILE
-#from . import INFDIR, INPDIR, OUTDIR
-
-
+from scipy.signal import find_peaks
 # Development mode
 import models
-SYDFILE = os.path.join(os.path.abspath(os.getcwd()), 'data', 'syd_results.txt')
-PYSYDFILE = os.path.join(os.path.abspath(os.getcwd()), 'data', 'pysyd_results.csv')
+SYDFILE = os.path.join(os.path.abspath(os.getcwd()), 'info', 'data', 'syd_results.txt')
+PYSYDFILE = os.path.join(os.path.abspath(os.getcwd()), 'info', 'data', 'pysyd_results.csv')
 _ROOT = '/Users/ashleychontos/Documents/Research/Code/special/pySYD/dev'
 INFDIR = os.path.join(_ROOT, 'info')
 INPDIR = os.path.join(_ROOT, 'data')
 OUTDIR = os.path.join(_ROOT, 'results')
-
-
 
 class PySYDInputError(Exception):
     """Class for pySYD user input errors."""
@@ -113,6 +102,7 @@ class Parameters(Constants):
                 self.params['stars'] = stars
         self.assign_stars()
 
+
     def __repr__(self):
         return "<PySYD Parameters>"
 
@@ -181,9 +171,9 @@ class Parameters(Constants):
 
         """
         high = dict(
-            inpdir = os.path.join(os.path.abspath(os.getcwd()), INPDIR),
-            infdir = os.path.join(os.path.abspath(os.getcwd()), INFDIR),
-            outdir = os.path.join(os.path.abspath(os.getcwd()), OUTDIR),
+            inpdir = INPDIR,
+            infdir = INFDIR,
+            outdir = OUTDIR,
             save = save,
             verbose = verbose,
             overwrite = overwrite,
@@ -235,8 +225,8 @@ class Parameters(Constants):
         """
         data = dict(
             stars = stars,
-            info = os.path.join(os.path.abspath(os.getcwd()), INFDIR, info),
-            todo = os.path.join(os.path.abspath(os.getcwd()), INFDIR, todo),
+            info = os.path.join(INFDIR, info),
+            todo = os.path.join(INFDIR, todo),
             mode = mode,
             gap = gap,
             stitch = stitch,
@@ -455,7 +445,7 @@ class Parameters(Constants):
 
 
 
-    def get_plot(self, showall=False, show=False, cmap='binary', clip_value=3.0, hey=False,
+    def get_plot(self, show_all=False, show=False, cmap='binary', clip_value=3.0, hey=False,
                  interp_ech=False, nox=None, noy='0+0', npb=10, smooth_ech=None,):
         """Get plot parser
     
@@ -490,7 +480,7 @@ class Parameters(Constants):
 
         """
         plot = dict(
-            showall = showall,
+            show_all = show_all,
             show = show,
             cmap = cmap,
             hey = hey,
@@ -537,10 +527,10 @@ class Parameters(Constants):
         (and if that does not exist, it will raise an error)
 
         """
-        if not os.path.exists(os.path.join(self.params['infdir'], self.params['todo'])):
+        if not os.path.exists(self.params['todo']):
             raise PySYDInputError("ERROR: no stars or star list provided")
         else:
-            with open(os.path.join(self.params['infdir'], self.params['todo']), "r") as f:
+            with open(self.params['todo'], "r") as f:
                 self.params['stars'] = [line.strip().split()[0] for line in f.readlines()]
 
 
@@ -577,7 +567,7 @@ class Parameters(Constants):
                 self.params[star]['estimate'] = False
                 if self.params[star]['dnu'] is not None:
                     self.params[star]['force'] = self.params[star]['dnu']
-                self.params[star]['dnu'] = _delta_nu(self.params[star]['numax'])
+                self.params[star]['dnu'] = delta_nu(self.params[star]['numax'])
             else:
                 if 'rs' in self.params[star] and self.params[star]['rs'] is not None and \
                   'logg' in self.params[star] and self.params[star]['logg'] is not None:
@@ -610,37 +600,41 @@ class Parameters(Constants):
         # Create all keys first
         for star in self.params['stars']:
             for column in columns['all']:
-                self.params[star][column] = None
+                if column in self.params:
+                    self.params[star][column] = self.params[column]
+                else:
+                    self.params[star][column] = None
 
         # Open csv file if it exists
-        if os.path.exists(os.path.join(self.params['infdir'], self.params['info'])):
-            df = pd.read_csv(os.path.join(self.params['infdir'], self.params['info']))
+        if os.path.exists(self.params['info']):
+            df = pd.read_csv(self.params['info'])
             stars = [str(each) for each in df.stars.values.tolist()]
             for star in self.params['stars']:
                 if str(star) in stars:
                     idx = stars.index(str(star))
                     # Update information from columns
                     for column in df.columns.values.tolist():
-                        if column in columns['int'] and not np.isnan(float(df.loc[idx,column])):
-                            self.params[star][column] = int(df.loc[idx,column])
-                        elif column in columns['float'] and not np.isnan(float(df.loc[idx,column])):
-                            self.params[star][column] = float(df.loc[idx,column])
-                        elif column in columns['bool']:
-                            self.params[star][column] = df.loc[idx,column]
-                        elif column in columns['str']:
-                            self.params[star][column] = str(df.loc[idx,column])
-                        else:
-                            pass
+                        if not np.isnan(df.loc[idx,column]):
+                            if column in columns['int']:
+                                self.params[star][column] = int(df.loc[idx,column])
+                            elif column in columns['float']:
+                                self.params[star][column] = float(df.loc[idx,column])
+                            elif column in columns['bool']:
+                                self.params[star][column] = df.loc[idx,column]
+                            elif column in columns['str']:
+                                self.params[star][column] = str(df.loc[idx,column])
+                            else:
+                                pass
 
         # Copy the rest of the defaults
-        for star in self.params['stars']:
-            for param in self.params:
-                if param not in self.params[star]:
-                    self.params[star][param] = self.params[param]
-                elif param in self.params[star] and self.params[star][param] is None:
-                    self.params[star][param] = self.params[param]
-                else:
-                    pass
+#        for star in self.params['stars']:
+#            for param in self.params:
+#                if param not in self.params[star]:
+#                    self.params[star][param] = self.params[param]
+#                elif param in self.params[star] and self.params[star][param] is None:
+#                    self.params[star][param] = self.params[param]
+#                else:
+#                    pass
 
         if not self.params['cli']:
             return
@@ -671,6 +665,7 @@ class Parameters(Constants):
                 # Make sure it is not a variable with a >1 length
                 if key not in self.override:
                     self.params[key] = value
+
             # were stars provided
             if self.params['stars'] is None:
                 self.star_list()
@@ -834,83 +829,6 @@ def _save_estimates(star, variables=['star', 'numax', 'dnu', 'snr']):
         if not star.params['overwrite']:
             save_path = _get_next(save_path)
         ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
-    star = _save_plotting(star)
-    return star
-
-
-def _save_plotting(star):
-    """
-    
-    Saves all the relevant information for plotting (from the first iteration) so that it can 
-    be done at the end now, as opposed to interrupting the workflow like it did before
-
-    Parameters
-        star : pysyd.target.Target
-            processed pipeline target
-        star.params['plotting'] : Dict[str,Dict[str,...]]
-            constructs parameter plotting dictionary using the star instance
-    Returns
-        star : pysyd.target.Target
-            updated pipeline target
-
-    """
-
-    if star.module == 'estimates':
-        params = dict(
-            time = np.copy(star.time),
-            flux = np.copy(star.flux),
-            freq = np.copy(star.freq),
-            pow = np.copy(star.pow),
-            bin_freq = np.copy(star.bin_freq),
-            bin_pow = np.copy(star.bin_pow),
-            interp_pow = np.copy(star.interp_pow),
-            bgcorr_pow = np.copy(star.bgcorr_pow),
-            )
-    elif star.module == 'parameters':
-        params = dict(
-            time = np.copy(star.time),
-            flux = np.copy(star.flux),
-            frequency = np.copy(star.frequency),
-            random_pow = np.copy(star.random_pow),
-            smooth_pow = np.copy(star.smooth_pow),
-            pssm = np.copy(star.pssm),
-            bgcorr_smooth = np.copy(star.bgcorr_smooth),
-            bin_freq = np.copy(star.bin_freq),
-            bin_pow = np.copy(star.bin_pow),
-            bin_err = np.copy(star.bin_err),
-            region_freq = np.copy(star.region_freq),
-            region_pow = np.copy(star.region_pow),
-            zoom_freq = np.copy(star.zoom_freq),
-            zoom_pow = np.copy(star.zoom_pow),
-            lag = np.copy(star.lag),
-            auto = np.copy(star.auto),
-            zoom_lag = np.copy(star.zoom_lag),
-            zoom_auto = np.copy(star.zoom_auto),
-            peaks_l = np.copy(star.peaks_l),
-            peaks_a = np.copy(star.peaks_a),
-            best_lag = star.params['best_lag'],
-            best_auto = star.params['best_auto'],
-            obs_acf = max(star.params['plotting'][star.module]['dnu_fit']),
-            ed = np.copy(star.ed),
-            extent = np.copy(star.extent),
-            x = np.copy(star.x),
-            y = np.copy(star.y),
-            a_orig = np.copy(star.params['a']),
-            obs_numax = star.params['obs_numax'],
-            exp_dnu = star.params['exp_dnu'],
-            noise = star.params['noise'],
-            pars = star.params['pars'],
-            models = star.params['models'],
-            paras = star.params['paras'],
-            model = star.params['selected'],
-            aic = star.params['aic'],
-            bic = star.params['bic'],
-            )
-    else:
-        pass
-    star.params['plotting'][star.module].update(params)
-    return star
-
 
 
 def _save_parameters(star, results={}, cols=['parameter', 'value', 'uncertainty']):
@@ -979,11 +897,13 @@ def _verbose_output(star, note=''):
 
 
 def scrape_output(args):
-    """
-    Concatenate results
+    """Concatenate results
     
-    Takes results for each processed target and concatenates the results into a single csv 
-    for each submodule -- this is done automatically
+    Automatically concatenates and summarizes the results for all processed stars in each
+    of the two submodules
+
+    Methods
+        :mod:`pysyd.utils._sort_table`
     
 
     """
@@ -1051,107 +971,95 @@ def _sort_table(df, one=[], two=[],):
     return df
 
 
-def _max_elements(x, y, npeaks, exp_dnu=None):
-    """
-    Return n max elements
+def max_elements(x, y, npeaks, distance=None, exp_dnu=None):
+    """N highest peaks
     
-    Module to obtain the x and y values for the n highest peaks in a power
-    spectrum (or any 2D arrays really) 
+    Module to obtain the x and y values for the n highest peaks in a 2D array 
 
     Parameters
-        x : numpy.ndarray
-            the x values of the data
-        y : numpy.ndarray
-            the y values of the data
-        npeaks : int
+        x, y : numpy.ndarray, numpy.ndarray
+            the series of data to identify peaks in
+        npeaks : int, default=5
             the first n peaks
-        exp_dnu : float
+        distance : float, default=None
+            used in :mod:`scipy.find_peaks` if not `None`
+        exp_dnu : float, default=None
             if not `None`, multiplies y array by Gaussian weighting centered on `exp_dnu`
 
     Returns
-        peaks_x : numpy.ndarray
-            the x coordinates of the first `npeaks`
-        peaks_y : numpy.ndarray
-            the y coordinates of the first `npeaks`
+        peaks_x, peaks_y : numpy.ndarray, numpy.ndarray
+            the x & y coordinates of the first n peaks `npeaks`
 
 
     """
-    xc, yc = np.copy(x), np.copy(y)
-    weights = np.ones_like(yc)
+    xx, yy = np.copy(x), np.copy(y)
+    weights = np.ones_like(yy)
+    # if exp_dnu is not None, use weighting technique
     if exp_dnu is not None:
         sig = 0.35*exp_dnu/2.35482 
-        weights *= np.exp(-(xc-exp_dnu)**2./(2.*sig**2))*((sig*np.sqrt(2.*np.pi))**-1.)
-    yc *= weights
-    s = np.argsort(yc)
-    peaks_y = y[s][-int(npeaks):][::-1]
-    peaks_x = x[s][-int(npeaks):][::-1]
+        weights *= np.exp(-(xx-exp_dnu)**2./(2.*sig**2))*((sig*np.sqrt(2.*np.pi))**-1.)
+    yy *= weights
+    # provide threshold for finding peaks
+    if distance is not None:
+        peaks_idx, _ = find_peaks(yy, distance=distance)
+    else:
+        peaks_idx, _ = find_peaks(yy)
+    # take from original (unweighted) arrays 
+    px, py = x[peaks_idx], y[peaks_idx]
+    # sort by n highest peaks
+    s = np.argsort(py)
+    peaks_y = py[s][-int(npeaks):][::-1]
+    peaks_x = px[s][-int(npeaks):][::-1]
+    return list(peaks_x), list(peaks_y), weights
 
-    return peaks_x, peaks_y
 
-
-def _return_max(x, y, exp_dnu=None, index=False, idx=None):
-    """
+def return_max(x, y, exp_dnu=None,):
+    """Return max
     
-    Return the either the value of peak or the index of the peak corresponding to the most likely dnu given a prior estimate,
-    otherwise just the maximum value.
+    Return the peak (and/or the index of the peak) in a given 2D array
 
     Parameters
-        x : numpy.ndarray
-            the independent axis (i.e. time, frequency)
-        y : numpy.ndarray
-            the dependent axis
-        index : bool
-            if true will return the index of the peak instead otherwise it will return the value. Default value is `False`.
-        dnu : bool
-            if true will choose the peak closest to the expected dnu `exp_dnu`. Default value is `False`.
+        x, y : numpy.ndarray, numpy.ndarray
+            the independent and dependent axis, respectively
         exp_dnu : Required[float]
             the expected dnu. Default value is `None`.
 
     Returns
-        result : Union[int, float]
-            if `index` is `True`, result will be the index of the peak otherwise if `index` is `False` it will 
-	        instead return the value of the peak
+        idx : int
+            **New**: *always* returns the index first, followed by the corresponding peak from the x+y arrays
+        xx[idx], yy[idx] : Union[int, float], Union[int, float]
+            corresponding peak in the x and y arrays
 
     """
-
-    lst = list(y)
-    if lst != []:
+    xx, yy = np.copy(x), np.copy(y)
+    if list(yy) != []:
         if exp_dnu is not None:
-            lst = list(np.absolute(x-exp_dnu))
+            lst = list(np.absolute(xx-exp_dnu))
             idx = lst.index(min(lst))
         else:
+            lst = list(yy)
             idx = lst.index(max(lst))
-    if index:
-        return idx
     else:
-        if idx is None:
-            return [], []
-        return x[idx], y[idx]
+        return None, np.nan, np.nan
+    return idx, xx[idx], yy[idx]
 
 
 def _bin_data(x, y, width, log=False, mode='mean'):
-    """
+    """Bin data
     
-    Bins data
+    Bins 2D series of data
 
     Parameters
-        x : numpy.ndarray
-            the x values of the data
-        y : numpy.ndarray
-            the y values of the data
+        x, y : numpy.ndarray, numpy.ndarray
+            the x and y values of the data
         width : float
-            bin width in muHz
-        log : bool
-            creates bins by using the log of the min/max values (i.e. not equally spaced in log if `True`)
+            bin width (typically in :math:`\\rm \\mu Hz`)
+        log : bool, default=False
+            creates equal bin sizes in logarithmic space when `True`
 
     Returns
-        bin_x : numpy.ndarray
-            binned frequencies
-        bin_y : numpy.ndarray
-            binned power
-        bin_yerr : numpy.ndarray
-            standard deviation of the binned y data
-
+        bin_x, bin_y, bin_yerr : numpy.ndarray, numpy.ndarray, numpy.ndarray
+            binned arrays (and error is computed using the standard deviation)
 
     """
     if log:
@@ -1172,30 +1080,32 @@ def _bin_data(x, y, width, log=False, mode='mean'):
     else:
         pass
     bin_yerr = np.array([y[digitized == i].std()/np.sqrt(len(y[digitized == i])) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
-
     return bin_x, bin_y, bin_yerr
 
 
-def _ask_int(question, n_trials, max_attempts=10, count=1, special=False):    
-    """
+def _ask_int(question, n_trials, max_attempts=100, count=1, special=False):    
+    """Integer input
     
-    Asks for an integer user input -- this is specially formatted for the
-    estimating module by requiring an integer number that corresponds to one
-    of the (n_)trials or zero to provide :math:`\\rm \\nu_{max}` directly
+    Asks for an integer input -- this is specifically formatted for the module that searches
+    and identifies power excess due to solar-like oscillations and then estimates its properties.
+    Therefore it forces a selection that matches with one of the (n_)trials or accepts zero to 
+    provide your own estimate for :math:`\\rm \\nu_{max}` directly
 
     Parameters
         question : str
             the statement and/or question that needs to be answered
-        range : List[float]
-            if not `None`, provides a lower and/or upper bound for the selected integer
-        max_attempts : int
+        max_attempts : int, default=100
             the maximum number of tries a user has before breaking
         count : int
-            the user attempt number
+            the attempt number
+        special : bool, default=False
+            changes to `True` if the input is zero, changing the integer requirement to
+            a float to provide :term:`numax`
 
     Returns
-        result : int
-            the user's integer answer or `None` if the number of attempts exceeds the allowed number
+        answer : int
+            the provided user input (either an integer corresponding to the trial number or
+            a numax estimate) *or* `None` if number of attemps exceeded `max_attempts`
 
 
     """
@@ -1258,18 +1168,18 @@ def _get_results(suffixes=['_idl', '_py'], max_numax=3200.,):
     return df
 
 
-def _delta_nu(numax):
-    """
+def delta_nu(numax):
+    """:math:`\\Delta\\nu`
     
-    Estimates the large frequency separation using the numax scaling relation (add citation)
+    Estimates the large frequency separation using the numax scaling relation (add citation?)
 
     Parameters
         numax : float
-            the frequency corresponding to maximum power or numax
+            the frequency corresponding to maximum power or numax (:math:`\\rm \\nu_{max}`)
 
     Returns
         dnu : float
-            the approximated frequency spacing, dnu
+            the approximated frequency spacing or dnu (:math:`\\Delta\\nu`)
 
     """
 

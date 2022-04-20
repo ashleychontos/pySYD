@@ -16,7 +16,6 @@ import numpy as np
 #
 
 
-
 def background(frequency, guesses, mode='regular', ab=False, noise=None):
     """
     The main model for the stellar background fitting

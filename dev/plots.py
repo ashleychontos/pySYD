@@ -7,31 +7,23 @@ import matplotlib.pyplot as plt
 
 
 
-
-
-
-# Package mode
-#from . import utils
-#from . import models
-#from . import MPLSTYLE
-
-
 # Development mode
 import utils
 import models
-MPLSTYLE = os.path.join(os.path.abspath(os.getcwd()), 'info', 'pysyd.mplstyle')
+MPLSTYLE = os.path.join(os.path.abspath(os.getcwd()), 'info', 'data', 'pysyd.mplstyle')
 
 plt.style.use(MPLSTYLE)
 
 
 
-def make_plots(star, showall=False,):
-    """
+def make_plots(star, show_all=False,):
+    """Make plots
+
     Function that establishes the default plotting parameters and then calls each
     of the relevant plotting routines
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the pySYD pipeline object
         showall : bool, optional
             option to plot, save and show the different background models (default=`False`)
@@ -44,7 +36,7 @@ def make_plots(star, showall=False,):
         _plot_estimates(star)
     if 'parameters' in star.params['plotting']:
         _plot_parameters(star)
-        if star.params['showall']:
+        if star.params['show_all']:
             _plot_bgfits(star)
     if 'samples' in star.params['plotting']:
         _plot_samples(star)
@@ -52,8 +44,9 @@ def make_plots(star, showall=False,):
         plt.show(block=False)
 
 
-def _select_trial(star):
-    """
+def select_trial(star):
+    """Select trial
+
     This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
     This feature used to be called as part of a method in the `pysyd.target.Target` class but left a
     stale figure open -- this way it can be closed after the value is selected
@@ -110,7 +103,7 @@ def _select_trial(star):
     return star
 
 
-def _plot_estimates(star, filename='numax_estimates.png', highlight=True):
+def _plot_estimates(star, filename='search_&_estimate.png', highlight=True):
     """
     Creates a plot summarizing the results of the find excess routine.
 
@@ -334,61 +327,50 @@ def _plot_parameters(star, subfilename='background_only.png', filename='global_f
     # PANEL 4: smoothed power excess 
     ax4 = fig.add_subplot(x, y, n)
     ax4.plot(params['region_freq'], params['region_pow'], 'w-', zorder=3)
-    idx = utils._return_max(params['region_freq'], params['region_pow'], index=True)
-    ax4.scatter([params['region_freq'][idx]], [params['region_pow'][idx]], s=25.0, edgecolor='cyan', marker='d', facecolor='none', linewidths=1.0, zorder=5)
-    ax4.axvline([params['region_freq'][idx]], color='white', linestyle='--', linewidth=1.5, zorder=4)
-    xx, yy = utils._return_max(params['new_freq'], params['numax_fit'])
+    _, f, p = utils.return_max(params['region_freq'], params['region_pow'])
+    ax4.axvline([f], color='orange', linestyle='--', linewidth=1.5, zorder=4)
+    ax4.scatter([f], [p], s=35.0, edgecolor='orange', marker='X', facecolor='none', linewidths=1.0, zorder=5)
+    _, ff, pp = utils.return_max(params['new_freq'], params['numax_fit'])
     ax4.plot(params['new_freq'], params['numax_fit'], 'b-', zorder=0)
-    ax4.axvline(xx, color='blue', linestyle=':', linewidth=1.5, zorder=1)
-    ax4.plot([xx], [yy], color='b', marker='s', markersize=7.5, zorder=2)
+    ax4.axvline(ff, color='cyan', linestyle=':', linewidth=1.5, zorder=1)
+    ax4.scatter([ff], [pp], s=25.0, edgecolor='cyan', marker='s', facecolor='none', linewidths=1.0, zorder=2)
     ax4.axvline(params['exp_numax'], color='r', linestyle='--', linewidth=1.5, zorder=-1, dashes=(5,5),)
     ax4.set_title(r'$\rm Smoothed \,\, PS$')
     ax4.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax4.set_xlim([min(params['region_freq']), max(params['region_freq'])])
 
     yrange = max(params['zoom_pow'])-min(params['zoom_pow'])
-    peaks_idx, _ = find_peaks(params['zoom_pow'], distance=star.params['obs_dnu']/4.)
-    peaks_f, peaks_p = params['zoom_freq'][peaks_idx], params['zoom_pow'][peaks_idx]
-    pf, pp = utils._max_elements(peaks_f, peaks_p, star.params['n_peaks'])
+    peaks_f, peaks_p, _ = utils.max_elements(params['zoom_freq'], params['zoom_pow'], npeaks=10, distance=params['obs_dnu']/4.)
     n += 1
     # PANEL 5: background-corrected power spectrum 
     ax5 = fig.add_subplot(x, y, n)
     ax5.plot(params['zoom_freq'], params['zoom_pow'], 'w-', zorder=0, linewidth=1.0)
-    ax5.scatter(pf, pp, s=25.0, edgecolor='blue', marker='s', facecolor='none', linewidths=1.0)
+    ax5.scatter(peaks_f, peaks_p, s=30.0, edgecolor='orange', marker='o', facecolor='none', linewidths=1.0)
     ax5.set_title(r'$\rm Bg$-$\rm corrected \,\, PS$')
     ax5.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax5.set_ylabel(r'$\rm Power$')
     ax5.set_xlim([star.params['ps_mask'][0], star.params['ps_mask'][1]])
     ax5.set_ylim([min(params['zoom_pow'])-0.025*yrange, max(params['zoom_pow'])+0.1*yrange])
 
-    sig = 0.35*params['exp_dnu']/2.35482 
-    weights = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(params['lag']-params['exp_dnu'])**2./(2.*sig**2))
-    new_weights = weights/max(weights)
-    diff = list(np.absolute(params['lag']-params['obs_dnu']))
-    idx = diff.index(min(diff))
-
-    peaks_idx, _ = find_peaks(params['auto'], distance=star.params['obs_dnu']/4.)
-    peaks_l, peaks_a = params['lag'][peaks_idx], params['auto'][peaks_idx]
-    pl, pa = utils._max_elements(peaks_l, peaks_a, star.params['n_peaks'])
+    yrange = max(params['auto'])-min(params['auto'])
     n += 1
     # PANEL 6: ACF 
     ax6 = fig.add_subplot(x, y, n)
     ax6.plot(params['lag'], params['auto'], 'w-', zorder=0, linewidth=1.)
-    ax6.scatter(pl, pa, s=30.0, edgecolor='lime', marker='D', facecolor='none', linewidths=1.0,)
+    ax6.scatter(params['peaks_l'], params['peaks_a'], s=35.0, edgecolor='red', marker='^', facecolor='none', linewidths=1.0,)
     ax6.axvline(params['obs_dnu'], color='lime', linestyle='--', linewidth=1.5, zorder=2)
-    ax6.scatter(params['lag'][idx], params['auto'][idx], s=45.0, edgecolor='lime', marker='s', facecolor='none', linewidths=1.0)
+    ax6.scatter(params['best_lag'], params['best_auto'], s=45.0, edgecolor='lime', marker='s', facecolor='none', linewidths=1.0)
     ax6.plot(params['zoom_lag'], params['zoom_auto'], 'r-', zorder=5, linewidth=1.0)
-    ax6.plot(params['lag'], new_weights, c='yellow', linestyle=':', zorder=-1, linewidth=0.75)
+    ax6.plot(params['lag'], params['weights'], c='yellow', linestyle=':', zorder=-1, linewidth=0.75)
     ax6.set_title(r'$\rm Autocorrelation \,\, function$')
     ax6.set_xlabel(r'$\rm Frequency \,\, separation \,\, [\mu Hz]$')
     ax6.set_xlim([min(params['lag']), max(params['lag'])])
-    ax6.set_ylim([min(params['auto'])-0.05*(max(params['auto'])-min(params['auto'])), max(params['auto'])+0.1*(max(params['auto'])-min(params['auto']))])
+    ax6.set_ylim([min(params['auto'])-0.05*yrange, max(params['auto'])+0.1*yrange])
 
     n += 1
     # PANEL 7: dnu fit
     ax7 = fig.add_subplot(x, y, n)
     ax7.plot(params['zoom_lag'], params['zoom_auto'], 'w-', zorder=0, linewidth=1.0)
-    ax7.axvline(params['obs_dnu'], color='lime', linestyle='--', linewidth=1.5, zorder=2)
     ax7.plot(params['new_lag'], params['dnu_fit'], color='lime', linewidth=1.5)
     ax7.set_title(r'$\rm \Delta\nu \,\, fit$')
     ax7.set_xlabel(r'$\rm Frequency \,\, separation \,\, [\mu Hz]$')

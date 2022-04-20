@@ -16,8 +16,7 @@ from . import models
 from . import MPLSTYLE
 
 
-
-def make_plots(star, showall=False,):
+def make_plots(star, show_all=False,):
     """Make plots
 
     Function that establishes the default plotting parameters and then calls each

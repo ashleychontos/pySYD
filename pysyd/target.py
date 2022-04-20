@@ -950,10 +950,6 @@ class Target:
 
 
         """
-        # get+set seed for reproducible results
-        if self.params['seed'] is None:
-            self._set_seed()
-        np.random.seed(int(self.params['seed']))
         if 'results' not in self.params:
             self.params['results'] = {}
         if 'plotting' not in self.params:
@@ -1216,7 +1212,8 @@ class Target:
         self.params['resolution'] = self.frequency[1]-self.frequency[0]
         # Set seed for reproducibility
         if self.params['seed'] is None:
-            self.set_seed()
+            self._set_seed()
+        np.random.seed(int(self.params['seed']))
         if self.params['verbose']:
             from tqdm import tqdm 
             self.pbar = tqdm(total=self.params['mc_iter'])

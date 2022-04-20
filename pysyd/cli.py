@@ -16,7 +16,6 @@ from pysyd import pipeline
 from pysyd import INFDIR, INPDIR, OUTDIR
 
 
-
 def main():
 
 ####
@@ -102,14 +101,14 @@ def main():
                              dest='todo',
                              help='list of stars to process',
                              type=str,
-                             default='todo.txt',
+                             default=os.path.join(INFDIR,'todo.txt'),
     )
     data_parser.add_argument('--info', '--information', 
                              metavar='str',
                              dest='info',
                              help='list of stellar parameters and options',
                              type=str,
-                             default='star_info.csv',
+                             default=os.path.join(INFDIR,'star_info.csv'),
     )
     data_parser.add_argument('--gap', '--gaps', 
                              metavar='int',
@@ -612,6 +611,12 @@ def main():
                                        parents=[parent_parser, data_parser, main_parser, plot_parser], 
                                        formatter_class=argparse.MetavarTypeHelpFormatter,
                                        )
+    parser_run.add_argument('--seed',
+                            dest='seed',
+                            help='save seed for reproducible results',
+                            default=None,
+                            type=int,
+    )
     parser_run.set_defaults(func=pipeline.run)
 
 ####

@@ -16,7 +16,6 @@ from . import plots
 from .target import Target
 
 
-
 def check(args):
     """
     
@@ -255,7 +254,7 @@ def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/maste
     # create results directory (OUTDIR)
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
-        note+=' - results will be saved to %s \n\n'%args.outdir
+        note+=' - results will be saved to %s\n'%args.outdir
 
     # Download files that do not already exist
     if dl:
@@ -272,15 +271,16 @@ def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/maste
             if col in df.columns.values.tolist():
                 df[col] = df_temp[col]
         df.to_csv(outfile2, index=False)
+        note+=' - ALL columns saved to the star info file\n'
 
     if args.verbose:
         if note == '':
             print("\nLooks like you've probably done this\nbefore since you already have everything!\n")
         else:
-            print('\nOther notes:\n%s'%note)
+            print('\nNote(s):\n%s'%note)
 
 
-def test(args):
+def test(args, stars=['1435467', '2309595', '11618103'], answers={}):
     """
     
     This is experimental and meant to be helpful for developers or anyone
@@ -297,10 +297,21 @@ def test(args):
     
     """
     print('####################################################################\n#                                                                  #\n#                   Testing pySYD functionality                    #\n#                                                                  #\n####################################################################\n')
-    subprocess.call(['pysyd run --star %s --mc 200'%star], shell=True)
-    # Load relevant pySYD parameters
-    examples = utils.get_dict(type='tests')
-    for star in ['1435467', '2309595', '11618103']:
-        print('KIC %s\n%s\n'%(star, '-'*(len(star)+4)))        
-        answers = examples[star]['results']
+    # Load in example configurations + answers to compare to
+    defaults = utils.get_dict(type='tests')
+    # Save defaults to file to reproduce identical results
+    df = pd.read_csv(os.path.join(args.infdir, args.info))
+    targets = [str(each) for each in df.stars.values.tolist()]
+    for star in stars:
+        answers.update({star:defaults[star].pop('results')})
+        idx = targets.index(star)
+        for key in defaults[star]:
+            df.loc[idx,key] = defaults[star][key]
+    df.to_csv(os.path.join(args.infdir, args.info), index=False)
+    # Run pysyd on 3 examples with sampling
+    subprocess.call(['pysyd run --mc 200'], shell=True)
+    # Compare results
+    final_df = pd.read_csv(os.path.join(args.outdir,'global.csv'))
+    print('KIC %s\n%s\n'%(star, '-'*(len(star)+4)))        
+
     print('####################################################################\n#                                                                  #\n#                   TESTING SUCCESSFULLY COMPLETED                 #\n#                                                                  #\n####################################################################\n')

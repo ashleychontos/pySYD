@@ -102,6 +102,7 @@ class Parameters(Constants):
                 self.params['stars'] = stars
         self.assign_stars()
 
+
     def __repr__(self):
         return "<PySYD Parameters>"
 
@@ -170,9 +171,9 @@ class Parameters(Constants):
 
         """
         high = dict(
-            inpdir = os.path.join(os.path.abspath(os.getcwd()), INPDIR),
-            infdir = os.path.join(os.path.abspath(os.getcwd()), INFDIR),
-            outdir = os.path.join(os.path.abspath(os.getcwd()), OUTDIR),
+            inpdir = INPDIR,
+            infdir = INFDIR,
+            outdir = OUTDIR,
             save = save,
             verbose = verbose,
             overwrite = overwrite,
@@ -224,8 +225,8 @@ class Parameters(Constants):
         """
         data = dict(
             stars = stars,
-            info = os.path.join(os.path.abspath(os.getcwd()), INFDIR, info),
-            todo = os.path.join(os.path.abspath(os.getcwd()), INFDIR, todo),
+            info = os.path.join(INFDIR, info),
+            todo = os.path.join(INFDIR, todo),
             mode = mode,
             gap = gap,
             stitch = stitch,
@@ -526,10 +527,10 @@ class Parameters(Constants):
         (and if that does not exist, it will raise an error)
 
         """
-        if not os.path.exists(os.path.join(self.params['infdir'], self.params['todo'])):
+        if not os.path.exists(self.params['todo']):
             raise PySYDInputError("ERROR: no stars or star list provided")
         else:
-            with open(os.path.join(self.params['infdir'], self.params['todo']), "r") as f:
+            with open(self.params['todo'], "r") as f:
                 self.params['stars'] = [line.strip().split()[0] for line in f.readlines()]
 
 
@@ -566,7 +567,7 @@ class Parameters(Constants):
                 self.params[star]['estimate'] = False
                 if self.params[star]['dnu'] is not None:
                     self.params[star]['force'] = self.params[star]['dnu']
-                self.params[star]['dnu'] = _delta_nu(self.params[star]['numax'])
+                self.params[star]['dnu'] = delta_nu(self.params[star]['numax'])
             else:
                 if 'rs' in self.params[star] and self.params[star]['rs'] is not None and \
                   'logg' in self.params[star] and self.params[star]['logg'] is not None:
@@ -599,37 +600,41 @@ class Parameters(Constants):
         # Create all keys first
         for star in self.params['stars']:
             for column in columns['all']:
-                self.params[star][column] = None
+                if column in self.params:
+                    self.params[star][column] = self.params[column]
+                else:
+                    self.params[star][column] = None
 
         # Open csv file if it exists
-        if os.path.exists(os.path.join(self.params['infdir'], self.params['info'])):
-            df = pd.read_csv(os.path.join(self.params['infdir'], self.params['info']))
+        if os.path.exists(self.params['info']):
+            df = pd.read_csv(self.params['info'])
             stars = [str(each) for each in df.stars.values.tolist()]
             for star in self.params['stars']:
                 if str(star) in stars:
                     idx = stars.index(str(star))
                     # Update information from columns
                     for column in df.columns.values.tolist():
-                        if column in columns['int'] and not np.isnan(float(df.loc[idx,column])):
-                            self.params[star][column] = int(df.loc[idx,column])
-                        elif column in columns['float'] and not np.isnan(float(df.loc[idx,column])):
-                            self.params[star][column] = float(df.loc[idx,column])
-                        elif column in columns['bool']:
-                            self.params[star][column] = df.loc[idx,column]
-                        elif column in columns['str']:
-                            self.params[star][column] = str(df.loc[idx,column])
-                        else:
-                            pass
+                        if not np.isnan(df.loc[idx,column]):
+                            if column in columns['int']:
+                                self.params[star][column] = int(df.loc[idx,column])
+                            elif column in columns['float']:
+                                self.params[star][column] = float(df.loc[idx,column])
+                            elif column in columns['bool']:
+                                self.params[star][column] = df.loc[idx,column]
+                            elif column in columns['str']:
+                                self.params[star][column] = str(df.loc[idx,column])
+                            else:
+                                pass
 
         # Copy the rest of the defaults
-        for star in self.params['stars']:
-            for param in self.params:
-                if param not in self.params[star]:
-                    self.params[star][param] = self.params[param]
-                elif param in self.params[star] and self.params[star][param] is None:
-                    self.params[star][param] = self.params[param]
-                else:
-                    pass
+#        for star in self.params['stars']:
+#            for param in self.params:
+#                if param not in self.params[star]:
+#                    self.params[star][param] = self.params[param]
+#                elif param in self.params[star] and self.params[star][param] is None:
+#                    self.params[star][param] = self.params[param]
+#                else:
+#                    pass
 
         if not self.params['cli']:
             return
@@ -660,6 +665,7 @@ class Parameters(Constants):
                 # Make sure it is not a variable with a >1 length
                 if key not in self.override:
                     self.params[key] = value
+
             # were stars provided
             if self.params['stars'] is None:
                 self.star_list()

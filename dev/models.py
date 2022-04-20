@@ -10,16 +10,10 @@ import numpy as np
 
 
 
-# Package mode
-#
-#
-#
 
 
-# Development mode
-#
-#
-#
+
+
 
 
 def background(frequency, guesses, mode='regular', ab=False, noise=None):
