@@ -165,11 +165,11 @@ Since none of this happened, we can move on to the next step.
     
     Numax estimates
     ---------------
-    Numax estimate 1: 1440.10 +/- 81.29
-    S/N: 2.01
-    Numax estimate 2: 1513.01 +/- 50.24
+    Numax estimate 1: 1440.07 +/- 81.33
+    S/N: 2.02
+    Numax estimate 2: 1513.00 +/- 50.26
     S/N: 4.47
-    Numax estimate 3: 1466.28 +/- 94.05
+    Numax estimate 3: 1466.28 +/- 94.06
     S/N: 9.84
     Selecting model 3
     -----------------------------------------------------------
@@ -184,7 +184,7 @@ power spectrum is then divided by so that we are left with very little residual 
 The 'Crude Background Fit' is shown below in the second panel by the lime green line. The
 background-corrected power spectrum (:term:`BCPS`) is shown in the panel to the right.
 
-.. image:: _static/quickstart/1435467_estimates.png
+.. image:: _static/1435467/search_&_estimate_1.png
   :width: 680
   :alt: Parameter estimates for KIC 1435467
 
@@ -241,7 +241,7 @@ this step the next time that the star is processed.
     numax_gauss: 1344.46 muHz
     A_gauss: 1.50 ppm^2/muHz
     FWHM: 294.83 muHz
-    dnu: 70.69 muHz
+    dnu: 70.68 muHz
     tau_1: 234.10 s
     sigma_1: 87.40 ppm
     -----------------------------------------------------------
@@ -302,7 +302,7 @@ with. For posterity, we included the output if only a single iteration had been 
 recommend by default when analyzing a star for the first time). 
 
 
-.. image:: _static/quickstart/1435467_global.png
+.. image:: _static/1435467/global_fit_1.png
   :width: 680
   :alt: Global parameters for KIC 1435467
 
@@ -326,13 +326,13 @@ of operations *does* matter.
    :widths: 20, 20, 20
 
    numax_smooth, 1299.81293631, --
-   A_smooth, 1.7443557750467,--
-   numax_gauss, 1344.46209196076, --
-   A_gauss, 1.49520571824331, --
-   FWHM, 294.828525018811, --
-   dnu, 70.686368232649, --
-   tau_1, 234.096929954605, --
-   sigma_1, 87.4003388422754, --
+   A_smooth, 1.74435577479371, --
+   numax_gauss, 1344.46209203309, --
+   A_gauss, 1.49520571806361, --
+   FWHM, 294.828524961042, --
+   dnu, 70.6845197924864, --
+   tau_1, 234.096929937095, --
+   sigma_1, 87.4003388623678, --
 
 
 .. note::
@@ -398,7 +398,7 @@ Notice the difference in the printed parameters this time - they now have uncert
 We include the progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
 executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
 
-.. image:: _static/quickstart/1435467_samples.png
+.. image:: _static/1435467/samples_1.png
   :width: 680
   :alt: KIC 1435467 posteriors
 
@@ -408,14 +408,14 @@ executed in parallel mode. This is hard-wired since the latter would produce a n
    :header: "parameter", "value", "uncertainty"
    :widths: 20, 20, 20
 
-   numax_smooth, 1299.81293631, 50.3135930088401
-   A_smooth, 1.7443557750467, 0.206023287782047
-   numax_gauss, 1344.46209196076, 35.9718007557108
-   A_gauss, 1.49520571824331, 0.239359250395468
-   FWHM, 294.828525018811, 68.7801574556345
-   dnu, 70.686368232649, 0.724027370237817
-   tau_1, 234.096929954605, 17.8245695851712
-   sigma_1, 87.4003388422754, 2.54295662794715
+   numax_smooth, 1299.81293631, 56.642346824238
+   A_smooth, 1.74435577479371, 0.191605473120388
+   numax_gauss, 1344.46209203309, 41.160592041828
+   A_gauss, 1.49520571806361, 0.236092716197938
+   FWHM, 294.828524961042, 64.57265346103
+   dnu, 70.6845197924864, 0.821246814829682
+   tau_1, 234.096929937095, 23.6514289023765
+   sigma_1, 87.4003388623678, 2.81297225855344
 
 * matches expected output for model 4 selection - notice how there is no white noise term
 in the output. this is because the model preferred for this to be fixed
@@ -499,8 +499,5 @@ Ok, now that we have our desired settings and target, we can go ahead and proces
     >>> from pysyd import plots
 
 -----
-
-References
-##########
 
 .. [1] `Harvey (1985) <https://ui.adsabs.harvard.edu/abs/1985ESASP.235..199H>`_

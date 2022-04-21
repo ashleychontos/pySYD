@@ -31,15 +31,15 @@ here is to provide pointers on what to look for in each case.
 
 KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 
-.. image:: ../_static/examples/11618103_excess.png
+.. image:: ../_static/11618103/search_&_estimate_1.png
   :width: 680
   :alt: KIC 11618103 estimates
 
-.. image:: ../_static/examples/11618103_background.png
+.. image:: ../_static/11618103/global_fit_1.png
   :width: 680
   :alt: KIC 11618103 global fit
 
-.. image:: ../_static/examples/11618103_samples.png
+.. image:: ../_static/11618103/samples_1.png
   :width: 680
   :alt: KIC 11618103 parameter posteriors
 
@@ -67,15 +67,15 @@ breaks down every step and output for this example.
 
 KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \mu Hz`.
 
-.. image:: ../_static/examples/1435467_estimates.png
+.. image:: ../_static/1435467/search_&_estimate_1.png
   :width: 680
   :alt: KIC 1435467 estimates
 
-.. image:: ../_static/examples/1435467_global.png
+.. image:: ../_static/1435467/global_fit_1.png
   :width: 680
   :alt: KIC 1435467 global fit
 
-.. image:: ../_static/examples/1435467_samples.png
+.. image:: ../_static/1435467/samples_1.png
   :width: 680
   :alt: KIC 1435467 parameter posteriors
 
@@ -91,15 +91,15 @@ As if asteroseismology wasn't hard enough, let's make it even more difficult for
 
 KIC 8801316 is a subgiant with a numax ~1100 muHz, shown in the figures below. 
 
-.. image:: ../_static/examples/8801316_estimates.png
+.. image:: ../_static/8801316/search_&_estimate_1.png
   :width: 680
   :alt: KIC 8801316 estimates
 
-.. image:: ../_static/examples/8801316_global.png
+.. image:: ../_static/8801316/global_fit_1.png
   :width: 680
   :alt: KIC 8801316 global fit
 
-.. image:: ../_static/examples/8801316_samples.png
+.. image:: ../_static/8801316/samples_1.png
   :width: 680
   :alt: KIC 8801316 parameter posteriors
 
@@ -121,15 +121,15 @@ This would be classified as a detection despite the low SNR due to the following
 
 KIC 6278992 is a main-sequence star with no solar-like oscillations.
 
-.. image:: ../_static/examples/6278992_estimates.png
+.. image:: ../_static/6278992/search_&_estimate_1.png
   :width: 680
   :alt: KIC 6278992 estimates
 
-.. image:: ../_static/examples/6278992_global.png
+.. image:: ../_static/6278992/global_fit_1.png
   :width: 680
   :alt: KIC 6278992 global fit
 
-.. image:: ../_static/examples/6278992_samples.png
+.. image:: ../_static/6278992/samples_1.png
   :width: 680
   :alt: KIC 6278992 parameter posteriors
 
