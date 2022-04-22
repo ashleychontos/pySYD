@@ -6,27 +6,27 @@
 
 .. _user-guide-examples:
 
-**CLI examples**
+This page has command-line examples for different usage scenarios, including several
+customized single star applications as well as running an ensemble of stars using a 
+single-line command. 
 
-This page has command-line examples for different software applications, including single
-star examples and running an ensemble of stars. 
+We also tried to include examples demonstrating different signal-to-noise detections,
+including what to look for in each scenario. 
 
 .. _user-guide-examples-single:
 
-************
-Single stars
-************
+************************
+Single star applications
+************************
 
 For applications to single stars, we will start with a very easy, high signal-to-noise (SNR)
 example, followed by medium and low SNR examples as well as a null detection. These examples 
 will not be as detailed as the :ref:`quickstart example <quickstart-script>` -- our goal 
 here is to provide pointers on what to look for in each case. 
 
-
-
 .. _user-guide-examples-single-high:
 
-:underlined:`High SNR: KIC 11618103`
+:underlined:`A fire detection`
 ####################################
 
 KIC 11618103 is our most evolved example, an RGB star with numax of :math:`\rm \sim 100 \mu Hz`. We will 
@@ -36,8 +36,8 @@ even in some cases *need*) to be changed for more evolved stars like this exampl
 It doesn't necessarily mean that it will get the answers wrong, but we will take you 
 through a few different runs and change some of the settings with each run.
 
-Run 1
-*****
+Run 1: `pysyd run --star 11618103 -dv`
+**************************************
 
 If we run it straight "out-of-the-box" with our usual command:
 
@@ -61,8 +61,8 @@ This is because our smoothing filter (or box filter) has a default value of :mat
 which is quite high for this star. Typically a common value is :math:`1.0 \mu Hz`, if at all,
 but usually much much less than our expected numax.
 
-Run 2
-*****
+Run 2: `pysyd run --star 11618103 -dv --sp 0.0`
+***********************************************
 
 So for our first change, we are going to tone down the "smoothing" by setting it to
 zero i.e. not smoothing it at all. We can see how that will affect the calculated ACF (again, panels 5+6). 
@@ -84,8 +84,8 @@ better. However, if you look at the echelle diagram (panel 8), it almost looks l
 aren't capturing all oscillation modes -- our ridges look cut off so let's plot more
 bins on the y axis.
 
-Run 3
-*****
+Run 3: `pysyd run --star 11618103 -dv --sp 0.0 --noy 9+0`
+*********************************************************
 
 We've tried to make the commands as obvious as possible to make it easier to digest.
 For example, here we are changing the number of bins on the y axis (or :term:`--noy<--noy, --ndown, --norders>`--noy) 
@@ -111,8 +111,8 @@ This looks a lot better and it looks like we are capturing all features in the n
 y-axis range. Turns out we can also change the number of bins (or bin resolution)
 on the x axis of the echelle diagram as well.
 
-Run 4
-*****
+Run 4: `pysyd run --star 11618103 -dv --sp 0.0 --noy 9+0 --npb 35`
+******************************************************************
 
 Using basic logic, you can deduce that the relevant keyword argument here is indeed
 :term:`--nox<--nox, --nacross>`. However, the number of bins on the x axis is more
@@ -140,8 +140,8 @@ But this is just the tip of the iceberg -- please see our complete
 
 .. _user-guide-examples-single-medium:
 
-:underlined:`Medium SNR: KIC 1435467`
-#####################################
+:underlined:`A medium-to-mild detection`
+########################################
 
 We used this example for new users just getting started and therefore we will only show
 the output and figures. Feel free to visit our crash course in asteroseismology, or 

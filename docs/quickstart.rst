@@ -5,6 +5,9 @@
 :underlined:`Getting started`
 *****************************
 
+A brief timeout
+###############
+
 The examples on this page assume that the user already has some basic-level knowledge or
 experience with `Python`. If not, we recommend visiting the Python website and going through
 some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
@@ -12,10 +15,10 @@ ours.
 
 We will work through two examples -- each demonstrating a different application of the software. 
 Since `pySYD` was initially intended to be a hands-off :ref:`command-line tool <quickstart-script>`, 
-the first will demonstrate this usage in order to introduce the software *and* science --
-breaking down each step of the application as much as possible. For the second, we will 
-reconstruct the steps and process in a more condensed form by importing `pySYD` in an 
-:ref:`interaction session <quickstart-module>`.
+the first will demonstrate exactly this since it was optimized for this. We will break
+down each step of the software as much as possible with the hope that it will provide
+a nice introduction to both the software *and* science. For the second one, we will reconstruct everything in a more condensed version and show
+`pySYD` imported and used as a module.
 
 If you have *any* questions, check out our :ref:`user guide <user-guide>` for more 
 information. If this still does not address your question or problem, please do not hesitate
@@ -24,10 +27,10 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 .. warning::
 
     It is **critical** that the input data are in the proper units in order for ``pySYD`` 
-    to work properly and provide reliable results. If you are unsure about any of the units, 
-    we recommend that you provide the light curve (in days) and then let us compute the power
-    spectrum for you! For more information about formatting and input data, please visit
-    :ref:`this page <library-input>`.
+    to work properly and provide reliable results. If you are unsure about any of your units, 
+    we recommend that you use *only* the light curve (in days) as input. In this case, the
+    software will compute and normalize the power spectrum for you! For more information 
+    about formatting and input data, please visit :ref:`this page <library-input>`.
 
 
 -----
@@ -37,7 +40,7 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 Crashteroseismology: a crash course in asteroseismology
 #######################################################
 
-For purposes of this first example, we will assume that we do not know anything about the star or
+For purposes of this first example, we'll assume that we don't know anything about the star or
 its properties so that the software runs from start to finish on its own. In any normal circumstance,
 however, we can provide additional inputs like the center of the frequency range with the 
 oscillations, or :term:`numax` ( :math:`\rm \nu_{max}`), that can bypass steps and save time. 
@@ -52,7 +55,7 @@ oscillations, or :term:`numax` ( :math:`\rm \nu_{max}`), that can bypass steps a
 *******************************
 
 When running `pySYD` from command line, you will likely use something similar to the 
-following: 
+following command: 
 
 .. _quickstart-script-command:
 
@@ -437,15 +440,14 @@ The two primary pieces to the `pySYD` puzzle are the 1) parameters and 2) target
 all defaults were set and saved from the command line parser but we recently extended the 
 software capabilities -- which means that it is more user-friendly now! 
 
-Analogous to the command-line arguments, we have a container class :mod:`pysyd.utils.Parameters`
-that can easily be loaded in and modified to the user's needs. Initialization of a `pysyd.utils.Parameters` 
-class object also automatically inherits all attributes from the :mod:`pysyd.utils.Constants` class.
+Analogous to the command-line arguments, we have a container class (:mod:`pysyd.utils.Parameters`)
+that can easily be loaded in and modified to the user's needs. Initialization of a `Parameters` 
+cobject automatically inherits all attributes from the :mod:`pysyd.utils.Constants` class.
 
-There are two keyword arguments that the Parameter class object accepts -- `args` and `stars` --
-both which are `None` by default. This is convenient for this case, since we do not have any 
-parameter (i.e. argument) information *yet*. In fact, the :mod:`pysyd.utils.Parameters` 
-class was also initialized in the first example but immediately knew it was executed as a script 
-because `args` was *not* `None`.
+There are two keyword arguments that the Parameter object accepts -- `args` and `stars` --
+both which are `None` by default. This is convenient specifically for this case, since we don't 
+have that information *yet*. In fact, the :mod:`pysyd.utils.Parameters` class was also initialized 
+in the first example but immediately knew it was executed as a script instead because `args` was *not* `None`.
 
 If we are going through these steps, there's probably a decent chance that we know what star we want
 to process. Therefore, we can at least provide the star name in this first step.

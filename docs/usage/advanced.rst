@@ -3,9 +3,9 @@
 
 .. _user-guide-advanced:
 
-*********************
-Advanced option usage
-*********************
+****************
+Advanced options
+****************
 
 
 Below are examples of different commands, including their before and after plots to demonstrate

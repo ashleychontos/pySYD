@@ -41,7 +41,8 @@ example if you'd like more information about the printed `verbose` output.
 Listed are all the possible output files:
 
  #. :ref:`ID_PS.txt <library-output-files-ps>`
- #. :ref:`ID_bg_corr.txt <library-output-files-bgcorrps>`
+ #. :ref:`ID_BSPS.txt <library-output-files-bsps>`
+ #. :ref:`ID_BDPS.txt <library-output-files-bdps>`
  #. :ref:`estimates.csv <library-output-files-estimates>`
  #. :ref:`global.csv <library-output-files-global>`
  #. :ref:`samples.csv <library-output-files-samples>`
@@ -67,7 +68,7 @@ you can always copy and paste it to the specific star's result directory if you'
 
 .. _library-output-files-bgcorrps:
 
-2. `ID_bg_corr.txt`
+2. `ID_BSPS.txt`
 *******************
 
 **(all cases)**
@@ -84,10 +85,19 @@ background-corrected power spectrum (:term:`BCPS`). The BCPS is used in subseque
 computing global parameters (:math:`\rm \nu_{max}` and :math:`\Delta\nu`) and for constructing
 the :term:`echelle diagram`. Therefore, we thought it might be useful to have a copy of this!
 
+3. `ID_BDPS.txt`
+*******************
+
+**(all cases)**
+
+Since we use both :term:`BCPS`, we figured we'd clear up the muddy waters here (but also
+provide both copies to be used for their specific needs).
+
+
 
 .. _library-output-files-estimates:
 
-3. `estimates.csv`
+4. `estimates.csv`
 ******************
 
 **(most cases)**
@@ -152,14 +162,21 @@ more detail below.
 1. `background_only.png`
 ************************
 
-**(special cases)**
+**(rare cases)**
+
+This figure is produced when the user is interested in determining the stellar background
+model *only* and not the global asteroseismic properties. For example, detecting solar-like
+oscillations in cool stars is extremely difficult to do but we can still characterize other
+properties like their convective time scales, etc.
 
 .. _library-output-figures-bgfit:
 
 2. `bgmodel_fits.png`
 *********************
 
-**(special cases)**
+**(optional cases)**
+
+This figure is generated when the :term:`--show`
 
 .. _library-output-figures-global:
 

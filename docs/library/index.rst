@@ -13,7 +13,7 @@ with you!
 .. toctree::
    :titlesonly:
    :maxdepth: 2
-   :caption: User Guide
+   :caption: The Software Package
 
    about
    input

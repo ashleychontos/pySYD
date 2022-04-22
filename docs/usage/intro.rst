@@ -75,12 +75,10 @@ for more information on which parsers a given pipeline mode inherits.
 
  - :ref:`high-level functionality <user-guide-intro-parent>`
  - :ref:`data analyses <user-guide-intro-data>`
- - :ref:`core pipeline functions <user-guide-intro-main>`
+ - :ref:`core asteroseismic analyses <user-guide-intro-main>`
     - :ref:`search & estimate <user-guide-intro-est>`
     - :ref:`background fit <user-guide-intro-bg>`
     - :ref:`global fit <user-guide-intro-globe>`
-    - :ref:`sampling <user-guide-intro-mc>`
- - :ref:`plotting <user-guide-intro-plot>`
 
 **Note:** as you are navigating this page, keep in mind that we also have a special 
 :ref:`glossary <user-guide-glossary>` for all our command-line options. This includes everything
