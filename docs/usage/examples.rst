@@ -29,7 +29,22 @@ here is to provide pointers on what to look for in each case.
 :underlined:`High SNR: KIC 11618103`
 ####################################
 
-KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
+KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz. We will 
+now admit that the default settings work for *most* stars, with :math:`\nu_{max} \sim 500 \mu Hz`
+or higher. However, for more evolved stars like this example, some of the defaults could/should
+be changed.
+
+It doesn't necessarily mean that it will get the answers wrong, but we will take you 
+through a few different runs and change some of the settings with each run.
+
+Run 1
+*****
+
+If we run it straight "out-of-the-box" with our usual command:
+
+.. code-block::
+
+   pysyd run --star 11618103 -dv
 
 .. image:: ../_static/11618103/search_&_estimate_1.png
   :width: 680
@@ -39,19 +54,87 @@ KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
   :width: 680
   :alt: KIC 11618103 global fit
 
-.. image:: ../_static/11618103/samples_1.png
+The autocorrelation function (or :term:`ACF`) in panel 6 looks very smooth - I'd
+say almost a little *too* smooth. In fact if you look at the panel directly to the
+left under "Bg-corrected PS", the power spectrum also looks a little strange, right?
+
+This is because our smoothing filter (or box filter) has a default value of :math:`2.5 \mu Hz`,
+which is quite high for this star. Typically a common value is :math:`1.0 \mu Hz`, if at all,
+but usually much much less than our expected numax.
+
+Run 2
+*****
+
+So for our first change, we are going to tone down the "smoothing" by setting it to
+zero i.e. not smoothing it at all. We can see how that will affect the calculated ACF (again, panels 5+6). 
+
+.. code-block::
+
+   pysyd run --star 11618103 -dv --sp 0.0
+
+Since we are not changing anything from the first part, we will leave out the first plot
+for brevity.
+
+.. image:: ../_static/11618103/global_fit_2.png
   :width: 680
-  :alt: KIC 11618103 parameter posteriors
+  :alt: KIC 11618103 global fit
 
+As you can see above, the bg-corrected power spectrum and ACF both look more reasonable
+now -- it didn't change the quality of the fit or our answer but it definitely looks
+better. However, if you look at the echelle diagram (panel 8), it almost looks like we
+aren't capturing all oscillation modes -- our ridges look cut off so let's plot more
+bins on the y axis.
 
-**For a full breakdown of what each panel is showing, please see :ref:`this page <library/output>` for more details.**
-  
-  
-.. note::
+Run 3
+*****
 
-    The sampling results can be saved by using the boolean flag ``-m`` or ``--samples``,
-    which will save the posteriors of the fitted parameters for later use. 
+We've tried to make the commands as obvious as possible to make it easier to digest.
+For example, here we are changing the number of bins on the y axis (or :term:`--noy<--noy, --ndown, --norders>`--noy) 
+of the echelle diagram, which is currently equal to 5 (also corresponds to 5 radial orders).
 
+Let's change it to something higher.
+
+.. code-block::
+
+   pysyd run --star 11618103 -dv --sp 0.0 --noy 9+0
+
+You'll see that we provided a keyword argument with a length of 3. The first digit
+is the number of bins (or radial orders) to plot and the next two digits provide the
+ability to shift the entire plot up/down by n orders as well! If 0 is provided as the
+second part of this value, it will center it on our expected numax. FWIW: --noy 9-0
+would plot exactly the same thing.
+
+.. image:: ../_static/11618103/global_fit_3.png
+  :width: 680
+  :alt: KIC 11618103 global fit
+
+This looks a lot better and it looks like we are capturing all features in the new
+y-axis range. Turns out we can also change the number of bins (or bin resolution)
+on the x axis of the echelle diagram as well.
+
+Run 4
+*****
+
+Using basic logic, you can deduce that the relevant keyword argument here is indeed
+:term:`--nox<--nox, --nacross>`. However, the number of bins on the x axis is more
+arbitrary here and depends on a couple different things, primarily the spacing (or :math:`\Delta\nu`)
+and the frequency resolution of the power spectrum.
+
+Since changing the number of bins using --nox is somewhat arbitrary -- we've created 
+an additional argument that calculates the number of points per bin or npb (:term:`--npb`).
+Therefore this option uses information from both the spacing and the frequency resolution
+to estimate a more relevant number to use on the x axis.
+
+.. code-block::
+
+   pysyd run --star 11618103 -dv --sp 0.0 --noy 9+0 --npb 35
+
+.. image:: ../_static/11618103/global_fit_4.png
+   :width: 680
+   :alt: KIC 11618103 global fit
+
+But this is just the tip of the iceberg -- please see our complete 
+:ref:`list of available options <user-guide-glossary>`!
 
 
 -----
@@ -62,10 +145,9 @@ KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz.
 #####################################
 
 We used this example for new users just getting started and therefore we will only show
-the output and figures. Feel free to visit that page :ref:`getting started <>`, which 
-breaks down every step and output for this example.
-
-KIC 1435467 is our least evolved example, with :math:`\rm \nu_{max} \sim 1300 \mu Hz`.
+the output and figures. Feel free to visit our crash course in asteroseismology, or 
+:ref:`crashteroseismology <quickstart-crash>` page, which breaks down every step in great
+detail. 
 
 .. image:: ../_static/1435467/search_&_estimate_1.png
   :width: 680

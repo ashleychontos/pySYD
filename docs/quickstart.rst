@@ -419,6 +419,11 @@ executed in parallel mode. This is hard-wired since the latter would produce a n
 
 * matches expected output for model 4 selection - notice how there is no white noise term
 in the output. this is because the model preferred for this to be fixed
+
+.. note::
+
+    The sampling results can be saved by using the boolean flag ``-m`` or ``--samples``,
+    which will save the posteriors of the fitted parameters for later use. 
    
 
 -----
