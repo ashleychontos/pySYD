@@ -22,7 +22,7 @@ designed to be a hands-off, end-to-end tool so that even non-expert users can
 reap the benefits of asteroseismology without requiring substantial background 
 knowledge. 
 
-**~~ The main vision of** ``pySYD`` **is accessible asteroseismology ~~**
+:: **~~ The main vision of** ``pySYD`` **is accessible asteroseismology ~~**
 
 .. important::
 

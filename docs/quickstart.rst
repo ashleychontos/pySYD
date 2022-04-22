@@ -202,7 +202,7 @@ this step the next time that the star is processed.
    :header: "stars", "numax", "dnu", "snr"
    :widths: 20, 20, 20, 20
 
-   1435467, 1466.27531634578, 73.433876222636, 9.83548305222251
+   1435467, 1466.27585610943, 73.4338977674559, 9.84295865829856
 
 
 .. _quickstart-script-steps-three:

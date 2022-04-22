@@ -29,10 +29,9 @@ here is to provide pointers on what to look for in each case.
 :underlined:`High SNR: KIC 11618103`
 ####################################
 
-KIC 11618103 is our most evolved example, an RGB star with numax of ~100 muHz. We will 
-now admit that the default settings work for *most* stars, with :math:`\nu_{max} \sim 500 \mu Hz`
-or higher. However, for more evolved stars like this example, some of the defaults could/should
-be changed.
+KIC 11618103 is our most evolved example, an RGB star with numax of :math:`\rm \sim 100 \mu Hz`. We will 
+now admit that while the default settings work for *most* stars, some of the defaults could/should (or 
+even in some cases *need*) to be changed for more evolved stars like this example. 
 
 It doesn't necessarily mean that it will get the answers wrong, but we will take you 
 through a few different runs and change some of the settings with each run.
