@@ -107,7 +107,7 @@ which prioritizes these three key aspects:
   adapting the same well-tested methodology from `SYD`, `pySYD` comes with many new enhancements 
   and is therefore *not* a direct 1:1 translation. Despite these differences, we compared 
   pipeline results for $\sim100$ *Kepler* legacy stars and found no significant systematic 
-  differences (\autoref{fig:comparison}). In addition to the important benchmark sample, 
+  differences (\autoref{fig:benchmark}). In addition to the important benchmark sample, 
   `pySYD` ensures reproducible results for *every* star that is processed by saving and 
   setting seeds for each random process occurring throughout the analyses.
 - **Scalable.** `pySYD` was developed and optimized with speed and efficiency as a top priority. 
@@ -122,7 +122,7 @@ measured by `pySYD` and `SYD` for $\sim100$ *Kepler* stars. The bottom panels
 show the fractional residuals. The comparisons show no significant systematic 
 differences, with a median offset and scatter of $0.2$\% and $0.4$\% for 
 $\rm \nu_{max}$ as well as $0.002$\% and $0.09$\% for $\Delta\nu\$, which is smaller 
-or comparable to the typical random uncertainties.\label{fig:comparison}](comparison.png)
+or comparable to the typical random uncertainties.\label{fig:benchmark}](benchmark.png)
 
 Well-documented, open-source asteroseismology software that has been benchmarked 
 against closed-source tools are critical to ensure the reproducibility of legacy 
