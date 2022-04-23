@@ -1,4 +1,5 @@
 # SOURCE PACKAGE ---> DEVELOPMENT BRANCH
+print('\n\n COPYING FROM SOURCE PACKAGE ---> DEVELOPMENT BRANCH \n\n')
 import os
 scripts = ['cli', 'models', 'pipeline', 'plots', 'target', 'utils']
 rows = 18
@@ -37,9 +38,9 @@ import glob
 # make sure data and dicts are up-to-date
 files = glob.glob(os.path.join(package, 'data', '*'))
 for file in files:
-    dst = os.path.join(_ROOT, 'info', 'data', file)
+    dst = os.path.join(_ROOT, 'info', 'data', os.path.split(file)[-1])
     shutil.copy(file, dst)
 files = glob.glob(os.path.join(package, 'dicts', '*'))
 for file in files:
-    dst = os.path.join(_ROOT, 'dicts', file)
+    dst = os.path.join(_ROOT, 'dicts', os.path.split(file)[-1])
     shutil.copy(file, dst)

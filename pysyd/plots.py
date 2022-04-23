@@ -44,7 +44,7 @@ def make_plots(star, show_all=False,):
         plt.show(block=False)
 
 
-def select_trial(star):
+def _select_trial(star):
     """Select trial
 
     This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)

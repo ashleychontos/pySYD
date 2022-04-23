@@ -134,88 +134,108 @@ class Parameters(Constants):
         self.get_parent()
         # Get parameters related to data loading/saving
         self.get_data()
-        # Initialize main 'params' dictionary
-        self.get_main()
-        # Get plotting info
-        self.get_plot()
+        # Initialize parameters for the estimate routine
+        self.get_estimate()
+        # Initialize parameters for the fit background routine
+        self.get_background()
+        # Initialize parameters relevant for estimating global parameters
+        self.get_global()
 
 
-    def get_parent(self, inpdir='data', infdir='info', outdir='results', save=True, verbose=False, 
-                   overwrite=False, cli=False, notebook=False,):
+    def get_parent(self, cli=False, inpdir='data', infdir='info', outdir='results', overwrite=False,  
+                   show=False, ret=False, save=True, test=False, verbose=False,):
         """Get parent parser
    
         Load parameters available in the parent parser i.e. higher-level software functionality
 
         Parameters
+            cli : bool, default=False
+                this should not be touched - there is a function that determines this automatically
             inpdir : str, default=INPDIR
                 path to input data 
             infdir : str, default=INFDIR
                 path to star information 
             outdir : str, default=OUTDIR
                 path to results 
-            save : bool, default=True
-                save all data products
-            verbose : bool, default=False
-                turn on verbose output
             overwrite : bool, default=False
                 allow files to be overwritten by new ones
-            cli : bool, default=False
-                this should not be touched - there is a function that determines this automatically
-            notebook : bool, default=False
-                this should not be altered either - there is a function that determines this automatically
+            show : bool, default=False
+                show output figures 
+            ret : bool, default=False
+                enable the returning of output in an interactive session
+            save : bool, default=True
+                save all data products
+            test : bool, default=Ffalse
+                test software functionality
+            verbose : bool, default=False
+                turn on verbose output
 
         Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
 
-
         """
         high = dict(
+            cli = cli,
             inpdir = INPDIR,
             infdir = INFDIR,
             outdir = OUTDIR,
-            save = save,
-            verbose = verbose,
             overwrite = overwrite,
-            cli = cli,
-            notebook = notebook,
+            show = show,
+            ret = ret,
+            save = save,
+            test = test,
+            verbose = verbose,
         )
         self.params.update(high)
 
 
-    def get_data(self, stars=None, todo='todo.txt', info='star_info.csv', mode='load',
-                 gap=20, stitch=False, oversampling_factor=None, kep_corr=False, dnu=None, 
-                 lower_ech=None, upper_ech=None, notching=False,):
+    def get_data(self, dnu=None, gap=20, info='star_info.csv', kep_corr=False, lower_ff=None, 
+                 lower_lc=None, lower_ps=None, mode='load', notching=False, oversampling_factor=None, 
+                 seed=None, stars=None, todo='todo.txt', upper_ff=None, upper_lc=None, upper_ps=None, 
+                 stitch=False, n_threads=0,):
         """Get data parser
    
         Load parameters available in the data parser, which is mostly related to initial
         data loading and manipulation
 
         Parameters
+            dnu : float, default=None
+                spacing to fold PS in order to "whiten" mixed modes (**Note:** requires all 3 args)
+            gap : int, default=20
+                n times the number of cadences defines a "gap" (to correct for)
+            info : str, default='info/star_info.csv'
+                path to star csv info
+            kep_corr : bool, default=False
+                use the module that corrects for known kepler artefacts
+            lower_ff : float, default=None
+                lower folded frequency limit to whiten mixed modes
+            lower_lc : float, default=None
+                lower limit for time series data
+            lower_ps : float, default=None
+                lower frequency limit of power spectrum
+            mode : str, default='load'
+                which `pySYD` mode to execute
+            notching : bool, default=False
+                option to use notching technique (vs. simulating white noise)
+            oversampling_factor : int, default=None
+                oversampling factor of input power spectrum
+            seed : int, default=None
+                save seed for reproducible results
             stars : List[str], default=None
                 list of targets to process
             todo : str, default='info/todo.txt'
                 path to star list to process
-            info : str, default='info/star_info.csv'
-                path to star csv info
-            mode : str, default='load'
-                which `pySYD` mode to execute
-            gap : int, default=20
-                n times the number of cadences defines a "gap" (to correct for)
+            upper_ff : float, default=None
+                upper folded frequency limit to whiten mixed modes
+            upper_lc : float, default=None
+                upper limit for time series data
+            upper_ps : float, default=None
+                upper frequency limit of power spectrum
             stitch : bool, default=False
                 use the module that corrects for large gaps in data
-            oversampling_factor : int, default=None
-                oversampling factor of input power spectrum
-            kep_corr : bool, default=False
-                use the module that corrects for known kepler artefacts
-            dnu : float, default=None
-                spacing to fold PS in order to "whiten" mixed modes (**Note:** requires all 3 args)
-            lower_ech : float, default=None
-                lower bound of folded PS (in muHz) to 'whiten' mixed modes
-            upper_ech : float, default=None
-                upper bound of folded PS (in muHz) to 'whiten' mixed modes
-            notching : bool, default=False
-                option to use notching technique (vs. simulating white noise)
+            n_threads : int
+                number of threads to use when running in parallel mode
 
         Attributes
             params : Dict[str,Dict[,]]
@@ -224,79 +244,55 @@ class Parameters(Constants):
 
         """
         data = dict(
-            stars = stars,
-            info = os.path.join(INFDIR, info),
-            todo = os.path.join(INFDIR, todo),
-            mode = mode,
-            gap = gap,
-            stitch = stitch,
-            oversampling_factor = oversampling_factor,
-            kep_corr = kep_corr,
             dnu = dnu,
-            lower_ech = lower_ech,
-            upper_ech = upper_ech,
+            gap = gap,
+            info = os.path.join(INFDIR, info),
+            kep_corr = kep_corr,
+            lower_ff = lower_ff,
+            lower_lc = lower_lc,
+            lower_ps = lower_ps,
+            mode = mode,
             notching = notching,
+            oversampling_factor = oversampling_factor,
+            seed = seed,
+            stars = stars,
+            todo = os.path.join(INFDIR, todo),
+            upper_ff = upper_ff,
+            upper_lc = upper_lc,
+            upper_ps = upper_ps,
+            stitch = stitch,
+            n_threads = n_threads,
         )
         self.params.update(data)
 
 
-    def get_main(self, n_threads=0,):
-        """Get main parser
-   
-        Load parameters available in the main parser i.e. core software functionality
-
-        Parameters
-            n_threads : int
-                number of threads to use when running in parallel mode
-
-        Attributes
-            params : Dict[str,Dict[,]]
-                the updated parameters
-
-        Calls
-            - :mod:`pysyd.utils.Parameters.get_estimate`
-            - :mod:`pysyd.utils.Parameters.get_background`
-            - :mod:`pysyd.utils.Parameters.get_global`
-            - :mod:`pysyd.utils.Parameters.get_sampling`
-
-
-        """
-        # Initialize parameters for the estimate routine
-        self.get_estimate()
-        # Initialize parameters for the fit background routine
-        self.get_background()
-        # Initialize parameters relevant for estimating global parameters
-        self.get_global()
-        # Estimate parameters
-        self.get_sampling()
-        self.params.update({'n_threads':n_threads})
-
-
-    def get_estimate(self, estimate=True, smooth_width=10.0, binning=0.005, bin_mode='mean', 
-                     step=0.25, n_trials=3, ask=False, lower_ex=1.0, upper_ex=8000.0,):
+    def get_estimate(self, ask=False, binning=0.005, bin_mode='mean', estimate=True, adjust=False, 
+                     lower_est=1.0, n_trials=3, smooth_width=10.0, step=0.25, upper_est=8000.0,):
         """Search and estimate parameters
     
         Get parameters relevant for the optional first module that looks for and identifies
         power excess due to solar-like oscillations and then estimates its properties 
 
         Parameters
-            estimate : bool, default=True
-                disable the module that estimates numax
-            smooth_width: float, default=10.0
-                box filter width (in :math:`\\rm \\mu Hz`) to smooth power spectrum
+            ask : bool, default=False
+                If `True`, it will ask which trial to use as the estimate for numax
             binning : float, default=0.005
                 logarithmic binning width
             bin_mode : {'mean', 'median', 'gaussian'}, default='mean'
                 mode to use when binning
-            step : float, default=0.25
-                TODO: Write description
+            estimate : bool, default=True
+                disable the module that estimates numax
+            adjust : bool, default=False
+                adjusts default parameters based on numax estimate
+            lower_est : float, default=1.0
+                lower frequency limit of PS to use in the first module
             n_trials : int, default=3
                 the number of trials to estimate :term:`numax`
-            ask : bool, default=False
-                If `True`, it will ask which trial to use as the estimate for numax
-            lower_ex : float, default=1.0
-                lower frequency limit of PS to use in the first module
-            upper_ex : float, default=8000.0
+            smooth_width: float, default=10.0
+                box filter width (in :math:`\\rm \\mu Hz`) to smooth power spectrum
+            step : float, default=0.25
+                TODO: Write description
+            upper_est : float, default=8000.0
                 upper frequency limit of PS to use in the first module
 
         Attributes
@@ -305,21 +301,23 @@ class Parameters(Constants):
 
         """
         estimate = dict(
-            estimate = estimate,
-            smooth_width = smooth_width,
+            ask = ask,
             binning = binning,
             bin_mode = bin_mode,
-            step = step,
+            estimate = estimate,
+            adjust = adjust,
+            lower_est = lower_est,
             n_trials = n_trials,
-            ask = ask,
-            lower_ex = lower_ex,
+            smooth_width = smooth_width,
+            step = step,
             upper_ex = upper_ex,
         )
         self.params.update(estimate)
 
 
-    def get_background(self, background=True, ind_width=20.0, box_filter=1.0, n_rms=20, metric='bic', mc_iter=1, 
-                       samples=False, n_laws=None, fix_wn=False, basis='tau_sigma', lower_bg=1.0, upper_bg=8000.0,):
+    def get_background(self, background=True, basis='tau_sigma',  box_filter=1.0, ind_width=20.0, 
+                       n_laws=None, lower_bg=1.0, metric='bic', n_rms=20, upper_bg=8000.0, 
+                       fix_wn=False,):
         """Background parameters
     
         Gets parameters used during the automated background-fitting analysis 
@@ -333,18 +331,18 @@ class Parameters(Constants):
                 the size of the 1D box smoothing filter (in :math:`\\rm \\mu Hz`)
             ind_width : float, default=20.0
                 the independent average smoothing width (in :math:`\\rm \\mu Hz`)
-            n_rms : int, default=20
-                number of data points to estimate red noise contributions **Note:** this should never need to be changed
             n_laws : int, default=None
                 force number of Harvey-like components in background fit
-            fix_wn : bool, default=False
-                fix the white noise level in the background fit 
-            metric : str, default='bic'
-                which metric to use (i.e. bic or aic) for model selection 
             lower_bg : float, default=1.0
                 lower frequency limit of PS to use for the background fit
+            metric : str, default='bic'
+                which metric to use (i.e. bic or aic) for model selection 
+            n_rms : int, default=20
+                number of data points to estimate red noise contributions **Note:** this should never need to be changed
             upper_bg : float, default=8000.0
                 upper frequency limit of PS to use for the background fit
+            fix_wn : bool, default=False
+                fix the white noise level in the background fit 
             functions : Dict[int:pysyd.models]
                 pointer function to different models for the background fit
 
@@ -359,75 +357,67 @@ class Parameters(Constants):
             basis = basis,
             box_filter = box_filter,
             ind_width = ind_width,
-            n_rms = n_rms,
             n_laws = n_laws,
-            fix_wn = fix_wn,
-            metric = metric,
             lower_bg = lower_bg,
+            metric = metric,
+            n_rms = n_rms,
             upper_bg = upper_bg,
+            fix_wn = fix_wn,
             functions = get_dict(type='functions'),
         )
         self.params.update(background)
 
 
-    def get_global(self, globe=True, numax=None, lower_ps=None, upper_ps=None, ex_width=1.0, 
-                   sm_par=None, smooth_ps=2.5, fft=True, threshold=1.0, n_peaks=5,):
+    def get_global(self, cmap='binary', clip_value=3.0, fft=True, globe=True, interp_ech=False, 
+                   lower_osc=None, models=False, mc_iter=1, nox=None, noy='0+0', npb=10, numax=None, 
+                   osc_width=1.0, n_peaks=10, smooth_ech=None, sm_par=None, smooth_ps=2.5, threshold=1.0, 
+                   hey=False, upper_osc=None, samples=False,):
         """Global fitting parameters
     
         Get default parameters that are relevant for deriving global asteroseismic parameters 
         :math:`\\rm \\nu_{max}` and :math:`\\Delta\\nu`
 
         Parameters
+            cmap : str, default='binary'
+                change colormap of echelle diagram
+            clip_value : float, default=3.0
+                the minimum frequency of the echelle plot
+            fft : bool, default=True
+                if `True`, the ACF is computed using :term:`FFT`s 
             globe : bool, default=True
                 disable the module that fits the global parameters 
+            interp_ech : bool
+                turns on the bilinear smoothing in echelle plot
+            lower_osc : float, default=None
+                lower frequency bound of the power spectrum used to calculate the :term:`ACF` 
+            models : bool, default=False
+                include figure with the iterated bgmodel fits
+            mc_iter : int, default=1
+                number of samples used to estimate uncertainty
+            nox : int, default=None
+                x-axis resolution on the echelle diagram - default uses spacing and resolution to calculate appropriate number
+            noy : str, default='0+0'
+                how many radial orders to plot on the echelle diagram **NEW:** and how many orders to shift the ED by
+            npb : int, default=10
+                instead of specifying arbitrary value, provide how many frequencies should be in a given bin
+            n_peaks : int, default=10
+                the number of peaks to highlight in ACF and plot 
             numax : float, default=None
                 provide initial value for numax to bypass the first module
-            lower_ps : float, default=None
-                lower frequency bound of the power spectrum used to calculate the :term:`ACF` 
-            upper_ps : float, default=None
-                upper frequency bound of the power spectrum used to calculate the :term:`ACF` 
-            ex_width : float, default=1.0
+            osc_width : float, default=1.0
                 fractional width to use for power excess centered on :term:`numax`
+            smooth_ech : float, default=None
+                option to smooth the output of the echelle plot
             sm_par : float, default=None
                 Gaussian filter width for determining smoothed numax (values are typically between 1-4)
             smooth_ps : float, default=2.5
                 box filter [:math:`\\rm \mu Hz`] to smooth PS smoothing before computing the ACF 
             threshold : float, default=1.0
                 fractional width of FWHM to use in ACF for later iterations 
-            fft : bool, default=True
-                if `True`, the ACF is computed using :term:`FFT`s 
-            n_peaks : int, default=10
-                the number of peaks to highlight in ACF and plot 
-
-        Attributes
-            params : Dict[str,Dict[,]]
-                the updated parameters
-
-
-        """
-        globe = dict(
-            globe = globe,
-            numax = numax,
-            lower_ps = lower_ps,
-            upper_ps = upper_ps,
-            ex_width = ex_width,
-            sm_par = sm_par,
-            smooth_ps = smooth_ps,
-            fft = fft,
-            threshold = threshold,
-            n_peaks = n_peaks,
-        )
-        self.params.update(globe)
-
-
-    def get_sampling(self, mc_iter=1, samples=False,):
-        """Sampling parameters
-    
-        Get parameters relevant for the sampling steps i.e. estimating uncertainties
-
-        Parameters
-            mc_iter : int, default=1
-                number of samples used to estimate uncertainty
+            upper_osc : float, default=None
+                upper frequency bound of the power spectrum used to calculate the :term:`ACF` 
+            hey : bool, default=False
+                plugin for Daniel Hey's echelle package **(NOT CURRENTLY IMPLEMENTED YET)**
             samples : bool, default=False
                 save samples from the sampling steps **Note:** now seed is saved so they are reproducible regardless
 
@@ -435,63 +425,31 @@ class Parameters(Constants):
             params : Dict[str,Dict[,]]
                 the updated parameters
 
-
         """
-        mcmc = dict(
-            mc_iter = mc_iter,
-            samples = samples,
-        )
-        self.params.update(mcmc)
-
-
-
-    def get_plot(self, show_all=False, show=False, cmap='binary', clip_value=3.0, hey=False,
-                 interp_ech=False, nox=None, noy='0+0', npb=10, smooth_ech=None,):
-        """Get plot parser
-    
-        Save all parameters related to any of the output figures
-
-        Parameters
-            showall : bool, default=False
-                makes plot comparing all background models
-            show : bool, default=False
-                show output figures 
-            cmap : str, default='binary'
-                change colormap of echelle diagram
-            clip_value : float, default=3.0
-                the minimum frequency of the echelle plot
-            hey : bool, default=False
-                plugin for Daniel Hey's echelle package **(NOT CURRENTLY IMPLEMENTED YET)**
-            interp_ech : bool
-                turns on the bilinear smoothing in echelle plot
-            nox : int, default=None
-                x-axis resolution on the echelle diagram - default uses spacing and resolution to calculate appropriate number
-            noy : str, default='0+0'
-                how many radial orders to plot on the echelle diagram **NEW:** and how many orders to shift the ED by
-            npb : int, default=10
-                instead of specifying arbitrary value, provide how many frequencies should be in a given bin
-            smooth_ech : float, default=None
-                option to smooth the output of the echelle plot
-
-        Attributes
-            params : Dict[str,Dict[,]]
-                the updated parameters
-
-
-        """
-        plot = dict(
-            show_all = show_all,
-            show = show,
+        globe = dict(
             cmap = cmap,
-            hey = hey,
             clip_value = clip_value,
+            fft = fft,
+            globe = globe,
             interp_ech = interp_ech,
+            lower_osc = lower_osc,
+            models = models,
+            mc_iter = mc_iter,
             nox = nox,
             noy = noy,
             npb = npb,
+            n_peaks = n_peaks,
+            numax = numax,
+            osc_width = osc_width,
             smooth_ech = smooth_ech,
+            sm_par = sm_par,
+            smooth_ps = smooth_ps,
+            threshold = threshold,
+            upper_osc = upper_osc,
+            hey = hey,
+            samples = samples,
         )
-        self.params.update(plot)
+        self.params.update(globe)
 
 
     def add_stars(self, stars=None):
@@ -625,16 +583,6 @@ class Parameters(Constants):
                                 self.params[star][column] = str(df.loc[idx,column])
                             else:
                                 pass
-
-        # Copy the rest of the defaults
-#        for star in self.params['stars']:
-#            for param in self.params:
-#                if param not in self.params[star]:
-#                    self.params[star][param] = self.params[param]
-#                elif param in self.params[star] and self.params[star][param] is None:
-#                    self.params[star][param] = self.params[param]
-#                else:
-#                    pass
 
         if not self.params['cli']:
             return
@@ -1184,6 +1132,94 @@ def delta_nu(numax):
     """
 
     return 0.22*(numax**0.797)
+
+
+def _fix_init(path, row=8):
+    import pysyd
+    with open(pysyd.__file__, "r") as f:
+        lines = [line for line in f.readlines()]
+    if path is None:
+        line = "_ROOT = os.path.abspath(os.path.dirname(__file__))\n"
+    else:
+        line = "_ROOT = %s\n"%path
+    lines[row] = line
+    with open(pysyd.__file__, "w") as f:
+        for line in lines:
+            f.write(line)
+
+
+def _download_all(raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/', 
+                  note='', dl={})
+
+    # INFO DIRECTORY
+    note, dl = _download_info(raw, note, dl)
+    # DATA DIRECTORY
+    note, dl = _download_data(raw, note, dl)
+    # RESULTS DIRECTORY
+    note = _download_results(note)
+    # Download files that do not already exist
+    if dl:
+        # downloading example data will generate output in terminal, so always include this regardless
+        print('\nDownloading relevant data from source directory:')
+        for infile, outfile in dl.items():
+            subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
+    return note
+
+
+
+def _download_info(raw, note, dl):
+    """Make info directory
+
+    """
+    from pysyd import INFDIR
+    # create info directory (INFDIR)
+    if not os.path.exists(INFDIR):
+        os.mkdir(INFDIR)
+        note+=' - created input file directory at %s \n'%INFDIR
+    # example input files   
+    outfile1 = os.path.join(INFDIR, args.todo)               # example star list file
+    if not os.path.exists(outfile1):
+        dl.update({'%sinfo/todo.txt'%raw:outfile1})
+        note+=' - saved an example of a star list\n'                               
+    outfile2 = os.path.join(INFDIR, args.info)               # example star info file
+    if not os.path.exists(outfile2):
+        dl.update({'%sinfo/star_info.csv'%raw:outfile2})
+        note+=' - saved an example for the star information file\n'
+    return note, dl
+
+
+def _download_data(raw, note, dl, save=False):
+    """Make data directory
+
+    """
+    from pysyd import INPDIR
+    # create data directory (INPDIR)
+    if not os.path.exists(INPDIR):
+        os.mkdir(INPDIR)
+        note+=' - created data directory at %s \n'%INPDIR
+    # example data
+    for target in ['1435467', '2309595', '11618103']:
+        for ext in ['LC', 'PS']:
+            infile='%sdata/%s_%s.txt'%(raw, target, ext)
+            outfile=os.path.join(INPDIR, '%s_%s.txt'%(target, ext))
+            if not os.path.exists(outfile):
+                save=True
+                dl.update({infile:outfile})
+    if save:
+        note+=' - example data saved to data directory\n'
+    return note, dl
+
+
+def _download_results():
+    """Make results directory
+
+    """
+    from pysyd import OUTDIR
+    # create results directory (OUTDIR)
+    if not os.path.exists(OUTDIR):
+        os.mkdir(OUTDIR)
+        note+=' - results will be saved to %s\n'%OUTDIR
+    return note
 
 
 def _save_status(file, section, params):

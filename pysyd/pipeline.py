@@ -141,7 +141,7 @@ def pipe(group, args, progress=False):
             pbar.update(1)
     if progress:
         pbar.close()
-        print("\n -- process complete --\n\n")
+        print("\n -- process complete --\n")
 
 
 def plot(args):
@@ -201,7 +201,8 @@ def run(args):
     utils.scrape_output(args)
 
 
-def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
+def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/',
+          note='', save=False, dl={},):
     """
     
     Running this after installation will create the appropriate directories in the current working
@@ -217,54 +218,13 @@ def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/maste
 
 
     """
-    note, save, dl = '', False, {}
+    if args.fix:
+        utils._fix_init(path=args.path)
+        return
 
-    # INFO DIRECTORY
-    # create info directory (INFDIR)
-    if not os.path.exists(args.infdir):
-        os.mkdir(args.infdir)
-        note+=' - created input file directory at %s \n'%args.infdir
-    # example input files   
-    outfile1 = os.path.join(args.infdir, args.todo)               # example star list file
-    if not os.path.exists(outfile1):
-        dl.update({'%sinfo/todo.txt'%raw:outfile1})
-        note+=' - saved an example of a star list\n'                               
-    outfile2 = os.path.join(args.infdir, args.info)               # example star info file
-    if not os.path.exists(outfile2):
-        dl.update({'%sinfo/star_info.csv'%raw:outfile2})
-        note+=' - saved an example for the star information file\n'
-
-    # DATA DIRECTORY
-    # create data directory (INPDIR)
-    if not os.path.exists(args.inpdir):
-        os.mkdir(args.inpdir)
-        note+=' - created data directory at %s \n'%args.inpdir
-    # example data
-    for target in ['1435467', '2309595', '11618103']:
-        for ext in ['LC', 'PS']:
-            infile='%sdata/%s_%s.txt'%(raw, target, ext)
-            outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
-            if not os.path.exists(outfile):
-                save=True
-                dl.update({infile:outfile})
-    if save:
-        note+=' - example data saved to data directory\n'
-
-    # RESULTS DIRECTORY
-    # create results directory (OUTDIR)
-    if not os.path.exists(args.outdir):
-        os.mkdir(args.outdir)
-        note+=' - results will be saved to %s\n'%args.outdir
-
-    # Download files that do not already exist
-    if dl:
-        # downloading example data will generate output in terminal, so always include this regardless
-        print('\nDownloading relevant data from source directory:')
-        for infile, outfile in dl.items():
-            subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
-
+    note = utils._download_all()
     # option to get ALL columns since only subset is included in the example
-    if args.makeall:
+    if args.make_all:
         df_temp = pd.read_csv(outfile2)
         df = pd.DataFrame(columns=utils.get_dict('columns')['setup'])
         for col in df_temp.columns.values.tolist():

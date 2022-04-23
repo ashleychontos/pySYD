@@ -18,6 +18,24 @@ from . import models
 
 class Target:
 
+    """
+    Main pipeline target
+    :param name: which target to load in and/or process **note:** *must* match data files
+    :type name: str
+    :param args: container class of pysyd parameters
+    :type args: :mod:`pysyd.utils.Parameters`
+
+    :Example:
+    >>> from . import utils
+    >>> from .target import Target
+    >>> name='1435467'
+    >>> args = utils.Parameters(stars=[name])
+    >>> star = Target(name, args)
+    >>> star
+    <Star 1435467>
+
+    """
+
     def __init__(self, name, args):
         """Main pipeline target object
 
@@ -181,7 +199,7 @@ class Target:
         self._get_warnings() 
 
 
-    def load_power_spectrum(self,):
+    def load_power_spectrum(self, long_ps=10**6):
         """Load power spectrum
     
         Loads in available power spectrum and computes relevant information -- also checks
