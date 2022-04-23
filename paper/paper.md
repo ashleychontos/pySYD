@@ -88,18 +88,18 @@ which prioritizes these three key aspects:
 
 - **Accessible.** The `pySYD` library and source directory are both 
   publicly available, hosted on the Python Package Index 
-  ([https://pypi.org/project/pysyd/](PyPI)) and GitHub. The 
-  [https://github.com/ashleychontos/pySYD](`pySYD` GitHub page) 
+  ([PyPI](https://pypi.org/project/pysyd/)) and GitHub. The 
+  [`pySYD` GitHub Page](https://github.com/ashleychontos/pySYD) 
   also serves as a multifaceted platform to promote community engagement 
   in its many forms -- by enacting various discussion forums to communicate 
   and share science, by laying out instructions to contribute and 
   encourage inclusivity, and by providing a clear path for issue tracking. 
-  To facilitate future use and adaptations, the [https://pysyd.readthedocs.io]
-  (documentation) includes a broad spectrum of examples that showcase the 
+  To facilitate future use and adaptations, the [documentation]
+  (https://pysyd.readthedocs.io) includes a broad spectrum of examples that showcase the 
   versatility of the software. Additionally, Python usage has become 
   standard practice within the community, which will encourage and promote 
-  integrations with complementary tools like [https://docs.lightkurve.org](`lightkurve`)
-  and [https://github.com/danhey/echelle](`echelle`). 
+  integrations with complementary tools like [`lightkurve`](https://docs.lightkurve.org)
+  and [`echelle`](https://github.com/danhey/echelle). 
 - **Reproducible.** `pySYD` implements a similar framework to the closed-source IDL-based 
   `SYD` pipeline [@huber2009], which has been used frequently to measure global asteroseismic 
   parameters for many *Kepler* stars [@huber2011;@chaplin2014;@serenelli2017;@yu2018] and has 
@@ -131,42 +131,42 @@ broader community to analyze current and forthcoming data from the NASA TESS mis
 
 # Software package overview
 
-`pySYD` depends on a number of powerful libraries, including [](astropy) 
-[@astropy1;@astropy2], [](matplotlib) [@matplotlib], [](numpy) [@numpy], 
-[](pandas) [@pandas] and [](scipy) [@scipy]. The software package is structured 
+`pySYD` depends on a number of powerful libraries, including [`astropy`]() 
+[@astropy1;@astropy2], [`matplotlib`]() [@matplotlib], [`numpy`]() [@numpy], 
+[`pandas`]() [@pandas] and [`scipy`]() [@scipy]. The software package is structured 
 around the following main modules, details of which are described in the 
 online package documentation:
 
-- [https://pysyd.readthedocs.io/en/latest/library/target.html](`target`) includes 
+- [`target`](https://pysyd.readthedocs.io/en/latest/library/target.html) includes 
   the `Target` class object, which is instantiated for every processed star and 
   roughly operates in the following steps:
   
-    #. checks for and loads in data for a given star and applies any relevant time- and/or 
-       frequency-domain tools e.g., computing spectra, mitigating *Kepler* artefacts, etc.
-    #. searches for localized power excess due to solar-like oscillations and then estimates 
-       its initial properties 
-    #. uses estimates to mask out that region in the power spectrum and implements an 
-       automated background fitting routine that characterizes amplitudes ($\sigma$) and 
-       characteristic time scales ($\tau$) of various granulation processes
-    #. derives global asteroseismic quantities $\rm \nu_{max}$ and $\Delta\nu$ from the 
-       background-corrected power spectrum
-    #. randomizes the power spectrum and attempts to recover the parameters in order to 
-       bootstrap uncertainties
+    * checks for and loads in data for a given star and applies any relevant time- and/or 
+      frequency-domain tools e.g., computing spectra, mitigating *Kepler* artefacts, etc.
+    * searches for localized power excess due to solar-like oscillations and then estimates 
+      its initial properties 
+    * uses estimates to mask out that region in the power spectrum and implements an 
+      automated background fitting routine that characterizes amplitudes ($\sigma$) and 
+      characteristic time scales ($\tau$) of various granulation processes
+    * derives global asteroseismic quantities $\rm \nu_{max}$ and $\Delta\nu$ from the 
+      background-corrected power spectrum
+    * randomizes the power spectrum and attempts to recover the parameters in order to 
+      bootstrap uncertainties
        
-- [https://pysyd.readthedocs.io/en/latest/library/plots.html](`plots`) includes all plotting routines
-- [https://pysyd.readthedocs.io/en/latest/library/utils.html](`models`) comprises different 
+- [`plots`](https://pysyd.readthedocs.io/en/latest/library/plots.html) includes all plotting routines
+- [`models`](https://pysyd.readthedocs.io/en/latest/library/utils.html) comprises different 
   frequency distributions used to fit and model properties in a given power spectrum
-- [https://pysyd.readthedocs.io/en/latest/usage/intro.html](`cli`) & 
-  [https://pysyd.readthedocs.io/en/latest/library/pipeline.html](`pipeline`) are the main 
+- [`cli`](https://pysyd.readthedocs.io/en/latest/usage/intro.html) & 
+  [`pipeline`](https://pysyd.readthedocs.io/en/latest/library/pipeline.html) are the main 
   entry points for command-line usage
-- [https://pysyd.readthedocs.io/en/latest/library/utils.html](`utils`) includes a suite 
+- [`utils`](https://pysyd.readthedocs.io/en/latest/library/utils.html) includes a suite 
   of utilities such as the container class `Parameters`, which contains all default 
   parameters, or utility functions like binning data or finding peaks in a series of data 
 
 # Documentation
 
 For installation instructions and package information, the main documentation 
-for the `pySYD` software is hosted at [pysyd.readthedocs.io](ReadTheDocs). `pySYD`
+for the `pySYD` software is hosted at [ReadTheDocs](https://pysyd.readthedocs.io/en/latest/). `pySYD`
 comes with a setup feature which we *strongly recommend* since it will download 
 information and data for three example stars and then establish the recommended, 
 local directory structure. The documentation comprises a very diverse range of 
@@ -180,7 +180,7 @@ and adaptable. Tutorials include:
  - other notebook tutorials and hacks, e.g., estimating $\rm \nu_{max}$ hack
 
 Finally, due to the overwhelming number of optional features, the documentation 
-also contains a [https://pysyd.readthedocs.io/en/latest/usage/glossary.html](complete list) 
+also contains a [complete list](https://pysyd.readthedocs.io/en/latest/usage/glossary.html) 
 of all parameters, which includes everything from their object 
 type, default value, and how it is stored within the package, to relevant links 
 or similar keyword arguments.
