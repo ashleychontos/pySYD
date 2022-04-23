@@ -120,8 +120,8 @@ which prioritizes these three key aspects:
 ![Comparison of global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ (right) 
 measured by `pySYD` and `SYD` for $\sim100$ *Kepler* stars. The bottom panels 
 show the fractional residuals. The comparisons show no significant systematic 
-differences, with a median offset and scatter of $0.2$\% and $0.4$\% for 
-$\rm \nu_{max}$ as well as $0.002$\% and $0.09$\% for $\Delta\nu\$, which is smaller 
+differences, with a median offset and scatter of 0.2 and 0.4 for 
+$\rm \nu_{max}$ as well as 0.002 and 0.09 for $\Delta\nu\$, which is smaller 
 or comparable to the typical random uncertainties.\label{fig:benchmark}](benchmark.png)
 
 Well-documented, open-source asteroseismology software that has been benchmarked 
