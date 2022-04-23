@@ -436,38 +436,35 @@ in the output. this is because the model preferred for this to be fixed
 Running your favorite star
 ##########################
 
-The two primary pieces to the `pySYD` puzzle are the 1) parameters and 2) target(s). Initially
-all defaults were set and saved from the command line parser but we recently extended the 
-software capabilities -- which means that it is more user-friendly now! 
+Initially all defaults were set and saved from the command line parser but we recently 
+extended the software capabilities -- which means that it is more user-friendly and 
+how you choose to use it is now completely up to you! 
 
-Analogous to the command-line arguments, we have a container class (:mod:`pysyd.utils.Parameters`)
-that can easily be loaded in and modified to the user's needs. Initialization of a `Parameters` 
-cobject automatically inherits all attributes from the :mod:`pysyd.utils.Constants` class.
-
-There are two keyword arguments that the Parameter object accepts -- `args` and `stars` --
-both which are `None` by default. This is convenient specifically for this case, since we don't 
-have that information *yet*. In fact, the :mod:`pysyd.utils.Parameters` class was also initialized 
-in the first example but immediately knew it was executed as a script instead because `args` was *not* `None`.
-
-If we are going through these steps, there's probably a decent chance that we know what star we want
-to process. Therefore, we can at least provide the star name in this first step.
+Alright so let's import the package for this example.
 
     >>> from pysyd import utils 
     >>> name = '1435467'
     >>> args = utils.Parameters(stars=[name])
     >>> args
-    <pysyd Parameters>
+    <PySYD Parameters>
+
+Analogous to the command-line arguments, we have a container class (:mod:`pysyd.utils.Parameters`)
+that can easily be loaded in and modified to the user's needs. There are two keyword arguments that 
+the Parameter object accepts -- `args` and `stars` -- both which are `None` by default. In fact, 
+the `Parameters` class was also initialized in the first example but immediately knew it was executed 
+as a script instead because `args` was *not* `None`.
 
 As shown in the third line, we put the star list in list form **even though we are only processing 
-a single star**. This is because both ``pySYD`` `run` and `parallel` modes iterate through stars, so 
-we need something that is iterable. Now that we have our parameters, we need a star. Well *technically*
-we already have our star but we need to load in the data by creating an instance of the 
-:mod:`pysyd.target.Target`.
+a single star**. This is because both `pySYD` modes that proess stars iterate through the lists, 
+so we feed it a list that is iterable so it doesn't get confused. 
+
+Now that we have our parameters, let's create a pipeline :mod:`pysyd.target.Target` 
+object to process.
 
     >>> from pysyd.target import Target
     >>> star = Target(name, args)
     >>> star
-    <Star Object 1435467>
+    <Star 1435467>
 
 Typically this step will flag anything that doesn't seem right in the event that data is missing or
 the path is not correct *but just in case*, there is also an `ok` attribute -- which literally means 
@@ -479,10 +476,10 @@ the star is o-k to go! `Target.ok` is simply a boolean flag but let's check it f
 Finally, we will use the same settings we used in the first example -- so we need to update those first
 before running.
 
-    >>> star.params['verbose'] = True
-    >>> star.params['show'] = True
     >>> star.params['upper_ex'] = 5000.
     >>> star.params['mc_iter'] = 200
+    >>> star.process_star()
+     - press RETURN to exit
 
 Ok, now that we have our desired settings and target, we can go ahead and process the star!
 

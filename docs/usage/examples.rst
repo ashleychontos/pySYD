@@ -26,7 +26,7 @@ here is to provide pointers on what to look for in each case.
 
 .. _user-guide-examples-single-high:
 
-:underlined:`A fire detection`
+:underlined:`A diablo detection`
 ####################################
 
 KIC 11618103 is our most evolved example, an RGB star with numax of :math:`\rm \sim 100 \mu Hz`. We will 
@@ -36,7 +36,7 @@ even in some cases *need*) to be changed for more evolved stars like this exampl
 It doesn't necessarily mean that it will get the answers wrong, but we will take you 
 through a few different runs and change some of the settings with each run.
 
-Run 1: `pysyd run --star 11618103 -dv`
+:underlined:`Run 1`:
 **************************************
 
 If we run it straight "out-of-the-box" with our usual command:
@@ -61,7 +61,7 @@ This is because our smoothing filter (or box filter) has a default value of :mat
 which is quite high for this star. Typically a common value is :math:`1.0 \mu Hz`, if at all,
 but usually much much less than our expected numax.
 
-Run 2: `pysyd run --star 11618103 -dv --sp 0.0`
+:underlined:`Run 2`:
 ***********************************************
 
 So for our first change, we are going to tone down the "smoothing" by setting it to
@@ -80,11 +80,13 @@ for brevity.
 
 As you can see above, the bg-corrected power spectrum and ACF both look more reasonable
 now -- it didn't change the quality of the fit or our answer but it definitely looks
-better. However, if you look at the echelle diagram (panel 8), it almost looks like we
+better. 
+
+Now if you look at the echelle diagram (panel 8), it almost looks like we
 aren't capturing all oscillation modes -- our ridges look cut off so let's plot more
 bins on the y axis.
 
-Run 3: `pysyd run --star 11618103 -dv --sp 0.0 --noy 9+0`
+:underlined:`Run 3`: 
 *********************************************************
 
 We've tried to make the commands as obvious as possible to make it easier to digest.
@@ -111,7 +113,7 @@ This looks a lot better and it looks like we are capturing all features in the n
 y-axis range. Turns out we can also change the number of bins (or bin resolution)
 on the x axis of the echelle diagram as well.
 
-Run 4: `pysyd run --star 11618103 -dv --sp 0.0 --noy 9+0 --npb 35`
+:underlined:`Run 4:`
 ******************************************************************
 
 Using basic logic, you can deduce that the relevant keyword argument here is indeed
@@ -140,8 +142,10 @@ But this is just the tip of the iceberg -- please see our complete
 
 .. _user-guide-examples-single-medium:
 
-:underlined:`A medium-to-mild detection`
+:underlined:`A hot-to-fire detection`
 ########################################
+
+**(yes, we are using taco bell sauces to quantify the signal-to-noise of these cases)** 	``	 `1		`
 
 We used this example for new users just getting started and therefore we will only show
 the output and figures. Feel free to visit our crash course in asteroseismology, or 
@@ -165,7 +169,7 @@ detail.
 
 .. _user-guide-examples-single-low:
 
-:underlined:`Low SNR: KIC 8801316`
+:underlined:`A mild detection`
 ##################################
 
 As if asteroseismology wasn't hard enough, let's make it even more difficult for you!

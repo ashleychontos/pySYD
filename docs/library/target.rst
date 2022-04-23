@@ -21,7 +21,8 @@ Imports
 Usage
 #####
 
-
+.. automodule:: pysyd.target
+   :members:
 
 .. _library-target-api:
 

@@ -18,24 +18,6 @@ from . import models
 
 class Target:
 
-    """
-    Main pipeline target
-    :param name: which target to load in and/or process **note:** *must* match data files
-    :type name: str
-    :param args: container class of pysyd parameters
-    :type args: :mod:`pysyd.utils.Parameters`
-
-    :Example:
-    >>> from . import utils
-    >>> from .target import Target
-    >>> name='1435467'
-    >>> args = utils.Parameters(stars=[name])
-    >>> star = Target(name, args)
-    >>> star
-    <Star 1435467>
-
-    """
-
     def __init__(self, name, args):
         """Main pipeline target object
 
@@ -56,6 +38,21 @@ class Target:
         Attributes
             params : Dict
                 copy of args.params[name] dictionary with pysyd parameters and options
+
+        Main pipeline target
+        :param name: which target to load in and/or process **note:** *must* match data files
+        :type name: str
+        :param args: container class of pysyd parameters
+        :type args: :mod:`pysyd.utils.Parameters`
+
+        :Example:
+        >>> from . import utils
+        >>> from .target import Target
+        >>> name='1435467'
+        >>> args = utils.Parameters(stars=[name])
+        >>> star = Target(name, args)
+        >>> star
+        <Star 1435467>
 
 
         """
@@ -151,7 +148,7 @@ class Target:
             if self.params['show']:
                 print(' - displaying figures')
         plots.make_plots(self)
-        if (self.params['cli'] and self.params['verbose']) or (not self.params['cli'] and not self.params['notebook']):
+        if (self.params['cli'] and self.params['verbose']):
             input(' - press RETURN to exit')
 
 
