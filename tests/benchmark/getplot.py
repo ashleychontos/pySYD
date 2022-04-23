@@ -5,8 +5,8 @@ import matplotlib.gridspec as gridspec
 
 # LOAD IN CATALOGS:
 header   = ['KIC' ,'range_low', 'range_up' ,  'numax'   ,'sig_numax',  'dnu'   ,'sig_dnu','Length' ,'DetFlag','SrcFlag']
-idl_df   = pd.read_csv('wg1sample_2015_syd.txt',skiprows=20,delimiter='|',names=header)
-pysyd_df = pd.read_csv('results/global.csv')
+idl_df   = pd.read_csv('syd_results.txt',skiprows=20,delimiter='|',names=header)
+pysyd_df = pd.read_csv('pysyd_results.csv')
 idl_df.KIC    = idl_df.KIC.astype(int)
 pysyd_df.star = pysyd_df.star.astype(int)
 
