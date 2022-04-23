@@ -131,9 +131,9 @@ broader community to analyze current and forthcoming data from the NASA TESS mis
 
 # Software package overview
 
-`pySYD` depends on a number of powerful libraries, including [`astropy`]() 
-[@astropy1;@astropy2], [`matplotlib`]() [@matplotlib], [`numpy`]() [@numpy], 
-[`pandas`]() [@pandas] and [`scipy`]() [@scipy]. The software package is structured 
+`pySYD` depends on a number of powerful libraries, including [`astropy`](https://www.astropy.org) 
+[@astropy1;@astropy2], [`matplotlib`](https://matplotlib.org) [@matplotlib], [`numpy`](https://numpy.org) [@numpy], 
+[`pandas`](https://pandas.pydata.org) [@pandas] and [`scipy`](https://scipy.org) [@scipy]. The software package is structured 
 around the following main modules, details of which are described in the 
 online package documentation:
 
