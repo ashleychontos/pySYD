@@ -116,12 +116,13 @@ which prioritizes these three key aspects:
   (with sampling). On the other hand, the software also features parallel processing capabilities 
   and is therefore suitable for large samples of stars as well.
 
+
 ![Comparison of global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ (right) 
 measured by `pySYD` and `SYD` for $\sim100$ *Kepler* stars. The bottom panels 
 show the fractional residuals. The comparisons show no significant systematic 
-differences, with a median offset and scatter of $0.2%$ and $0.4%$ for 
-$\rm \nu_{max}$ as well as $0.002%$ and $0.09%$ for $\Delta\nu\$, which 
-is smaller or comparable to the typical random uncertainties.\label{fig:comparison}](comparison.png)
+differences, with a median offset and scatter of $0.2$\% and $0.4$\% for 
+$\rm \nu_{max}$ as well as $0.002$\% and $0.09$\% for $\Delta\nu\$, which is smaller 
+or comparable to the typical random uncertainties.\label{fig:comparison}](comparison.png)
 
 Well-documented, open-source asteroseismology software that has been benchmarked 
 against closed-source tools are critical to ensure the reproducibility of legacy 
@@ -139,6 +140,7 @@ online package documentation:
 - [https://pysyd.readthedocs.io/en/latest/library/target.html](`target`) includes 
   the `Target` class object, which is instantiated for every processed star and 
   roughly operates in the following steps:
+  
     #. checks for and loads in data for a given star and applies any relevant time- and/or 
        frequency-domain tools e.g., computing spectra, mitigating *Kepler* artefacts, etc.
     #. searches for localized power excess due to solar-like oscillations and then estimates 
@@ -150,6 +152,7 @@ online package documentation:
        background-corrected power spectrum
     #. randomizes the power spectrum and attempts to recover the parameters in order to 
        bootstrap uncertainties
+       
 - [https://pysyd.readthedocs.io/en/latest/library/plots.html](`plots`) includes all plotting routines
 - [https://pysyd.readthedocs.io/en/latest/library/utils.html](`models`) comprises different 
   frequency distributions used to fit and model properties in a given power spectrum
