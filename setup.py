@@ -38,10 +38,10 @@ setuptools.setup(
         'tqdm',
         'matplotlib>=1.5.3',
     ],
-    extras_require = {
-        'sampling': ['tqdm'],
-        'plotting': ['matplotlib>=1.5.3', 'gridspec'],
-    },
+#    extras_require = {
+#        'sampling': ['tqdm'],
+#        'plotting': ['matplotlib>=1.5.3', 'gridspec'],
+#    },
 #    setup_requires = ['pytest-runner', 'flake8'],
 #    tests_require = ['pytest'],
     packages=setuptools.find_packages(),

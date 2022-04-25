@@ -215,11 +215,11 @@ this also means that the information in this file need not be in any particular 
 Below is a snippet of what the csv would look like:
 
 .. csv-table:: Star info
-   :header: "stars", "rs", "logg", "teff", "numax", "lower_ex", "upper_ex", "lower_bg"
+   :header: "stars", "rs", "logg", "teff", "numax", "lower_se", "upper_se", "lower_bg"
    :widths: 20, 10, 10, 20, 20, 20, 20, 20
 
-   1435467, 1.0, 4.4, 5777.0, 1400.0, 100.0, 5000.0, 100.0
-   2309595, 1.0, 4.4, 5777.0, 1400.0, 100.0, 5000.0, 100.0
+   1435467, , , , , 100.0, 5000.0, 100.0
+   2309595, , , , , 100.0, , 100.0
 
 Just like the input data, the `stars` *must* match their ID but also, the commands
 must adhere to a special format. In fact, the columns in this csv are exactly equal to
@@ -234,18 +234,20 @@ basic `print` statement.
 
     >>> from pysyd import utils
     >>> columns = utils.get_dict('columns')
-    >>> print(columns['all'])
-    ['stars', 'rs', 'rs_err', 'teff', 'teff_err', 'logg', 'logg_err', 'show', 'save',  
-     'verbose', 'overwrite', 'stitch', 'gap', 'kep_corr', 'oversampling_factor', 
-     'excess', 'numax', 'dnu', 'binning', 'bin_mode', 'lower_ex', 'upper_ex', 'step', 
-     'smooth_width', 'n_trials', 'ask', 'background', 'basis', 'box_filter', 'fix_wn', 
-     'n_laws', 'ind_width', 'lower_bg', 'upper_bg', 'metric', 'n_rms', 'globe', 'ex_width',  
-     'lower_ps', 'upper_ps', 'numax', 'sm_par', 'dnu', 'method', 'n_peaks', 'smooth_ps',  
-     'threshold', 'hey', 'cmap', 'clip_value', 'interp_ech', 'notching', 'lower_ech', 
-     'upper_ech', 'seed', 'nox', 'noy', 'smooth_ech', 'mc_iter', 'samples', 'n_threads',
-     'inpdir', 'infdir', 'outdir', 'todo', 'info', 'functions']
+    >>> print(columns['all])
+    ['rs', 'rs_err', 'teff', 'teff_err', 'logg', 'logg_err', 'cli', 'inpdir', 
+     'infdir', 'outdir', 'overwrite', 'show', 'ret', 'save', 'test', 'verbose', 
+     'dnu', 'gap', 'info', 'ignore', 'kep_corr', 'lower_ff', 'lower_lc', 'lower_ps',
+     'mode', 'notching', 'oversampling_factor', 'seed', 'stars', 'todo', 'upper_ff', 
+     'upper_lc', 'upper_ps', 'stitch', 'n_threads', 'ask', 'binning', 'bin_mode', 
+     'estimate', 'adjust', 'lower_se', 'n_trials', 'smooth_width', 'step', 
+     'upper_se', 'background', 'basis', 'box_filter', 'ind_width', 'n_laws', 
+     'lower_bg', 'metric', 'models', 'n_rms', 'upper_bg', 'fix_wn', 'functions',  
+     'cmap', 'clip_value', 'fft', 'globe', 'interp_ech', 'lower_osc', 'mc_iter', 
+     'nox', 'noy', 'npb', 'n_peaks', 'numax', 'osc_width', 'smooth_ech', 'sm_par', 
+     'smooth_ps', 'threshold', 'upper_osc', 'hey', 'samples']
     >>> len(columns['all'])
-    67
+    77
 
 **Note:** This file is *especially* helpful for running many stars with different options - you
 can make your experience as customized as you'd like!

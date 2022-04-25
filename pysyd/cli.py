@@ -40,21 +40,21 @@ def main():
     parent_parser.add_argument('--in', '--input', '--inpdir', 
                                metavar='str',
                                dest='inpdir',
-                               help='Input directory',
+                               help='input or data directory',
                                type=str,
                                default=INPDIR,
     )
     parent_parser.add_argument('--infdir',
                                metavar='str',
                                dest='infdir',
-                               help='Path to relevant pySYD information',
+                               help='info directory',
                                type=str,
                                default=INFDIR,
     )
     parent_parser.add_argument('--out', '--outdir', '--output',
                                metavar='str',
                                dest='outdir',
-                               help='Output directory',
+                               help='output (i.e. results) directory',
                                type=str,
                                default=OUTDIR,
     )
@@ -106,19 +106,25 @@ def main():
                              type=float,
                              default=None, 
     )
-    data_parser.add_argument('--gap', '--gaps', 
+    data_parser.add_argument('--gap', 
                              metavar='int',
                              dest='gap',
                              help="What constitutes a time series 'gap' (i.e. n x the cadence)",
                              type=int,
                              default=20, 
     )
-    data_parser.add_argument('--info', '--information', 
+    data_parser.add_argument('--info', 
                              metavar='str',
                              dest='info',
                              help='list of stellar parameters and options',
                              type=str,
                              default=os.path.join(INFDIR,'star_info.csv'),
+    )
+    data_parser.add_argument('-i', '--ignore',
+                             dest='ignore',
+                             help='quick way to ignore star info file (vs. changing all the settings via CLI)',
+                             default=False,
+                             action='store_true',
     )
     data_parser.add_argument('-k', '--kc', '--kepcorr', 
                              dest='kep_corr',
@@ -154,7 +160,7 @@ def main():
                              default=False, 
                              action='store_true',
     )
-    data_parser.add_argument('--of', '--over', '--oversample',
+    data_parser.add_argument('--of', '--over', 
                              metavar='int',
                              dest='oversampling_factor',
                              help='The oversampling factor (OF) of the input power spectrum',
@@ -204,7 +210,7 @@ def main():
                              default=None,
                              type=float,
     )
-    data_parser.add_argument('-x', '--stitch', '--stitching',
+    data_parser.add_argument('-x', '--stitch', 
                              dest='stitch',
                              help="Correct for large gaps in time series data by 'stitching' the light curve",
                              default=False,
@@ -231,7 +237,7 @@ def main():
                           default=0.005, 
                           type=float,
     )
-    estimate.add_argument('--bm', '--mode', '--bmode',
+    estimate.add_argument('--bm', '--mode', 
                           metavar='str',
                           choices=["mean", "median", "gaussian"],
                           dest='bin_mode',
@@ -239,21 +245,21 @@ def main():
                           default='mean',
                           type=str,
     )
-    estimate.add_argument('-e', '--est', '--estimate',
+    estimate.add_argument('-e', '--estimate',
                           dest='estimate',
                           help='Turn off the optional module that estimates numax',
                           default=True,
                           action='store_false',
     )
-    estimate.add_argument('-j', '--ad', '--adjust',
+    estimate.add_argument('-j', '--adjust',
                           dest='adjust',
                           help='adjusts default parameters based on numax estimate',
                           default=False, 
                           action='store_true',
     )
-    estimate.add_argument('--le', '--lowere', 
+    estimate.add_argument('--le', '--lowere', '--lowerse',
                           metavar='float', 
-                          dest='lower_est',
+                          dest='lower_se',
                           help='Lower frequency limit of PS for searching+estimating',
                           nargs='*',
                           default=None,
@@ -278,10 +284,10 @@ def main():
                           default=0.25,
                           type=float, 
     )
-    estimate.add_argument('--ue', '--uppere', 
+    estimate.add_argument('--ue', '--uppere', '--upperse',
                           metavar='float', 
-                          dest='upper_est',
-                          help='Upper frequency limit of PS for searching+estimating',
+                          dest='upper_se',
+                          help='Upper frequency limit of PS for search+estimate',
                           nargs='*',
                           default=None,
                           type=float,
@@ -324,7 +330,7 @@ def main():
                             default=None, 
                             type=int,
     )
-    background.add_argument('--lb', '--lowerb', 
+    background.add_argument('--lb', '--lowerb', '--lowerbg',
                             metavar='float', 
                             dest='lower_bg',
                             help='Lower frequency limit of PS',
@@ -339,6 +345,12 @@ def main():
                             default='bic', 
                             type=str,
     )
+    background.add_argument('-m', '--models', 
+                            dest='models',
+                            help='include plot with different bgmodel fits',
+                            default=False,
+                            action='store_true',
+    )
     background.add_argument('--nrms', '--rms',  
                             metavar='int', 
                             dest='n_rms', 
@@ -346,7 +358,7 @@ def main():
                             default=20, 
                             type=int,
     )
-    background.add_argument('--ub', '--upperb', 
+    background.add_argument('--ub', '--upperb', '--upperbg',
                             metavar='float', 
                             dest='upper_bg',
                             help='Upper frequency limit of PS',
@@ -390,25 +402,19 @@ def main():
                        default=True,
                        action='store_false',
     )
-    globe.add_argument('-i', '--ie', '--interpech',
+    globe.add_argument('--ie', '--interpech',
                        dest='interp_ech',
                        help='turn on the interpolation of the output ED',
                        default=False,
                        action='store_true',
     )
-    globe.add_argument('--lo', '--lowero', 
+    globe.add_argument('--lo', '--lowero', '--lowerosc',
                        metavar='float', 
                        dest='lower_osc',
                        help='lower frequency limit for the envelope of oscillations',
                        nargs='*',
                        default=None,
                        type=float,
-    )
-    globe.add_argument('-m', '--models', 
-                       dest='models',
-                       help='include plot with different bgmodel fits',
-                       default=False,
-                       action='store_true',
     )
     globe.add_argument('--mc', '--iter', '--mciter', 
                        metavar='int', 
@@ -424,7 +430,7 @@ def main():
                        default=None,
                        type=int, 
     )
-    globe.add_argument('--noy', '--ndown', '--norders',
+    globe.add_argument('--noy', '--norders',
                        metavar='str', 
                        dest='noy',
                        help='NEW!! Number of orders to plot pm how many orders to shift (if ED is not centered)',
@@ -438,7 +444,7 @@ def main():
                        default=20,
                        type=int,
     )
-    globe.add_argument('--npeaks', '--peak', '--peaks', 
+    globe.add_argument('--npeaks', '--peaks', 
                        metavar='int', 
                        dest='n_peaks', 
                        help='number of peaks to fit in the ACF',
@@ -481,14 +487,14 @@ def main():
                        type=float,
                        default=2.5,
     )
-    globe.add_argument('--thresh', '--threshold',
+    globe.add_argument('--aw', '--acfwidth',
                        metavar='float', 
-                       dest='threshold',
-                       help='fractional value of FWHM to use for ACF',
+                       dest='acf_width',
+                       help='fractional value of the FWHM to use in the ACF cutout',
                        default=1.0,
                        type=float,
     )
-    globe.add_argument('--uo', '--uppero', 
+    globe.add_argument('--uo', '--uppero', '--upperosc',
                        metavar='float', 
                        dest='upper_osc',
                        help='upper frequency limit for the envelope of oscillations',
@@ -557,6 +563,13 @@ def main():
                                  type=int,
                                  default=0,
     )
+    parser_parallel.add_argument('-f', '--fix',
+                                 dest='fix_wn',
+                                 help='fix the white noise level',
+                                 type=bool,
+                                 default=False,
+                                 action='store_true',
+    )
     parser_parallel.set_defaults(func=pipeline.parallel)
 
 #### PLOT
@@ -587,6 +600,13 @@ def main():
                                        parents=[parent_parser, data_parser, main_parser], 
                                        formatter_class=argparse.MetavarTypeHelpFormatter,
                                        )
+    parser_run.add_argument('-f', '--fix',
+                            dest='fix_wn',
+                            help='fix the white noise level',
+                            type=bool,
+                            default=False,
+                            action='store_true',
+    )
     parser_run.set_defaults(func=pipeline.run)
 
 #### SETUP
@@ -616,12 +636,6 @@ def main():
                               type=str,
                               default=None,
     )
-    parser_setup.add_argument('-t', '--test',
-                              dest='test',
-                              help='test software functionality',
-                              default=False, 
-                              action='store_true',
-    )
     parser_setup.set_defaults(func=pipeline.setup)
 
 #### TEST
@@ -636,12 +650,6 @@ def main():
                              help='compare different dnu methods',
                              default=False,
                              action='store_true',
-    )
-    parser_test.add_argument('-t', '--test',
-                             dest='test',
-                             help='test software functionality',
-                             default=True, 
-                             action='store_false',
     )
     parser_test.set_defaults(func=pipeline.test)
 

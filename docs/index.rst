@@ -37,7 +37,7 @@ is too small!
 .. toctree::
    :titlesonly:
    :maxdepth: 2
-   :caption: User Guide
+   :caption: Software
    :hidden:
    
    Installation & setup <installation>

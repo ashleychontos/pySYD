@@ -36,7 +36,7 @@ def make_plots(star, show_all=False,):
         _plot_estimates(star)
     if 'parameters' in star.params['plotting']:
         _plot_parameters(star)
-        if star.params['show_all']:
+        if star.params['models']:
             _plot_bgfits(star)
     if 'samples' in star.params['plotting']:
         _plot_samples(star)

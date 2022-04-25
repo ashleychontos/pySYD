@@ -190,7 +190,7 @@ class Parameters(Constants):
         self.params.update(high)
 
 
-    def get_data(self, dnu=None, gap=20, info='star_info.csv', kep_corr=False, lower_ff=None, 
+    def get_data(self, dnu=None, gap=20, info='star_info.csv', ignore=False, kep_corr=False, lower_ff=None, 
                  lower_lc=None, lower_ps=None, mode='load', notching=False, oversampling_factor=None, 
                  seed=None, stars=None, todo='todo.txt', upper_ff=None, upper_lc=None, upper_ps=None, 
                  stitch=False, n_threads=0,):
@@ -206,6 +206,8 @@ class Parameters(Constants):
                 n times the number of cadences defines a "gap" (to correct for)
             info : str, default='info/star_info.csv'
                 path to star csv info
+            ignore : bool, default=False
+                concise way to ignore inputs from star_info.csv
             kep_corr : bool, default=False
                 use the module that corrects for known kepler artefacts
             lower_ff : float, default=None
@@ -247,6 +249,7 @@ class Parameters(Constants):
             dnu = dnu,
             gap = gap,
             info = os.path.join(INFDIR, info),
+            ignore = ignore,
             kep_corr = kep_corr,
             lower_ff = lower_ff,
             lower_lc = lower_lc,
@@ -267,7 +270,7 @@ class Parameters(Constants):
 
 
     def get_estimate(self, ask=False, binning=0.005, bin_mode='mean', estimate=True, adjust=False, 
-                     lower_est=1.0, n_trials=3, smooth_width=10.0, step=0.25, upper_est=8000.0,):
+                     lower_se=1.0, n_trials=3, smooth_width=10.0, step=0.25, upper_se=8000.0,):
         """Search and estimate parameters
     
         Get parameters relevant for the optional first module that looks for and identifies
@@ -284,7 +287,7 @@ class Parameters(Constants):
                 disable the module that estimates numax
             adjust : bool, default=False
                 adjusts default parameters based on numax estimate
-            lower_est : float, default=1.0
+            lower_se : float, default=1.0
                 lower frequency limit of PS to use in the first module
             n_trials : int, default=3
                 the number of trials to estimate :term:`numax`
@@ -292,7 +295,7 @@ class Parameters(Constants):
                 box filter width (in :math:`\\rm \\mu Hz`) to smooth power spectrum
             step : float, default=0.25
                 TODO: Write description
-            upper_est : float, default=8000.0
+            upper_se : float, default=8000.0
                 upper frequency limit of PS to use in the first module
 
         Attributes
@@ -316,8 +319,8 @@ class Parameters(Constants):
 
 
     def get_background(self, background=True, basis='tau_sigma',  box_filter=1.0, ind_width=20.0, 
-                       n_laws=None, lower_bg=1.0, metric='bic', n_rms=20, upper_bg=8000.0, 
-                       fix_wn=False,):
+                       n_laws=None, lower_bg=1.0, metric='bic', models=False, n_rms=20, 
+                       upper_bg=8000.0, fix_wn=False,):
         """Background parameters
     
         Gets parameters used during the automated background-fitting analysis 
@@ -337,6 +340,8 @@ class Parameters(Constants):
                 lower frequency limit of PS to use for the background fit
             metric : str, default='bic'
                 which metric to use (i.e. bic or aic) for model selection 
+            models : bool, default=False
+                include figure with the iterated bgmodel fits
             n_rms : int, default=20
                 number of data points to estimate red noise contributions **Note:** this should never need to be changed
             upper_bg : float, default=8000.0
@@ -360,6 +365,7 @@ class Parameters(Constants):
             n_laws = n_laws,
             lower_bg = lower_bg,
             metric = metric,
+            models = models,
             n_rms = n_rms,
             upper_bg = upper_bg,
             fix_wn = fix_wn,
@@ -369,8 +375,8 @@ class Parameters(Constants):
 
 
     def get_global(self, cmap='binary', clip_value=3.0, fft=True, globe=True, interp_ech=False, 
-                   lower_osc=None, models=False, mc_iter=1, nox=None, noy='0+0', npb=10, numax=None, 
-                   osc_width=1.0, n_peaks=10, smooth_ech=None, sm_par=None, smooth_ps=2.5, threshold=1.0, 
+                   lower_osc=None, mc_iter=1, nox=None, noy='0+0', npb=10, numax=None, osc_width=1.0, 
+                   n_peaks=10, smooth_ech=None, sm_par=None, smooth_ps=2.5, threshold=1.0, 
                    hey=False, upper_osc=None, samples=False,):
         """Global fitting parameters
     
@@ -390,8 +396,6 @@ class Parameters(Constants):
                 turns on the bilinear smoothing in echelle plot
             lower_osc : float, default=None
                 lower frequency bound of the power spectrum used to calculate the :term:`ACF` 
-            models : bool, default=False
-                include figure with the iterated bgmodel fits
             mc_iter : int, default=1
                 number of samples used to estimate uncertainty
             nox : int, default=None
@@ -564,7 +568,7 @@ class Parameters(Constants):
                     self.params[star][column] = None
 
         # Open csv file if it exists
-        if os.path.exists(self.params['info']):
+        if os.path.exists(self.params['info']) and not self.params['ignore']:
             df = pd.read_csv(self.params['info'])
             stars = [str(each) for each in df.stars.values.tolist()]
             for star in self.params['stars']:
@@ -1134,7 +1138,7 @@ def delta_nu(numax):
     return 0.22*(numax**0.797)
 
 
-def _fix_init(path, row=8):
+def _fix_init(path=None, row=8):
     import pysyd
     with open(pysyd.__file__, "r") as f:
         lines = [line for line in f.readlines()]
@@ -1149,7 +1153,7 @@ def _fix_init(path, row=8):
 
 
 def _download_all(raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/', 
-                  note='', dl={})
+                  note='', dl={},):
 
     # INFO DIRECTORY
     note, dl = _download_info(raw, note, dl)
