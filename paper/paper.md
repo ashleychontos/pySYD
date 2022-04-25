@@ -36,15 +36,19 @@ bibliography: paper.bib
 
 # Summary
 
-Space photometry missions have already produced billions of light curves, 
-thus enabling the application of asteroseismology to a large number of stars 
-but requiring automated tools to efficiently perform such analyses. `pySYD` 
-is a Python package to automatically detect solar-like oscillations and measure 
-their global asteroseismic properties. `pySYD` adapts well-tested methodology 
-that is quick and efficient, the application which can therefore be scaled to 
-samples of all sizes. The software package also has a user-friendly interface 
-with many optional features, allowing for a highly-customized experience that 
-can be enjoyed by expert and non-expert users alike. 
+Asteroseismology is well-established in astronomy as the gold standard for determining 
+precise and accurate fundamental stellar properties like masses, radii, and ages. Several 
+tools have been developed for asteroseismic analyses but many of them are closed-source 
+and therefore not accessible to the general astronomy community. Here we present `pySYD`, 
+a Python package for detecting solar-like oscillations and measuring global asteroseismic 
+parameters. `pySYD` was adapted from the IDL-based `SYD` pipeline, which was extensively 
+used to measure asteroseismic parameters for *Kepler* stars. `pySYD` was developed using 
+the same well-tested methodology and comes with several new improvements to provide 
+accessible and reproducible results. Well-documented, open-source asteroseismology software 
+that has been benchmarked against closed-source tools are critical to ensure the 
+reproducibility of legacy results from the *Kepler* mission. Moreover, `pySYD` will also 
+be a promising tool for the broader astronomy community to analyze current and forthcoming 
+data from the NASA TESS mission.
 
 # Introduction
 
@@ -55,17 +59,17 @@ excites sound waves that propagate within the stellar cavity [@bedding2014].
 These waves probe different depths within the star and therefore, provide critical 
 constraints for stellar interiors that would otherwise be inaccessible by other means. 
 
-Asteroseismology is well-established in astronomy as the gold standard for 
-characterizing fundamental properties like masses, radii, densities, and ages 
-for single stars, which has broad impacts on several fields in astronomy. For 
-example, ages of stars are important to reconstruct the formation history of 
-the Milky Way (so-called galactic archaeology). For exoplanets that are discovered 
-indirectly through changes in stellar observables, precise and accurate stellar 
-masses and radii are critical for learning about the planets that orbit them.
+Asteroseismology of such "solar-like" oscillators provide precise fundamental 
+properties like masses, radii, densities, and ages for single stars, which has 
+broad impacts on several fields in astronomy. For example, ages of stars are 
+important to reconstruct the formation history of the Milky Way (so-called 
+galactic archaeology). For exoplanets that are discovered indirectly through 
+changes in stellar observables, precise and accurate stellar masses and radii 
+are critical for learning about the planets that orbit them.
 
 The NASA space telescopes *Kepler* [@borucki2010] and TESS [@ricker2015]
 have recently provided very large databases of high-precision light curves of 
-stars. By detecting brightness variations due to solar-like oscillations, these 
+stars. By detecting brightness variations due to oscillations, these 
 light curves allow the application of asteroseismology to large numbers of stars, 
 which requires automated software tools to efficiently extract observables. 
 
@@ -79,7 +83,7 @@ tested against closed-source tools.
 
 # Statement of need
 
-There is an obvious need within the astronomy community for an open-source 
+There is a strong need within the astronomy community for an open-source 
 asteroseismology tool that is 1) accessible, 2) reproducible, and 3) scalable, 
 which  will only grow with the continued success of the NASA TESS mission. In 
 this paper we present a Python tool that automatically detects solar-like 
@@ -91,15 +95,14 @@ which prioritizes these three key aspects:
   ([PyPI](https://pypi.org/project/pysyd/)) and GitHub. The 
   [`pySYD` GitHub Page](https://github.com/ashleychontos/pySYD) 
   also serves as a multifaceted platform to promote community engagement 
-  in its many forms -- by enacting various discussion forums to communicate 
-  and share science, by laying out instructions to contribute and 
-  encourage inclusivity, and by providing a clear path for issue tracking. 
-  To facilitate future use and adaptations, the [documentation]
-  (https://pysyd.readthedocs.io) includes a broad spectrum of examples that showcase the 
-  versatility of the software. Additionally, Python usage has become 
-  standard practice within the community, which will encourage and promote 
-  integrations with complementary tools like [`lightkurve`](https://docs.lightkurve.org)
-  and [`echelle`](https://github.com/danhey/echelle). 
+  through discussion forums to communicate and share science, laying out 
+  instructions to contribute and encourage inclusivity, and providing 
+  a clear path for issue tracking. To facilitate future use and adaptations, 
+  the [documentation](https://pysyd.readthedocs.io) includes a broad 
+  spectrum of examples that showcase the versatility of the software. 
+  Additionally, Python usage has become standard practice within the 
+  community, which will promote integrations with complementary tools 
+  like [`lightkurve`](https://docs.lightkurve.org) and [`echelle`](https://github.com/danhey/echelle). 
 - **Reproducible.** `pySYD` implements a similar framework to the closed-source IDL-based 
   `SYD` pipeline [@huber2009], which has been used frequently to measure global asteroseismic 
   parameters for many *Kepler* stars [@huber2011;@chaplin2014;@serenelli2017;@yu2018] and has 
@@ -110,19 +113,18 @@ which prioritizes these three key aspects:
   differences (\autoref{fig:benchmark}). In addition to the important benchmark sample, 
   `pySYD` ensures reproducible results for *every* star that is processed by saving and 
   setting seeds for each random process occurring throughout the analyses.
-- **Scalable.** `pySYD` was developed and optimized with speed and efficiency as a top priority. 
-  `pySYD` has more than 50 optional commands that enable a highly customized analysis at the 
-  individual star level but on average, takes less than a minute to complete a single star 
-  (with sampling). On the other hand, the software also features parallel processing capabilities 
-  and is therefore suitable for large samples of stars as well.
-
+- **Scalable.** `pySYD` was developed for speed and efficiency. `pySYD` has more 
+  than 50 optional commands that enable a customized analysis at the individual star 
+  level and on average, takes less than a minute to complete a single star 
+  (with sampling). The software also features parallel processing capabilities 
+  and is therefore suitable for large samples of stars.
 
 ![Comparison of global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ (right) 
-measured by `pySYD` and `SYD` for $\sim100$ *Kepler* stars. The bottom panels 
-show the fractional residuals. The comparisons show no significant systematic 
-differences, with a median offset and scatter of 0.2 and 0.4 for 
-$\rm \nu_{max}$ as well as 0.002 and 0.09 for $\Delta\nu\$, which is smaller 
-or comparable to the typical random uncertainties.\label{fig:benchmark}](benchmark.png)
+measured by `pySYD` and `SYD` for $\sim100$ *Kepler* stars [@serenelli2017], with 
+fractional residuals shown in the bottom panels. The comparison shows excellent 
+agreement, with median offsets of $0.07 \pm 0.07\%$ for $\rm \nu_{max}$ and 
+$0.004 \pm 0.008\%$ for $\Delta\nu$. Typical random errors for such measurements 
+are 1-2 orders of magnitude larger.\label{fig:benchmark}](benchmark.png)
 
 Well-documented, open-source asteroseismology software that has been benchmarked 
 against closed-source tools are critical to ensure the reproducibility of legacy 
@@ -166,24 +168,23 @@ online package documentation:
 # Documentation
 
 For installation instructions and package information, the main documentation 
-for the `pySYD` software is hosted at [ReadTheDocs](https://pysyd.readthedocs.io/en/latest/). `pySYD`
-comes with a setup feature which we *strongly recommend* since it will download 
-information and data for three example stars and then establish the recommended, 
-local directory structure. The documentation comprises a very diverse range of 
-applications and examples that we hope will make the software more accessible 
-and adaptable. Tutorials include:
+for the `pySYD` software is hosted at [ReadTheDocs](https://pysyd.readthedocs.io/en/latest/). 
+`pySYD` comes with a setup feature which will download information and data for 
+three example stars and then establish the recommended, local directory structure. 
+The documentation comprises a diverse range of applications and examples to 
+make the software more accessible and adaptable. Tutorials include:
 
  - basic command-line examples for stars of varying signal-to-noise detections
  - customized command-line examples to showcase some of the new, optional features 
  - different ways to run a large number of stars
  - a notebook tutorial walkthrough of a single star from data to results
- - other notebook tutorials and hacks, e.g., estimating $\rm \nu_{max}$ hack
+ - other notebook tutorials demonstrating the use of some optional commands 
+   and/or software hacks
 
-Finally, due to the overwhelming number of optional features, the documentation 
-also contains a [complete list](https://pysyd.readthedocs.io/en/latest/usage/glossary.html) 
-of all parameters, which includes everything from their object 
-type, default value, and how it is stored within the package, to relevant links 
-or similar keyword arguments.
+The documentation also contains a [complete list](https://pysyd.readthedocs.io/en/latest/usage/glossary.html) 
+of all parameters, which includes everything from their object type, 
+default value(s), and how it is stored within the package, as well as
+relevant links or similar keyword arguments.
 
 # Acknowledgements
 
@@ -192,8 +193,8 @@ We thank Dennis Stello, Tim Bedding, Marc Hon, Yifan Chen, Yaguang Li, and other
 of this software.
 
 We also acknowledge support from: 
-- The National Science Foundation (DGE-1842402, AST-1717000)
-- The National Aeronautics and Space Administration (80NSSC19K0597)
+- The National Science Foundation (DGE-1842402)
+- The National Aeronautics and Space Administration (80NSSC19K0597, 80NSSC21K0652)
 - The Alfred P. Sloan Foundation
 
 # References
