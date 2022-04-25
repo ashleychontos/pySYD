@@ -382,14 +382,14 @@ of operations *does* matter.
     -----------------------------------------------------------
     Output parameters
     -----------------------------------------------------------
-    numax_smooth: 1299.81 +/- 50.31 muHz
-    A_smooth: 1.74 +/- 0.21 ppm^2/muHz
-    numax_gauss: 1344.46 +/- 35.97 muHz
+    numax_smooth: 1299.81 +/- 56.64 muHz
+    A_smooth: 1.74 +/- 0.19 ppm^2/muHz
+    numax_gauss: 1344.46 +/- 41.16 muHz
     A_gauss: 1.50 +/- 0.24 ppm^2/muHz
-    FWHM: 294.83 +/- 68.78 muHz
-    dnu: 70.69 +/- 0.72 muHz
-    tau_1: 234.10 +/- 17.82 s
-    sigma_1: 87.40 +/- 2.54 ppm
+    FWHM: 294.83 +/- 64.57 muHz
+    dnu: 70.68 +/- 0.82 muHz
+    tau_1: 234.10 +/- 23.65 s
+    sigma_1: 87.40 +/- 2.81 ppm
     -----------------------------------------------------------
      - displaying figures
      - press RETURN to exit
@@ -466,22 +466,21 @@ object to process.
     >>> star
     <Star 1435467>
 
-Typically this step will flag anything that doesn't seem right in the event that data is missing or
-the path is not correct *but just in case*, there is also an `ok` attribute -- which literally means 
-the star is o-k to go! `Target.ok` is simply a boolean flag but let's check it for good practice:
+Instantiation of a `Target` star automatically searches for and loads in available 
+data (based on the given 'name'). This step will therefore flag anything that doesn't 
+seem right i.e., data is missing or paths are not correct. 
 
-    >>> star.ok
-    True
-
-Finally, we will use the same settings we used in the first example -- so we need to update those first
-before running.
+Finally, before we process the star, we will need to adjust a couple settings so
+that it runs similarly to the first example (sans the boolean flags). 
 
     >>> star.params['upper_ex'] = 5000.
     >>> star.params['mc_iter'] = 200
+
+Ok, now that we have our desired settings and target, we can go ahead and process the 
+star (which is fortunately a one-liner):
+
     >>> star.process_star()
      - press RETURN to exit
-
-Ok, now that we have our desired settings and target, we can go ahead and process the star!
 
 .. plot::
     :align: center
