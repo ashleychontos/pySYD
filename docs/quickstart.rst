@@ -300,22 +300,15 @@ recommend by default when analyzing a star for the first time).
    For more information about what each panel is showing in any of these figures, please visit 
    :ref:`this page <library-output-figures>`.
 
-If this was run in its default setting, with ``--mc`` = `1`, for a single iteration, the output
-parameters would look like that below. **We urge folks to run new stars for a single step first 
-(ALWAYS) before running it several iterations to make sure everything looks ok.**
-
-**One final important note:** we chose to show this example since it is a perfect testament for
-why we do the fitting in two steps. You can see the estimate from the first module quoted a value
-close to 1500 microhertz but it still got the final value correct. Background fits and the order
-of operations *does* matter.
-
 .. _quickstart-script-steps-four:
 
 4. Fit global parameters
 ++++++++++++++++++++++++
 
-Now if we hadn't used the Monte-Carlo sampling, the following would've been 
-the printed output for the global fit:
+If this was executed with its default `mc` setting (== 1, for a single iteration), the output
+parameters would look like that shown below. **In fact, we encourage folks to run new stars 
+for a single step first (*ALWAYS*) before running it several iterations to make sure everything 
+checks out.**
 
 .. code-block::
 
@@ -336,10 +329,10 @@ the printed output for the global fit:
      - combining results into single csv file
     -----------------------------------------------------------
 
-**Note:** the printed output above is for posterity. Please see the next section 
-in the event that you are comparing outputs to test the software functionality.
+**Reminder:** the printed output above is for posterity. Please see the next section in the event
+that you are comparing outputs to test the software functionality.
 
-The parameters are printed and saved in identical ways but sans the uncertainties.
+The parameters are printed and saved in identical ways (sans the uncertainties).
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"
@@ -388,9 +381,9 @@ Notice the difference in the printed parameters this time - which now have uncer
   :width: 680
   :alt: KIC 1435467 posteriors
 
-^^ **The figure above shows parameter posteriors for KIC 1435467. Sampling results
+^^ **The figure above shows parameter posteriors for KIC 1435467.** Sampling results
 can be saved by using the boolean flag `-z` or `--samples`, which will store the 
-samples for the fitted parameters as comma-separated values via a pandas dataframe.**
+samples for the fitted parameters as comma-separated values using pandas.
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"
