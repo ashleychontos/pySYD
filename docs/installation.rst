@@ -33,7 +33,7 @@ and therefore you can install the latest stable version directly using `pip`:
 
 .. code-block::
 
-   ♡ ~ % python -m pip install pysyd
+   python -m pip install pysyd
 
 The ``pysyd`` binary should have been automatically placed in your system's path via the ``pip`` command. 
 If your system can not find the ``pysyd`` executable, change into the top-level ``pysyd`` directory and try 
@@ -41,7 +41,7 @@ running the following command:
 
 .. code-block::
 
-   ♡ ~ % python setup.py install
+   python setup.py install
 
 
 .. _install-conda:
@@ -54,7 +54,7 @@ You can also use `conda` to create an environment. For this example, I'll call i
 
 .. code-block::
     
-   ♡ ~ % conda create -n astero numpy scipy pandas astropy matplotlib tqdm
+   conda create -n astero numpy scipy pandas astropy matplotlib tqdm
 
 
 See our complete list of dependencies (including versions) :ref:`below <install-dependencies>`. 
@@ -63,8 +63,8 @@ Then activate the environment and install ``pySYD``:
 
 .. code-block::
 
-   ♡ ~ % conda activate astero
-   ♡ ~ % pip install git+https://github.com/ashleychontos/pySYD
+   conda activate astero
+   pip install git+https://github.com/ashleychontos/pySYD
 
 
 .. _install-git:
@@ -77,13 +77,13 @@ version from `GitHub <https://github.com/ashleychontos/pySYD>`_ using `git`.
 
 .. code-block::
 
-   ♡ ~ % git clone git://github.com/ashleychontos/pySYD.git
+   git clone git://github.com/ashleychontos/pySYD.git
 
 The next step is to build and install the project:
 
 .. code-block::
 
-   ♡ ~ % python -m pip install .
+   python -m pip install .
 
 which needs to be executed from the top-level directory inside the 
 cloned ``pySYD`` repo.
@@ -99,7 +99,8 @@ window, which should display something similar to the following output:
 
 ::
 
-   ♡ ~/pysyd % pysyd --help
+   $ pysyd --help
+   
    usage: pySYD [-h] [--version] {check,load,parallel,plot,run,setup,test} ...
    
    pySYD: automated measurements of global asteroseismic parameters
@@ -166,7 +167,7 @@ directory can be whatever is most convenient for you:
 
 .. code-block::
     
-   ♡ ~ % mkdir pysyd
+   mkdir pysyd
     
 
 :underlined:`Initialize setup`
@@ -177,7 +178,7 @@ Now all you need to do is change into that directory, run the following command 
 
 .. code-block::
 
-   ♡ ~/pysyd % pysyd setup -v
+   pysyd setup -v
 
 We used the :term:`verbose<-v, --verbose>` command so you can see what is being downloaded
 and where it is being downloaded to.
@@ -227,7 +228,7 @@ you will get the following *lovely* reminder:
 
 .. code-block::
 
-   ♡ ~/pysyd % pysyd setup -v
+   pysyd setup -v
    
    Looks like you've probably done this
    before since you already have everything!
@@ -244,10 +245,10 @@ Use the following to get up and running right away:
 
 .. code-block::
 
-   ♡ ~ % python -m pip install pysyd
-   ♡ ~ % mkdir pysyd
-   ♡ ~ % cd pysyd
-   ♡ ~/pysyd % pysyd setup
+   python -m pip install pysyd
+   mkdir pysyd
+   cd pysyd
+   pysyd setup
 
 The last command which will provide you with example data and files to immediately get 
 going. This is essentially a summary of all the steps discussed on this page but a more
