@@ -119,13 +119,6 @@ which prioritizes these three key aspects:
   (with sampling). The software also features parallel processing capabilities 
   and is therefore suitable for large samples of stars.
 
-![Comparison of global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ (right) 
-measured by `pySYD` and `SYD` for $\sim100$ *Kepler* stars [@serenelli2017], with 
-fractional residuals shown in the bottom panels. The comparison shows excellent 
-agreement, with median offsets of $0.07 \pm 0.07\%$ for $\rm \nu_{max}$ and 
-$0.004 \pm 0.008\%$ for $\Delta\nu$. Typical random errors for such measurements 
-are 1-2 orders of magnitude larger.\label{fig:benchmark}](benchmark.png)
-
 Well-documented, open-source asteroseismology software that has been benchmarked 
 against closed-source tools are critical to ensure the reproducibility of legacy 
 results from the *Kepler* mission. `pySYD` will also be a promising tool for the 
@@ -164,6 +157,13 @@ online package documentation:
 - [`utils`](https://pysyd.readthedocs.io/en/latest/library/utils.html) includes a suite 
   of utilities such as the container class `Parameters`, which contains all default 
   parameters, or utility functions like binning data or finding peaks in a series of data 
+  
+![Comparison of global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ (right) 
+measured by `pySYD` and `SYD` for $\sim100$ *Kepler* stars [@serenelli2017], with 
+fractional residuals shown in the bottom panels. The comparison shows excellent 
+agreement, with median offsets of $0.07 \pm 0.07\%$ for $\rm \nu_{max}$ and 
+$0.004 \pm 0.008\%$ for $\Delta\nu$. Typical random errors for such measurements 
+are 1-2 orders of magnitude larger.\label{fig:benchmark}](benchmark.png)
 
 # Documentation
 
