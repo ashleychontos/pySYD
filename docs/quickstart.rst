@@ -104,7 +104,7 @@ which we will now deconstruct.
    which allows us to bootstrap uncertainties on our derived properties. 
 
 **Note:** For a *complete* list of options which are currently available via command-line interface (CLI), 
-see our special CLI :ref:`glossary <user-guide-cli-glossary>`.
+see our special CLI :ref:`glossary <user-guide-glossary>`.
 
 
 :underlined:`The steps`
@@ -115,9 +115,10 @@ see our special CLI :ref:`glossary <user-guide-cli-glossary>`.
 The software operates in roughly the following steps:
 
  #. :ref:`Load in parameters and data <quickstart-script-steps-one>`
- #. :ref:`Get initial values <quickstart-script-steps-two>`
- #. :ref:`Fit global parameters <quickstart-script-steps-three>`
- #. :ref:`Estimate uncertainties <quickstart-script-steps-four>`
+ #. :ref:`Search and estimate initial values <quickstart-script-steps-two>`
+ #. :ref:`Select best-fit stellar background model <quickstart-script-steps-three>`
+ #. :ref:`Fit global parameters <quickstart-script-steps-four>`
+ #. :ref:`Estimate uncertainties <quickstart-script-steps-five>`
 
 For each step, we will first show the relevant block of printed (or :term:`verbose<-v, --verbose>`) output, then
 describe what the software is doing behind the scenes and if applicable, conclude with the section-specific 
@@ -158,8 +159,8 @@ Since none of this happened, we can move on to the next step.
 
 .. _quickstart-script-steps-two:
 
-2. Get initial values
-+++++++++++++++++++++
+2. Search and estimate initial values
++++++++++++++++++++++++++++++++++++++
 
 .. code-block::
 
@@ -210,8 +211,8 @@ this step the next time that the star is processed.
 
 .. _quickstart-script-steps-three:
 
-3. Fit global parameters
-++++++++++++++++++++++++
+3. Select best-fit stellar background model
++++++++++++++++++++++++++++++++++++++++++++
 
 .. code-block::
 
@@ -236,21 +237,6 @@ this step the next time that the star is processed.
     Model 5: 2 Harvey-like component(s) + white noise term
      BIC = 94.36 | AIC = 0.23
     Based on BIC statistic: model 2
-    -----------------------------------------------------------
-    Output parameters
-    -----------------------------------------------------------
-    numax_smooth: 1299.81 muHz
-    A_smooth: 1.74 ppm^2/muHz
-    numax_gauss: 1344.46 muHz
-    A_gauss: 1.50 ppm^2/muHz
-    FWHM: 294.83 muHz
-    dnu: 70.68 muHz
-    tau_1: 234.10 s
-    sigma_1: 87.40 ppm
-    -----------------------------------------------------------
-     - displaying figures
-     - press RETURN to exit
-     - combining results into single csv file
     -----------------------------------------------------------
 
 
@@ -323,6 +309,37 @@ why we do the fitting in two steps. You can see the estimate from the first modu
 close to 1500 microhertz but it still got the final value correct. Background fits and the order
 of operations *does* matter.
 
+.. _quickstart-script-steps-four:
+
+4. Fit global parameters
+++++++++++++++++++++++++
+
+Now if we hadn't used the Monte-Carlo sampling, the following would've been 
+the printed output for the global fit:
+
+.. code-block::
+
+    -----------------------------------------------------------
+    Output parameters
+    -----------------------------------------------------------
+    numax_smooth: 1299.81 muHz
+    A_smooth: 1.74 ppm^2/muHz
+    numax_gauss: 1344.46 muHz
+    A_gauss: 1.50 ppm^2/muHz
+    FWHM: 294.83 muHz
+    dnu: 70.68 muHz
+    tau_1: 234.10 s
+    sigma_1: 87.40 ppm
+    -----------------------------------------------------------
+     - displaying figures
+     - press RETURN to exit
+     - combining results into single csv file
+    -----------------------------------------------------------
+
+**Note:** the printed output above is for posterity. Please see the next section 
+in the event that you are comparing outputs to test the software functionality.
+
+The parameters are printed and saved in identical ways but sans the uncertainties.
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"
@@ -338,44 +355,13 @@ of operations *does* matter.
    sigma_1, 87.4003388623678, --
 
 
-.. note::
+.. _quickstart-script-steps-five:
 
-    While observations have shown that solar-like oscillations have an approximately 
-    Gaussian-like envelope, we have no reason to believe that they should behave exactly 
-    like that. This is why you will see two different estimates for :term:`numax` 
-    (:math:`\rm \nu_{max}`) under the output parameters. **In fact for this methodology 
-    first demonstrated in Huber+2009, traditionally the smoothed numax has been used in 
-    the literature and we recommend that you do the same.**
-
-
-.. _quickstart-script-steps-four:
-
-4. Estimate uncertainties
+5. Estimate uncertainties
 +++++++++++++++++++++++++
 
 .. code-block::
 
-    -----------------------------------------------------------
-    GLOBAL FIT
-    -----------------------------------------------------------
-    PS binned to 333 data points
-    
-    Background model
-    ----------------
-    Comparing 6 different models:
-    Model 0: 0 Harvey-like component(s) + white noise fixed
-     BIC = 981.66 | AIC = 2.95
-    Model 1: 0 Harvey-like component(s) + white noise term
-     BIC = 1009.56 | AIC = 3.02
-    Model 2: 1 Harvey-like component(s) + white noise fixed
-     BIC = 80.27 | AIC = 0.22
-    Model 3: 1 Harvey-like component(s) + white noise term
-     BIC = 90.49 | AIC = 0.24
-    Model 4: 2 Harvey-like component(s) + white noise fixed
-     BIC = 81.46 | AIC = 0.20
-    Model 5: 2 Harvey-like component(s) + white noise term
-     BIC = 94.36 | AIC = 0.23
-    Based on BIC statistic: model 2
     -----------------------------------------------------------
     Sampling routine:
     100%|███████████████████████████████████████| 200/200 [00:21<00:00,  9.23it/s]
@@ -396,16 +382,15 @@ of operations *does* matter.
      - combining results into single csv file
     -----------------------------------------------------------
 
-Notice the difference in the printed parameters this time - they now have uncertainties!
-
-We include the progress bar in the sampling step iff the verbose output is `True` *and* ``pySYD`` is not 
-executed in parallel mode. This is hard-wired since the latter would produce a nightmare mess.
+Notice the difference in the printed parameters this time - which now have uncertainties!
 
 .. image:: _static/1435467/samples_1.png
   :width: 680
   :alt: KIC 1435467 posteriors
 
-^^ posteriors for KIC 1435467
+^^ **The figure above shows parameter posteriors for KIC 1435467. Sampling results
+can be saved by using the boolean flag `-z` or `--samples`, which will store the 
+samples for the fitted parameters as comma-separated values via a pandas dataframe.**
 
 .. csv-table:: 1435467 global parameters
    :header: "parameter", "value", "uncertainty"
@@ -425,8 +410,12 @@ in the output. this is because the model preferred for this to be fixed
 
 .. note::
 
-    The sampling results can be saved by using the boolean flag ``-m`` or ``--samples``,
-    which will save the posteriors of the fitted parameters for later use. 
+    While observations have shown that solar-like oscillations have an approximately 
+    Gaussian-like envelope, we have no reason to believe that they should behave exactly 
+    like that. This is why you will see two different estimates for :term:`numax` 
+    (:math:`\rm \nu_{max}`) under the output parameters. **In fact for this methodology 
+    first demonstrated in Huber+2009, the smoothed numax value is what has been reported 
+    in the literature and should also be the adopted value here.** 
    
 
 -----
@@ -476,11 +465,13 @@ that it runs similarly to the first example (sans the boolean flags).
     >>> star.params['upper_ex'] = 5000.
     >>> star.params['mc_iter'] = 200
 
-Ok, now that we have our desired settings and target, we can go ahead and process the 
-star (which is fortunately a one-liner):
+Ok now that we have our desired settings and target, we can go ahead and process the 
+star (which is fortunately a one-liner in this case):
 
     >>> star.process_star()
-     - press RETURN to exit
+
+And that's it. If you ran it on the same star, the output figures and parameters 
+should exactly match.
 
 .. plot::
     :align: center
@@ -488,18 +479,16 @@ star (which is fortunately a one-liner):
     :width: 60%
 
     from pysyd import utils
-    from pysyd import plots
     from pysyd.target import Target
-    import matplotlib.pyplot as plt
 
     name='1435467'
-    args = utils.Parameters()
+    args = utils.Parameters(stars=[name])
     star = Target(name, args)
-    star.estimate_parameters()
-    plots.set_plot_params()
-    plots.plot_estimates()
+    star.params['upper_ex'] = 5000.
+    star.params['mc_iter'] = 200
+    star.params['show'] = True
+    star.process_star()
 
-    >>> from pysyd import plots
 
 -----
 
