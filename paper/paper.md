@@ -138,6 +138,14 @@ online package documentation:
   
     * checks for and loads in data for a given star and applies any relevant time- and/or 
       frequency-domain tools e.g., computing spectra, mitigating *Kepler* artefacts, etc.
+
+![Comparison of global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ (right) 
+measured by `pySYD` and `SYD` for $\sim100$ *Kepler* stars [@serenelli2017], with 
+fractional residuals shown in the bottom panels. The comparison shows excellent 
+agreement, with median offsets of $0.07 \pm 0.07\%$ for $\rm \nu_{max}$ and 
+$0.004 \pm 0.008\%$ for $\Delta\nu$. Typical random errors for such measurements 
+are 1-2 orders of magnitude larger.\label{fig:benchmark}](benchmark.png)
+
     * searches for localized power excess due to solar-like oscillations and then estimates 
       its initial properties 
     * uses estimates to mask out that region in the power spectrum and implements an 
@@ -145,8 +153,8 @@ online package documentation:
       characteristic time scales ($\tau$) of various granulation processes
     * derives global asteroseismic quantities $\rm \nu_{max}$ and $\Delta\nu$ from the 
       background-corrected power spectrum
-    * randomizes the power spectrum and attempts to recover the parameters in order to 
-      bootstrap uncertainties
+    * performs Monte-Carlo simulations by drawing from a chi-squared distribution (with 2 dof) 
+      to estimate uncertainties
        
 - [`plots`](https://pysyd.readthedocs.io/en/latest/library/plots.html) includes all plotting routines
 - [`models`](https://pysyd.readthedocs.io/en/latest/library/utils.html) comprises different 
@@ -157,13 +165,6 @@ online package documentation:
 - [`utils`](https://pysyd.readthedocs.io/en/latest/library/utils.html) includes a suite 
   of utilities such as the container class `Parameters`, which contains all default 
   parameters, or utility functions like binning data or finding peaks in a series of data 
-  
-![Comparison of global parameters $\rm \nu_{max}$ (left) and $\Delta\nu$ (right) 
-measured by `pySYD` and `SYD` for $\sim100$ *Kepler* stars [@serenelli2017], with 
-fractional residuals shown in the bottom panels. The comparison shows excellent 
-agreement, with median offsets of $0.07 \pm 0.07\%$ for $\rm \nu_{max}$ and 
-$0.004 \pm 0.008\%$ for $\Delta\nu$. Typical random errors for such measurements 
-are 1-2 orders of magnitude larger.\label{fig:benchmark}](benchmark.png)
 
 # Documentation
 
