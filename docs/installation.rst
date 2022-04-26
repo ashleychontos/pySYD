@@ -72,7 +72,7 @@ Then activate the environment and install ``pySYD``:
 Clone from GitHub
 #################
 
-If you are wanting to contribute, you can clone the latest development
+If you want to contribute, you can clone the latest development
 version from `GitHub <https://github.com/ashleychontos/pySYD>`_ using `git`.
 
 .. code-block::
@@ -148,27 +148,21 @@ and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, us
 Setup
 #####
 
-The software package comes with a convenient setup feature, which is called through 
-:mod:`pysyd.pipeline.setup`. We **strongly encourage** you to run this step 
-regardless of how you choose to run ``pySYD`` because it:
+The software package comes with a convenient setup feature which we **strongly 
+encourage** you to do because it:
 
 - downloads example data for three stars
 - provides the properly-formatted [optional] input files *and* 
 - sets up the relative local directory structure
 
-We'd like to emphasize this last bullet because it establishes a local, relative directory 
-structure that is both straightforward for the pipeline and intuitive to the user.
-
+**Note:** this step is helpful *regardless* of how you intend to use the software package.
 
 :underlined:`Make a local directory`
 ************************************
 
-Before you do that though, we recommend that you create a new, local directory to keep all 
-your pysyd-related data, information and results in a single, easy-to-find location. This is 
-actually the only reason we didn't include our examples as package data, as it would've put 
-them in your root directory and we realize this can be difficult to locate.
-
-The folder or directory can be whatever is most convenient for you:
+We recommend to first create a new, local directory to keep all your pysyd-related 
+data, information and results in a single, easy-to-find location. The folder or 
+directory can be whatever is most convenient for you:
 
 .. code-block::
     

@@ -14,11 +14,11 @@ some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before at
 ours.
 
 We will work through two examples -- each demonstrating a different application of the software. 
-Since `pySYD` was initially intended to be a hands-off :ref:`command-line tool <quickstart-script>`, 
-the first will demonstrate exactly this since it was optimized for this. We will break
-down each step of the software as much as possible with the hope that it will provide
-a nice introduction to both the software *and* science. For the second one, we will reconstruct everything in a more condensed version and show
-`pySYD` imported and used as a module.
+The first example will run `pySYD` as a script from command line since this is what
+it was optimized for. We will break down each step of the software as much as possible 
+with the hope that it will provide a nice introduction to both the software *and* 
+science. For the second one, we will reconstruct everything in a more condensed version 
+and show `pySYD` imported and used as a module.
 
 If you have *any* questions, check out our :ref:`user guide <user-guide>` for more 
 information. If this still does not address your question or problem, please do not hesitate

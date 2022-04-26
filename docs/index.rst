@@ -8,19 +8,15 @@ pySYD: |br| automated measurements |br| of global asteroseismic parameters
 
 Asteroseismology, or the study of stellar oscillations, is a powerful tool
 for studying the internal structure of stars and determining their fundamental 
-properties. Specifically for stars similar to the Sun, turbulent near-surface 
-convection excites sound waves that propagate within the stellar cavity, and hence
+properties. For stars similar to the Sun, turbulent near-surface convection 
+excites sound waves that propagate within the stellar cavity, and hence
 provides powerful constraints on stellar interiors that are inaccessible by 
-any other means. While it is well-established and widely-accepted as the gold 
-standard for the characterization of fundamental stellar properties (e.g., masses, radii,
-ages, etc.), asteroseismology is a niche field and still mostly a closed-door science. 
-
-In an effort to make asteroseismology more accessible to the broader astronomy
-community, ``pySYD`` was developed as a Python package to automatically detect
-solar-like oscillations and measure their global properties. Thus ``pySYD`` was
-designed to be a hands-off, end-to-end tool so that even non-expert users can 
-reap the benefits of asteroseismology without requiring substantial background 
-knowledge. 
+any other means. Asteroseismology is now widely-accepted as the gold 
+standard for the characterization of fundamental stellar properties (e.g., 
+masses, radii, ages, etc.). In an effort to make asteroseismology more 
+accessible to the broader astronomy community, `pySYD` was developed as a 
+Python package to automatically detect solar-like oscillations and characterize 
+their global properties. 
 
 .. important::
 
