@@ -106,13 +106,13 @@ which prioritizes these three key aspects:
 - **Reproducible.** `pySYD` implements a similar framework to the closed-source IDL-based 
   `SYD` pipeline [@huber2009], which has been used frequently to measure global asteroseismic 
   parameters for many *Kepler* stars [@huber2011;@chaplin2014;@serenelli2017;@yu2018] and has 
-  been extensively tested against other closed-source tools [@verner2011;@hekker2011]. While 
-  adapting the same well-tested methodology from `SYD`, `pySYD` comes with many new enhancements 
-  and is therefore *not* a direct 1:1 translation. Despite these differences, we compared 
-  pipeline results for $\sim100$ *Kepler* legacy stars and found no significant systematic 
-  differences (\autoref{fig:benchmark}). In addition to the important benchmark sample, 
-  `pySYD` ensures reproducible results for *every* star that is processed by saving and 
-  setting seeds for each random process occurring throughout the analyses.
+  been extensively tested against other closed-source tools [@verner2011;@hekker2011]. 
+  \autoref{fig:benchmark} compares global parameter results from the `pySYD` and `SYD` pipelines 
+  for $\sim100$ *Kepler* legacy stars, showing excellent agreement with no significant offsets. 
+  In fact, the small amount of scatter is likely because `pySYD` is *not* a direct 1:1 translation, 
+  incorporating many new custom features and software enhancements. In addition to the important 
+  benchmark sample, `pySYD` ensures reproducible results for *every* locally-processed star by 
+  saving and setting seeds for any randomly occurring analyses.
 - **Scalable.** `pySYD` was developed for speed and efficiency. `pySYD` has more 
   than 50 optional commands that enable a customized analysis at the individual star 
   level and on average, takes less than a minute to complete a single star 
