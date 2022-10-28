@@ -1,5 +1,6 @@
 .vscode
 .DS_store
+dev/data
 *.ipynb_checkpoints
 *.pyc
 .*

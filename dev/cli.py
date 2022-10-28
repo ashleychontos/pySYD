@@ -2,18 +2,18 @@ import os
 import argparse
 
 from version import __version__ 
-SYDFILE = os.path.join(os.path.abspath(os.getcwd()), 'info', 'data', 'syd_results.txt')
-PYSYDFILE = os.path.join(os.path.abspath(os.getcwd()), 'info', 'data', 'pysyd_results.csv')
-_ROOT = '/Users/ashleychontos/Documents/Research/Code/special/pySYD/dev'
+SYDFILE = os.path.join(os.path.abspath(os.getcwd()),'info','data','syd_results.txt')
+PYSYDFILE = os.path.join(os.path.abspath(os.getcwd()),'info','data','pysyd_results.csv')
+_ROOT = '/Users/ashleychontos/Research/Code/special/pySYD/dev'
 INFDIR = os.path.join(_ROOT, 'info')
 INPDIR = os.path.join(_ROOT, 'data')
 OUTDIR = os.path.join(_ROOT, 'results')
 
-
+import warnings
+warnings.filterwarnings("ignore")
 
 # Development mode
 import pipeline
-
 
 
 def main():
@@ -69,6 +69,12 @@ def main():
     parent_parser.add_argument('-v', '--verbose', 
                                dest='verbose',
                                help='turn on verbose output',
+                               default=False, 
+                               action='store_true',
+    )
+    parent_parser.add_argument('-w', '--warnings', 
+                               dest='warnings',
+                               help='turn on output warnings',
                                default=False, 
                                action='store_true',
     )
@@ -134,6 +140,12 @@ def main():
                              dest='kep_corr',
                              help='Turn on the Kepler short-cadence artefact correction routine',
                              default=False, 
+                             action='store_true',
+    )
+    data_parser.add_argument('-f', '--force',
+                             dest='force',
+                             help='hack into ED output and use own value for dnu',
+                             default=False,
                              action='store_true',
     )
     data_parser.add_argument('--dnu',
@@ -294,7 +306,7 @@ def main():
                             default=None, 
                             type=int,
     )
-    background.add_argument('-w', '--wn', '--fixwn',
+    background.add_argument('--wn', '--fixwn',
                             dest='fix_wn',
                             help='Fix the white noise level',
                             default=False,
@@ -336,7 +348,7 @@ def main():
     globe.add_argument('--numax',
                        metavar='float',
                        dest='numax',
-                       help='initial estimate for numax to bypass the forst module',
+                       help='initial estimate for numax to bypass the first module',
                        nargs='*',
                        default=None,
                        type=float,
@@ -378,7 +390,7 @@ def main():
                        type=float,
                        default=2.5,
     )
-    globe.add_argument('-f', '--fft',
+    globe.add_argument('--fft',
                        dest='fft',
                        help='Use :mod:`numpy.correlate` instead of fast fourier transforms to compute the ACF',
                        default=True,
@@ -478,6 +490,12 @@ def main():
                              default=10,
                              type=int,
     )
+    plot_parser.add_argument('-r', '--ridges',
+                             dest='ridges',
+                             help='Run the optimize ridges module for the most excellent spacing (numerically solved so takes a minute or 3)',
+                             default=False, 
+                             action='store_true',
+    )
     plot_parser.add_argument('--se', '--smoothech',
                              metavar='float', 
                              dest='smooth_ech',
@@ -533,12 +551,6 @@ def main():
     parser_check.add_argument('-p', '--plot', 
                               dest='plot',
                               help='Disable automatic plotting of data',
-                              default=True, 
-                              action='store_false',
-    )
-    parser_check.add_argument('-r', '--ret', '--return',
-                              dest='return',
-                              help='Disable the returning of any output',
                               default=True, 
                               action='store_false',
     )

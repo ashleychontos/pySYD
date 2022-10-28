@@ -112,7 +112,43 @@ def gaussian(frequency, offset, amplitude, center, width):
     return model
 
 
-def _harvey_none(frequency, white_noise, ab=False):
+def power(frequency, coefficient, exponent):
+    """Power law
+    
+    Power law distribution used to model traditional "red" noise contributions
+    i.e. the rise in power at low frequencies typically corresponding to long-term 
+    stellar variability
+
+    Parameters
+        frequency : numpy.ndarray
+            the frequency array
+        coefficient : float
+            the power law coefficient
+        exponent : float
+            the power law exponent
+
+    Returns
+        result : np.ndarray
+            the power law distribution
+
+    """
+
+    model = np.zeros_like(frequency)
+    model += amplitude*np.exp(-(center-frequency)**2.0/(2.0*width**2))
+    model += offset
+
+    return model
+
+
+def harvey_regular(frequency, tau, sigma, mode='regular', ab=False,):
+    if not ab:
+        model += (4.*(guesses[(i*2)+1]**2.)*guesses[i*2])/(1.0+(2.*np.pi*guesses[i*2]*frequency)**2.0+(2.*np.pi*guesses[i*2]*frequency)**4.0)
+    else:
+        model += tau/(1.0+(guesses[(i*2)+1]*frequency)**2.0+(guesses[(i*2)+1]*frequency)**4.0)
+
+
+
+def harvey_none(frequency, white_noise, ab=False):
     """
     No Harvey model
     
@@ -143,7 +179,13 @@ def _harvey_none(frequency, white_noise, ab=False):
     return model
 
 
-def _harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
+def white(frequency, white_noise):
+    model = np.zeros_like(frequency)
+    model += white_noise
+    return model
+
+
+def harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
     """
     One Harvey model
     
@@ -175,7 +217,7 @@ def _harvey_one(frequency, tau_1, sigma_1, white_noise, ab=False):
     return model
 
 
-def _harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False):
+def harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False):
     """
     Two Harvey model
     
@@ -213,7 +255,7 @@ def _harvey_two(frequency, tau_1, sigma_1, tau_2, sigma_2, white_noise, ab=False
     return model
 
 
-def _harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise, ab=False):
+def harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise, ab=False):
     """
     Three Harvey model
     
@@ -257,71 +299,73 @@ def _harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, whi
     return model
 
 
-def _log_likelihood(observations, model):
-    """
-    Until we figure out a better method, we are computing the likelhood using
-    the mean squared error.
+class Likelihood:
 
-    Parameters
-        observations : numpy.ndarray
-            the observed power spectrum
-        model : numpy.ndarray
-            model generated at the observed frequencies
+    def __init__(self, observations, model, n_parameters):
+        self.observations, self.model, self.n = np.copy(observations), np.copy(model), n_parameters
 
-    Returns
-        LL : float
-            the natural logarithm of the likelihood (or the MSE)
+    def __repr__(self,):
+        return "<pySYD model>"
 
-    """
+    def log_likelihood(self):
+        """Compute likelihood
 
-    return -0.5*(np.sum((observations-model)**2.))
+        Until we figure out a better method, we are computing the likelhood using
+        the mean squared error.
 
+        Parameters
+            observations : numpy.ndarray
+                the observed power spectrum
+            model : numpy.ndarray
+                model generated at the observed frequencies
 
-def _compute_aic(observations, model, n_parameters):
-    """
-    Computes the Akaike Information Criterion (AIC) given the 
-    background model of the power spectrum
+        Returns
+            LL : float
+                the natural logarithm of the likelihood (or the MSE)
 
-    Parameters
-        observations : numpy.ndarray
-            the observed power spectrum
-        model : numpy.ndarray
-            model generated at the observed frequencies
-        n_parameters : int
-            number of free parameters in the given model
-
-    Returns
-        aic : float
-            AIC value
-
-    """
-    N = len(observations)
-    LL = _log_likelihood(observations, model)
-    aic = (-2.*LL)/N + (2.*n_parameters)/N
-
-    return aic
+        """
+        return -0.5*(np.sum((self.observations-self.model)**2.0))
 
 
-def _compute_bic(observations, model, n_parameters):
-    """
-    Computes the Bayesian Information Criterion (BIC) given the 
-    background model of the power spectrum
+    def compute_aic(self):
+        """AIC metric
 
-    Parameters
-        observations : numpy.ndarray
-            the observed power spectrum
-        model : numpy.ndarray
-            model generated at the observed frequencies
-        n_parameters : int
-            number of free parameters in the given model
+        Computes the Akaike Information Criterion (AIC) given the 
+        background model of the power spectrum
 
-    Returns
-        bic : float
-            BIC value
+        Parameters
+            observations : numpy.ndarray
+                the observed power spectrum
+            model : numpy.ndarray
+                model generated at the observed frequencies
+            n_parameters : int
+                number of free parameters in the given model
 
-    """
-    N = len(observations)
-    LL = _log_likelihood(observations, model)
-    bic = -2.*LL + np.log(N)*n_parameters
+        Returns
+            aic : float
+                AIC value
+        """
+        likelihood = self.log_likelihood()
+        return (-2.0*likelihood)/len(self.observations) + (2.0*self.n)/len(self.observations)
 
-    return bic
+
+    def compute_bic(self):
+        """BIC metric
+
+        Computes the Bayesian Information Criterion (BIC) given the 
+        background model of the power spectrum
+
+        Parameters
+            observations : numpy.ndarray
+                the observed power spectrum
+            model : numpy.ndarray
+                model generated at the observed frequencies
+            n_parameters : int
+                number of free parameters in the given model
+
+        Returns
+            bic : float
+                BIC value
+        """
+        likelihood = self.log_likelihood()
+        return -2.0*likelihood + np.log(len(self.observations))*self.n

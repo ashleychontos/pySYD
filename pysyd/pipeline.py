@@ -33,7 +33,7 @@ def check(args):
     
     """
     star, args = load(args)
-    plots._check_data(star, args)
+    plots.check_data(star, args)
 
 
 def load(args):
@@ -128,9 +128,9 @@ def pipe(group, args, progress=False):
             the command line arguments
 
     """
-    if len(group) > 1 and args.params['mode'] == 'run' and not args.params['verbose']:
+    if args.mode == 'test' and args.params['verbose']:
         progress=True
-        print("\nProcessing %d stars:"%len(group))
+        print("\nTesting %d example stars:"%len(group))
         from tqdm import tqdm 
         pbar = tqdm(total=len(group))
     # Iterate through and run stars in a given star 'group'
@@ -141,7 +141,8 @@ def pipe(group, args, progress=False):
             pbar.update(1)
     if progress:
         pbar.close()
-        print("\n -- process complete --\n")
+        if args.mode == 'test' and args.params['verbose']:
+            print("\n~ comparing w/ expected results ~\n")
 
 
 def plot(args):
@@ -162,7 +163,7 @@ def plot(args):
 
     """
     if args.compare:
-        plots._create_comparison_plot(show=args.show, save=args.save, overwrite=args.overwrite,)
+        plots.create_comparison_plot(show=args.show, save=args.save, overwrite=args.overwrite,)
     if args.results:
         if args.stars is None:
             raise utils.PySYDInputError("Please provide a star to plot results for")
@@ -201,8 +202,7 @@ def run(args):
     utils.scrape_output(args)
 
 
-def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/',
-          note='', save=False, dl={},):
+def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
     """
     
     Running this after installation will create the appropriate directories in the current working
@@ -218,13 +218,54 @@ def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/maste
 
 
     """
-    if args.fix:
-        utils._fix_init(path=args.path)
-        return
+    note, save, dl = '', False, {}
 
-    note = utils._download_all()
+    # INFO DIRECTORY
+    # create info directory (INFDIR)
+    if not os.path.exists(args.infdir):
+        os.mkdir(args.infdir)
+        note+=' - created input file directory at %s \n'%args.infdir
+    # example input files   
+    outfile1 = os.path.join(args.infdir, args.todo)               # example star list file
+    if not os.path.exists(outfile1):
+        dl.update({'%sinfo/todo.txt'%raw:outfile1})
+        note+=' - saved an example of a star list\n'                               
+    outfile2 = os.path.join(args.infdir, args.info)               # example star info file
+    if not os.path.exists(outfile2):
+        dl.update({'%sinfo/star_info.csv'%raw:outfile2})
+        note+=' - saved an example for the star information file\n'
+
+    # DATA DIRECTORY
+    # create data directory (INPDIR)
+    if not os.path.exists(args.inpdir):
+        os.mkdir(args.inpdir)
+        note+=' - created data directory at %s \n'%args.inpdir
+    # example data
+    for target in ['1435467', '2309595', '11618103']:
+        for ext in ['LC', 'PS']:
+            infile='%sdata/%s_%s.txt'%(raw, target, ext)
+            outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
+            if not os.path.exists(outfile):
+                save=True
+                dl.update({infile:outfile})
+    if save:
+        note+=' - example data saved to data directory\n'
+
+    # RESULTS DIRECTORY
+    # create results directory (OUTDIR)
+    if not os.path.exists(args.outdir):
+        os.mkdir(args.outdir)
+        note+=' - results will be saved to %s\n'%args.outdir
+
+    # Download files that do not already exist
+    if dl:
+        # downloading example data will generate output in terminal, so always include this regardless
+        print('\nDownloading relevant data from source directory:')
+        for infile, outfile in dl.items():
+            subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
+
     # option to get ALL columns since only subset is included in the example
-    if args.make_all:
+    if args.makeall:
         df_temp = pd.read_csv(outfile2)
         df = pd.DataFrame(columns=utils.get_dict('columns')['setup'])
         for col in df_temp.columns.values.tolist():
@@ -240,7 +281,7 @@ def setup(args, raw='https://raw.githubusercontent.com/ashleychontos/pySYD/maste
             print('\nNote(s):\n%s'%note)
 
 
-def test(args, stars=['1435467', '2309595', '11618103'], answers={}):
+def test(args, stars=[1435467,2309595,11618103], answers={}):
     """
     
     This is experimental and meant to be helpful for developers or anyone
@@ -256,22 +297,41 @@ def test(args, stars=['1435467', '2309595', '11618103'], answers={}):
         
     
     """
-    print('####################################################################\n#                                                                  #\n#                   Testing pySYD functionality                    #\n#                                                                  #\n####################################################################\n')
+    import warnings
+    warnings.filterwarnings("ignore")
+    if args.verbose:
+        print('####################################################################\n#                                                                  #\n#                   Testing pySYD functionality                    #\n#                                                                  #\n####################################################################\n')
     # Load in example configurations + answers to compare to
     defaults = utils.get_dict(type='tests')
     # Save defaults to file to reproduce identical results
-    df = pd.read_csv(os.path.join(args.infdir, args.info))
-    targets = [str(each) for each in df.stars.values.tolist()]
+    if os.path.exists(args.info):
+        df = pd.read_csv(args.info)
+        targets = [each for each in df.star.values.tolist()]
+    else:
+        df = pd.DataFrame(columns=utils.get_dict(type='columns')['all'])
+        targets = stars[:]
     for star in stars:
-        answers.update({star:defaults[star].pop('results')})
+        # first copy known answers
+        answers[star] = defaults[star].pop('results')
+        # then copy defaults to csv file to ensure reproducibility
         idx = targets.index(star)
         for key in defaults[star]:
             df.loc[idx,key] = defaults[star][key]
-    df.to_csv(os.path.join(args.infdir, args.info), index=False)
+    df.to_csv(args.info, index=False)
     # Run pysyd on 3 examples with sampling
     subprocess.call(['pysyd run --mc 200'], shell=True)
     # Compare results
-    final_df = pd.read_csv(os.path.join(args.outdir,'global.csv'))
-    print('KIC %s\n%s\n'%(star, '-'*(len(star)+4)))        
-
-    print('####################################################################\n#                                                                  #\n#                   TESTING SUCCESSFULLY COMPLETED                 #\n#                                                                  #\n####################################################################\n')
+    args.params = {}
+    args.params['outdir'] = args.outdir
+    utils.scrape_output(args)
+    df = pd.read_csv(os.path.join(args.outdir,'global.csv'))
+    df = df[df['star'].isin(stars)]
+    df.set_index('star', inplace=True)
+    for star in stars:
+        for param in answers[star]:
+            for label, each in zip(['%s','%s_err'],['value','error']):
+                assert '%.2f'%float(df.loc[star,label%param]) == '%.2f'%float(answers[star][param][each])
+    if args.verbose:
+        print('####################################################################\n#                                                                  #\n#                   TESTING SUCCESSFULLY COMPLETED                 #\n#                                                                  #\n####################################################################\n')
+    else:
+        print('\n~ software successfully installed ~\n')

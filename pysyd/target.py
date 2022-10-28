@@ -16,6 +16,30 @@ from . import models
 
 
 
+class LightCurve:
+
+    def __init__(self, star):
+        """
+
+        """
+        self.name = star.name
+
+    def __repr__(self):
+        return "<Star {} LC>".format(self.name)
+
+
+class PowerSpectrum:
+
+    def __init__(self, star):
+        """
+
+        """
+        self.name = star.name
+
+    def __repr__(self):
+        return "<Star {} PS>".format(self.name)
+
+
 class Target:
 
     def __init__(self, name, args):
@@ -38,21 +62,6 @@ class Target:
         Attributes
             params : Dict
                 copy of args.params[name] dictionary with pysyd parameters and options
-
-        Main pipeline target
-        :param name: which target to load in and/or process **note:** *must* match data files
-        :type name: str
-        :param args: container class of pysyd parameters
-        :type args: :mod:`pysyd.utils.Parameters`
-
-        :Example:
-        >>> from . import utils
-        >>> from .target import Target
-        >>> name='1435467'
-        >>> args = utils.Parameters(stars=[name])
-        >>> star = Target(name, args)
-        >>> star
-        <Star 1435467>
 
 
         """
@@ -95,21 +104,21 @@ class Target:
         elif self.nyquist is not None:
             if (self.params['numax'] is not None and self.params['numax'] < 500.) or \
               (self.params['defaults'] is not None and self.params['defaults'] == 'low'):
-                self.params['lower_se'], self.params['lower_bg'] = 1., 1.
-                self.params['upper_se'], self.params['upper_bg'] = 1000., 1000.
+                self.params['lower_ex'], self.params['lower_bg'] = 1., 1.
+                self.params['upper_ex'], self.params['upper_bg'] = 1000., 1000.
             elif (self.params['numax'] is not None and self.params['numax'] >= 500.) or \
               (self.params['defaults'] is not None and self.params['defaults'] == 'high'):
                 self.params['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
                 self.params['smooth_width'] = 20.
                 self.params['ind_width'] = 20.
                 self.params['smooth_ps'] = 2.5
-                self.params['lower_se'], self.params['lower_bg'] = 100., 100.
-                self.params['upper_se'], self.params['upper_bg'] = 8000., 8000.
+                self.params['lower_ex'], self.params['lower_bg'] = 100., 100.
+                self.params['upper_ex'], self.params['upper_bg'] = 8000., 8000.
             else:
                 self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(500.), self.params['n_trials'])
                 self.params['smooth_width'], self.params['ind_width'] = 10., 10.
-                self.params['lower_se'], self.params['lower_bg'] = 1., 1.
-                self.params['upper_se'], self.params['upper_bg'] = 8000., 8000.
+                self.params['lower_ex'], self.params['lower_bg'] = 1., 1.
+                self.params['upper_ex'], self.params['upper_bg'] = 8000., 8000.
                 self.params['smooth_ps'] = 1.5           
         """
 
@@ -148,7 +157,7 @@ class Target:
             if self.params['show']:
                 print(' - displaying figures')
         plots.make_plots(self)
-        if (self.params['cli'] and self.params['verbose']):
+        if (self.params['cli'] and self.params['verbose']) or (not self.params['cli'] and not self.params['notebook']):
             input(' - press RETURN to exit')
 
 
@@ -178,12 +187,11 @@ class Target:
                 if no data is found for a given target   
 
         """
-        self.ps, self.lc, self.note = False, False, ''
+        self.ps, self.lc, self.note, self.note2, self.warnings = False, False, '', '', '\n##### OTHER WARNING(S): #####\n'
         self.params['data'], self.params['plotting'], self.params['results'] = {}, {}, {}
         # Now done at beginning to make sure it only does this once per star
         if glob.glob(os.path.join(self.params['inpdir'],'%s*' % str(self.name))):
-            if self.params['verbose']:
-                print('\n-----------------------------------------------------------\nTarget: %s\n-----------------------------------------------------------' % str(self.name))
+            self.note += '\n-----------------------------------------------------------\nTarget: %s\n-----------------------------------------------------------\n' % str(self.name)
             # Load PS first in case we need to calculate PS from LC
             self.load_power_spectrum()
             # Load light curve
@@ -192,11 +200,14 @@ class Target:
         #     ->  cannot process, return user error
         if not self.ps:
             error = "\n\nERROR: no data found for target %s\n     -> please make sure you are in the correct\n        directory and try again!\n"%self.name
-            raise utils.PySYDInputError(error)
-        self._get_warnings() 
+            print(utils.PySYDInputError(error))
+        if self.params['verbose']:
+            if self.warnings != '\n##### OTHER WARNING(S): #####\n' and self.params['warnings']:
+                print(self.warnings)
+            print(self.note)
 
 
-    def load_power_spectrum(self, long_ps=10**6):
+    def load_power_spectrum(self, long=10**6,):
         """Load power spectrum
     
         Loads in available power spectrum and computes relevant information -- also checks
@@ -228,29 +239,21 @@ class Target:
         # Try loading the power spectrum
         if os.path.exists(os.path.join(self.params['inpdir'], '%s_PS.txt' % str(self.name))):
             self.ps = True
-            self.frequency, self.power = self._load_file(os.path.join(self.params['inpdir'], '%s_PS.txt' % str(self.name)))
+            self.frequency, self.power = self.load_file(os.path.join(self.params['inpdir'], '%s_PS.txt' % str(self.name)))
             self.params['data'].update({'freq_orig':np.copy(self.frequency),'pow_orig':np.copy(self.power)})
-            self.note += '# POWER SPECTRUM: %d lines of data read\n'%len(self.frequency)
+            self.note2 += '# POWER SPECTRUM: %d lines of data read\n'%len(self.frequency)
+            if len(self.frequency) >= long:
+                self.warnings += '#             - PS is large and will slow down the software\n'
             # Only use provided oversampling factor if there is no light curve to calculate it from 
             # CASE 3: POWER SPECTRUM AND NO LIGHT CURVE
             #     ->  assume critically-sampled power spectrum
             if not os.path.exists(os.path.join(self.params['inpdir'], '%s_LC.txt' % str(self.name))):
                 if self.params['oversampling_factor'] is None:
-                    self.note += '# WARNING: using PS with no additional information\n# **assuming critically-sampled PS**\n'
+                    self.warnings += '#             - using PS with no additional information\n# **assuming critically-sampled PS**\n'
                     if self.params['mc_iter'] > 1:
-                        self.note += '# **uncertainties may not be reliable if the PS is not critically-sampled**\n'
+                        self.warnings += '#              **uncertainties may not be reliable if the PS is not critically-sampled**\n'
                     self.params['oversampling_factor'] = 1
                 self.frequency, self.power = self.fix_data(self.frequency, self.power)
-                if self.params['lower_osc'] is not None:
-                    lower = self.params['lower_osc']
-                else:
-                    lower = min(self.frequency)
-                if self.params['upper_osc'] is not None:
-                    upper = self.params['upper_osc']
-                else:
-                    upper = max(self.frequency)
-                self.frequency = self.frequency[(self.frequency >= lower)&(self.frequency <= upper)]
-                self.power = self.power[(self.frequency >= lower)&(self.frequency <= upper)]
                 self.params['data'].update({'freq_fin':np.copy(self.frequency),'pow_fin':np.copy(self.power)})
                 self.freq_os, self.pow_os = np.copy(self.frequency), np.copy(self.power)
                 self.freq_cs = np.array(self.frequency[self.params['oversampling_factor']-1::self.params['oversampling_factor']])
@@ -310,29 +313,18 @@ class Target:
 
 
         """
-        self.nyquist, other = None, ''
+        self.nyquist = None
         # Try loading the light curve
         if os.path.exists(os.path.join(self.params['inpdir'], '%s_LC.txt' % str(self.name))):
             self.lc = True
-            self.time, self.flux = self._load_file(os.path.join(self.params['inpdir'], '%s_LC.txt' % str(self.name)))
+            self.time, self.flux = self.load_file(os.path.join(self.params['inpdir'], '%s_LC.txt' % str(self.name)))
             self.params['data'].update({'time_orig':np.copy(self.time),'flux_orig':np.copy(self.flux),})
             self.time -= min(self.time)
             self.cadence = int(round(np.nanmedian(np.diff(self.time)*24.0*60.0*60.0),0))
             self.nyquist = 10**6./(2.0*self.cadence)
             self.baseline = (max(self.time)-min(self.time))*24.*60.*60.
             self.tau_upper = self.baseline/2.
-            note = '# LIGHT CURVE: %d lines of data read\n# Time series cadence: %d seconds\n'%(len(self.time),self.cadence)
-            # Mask out any unwanted data
-            if self.params['lower_lc'] is not None:
-                lower = self.params['lower_lc']
-            else:
-                lower = min(self.time)
-            if self.params['upper_lc'] is not None:
-                upper = self.params['upper_lc']
-            else:
-                upper = max(self.time)
-            self.time = self.time[(self.time >= lower)&(self.time <= upper)]
-            self.flux = self.flux[(self.time >= lower)&(self.time <= upper)]
+            self.note += '# LIGHT CURVE: %d lines of data read\n# Time series cadence: %d seconds\n'%(len(self.time),self.cadence)
             # Stitch light curve together before attempting to compute a PS
             if self.params['stitch']:
                 self.stitch_data()
@@ -345,39 +337,35 @@ class Target:
                 self.frequency, self.power = self.compute_spectrum(oversampling_factor=self.params['oversampling_factor'], store=True)
                 if self.params['save']:
                     utils._save_file(self.frequency, self.power, os.path.join(self.params['inpdir'], '%s_PS.txt'%self.name), overwrite=self.params['overwrite'])
-                note += '# NEWLY COMPUTED POWER SPECTRUM has length of %d\n'%int(len(self.frequency)/5)
+                self.note += '# NEWLY COMPUTED POWER SPECTRUM has length of %d\n'%int(len(self.frequency)/5)
             else:
                 # CASE 1: LIGHT CURVE AND POWER SPECTRUM
                 #     ->  calculate oversampling factor from time series and compare
                 oversampling_factor = (1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])
                 if self.params['oversampling_factor'] is not None:
-                    if int(oversampling_factor) != self.params['oversampling_factor']:
-                        raise utils.PySYDInputWarning("WARNING: \ncalculated vs. provided oversampling factor do NOT match")
+                    if int(oversampling_factor) != self.params['oversampling_factor'] and self.params['warnings']:
+                        print(utils.PySYDInputWarning("\nWARNING: \ncalculated vs. provided oversampling factor do NOT match"))
                 else:
                     if not float('%.2f'%oversampling_factor).is_integer():
-                        raise utils.PySYDInputError("\nERROR: the calculated oversampling factor is not an integer\nPlease check the input data and try again")
+                        print(utils.PySYDInputError("\nERROR: \nthe calculated oversampling factor is not an integer\nPlease check the input data and try again"))
                     else:
                         self.params['oversampling_factor'] = int(oversampling_factor)   
                 self.frequency, self.power = self.fix_data(self.frequency, self.power)
                 self.params['data'].update({'freq_fin':np.copy(self.frequency),'pow_fin':np.copy(self.power)})
-            note += self.note
+            self.note += self.note2
             self.freq_os, self.pow_os = np.copy(self.frequency), np.copy(self.power)
             self.freq_cs = np.array(self.frequency[self.params['oversampling_factor']-1::self.params['oversampling_factor']])
             self.pow_cs = np.array(self.power[self.params['oversampling_factor']-1::self.params['oversampling_factor']])
             self.params['data'].update({'freq_over':np.copy(self.freq_os),'pow_over':np.copy(self.pow_os),
                                         'freq_crit':np.copy(self.freq_cs),'pow_crit':np.copy(self.pow_cs),})
             if self.params['oversampling_factor'] != 1:
-                note += '# PS oversampled by a factor of %d'%self.params['oversampling_factor']
+                self.note += '# PS oversampled by a factor of %d'%self.params['oversampling_factor']
             else:
-                note += '# PS is critically-sampled'
-            note += '\n# PS resolution: %.6f muHz'%(self.freq_cs[1]-self.freq_cs[0])
-        if self.params['verbose']:
-            print(note)
-            if other != '':
-                print(other)
+                self.note += '# PS is critically-sampled'
+            self.note += '\n# PS resolution: %.6f muHz'%(self.freq_cs[1]-self.freq_cs[0])
 
 
-    def _load_file(self, path):
+    def load_file(self, path):
         """Load text file
     
         Load a light curve or a power spectrum from a basic 2xN txt file
@@ -394,48 +382,13 @@ class Target:
 
 
         """
-
-        f = open(path, "r")
-        lines = f.readlines()
-        f.close()
+        # Open file
+        with open(path, "r") as f:
+            lines = f.readlines()
         # Set values
         x = np.array([float(line.strip().split()[0]) for line in lines])
         y = np.array([float(line.strip().split()[1]) for line in lines])
         return x, y
-
-
-    def _get_warnings(self, long=10**6,):
-        """Check input data
-
-        Prints relevant warnings about the input data
-
-        Parameters
-            long : int, default= :math:`10^{6}`
-                arbitrary number to let user know if a "long" PS was given, as it will
-                take pySYD longer to process
-
-        Raises
-            PySYDInputWarning
-                if the power spectrum is large and will slow down the software
-            PySYDInputWarning
-                if the time series data is "stitched" together
-            PySYDInputWarning
-                if the *Kepler* artefact correction module was used
-            PySYDInputWarning
-                if the power spectrum was "whitened" to help with mixed modes
-
-        """
-        note = ''
-        if len(self.frequency) >= long:
-            note += '# WARNING(S):\n             - PS is large and will slow down the software\n'
-        if self.params['stitch']:
-            note += '#             - using stitch_data module - which is dodgy\n'
-        if self.params['kep_corr']:
-            note += '#             - used Kepler artefact correction\n'
-        if self.params['ech_mask'] is not None:
-            note += '#             - whitened PS to help w/ mixed modes**\n'
-        if self.params['verbose'] and note != '':
-            print(note)
 
 
     def stitch_data(self, gap=20):
@@ -472,6 +425,7 @@ class Target:
 
 
         """
+        self.warnings += '#             - using stitch_data module - which is dodgy\n'
         self.new_time = np.copy(self.time)
         for i in range(1,len(self.new_time)):
             if (self.new_time[i]-self.new_time[i-1]) > float(self.params['gap'])*(self.cadence/24./60./60.):
@@ -525,7 +479,7 @@ class Target:
         return frequency, power
 
 
-    def fix_data(self, frequency, power, kep_corr=False, ff_mask=None,):
+    def fix_data(self, frequency, power, kep_corr=False, ech_mask=None,):
         """Fix frequency domain data
 
         Applies frequency-domain tools to power spectra to "fix" (i.e. manipulate) the data. 
@@ -536,7 +490,7 @@ class Target:
                 save all data products
             kep_corr : bool, default=False
                 correct for known *Kepler* short-cadence artefacts
-            ff_mask : List[lower_ff,upper_ff], default=None
+            ech_mask : List[lower_ech,upper_ech], default=None
                 corrects for dipole mixed modes if not `None`
             frequency, power : numpy.ndarray, numpy.ndarray
                 input power spectrum to be corrected 
@@ -583,11 +537,13 @@ class Target:
         seed = np.random.randint(lower,high=upper)
         df = pd.read_csv(os.path.join(self.params['infdir'], self.params['info']))
         stars = [str(each) for each in df.stars.values.tolist()]
-        if self.name in stars:
-            idx = stars.index(self.name)
+        # check if star is in file and if not, adds it and the seed for reproducibility
+        if str(self.name) in stars:
+            idx = stars.index(str(self.name))
         else:
             idx = len(df)
-        df.loc[idx,'seed'] = int(seed)
+            df.loc[idx,'stars'] = str(self.name)
+        df.loc[idx,'seed'] = '%d'%int(seed)
         self.params['seed'] = int(seed)
         df.to_csv(os.path.join(self.params['infdir'], self.params['info']), index=False)
 
@@ -629,6 +585,7 @@ class Target:
 
 
         """
+        self.warnings += '#             - used Kepler artefact correction\n'
         frequency, power = np.copy(freq), np.copy(pow)
         resolution = frequency[1]-frequency[0]
         if self.params['seed'] is None:
@@ -664,7 +621,7 @@ class Target:
         return np.copy(frequency), np.copy(power)
 
 
-    def whiten_mixed(self, freq, pow, dnu=None, lower_ff=None, upper_ff=None, notching=False,):
+    def whiten_mixed(self, freq, pow, dnu=None, lower_ech=None, upper_ech=None, notching=False,):
         """Whiten mixed modes
     
         Module to help reduce the effects of mixed modes random white noise in place of 
@@ -674,9 +631,9 @@ class Target:
         Parameters
             dnu : float, default=None
                 the so-called large frequency separation to fold the PS to
-            lower_ff : float, default=None
+            lower_ech : float, default=None
                 lower frequency limit of mask to "whiten"
-            upper_ff : float, default=None
+            upper_ech : float, default=None
                 upper frequency limit of mask to "whiten"
             notching : bool, default=False
                 if `True`, uses notching instead of generating white noise
@@ -690,6 +647,7 @@ class Target:
                 copy of the corrected power spectrum
 
         """
+        self.warnings += '#             - whitened PS to help w/ mixed modes**\n'
         frequency, power = np.copy(freq), np.copy(pow)
         if self.params['seed'] is None:
             self._set_seed()
@@ -700,7 +658,7 @@ class Target:
             white = min(power[(frequency >= max(frequency)-100.0)&(frequency <= max(frequency)-50.0)])
         # Take the provided dnu and "fold" the power spectrum
         folded_freq = np.copy(frequency)%self.params['force']
-        mask = np.ma.getmask(np.ma.masked_inside(folded_freq, self.params['ff_mask'][0], self.params['ff_mask'][1]))
+        mask = np.ma.getmask(np.ma.masked_inside(folded_freq, self.params['ech_mask'][0], self.params['ech_mask'][1]))
         # Set seed for reproducibility purposes
         np.random.seed(int(self.params['seed']))
         # Makes sure the mask is not empty
@@ -711,7 +669,6 @@ class Target:
                 power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
         # switch "force" dnu value back
         self.params['force'] = None
-
         return np.copy(frequency), np.copy(power)
 
 
@@ -747,16 +704,16 @@ class Target:
             utils._save_estimates(self)
 
 
-    def initial_estimates(self, lower_se=1.0, upper_se=8000.0, max_trials=6,):
+    def initial_estimates(self, lower_ex=1.0, upper_ex=8000.0, max_trials=6,):
         """Initial estimates
     
         Prepares data and parameters associated with the first module that identifies 
         solar-like oscillations and estimates :term:`numax`
 
         Parameters
-            lower_se : float, default=1.0
+            lower_ex : float, default=1.0
                 the lower frequency limit of the PS used to estimate numax
-            upper_se : float, default=8000.0
+            upper_ex : float, default=8000.0
                 the upper frequency limit of the PS used to estimate numax
             max_trials : int, default=6
 	               (arbitrary) maximum number of "guesses" or trials to perform to estimate numax
@@ -765,7 +722,7 @@ class Target:
             frequency, power : numpy.ndarray, numpy.ndarray
                 copy of the entire oversampled (or critically-sampled) power spectrum (i.e. `freq_os` & `pow_os`) 
             freq, pow : numpy.ndarray, numpy.ndarray
-                copy of the entire oversampled (or critically-sampled) power spectrum (i.e. `freq_os` & `pow_os`) after applying the mask~[lower_se,upper_se]
+                copy of the entire oversampled (or critically-sampled) power spectrum (i.e. `freq_os` & `pow_os`) after applying the mask~[lower_ex,upper_ex]
             module : str, default='parameters'
                 which part of the pipeline is currently being used
 
@@ -779,12 +736,12 @@ class Target:
         self.frequency, self.power = np.copy(self.freq_os), np.copy(self.pow_os)
         self.params['resolution'] = self.frequency[1]-self.frequency[0]
         # mask out any unwanted frequencies
-        if self.params['lower_se'] is not None:
-            lower = self.params['lower_se']
+        if self.params['lower_ex'] is not None:
+            lower = self.params['lower_ex']
         else:
             lower = min(self.frequency)
-        if self.params['upper_se'] is not None:
-            upper = self.params['upper_se']
+        if self.params['upper_ex'] is not None:
+            upper = self.params['upper_ex']
         else:
             upper = max(self.frequency)
         if self.nyquist is not None and self.nyquist < upper:
@@ -858,7 +815,7 @@ class Target:
                 print('Selecting model %d' % self.params['best'])
         # Or ask which estimate to use
         else:
-            self = plots._select_trial(self)
+            self = plots.select_trial(self)
 
 
     def _collapsed_acf(self, n_trials=3, step=0.25, max_snr=100.0,):
@@ -881,7 +838,7 @@ class Target:
         # Computes a collapsed ACF using different "box" (or bin) sizes
         for b, box in enumerate(self.params['boxes']):
             self.params['results'][self.module][b+1], self.params['plotting'][self.module][b] = {}, {}
-            start, cumsum, md = 0, [], []
+            start, snr, cumsum, md = 0, 0.0, [], []
             subset = np.ceil(box/self.params['resolution'])
             steps = np.ceil((box*self.params['step'])/self.params['resolution'])
             # Iterates through entire power spectrum using box width
@@ -904,17 +861,16 @@ class Target:
                 best_vars, _ = curve_fit(models.gaussian, np.array(md), np.array(csum), p0=[np.median(csum), 1.0-np.median(csum), md[idx], self.constants['width_sun']*(md[idx]/self.constants['numax_sun'])], maxfev=5000, bounds=((-np.inf,-np.inf,1,-np.inf),(np.inf,np.inf,np.inf,np.inf)),)
             except Exception as _:
                 self.params['plotting'][self.module][b].update({'good_fit':False,'fitx':np.linspace(min(md), max(md), 10000)})
-                snr = 0.
             else:
                 self.params['plotting'][self.module][b].update({'good_fit':True,})
                 self.params['plotting'][self.module][b].update({'fitx':np.linspace(min(md), max(md), 10000),'fity':models.gaussian(np.linspace(min(md), max(md), 10000), *best_vars)})
                 snr = max(self.params['plotting'][self.module][b]['fity'])/np.absolute(best_vars[0])
                 if snr > max_snr:
                     snr = max_snr
-                self.params['results'][self.module][b+1].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
-                self.params['plotting'][self.module][b].update({'numax':best_vars[2], 'dnu':utils.delta_nu(best_vars[2]), 'snr':snr})
+                self.params['results'][self.module][b+1].update({'value':best_vars[2],'snr':snr})
+                self.params['plotting'][self.module][b].update({'value':best_vars[2],'snr':snr})
                 if self.params['verbose']:
-                    print('Numax estimate %d: %.2f +/- %.2f'%(b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
+                    print('Estimate %d: %.2f +/- %.2f'%(b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
                     print('S/N: %.2f' % snr)
             self.params['compare'].append(snr)
 
@@ -953,10 +909,10 @@ class Target:
                 for col in columns:
                     self.params[col] = df.loc[0, col]
                 if np.isnan(self.params['numax']):
-                    raise utils.PySYDProcessingError("ERROR: invalid value for numax")
+                    raise utils.PySYDProcessingError("\nERROR: invalid value for numax\n")
             else:
                 # Raise error
-                raise utils.PySYDProcessingError("ERROR: no numax provided for global fit")
+                raise utils.PySYDProcessingError("\nERROR: no numax provided for global fit\n")
 
 
 ##########################################################################################
@@ -1073,8 +1029,8 @@ class Target:
             print('-----------------------------------------------------------\nGLOBAL FIT\n-----------------------------------------------------------')
 
 
-    def solar_scaling(self, numax=None, scaling='tau_sun_single', max_laws=3, osc_width=1.0,
-                      lower_osc=None, upper_osc=None,):
+    def solar_scaling(self, numax=None, scaling='tau_sun_single', max_laws=3, ex_width=1.0,
+                      lower_ps=None, upper_ps=None,):
         """Initial values
         
         Using the initial starting value for :math:`\\rm \\nu_{max}`, estimates the rest of
@@ -1090,11 +1046,11 @@ class Target:
 	               which solar scaling relation to use
             max_laws : int, default=3
                 the maximum number of resolvable Harvey-like components
-            osc_width : float, default=1.0
+            ex_width : float, default=1.0
                 fractional width to use for power excess centered on :term:`numax`
-            lower_osc : float, default=None
+            lower_ps : float, default=None
                 lower bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
-            upper_osc : float, default=None
+            upper_ps : float, default=None
                 upper bound of power excess to use for :term:`ACF` [in :math:`\\rm \mu Hz`]
 
         Attributes
@@ -1103,19 +1059,20 @@ class Target:
 
 
         """
-        self.params['exp_numax'] = self.params['numax']
+        if self.params['dnu'] is None:
+            self.params['dnu'] = utils.delta_nu(self.params['numax'])
         # Use scaling relations to estimate width of oscillation region to mask out of the background fit
-        width = self.constants['width_sun']*(self.params['exp_numax']/self.constants['numax_sun'])
-        maxpower = [self.params['exp_numax']-(width*self.params['osc_width']), self.params['exp_numax']+(width*self.params['osc_width'])]
-        if self.params['lower_osc'] is not None:
-            maxpower[0] = self.params['lower_osc']
-        if self.params['upper_osc'] is not None:
-            maxpower[1] = self.params['upper_osc']
-        self.params['osc_mask'] = [maxpower[0], maxpower[1]]
+        width = self.constants['width_sun']*(self.params['numax']/self.constants['numax_sun'])
+        maxpower = [self.params['numax']-(width*self.params['ex_width']), self.params['numax']+(width*self.params['ex_width'])]
+        if self.params['lower_ps'] is not None:
+            maxpower[0] = self.params['lower_ps']
+        if self.params['upper_ps'] is not None:
+            maxpower[1] = self.params['upper_ps']
+        self.params['ps_mask'] = [maxpower[0], maxpower[1]]
         # Use scaling relation for granulation timescales from the sun to get starting points
-        scale = self.constants['numax_sun']/self.params['exp_numax']
+        scale = self.constants['numax_sun']/self.params['numax']
         # make sure interval is not empty
-        if not list(self.frequency[(self.frequency>=self.params['osc_mask'][0])&(self.frequency<=self.params['osc_mask'][1])]):
+        if not list(self.frequency[(self.frequency>=self.params['ps_mask'][0])&(self.frequency<=self.params['ps_mask'][1])]):
             raise PySYDInputError("ERROR: frequency region for power excess is null\nPlease specify an appropriate numax and/or frequency limits for the power excess (via --lp/--up)")
         # Estimate granulation time scales
         if scaling == 'tau_sun_single':
@@ -1136,7 +1093,7 @@ class Target:
         self.converge = True
         # Save copies for plotting after the analysis
         self.params['nlaws'], self.params['a'] = len(self.params['mnu']), []
-        self.params['plotting'][self.module].update({'exp_numax':self.params['exp_numax'],
+        self.params['plotting'][self.module].update({'exp_numax':self.params['numax'],
                                                      'nlaws_orig':len(self.params['mnu']),
                                                      'b_orig':np.copy(self.params['b'])})
 
@@ -1286,7 +1243,7 @@ class Target:
         # Bin power spectrum to model stellar background/correlated red noise components
         self.bin_freq, self.bin_pow, self.bin_err = utils._bin_data(self.frequency, self.random_pow, width=self.params['ind_width'], mode=self.params['bin_mode'])
         # Mask out region with power excess
-        mask = np.ma.getmask(np.ma.masked_outside(self.bin_freq, self.params['osc_mask'][0], self.params['osc_mask'][1]))
+        mask = np.ma.getmask(np.ma.masked_outside(self.bin_freq, self.params['ps_mask'][0], self.params['ps_mask'][1]))
         self.bin_freq, self.bin_pow, self.bin_err = self.bin_freq[mask], self.bin_pow[mask], self.bin_err[mask]
         # Estimate white noise level
         self.white_noise()
@@ -1325,7 +1282,7 @@ class Target:
         """
         # Exclude region with power excess and smooth to estimate red noise components
         boxkernel = Box1DKernel(int(np.ceil(self.params['box_filter']/self.params['resolution'])))
-        mask = (self.frequency >= self.params['osc_mask'][0])&(self.frequency <= self.params['osc_mask'][1])
+        mask = (self.frequency >= self.params['ps_mask'][0])&(self.frequency <= self.params['ps_mask'][1])
         self.smooth_pow = convolve(self.random_pow, boxkernel)
         # Temporary array for inputs into model optimization
         self.params['guesses'] = np.zeros((self.params['nlaws']*2+1))
@@ -1399,6 +1356,7 @@ class Target:
             if self.params['verbose'] and len(self.params['models']) > 1:
                 print('Comparing %d different models:' % len(self.params['models']))
             for n, n_free in enumerate(self.params['models']):
+                b, a = np.inf, np.inf
                 note = 'Model %d: %d Harvey-like component(s) + '%(n, n_free//2)
                 if self.params['basis'] == 'a_b':
                     bounds = ([0.0,0.0]*(n_free//2), [np.inf,self.tau_upper]*(n_free//2))
@@ -1415,10 +1373,8 @@ class Target:
                 self.params['bounds'].append(bounds)
                 if n_free == 0:
                     self.params['paras'].append([])
-                    model = np.ones_like(self.bin_pow)*self.params['noise']
-                    b, a = models._compute_bic(self.bin_pow, model, n_parameters=n_free), models._compute_aic(self.bin_pow, model, n_parameters=n_free)
-                    self.params['bic'].append(b)
-                    self.params['aic'].append(a)
+                    b = models.Likelihood(self.bin_pow, np.ones_like(self.bin_pow)*self.params['noise'], n_free).compute_bic()
+                    a = models.Likelihood(self.bin_pow, np.ones_like(self.bin_pow)*self.params['noise'], n_free).compute_aic()
                 else:
                     try:
                         if not n_free%2:
@@ -1429,15 +1385,13 @@ class Target:
                             pars, _ = curve_fit(self.params['functions'][n_free], self.bin_freq, self.bin_pow, p0=guesses, sigma=self.bin_err, bounds=bounds)
                     except RuntimeError as _:
                         self.params['paras'].append([])
-                        self.params['bic'].append(np.inf)
-                        self.params['aic'].append(np.inf)
                     else:
                         self.params['paras'].append(pars)
                         model = models.background(self.bin_freq, pars, noise=self.params['noise'])
-                        b, a = models._compute_bic(self.bin_pow, model, n_parameters=n_free), models._compute_aic(self.bin_pow, model, n_parameters=n_free)
-                        self.params['bic'].append(b)
-                        self.params['aic'].append(a)
-                if self.params['verbose']:
+                        b, a = models.Likelihood(self.bin_pow, model, n_free).compute_bic(), models.Likelihood(self.bin_pow, model, n_free).compute_aic()
+                self.params['bic'].append(b)
+                self.params['aic'].append(a)
+                if self.params['verbose'] and np.isfinite(a) and np.isfinite(b):
                     note += '\n BIC = %.2f | AIC = %.2f'%(b, a)
                     print(note)
             # Did the fit converge 
@@ -1497,10 +1451,10 @@ class Target:
         # Save background-corrected power spectrum
         self.bg_div = self.random_pow/models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
         if self.params['save']:
-            utils._save_file(self.frequency, self.bg_div, os.path.join(self.params['path'], '%s_BDPS.txt'%self.name), overwrite=self.params['overwrite'])
+            utils.save_file(self.frequency, self.bg_div, os.path.join(self.params['path'], '%s_BDPS.txt'%self.name), overwrite=self.params['overwrite'])
         self.bg_sub = self.random_pow-models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
         if self.params['save']:
-            utils._save_file(self.frequency, self.bg_sub, os.path.join(self.params['path'], '%s_BSPS.txt'%self.name), overwrite=self.params['overwrite'])
+            utils.save_file(self.frequency, self.bg_sub, os.path.join(self.params['path'], '%s_BSPS.txt'%self.name), overwrite=self.params['overwrite'])
         self.params['plotting'][self.module].update({'models':self.params['models'],
                                                      'model':self.params['selected'],
                                                      'paras':self.params['paras'],
@@ -1557,7 +1511,7 @@ class Target:
             self.params['pars'] = ([self.params['noise']])
 
 
-    def global_fit(self,):
+    def global_fit(self):
         """Global fit
 
         Fits global asteroseismic parameters :math:`\\rm \\nu{max}` and :math:`\\Delta\\nu`,
@@ -1579,7 +1533,7 @@ class Target:
         self.frequency_spacing()
 
 
-    def numax_smooth(self, sm_par=None,):
+    def numax_smooth(self, sm_par=None):
         """Smooth :math:`\\nu_{\\mathrm{max}}`
 
         Estimate numax by taking the peak of the smoothed power spectrum
@@ -1594,11 +1548,11 @@ class Target:
             frequency, pssm_bgcorr : numpy.ndarray, numpy.ndarray
                 smoothed :term:`background-subtracted power spectrum`
             region_freq, region_pow : numpy.ndarray, numpy.ndarray
-                oscillation region of the power spectrum ("zoomed in") by applying the mask~[lower_osc,upper_osc]
-            obs_numax : float
+                oscillation region of the power spectrum ("zoomed in") by applying the mask~[lower_ps,upper_ps]
+            numax_smoo : float
                 the 'observed' numax (i.e. the peak of the smoothed power spectrum)
-            exp_dnu : float
-                the 'expected' dnu based on a scaling relation using the `obs_numax`
+            dnu_smoo : float
+                the 'expected' dnu based on a scaling relation using the `numax_smoo`
 
         """
         # Smoothing width for determining numax
@@ -1611,13 +1565,13 @@ class Target:
         sig = (sm_par*(self.params['dnu']/self.params['resolution']))/np.sqrt(8.0*np.log(2.0))
         self.pssm = convolve_fft(np.copy(self.random_pow), Gaussian1DKernel(int(sig)))
         self.pssm_bgcorr = self.pssm-models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
-        mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.params['osc_mask'][0], self.params['osc_mask'][1]))
+        mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.params['ps_mask'][0], self.params['ps_mask'][1]))
         self.region_freq, self.region_pow = self.frequency[mask], self.pssm_bgcorr[mask]
         idx, max_freq, max_pow = utils.return_max(self.region_freq, self.region_pow)
         self.params['results'][self.module]['numax_smooth'].append(max_freq)
         self.params['results'][self.module]['A_smooth'].append(max_pow)
-        self.params['obs_numax'] = self.params['results'][self.module]['numax_smooth'][0]
-        self.params['exp_dnu'] = utils.delta_nu(self.params['obs_numax'])
+        self.params['numax_smoo'] = self.params['results'][self.module]['numax_smooth'][0]
+        self.params['exp_dnu'] = utils.delta_nu(self.params['numax_smoo'])
 
 
     def numax_gaussian(self):
@@ -1636,7 +1590,7 @@ class Target:
 
 
         """
-        guesses = [0.0, np.absolute(max(self.region_pow)), self.params['obs_numax'], (max(self.region_freq)-min(self.region_freq))/np.sqrt(8.0*np.log(2.0))]
+        guesses = [0.0, np.absolute(max(self.region_pow)), self.params['numax_smoo'], (max(self.region_freq)-min(self.region_freq))/np.sqrt(8.0*np.log(2.0))]
         bb = ([-np.inf,0.0,0.01,0.01],[np.inf,np.inf,np.inf,np.inf])
         try:
             gauss, _ = curve_fit(models.gaussian, self.region_freq, self.region_pow, p0=guesses, bounds=bb, maxfev=1000)
@@ -1649,7 +1603,7 @@ class Target:
                 # Create an array with finer resolution for plotting
                 new_freq = np.linspace(min(self.region_freq), max(self.region_freq), 10000)
                 self.params['plotting'][self.module].update({'pssm':np.copy(self.pssm),
-                                                             'obs_numax':self.params['obs_numax'],
+                                                             'obs_numax':self.params['numax_smoo'],
                                                              'new_freq':new_freq,
                                                              'numax_fit':models.gaussian(new_freq, *gauss),
                                                              'exp_dnu':self.params['exp_dnu'],
@@ -1687,7 +1641,7 @@ class Target:
             boxkernel = Box1DKernel(int(np.ceil(self.params['smooth_ps']/self.params['resolution'])))
             self.bgcorr_smooth = convolve(self.bg_corr, boxkernel)
         # Use only power near the expected numax to reduce additional noise in ACF
-        power = self.bgcorr_smooth[(self.frequency >= self.params['osc_mask'][0])&(self.frequency <= self.params['osc_mask'][1])]
+        power = self.bgcorr_smooth[(self.frequency >= self.params['ps_mask'][0])&(self.frequency <= self.params['ps_mask'][1])]
         lag = np.arange(0.0, len(power))*self.params['resolution']
         if self.params['fft']:
             auto = np.real(np.fft.fft(np.fft.ifft(power)*np.conj(np.fft.ifft(power))))
@@ -1695,10 +1649,8 @@ class Target:
             auto = np.correlate(power-np.mean(power), power-np.mean(power), "full")
             auto = auto[int(auto.size/2):]
         mask = np.ma.getmask(np.ma.masked_inside(lag, self.params['exp_dnu']/4., 2.*self.params['exp_dnu']+self.params['exp_dnu']/4.))
-        lag = lag[mask]
-        auto = auto[mask]
-        auto -= min(auto)
-        auto /= max(auto)
+        lag, auto = lag[mask], auto[mask]
+        auto = (auto - min(auto))/(max(auto) - min(auto))
         self.lag, self.auto = np.copy(lag), np.copy(auto)
 
 
@@ -1769,7 +1721,6 @@ class Target:
                   'new_lag':np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), 
                   'dnu_fit':models.gaussian(np.linspace(min(self.zoom_lag),max(self.zoom_lag),2000), *gauss),})
                 self.echelle_diagram()
-                self.optimize_ridges()
 
 
     def _acf_cutout(self, threshold=1.0,):
@@ -1785,7 +1736,7 @@ class Target:
 
 
         """
-        mask = (self.frequency >= self.params['osc_mask'][0]) & (self.frequency <= self.params['osc_mask'][1])
+        mask = (self.frequency >= self.params['ps_mask'][0]) & (self.frequency <= self.params['ps_mask'][1])
         self.zoom_freq = self.frequency[mask]
         self.zoom_pow = self.bgcorr_smooth[mask]
         self.params['plotting'][self.module].update({'zoom_freq':np.copy(self.zoom_freq),
@@ -1810,7 +1761,7 @@ class Target:
         self.params['plotting'][self.module].update({'zoom_lag':np.copy(zoom_lag),'zoom_auto':np.copy(zoom_auto)})
         # Boundary conditions and initial guesses stay the same for all iterations
         self.params['acf_guesses'] = [np.mean(zoom_auto), self.params['best_auto'], self.params['best_lag'], self.params['best_lag']*0.01*2.]
-        self.params['acf_bb'] = ([-np.inf,0.,min(zoom_lag),10**-2.],[np.inf,np.inf,max(zoom_lag),2.*(max(zoom_lag)-min(zoom_lag))]) 
+        self.params['acf_bb'] = ((-np.inf,0.,min(zoom_lag),10**-2.),(np.inf,np.inf,max(zoom_lag),2.*(max(zoom_lag)-min(zoom_lag)))) 
 
 
     def echelle_diagram(self, smooth_ech=None, nox=None, noy='0+0', hey=False, npb=10, nshift=0, clip_value=3.0,):
@@ -1842,6 +1793,8 @@ class Target:
                 bounding box for echelle diagram
 
         """
+        self.optimize_ridges()
+        use_dnu = self.params['plotting'][self.module]['use_dnu']
         if self.params['smooth_ech'] is not None:
             boxkernel = Box1DKernel(int(np.ceil(self.params['smooth_ech']/self.params['resolution'])))
             smooth_y = convolve(self.bg_corr, boxkernel)
@@ -1849,8 +1802,8 @@ class Target:
             smooth_y = np.copy(self.bg_corr)
         # If the number of desired orders is not provided
         if self.params['noy'] == "0+0" or self.params['noy'] == "0-0":
-            width = self.constants['width_sun']*(self.params['obs_numax']/self.constants['numax_sun'])
-            ny = int(np.ceil(width/self.params['obs_dnu']))
+            width = self.constants['width_sun']*(self.params['numax_smoo']/self.constants['numax_sun'])
+            ny = int(np.ceil(width/use_dnu))
             nshift = 0
         else:
             if '+' in self.params['noy']:
@@ -1859,21 +1812,21 @@ class Target:
                 ny, nshift = int(self.params['noy'].split('-')[0]), int(self.params['noy'].split('-')[-1])
                 nshift *= -1            
         # Make sure n_across isn't finer than the actual resolution grid
-        if self.params['nox'] is None or (self.params['nox'] >= int(np.ceil(self.params['obs_dnu']/self.params['resolution']))):
+        if self.params['nox'] is None or (self.params['nox'] >= int(np.ceil(use_dnu/self.params['resolution']))):
             # add function to check that the resolution isn't ridiculous
-            nx = int(np.ceil(self.params['obs_dnu']/self.params['resolution']/self.params['npb']))
+            nx = int(np.ceil(use_dnu/self.params['resolution']/self.params['npb']))
         else:
             nx = int(self.params['nox'])
-        x = np.linspace(0.0, 2*self.params['obs_dnu'], 2*nx+1)
-        yy = np.arange(min(self.frequency),max(self.frequency),self.params['obs_dnu'])
-        lower = self.params['obs_numax']-(self.params['obs_dnu']*(ny/2.))+(self.params['obs_dnu']*(nshift+0))
-        upper = self.params['obs_numax']+(self.params['obs_dnu']*(ny/2.))+(self.params['obs_dnu']*(nshift+1))
+        x = np.linspace(0.0, 2*use_dnu, 2*nx+1)
+        yy = np.arange(min(self.frequency),max(self.frequency),use_dnu)
+        lower = self.params['numax_smoo']-(use_dnu*(ny/2.))+(use_dnu*(nshift+0))
+        upper = self.params['numax_smoo']+(use_dnu*(ny/2.))+(use_dnu*(nshift+1))
         y = yy[(yy >= lower)&(yy <= upper)]
         z = np.zeros((ny+1,2*nx))
         for i in range(1,ny+1):
             y_mask = ((self.frequency >= y[i-1]) & (self.frequency < y[i]))
             for j in range(nx):
-                x_mask = ((self.frequency%(self.params['obs_dnu']) >= x[j]) & (self.frequency%(self.params['obs_dnu']) < x[j+1]))
+                x_mask = ((self.frequency%(use_dnu) >= x[j]) & (self.frequency%(use_dnu) < x[j+1]))
                 if smooth_y[x_mask & y_mask] != []:
                     z[i][j] = np.sum(smooth_y[x_mask & y_mask])
                 else:
@@ -1885,13 +1838,14 @@ class Target:
         self.extent = [min(x),max(x),min(y),max(y)]
         # make copy of ED to flatten and clip outliers
         ed_copy = self.ed.flatten()
-        if int(np.ceil(self.params['clip_value'])) != 0:
+        if self.params['clip_value'] > 0:
             cut = np.nanmedian(ed_copy)+(self.params['clip_value']*np.nanmedian(ed_copy))
             ed_copy[ed_copy >= cut] = cut
         self.ed = ed_copy.reshape((self.ed.shape[0], self.ed.shape[1]))
+        self.collapse_ed()
 
 
-    def optimize_ridges(self,):
+    def collapse_ed(self, n_trials=3):
         """Get ridges
 
         Optimizes the large frequency separation by determining which spacing creates the
@@ -1907,10 +1861,10 @@ class Target:
         .. important:: need to optimize this - currently does nothing really
 
         """
-        n = int(np.ceil(self.params['obs_dnu']/self.params['resolution']))
-        xx = np.linspace(0.0, self.params['obs_dnu'], n)
+        n = int(np.ceil(self.params['plotting'][self.module]['use_dnu']/self.params['resolution']))
+        xx = np.linspace(0.0, self.params['plotting'][self.module]['use_dnu'], n)
         yy = np.zeros_like(xx)
-        modx = self.frequency%self.params['obs_dnu']
+        modx = self.frequency%self.params['plotting'][self.module]['use_dnu']
         for k in range(n-1):
             mask = (modx >= xx[k])&(modx < xx[k+1])
             if self.bg_corr[mask] != []:
@@ -1918,7 +1872,178 @@ class Target:
                 yy[k] = np.sum(self.bg_corr[mask])
         mask = np.ma.getmask(np.ma.masked_where(yy == 0.0, yy))
         xx, yy = xx[~mask], yy[~mask]
-        self.x = np.array(xx.tolist()+list(xx+self.params['obs_dnu']))
+        self.x = np.array(xx.tolist()+list(xx+self.params['plotting'][self.module]['use_dnu']))
         self.y = np.array(list(yy)+list(yy))-min(yy)
         self.params['plotting'][self.module].update({'ed':np.copy(self.ed),'extent':np.copy(self.extent),'x':np.copy(self.x),'y':np.copy(self.y),})
         self.i += 1
+
+
+    def get_epsilon(self, n_trials=3):
+        """Get ridges
+
+        Optimizes the large frequency separation by determining which spacing creates the
+        "best" ridges (but is currently under development) think similar to a step-echelle
+        but quicker and more hands off?
+
+        Attributes
+            x : numpy.ndarray
+                x-axis for the collapsed ED ~[0, :math:`2\\times\\Delta\\nu`]
+            y : numpy.ndarray
+                marginalized power along the y-axis (i.e. collapsed on to the x-axis)
+
+        .. important:: need to optimize this - currently does nothing really
+
+        """
+        self.params['results']['trial'] = []
+        if not self.params['force']:
+            self.params['boxes'] = np.logspace(np.log10(0.01*self.params['obs_dnu']), np.log10(0.1*self.params['obs_dnu']), self.params['n_trials'])
+            self.freq, self.bgcorr_pow = np.copy(self.frequency%self.params['obs_dnu']), np.copy(self.bg_corr)
+            self._collapsed_acf()
+            print(self.params['results']['trial'])
+            best = self.params['compare'].index(max(self.params['compare']))+1
+            return self.params['results']['trial'][best]['value']
+        else:
+            if self.params['dnu'] is None:
+                return self.params['obs_dnu']
+            else:
+                return self.params['dnu']
+
+
+    def _collapsed_dnu(self, n_trials=3, step=0.25, max_snr=1000.0,):
+        """Collapsed ACF
+
+        Computes a collapsed autocorrelation function (ACF) using n different box sizes in
+        n different trials (i.e. `n_trials`)
+
+        Parameters
+            n_trials : int, default=3
+                the number of trials to run
+            step : float, default=0.25
+                fractional step size to use for the collapsed ACF calculation
+            max_snr : float, default=100.0
+                the maximum signal-to-noise of the estimate (this is primarily for plot formatting)
+
+
+        """
+        self.params['compare2'], self.params['step2'], self.params['n_trials2'], self.module = [], 0.1, 6, 'trial'
+        self.params['results'][self.module], self.params['plotting'][self.module] = {}, {}
+        self.params['boxes2'] = np.logspace(np.log10(self.params['obs_dnu']/10.0), np.log10(2.*self.params['obs_dnu']), self.params['n_trials2'])
+        new_freq = np.copy(self.frequency%self.params['obs_dnu'])
+        s = np.argsort(new_freq)
+        freq, bgcorr_pow = new_freq[s], self.bg_corr[s]
+        # Computes a collapsed ACF using different "box" (or bin) sizes
+        for b, box in enumerate(self.params['boxes2']):
+            self.params['results'][self.module][b+1], self.params['plotting'][self.module][b] = {}, {}
+            start, snr, cumsum, md = 0, 0.0, [], []
+            subset = np.ceil(box/self.params['resolution'])
+            steps = np.ceil((box*self.params['step2'])/self.params['resolution'])
+            print(b, box, subset, steps)
+            # Iterates through entire power spectrum using box width
+            while True:
+                if (start+subset) > len(freq):
+                    break
+                p = bgcorr_pow[int(start):int(start+subset)]
+                auto = np.real(np.fft.fft(np.fft.ifft(p)*np.conj(np.fft.ifft(p))))
+                cumsum.append(np.sum(np.absolute(auto-np.mean(auto))))
+                md.append(np.mean(freq[int(start):int(start+subset)]))
+                start += steps
+            # subtract/normalize the summed ACF and take the max
+            csum = list(np.copy(cumsum))
+            # Pick the maximum value as an initial guess for dnu
+            idx = csum.index(max(csum))
+            self.params['plotting'][self.module].update({b:{'x':np.array(md),'y':np.array(csum),'maxx':md[idx],'maxy':csum[idx]}})
+            # Fit Gaussian to get estimate value for numax
+            try:
+                best_vars, _ = curve_fit(models.gaussian, np.array(md), np.array(csum), p0=[np.median(csum), 1.0-np.median(csum), md[idx], self.params['acf_guesses'][-1]], maxfev=5000, bounds=self.params['acf_bb'],)
+            except Exception as _:
+                self.params['plotting'][self.module][b].update({'good_fit':False,'fitx':np.linspace(min(md), max(md), 10000)})
+            else:
+                self.params['plotting'][self.module][b].update({'good_fit':True,})
+                self.params['plotting'][self.module][b].update({'fitx':np.linspace(min(md), max(md), 10000),'fity':models.gaussian(np.linspace(min(md), max(md), 10000), *best_vars)})
+                snr = max(self.params['plotting'][self.module][b]['fity'])/np.absolute(best_vars[0])
+                if snr > max_snr:
+                    snr = max_snr
+                self.params['results'][self.module][b+1].update({'value':best_vars[2],'snr':snr})
+                self.params['plotting'][self.module][b].update({'value':best_vars[2],'snr':snr})
+                if self.params['verbose']:
+                    print('Estimate %d: %.2f +/- %.2f'%(b+1, best_vars[2], np.absolute(best_vars[3])/2.0))
+                    print('S/N: %.2f' % snr)
+            self.params['compare2'].append(snr)
+#        self = plots.select_trial2(self)
+        print(self.params['compare2'])
+        best = self.params['compare2'].index(max(self.params['compare2']))+1
+        print(best)
+        print(self.params['results'][self.module][best]['value'])
+        self.module = 'parameters'
+
+
+    def optimize_ridges(self, n=50, res=0.01):
+        """Get ridges
+
+        Optimizes the large frequency separation by determining which spacing creates the
+        "best" ridges (but is currently under development) think similar to a step-echelle
+        but quicker and more hands off?
+
+        Attributes
+            x : numpy.ndarray
+                x-axis for the collapsed ED ~[0, :math:`2\\times\\Delta\\nu`]
+            y : numpy.ndarray
+                marginalized power along the y-axis (i.e. collapsed on to the x-axis)
+
+        .. important:: need to optimize this - currently does nothing really
+
+        """
+        import matplotlib.pyplot as plt
+        import matplotlib.colors as mcolors
+        from matplotlib.collections import LineCollection
+        if self.params['ridges']:
+            fig, ax = plt.subplots(figsize=(10,6))
+            dnu = float('%.2f'%self.params['obs_dnu'])
+            lower, upper, nox = dnu-1.0, dnu+1.0, int(np.floor(self.params['obs_dnu']/self.params['resolution']))
+            colors = plots.get_colors(np.arange(lower,upper,res))
+            if self.params['nox'] is not None and self.params['nox'] <= np.ceil(self.params['obs_dnu']/self.params['resolution']):
+                nox = self.params['nox']
+            note, sigma = '', 1.0
+            note_formats = [">10s",">10s",">10s",">10s",">10s"]
+            note_cols = ['dnu','med','std','peak','sig']
+            text = '{:{}}'*len(note_cols)+'\n'
+            fmt = sum(zip(note_cols,note_formats),())
+            note += text.format(*fmt)
+            for n, spacing in enumerate(np.arange(lower,upper,res)):
+                bins = np.linspace(0.0, spacing, nox)
+                x, y = self.frequency%spacing, np.copy(self.bg_corr)
+                digitized = np.digitize(self.frequency%spacing, bins)
+                x2 = np.array([x[digitized == i].mean() for i in range(len(bins)) if len(x[digitized == i]) > 0])
+                y2 = np.array([y[digitized == i].sum() for i in range(len(bins)) if len(x[digitized == i]) > 0])
+                ye = np.std(y2)
+                _, peaksy, _ = utils.max_elements(x2, y2, npeaks=1)
+                if (peaksy[0]-np.median(y2))/ye > sigma:
+                    sigma = (peaksy[0]-np.median(y2))/ye
+                    use_dnu = spacing
+                ax.plot(x2, y2, color=colors[n], alpha=0.75, linewidth=0.75)
+                values = ['%.2f'%spacing, '%.2f'%np.median(y2), '%.2f'%ye, '%.2f'%peaksy[0], '%.2f'%((peaksy[0]-np.median(y2))/ye)]
+                text = '{:{}}'*len(values)+'\n'
+                fmt = sum(zip(values,note_formats),())
+                note += text.format(*fmt)
+            if self.params['save']:
+                path = os.path.join(self.params['path'],'test_ridges.txt')
+                if not self.params['overwrite']:
+                    path = utils._get_next(path)
+                with open(path,"w") as f:
+                    f.write(note)
+            ax.set_xlabel(r'$\rm Folded \,\, Frequency \,\, [\mu Hz]$', fontsize=28)
+            ax.set_ylabel(r'$\rm Collapsed \,\, ED \,\, [power]$', fontsize=28)
+            ax.set_xlim([0.0,upper])
+            plt.tight_layout()
+            if self.params['save']:
+                path = os.path.join(self.params['path'],'1d_ed.png')
+                if not self.params['overwrite']:
+                    path = utils._get_next(path)
+                plt.savefig(path, dpi=300)
+            plt.close()
+        else:
+            if self.params['force'] and self.params['dnu'] is not None:
+                use_dnu = self.params['dnu']
+            else:
+                use_dnu = self.params['obs_dnu']
+        self.params['plotting'][self.module]['use_dnu'] = use_dnu

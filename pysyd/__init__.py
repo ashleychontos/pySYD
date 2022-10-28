@@ -1,8 +1,8 @@
 import os
 import sys 
 
-__all__ = ['cli', 'pipeline', 'models', 'target', 'plots', 'utils']
-__author__ = 'ashley <achontos@hawaii.edu>'
+__all__ = ['cli','pipeline','models','target','plots','utils']
+__author__ = 'ashley <ashleychontos@astro.princeton.edu>'
 from .version import __version__ 
 
 # Directory with personal pysyd data & info

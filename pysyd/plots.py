@@ -33,18 +33,18 @@ def make_plots(star, show_all=False,):
     # set defaults
     plt.style.use(MPLSTYLE)
     if 'estimates' in star.params['plotting']:
-        _plot_estimates(star)
+        plot_estimates(star)
     if 'parameters' in star.params['plotting']:
-        _plot_parameters(star)
-        if star.params['models']:
-            _plot_bgfits(star)
+        plot_parameters(star)
+        if star.params['show_all']:
+            plot_bgfits(star)
     if 'samples' in star.params['plotting']:
-        _plot_samples(star)
+        plot_samples(star)
     if star.params['show']:
         plt.show(block=False)
 
 
-def _select_trial(star):
+def select_trial(star):
     """Select trial
 
     This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
@@ -63,6 +63,7 @@ def _select_trial(star):
     """
     d = utils.get_dict(type='plots')
     n_panels = star.params['n_trials']
+    # set defaults
     plt.style.use(MPLSTYLE)
     n = 1
     x, y = d[n_panels]['x'], d[n_panels]['y']
@@ -77,13 +78,13 @@ def _select_trial(star):
         ymax = params[i]['maxy']
         ax.axvline(params[i]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
-        ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
+#        ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
         if params[i]['good_fit']:
             ax.plot(params[i]['fitx'], params[i]['fity'], color='lime', linestyle='-', linewidth=1.5)
             if max(params[i]['fity']) > params[i]['maxy']:
                 ymax = max(params[i]['fity'])
-            ax.axvline(params[i]['numax'], color='lime', linestyle='--', linewidth=0.75)
-            ax.set_title(r'$\rm Trial \,\, %d \,\, | \,\, \nu_{max} \sim %.0f \, \mu Hz $'%(i+1, params[i]['numax']))
+            ax.axvline(params[i]['value'], color='lime', linestyle='--', linewidth=0.75)
+            ax.set_title(r'$\rm Trial \,\, %d \,\, | \,\, \nu_{max} \sim %.0f \, \mu Hz $'%(i+1, params[i]['value']))
         yran = np.absolute(ymax)
         ax.set_xlim([min(params[i]['x']), max(params[i]['x'])])
         ax.set_ylim([-0.05, ymax+0.15*yran])
@@ -91,7 +92,7 @@ def _select_trial(star):
 
     plt.tight_layout()
     plt.show()
-    value = utils.ask_int('Which estimate would you like to use? ', star.params['n_trials'])
+    value = utils._ask_int('Which estimate would you like to use? ', star.params['n_trials'])
     if isinstance(value, int):
         star.params['best'] = value
         print('Selecting model %d' % value)
@@ -103,7 +104,65 @@ def _select_trial(star):
     return star
 
 
-def _plot_estimates(star, filename='search_&_estimate.png', highlight=True):
+def select_trial2(star):
+    """Select trial
+
+    This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
+    This feature used to be called as part of a method in the `pysyd.target.Target` class but left a
+    stale figure open -- this way it can be closed after the value is selected
+
+    Parameters
+        star : target.Target
+            the pySYD pipeline object
+
+    Returns
+        value : int or float
+            depending on which `trial` was selected, this can be of integer or float type
+
+    
+    """
+    d = utils.get_dict(type='plots')
+    n_panels = star.params['n_trials2']
+    # set defaults
+    plt.style.use(MPLSTYLE)
+    n = 1
+    x, y = d[n_panels]['x'], d[n_panels]['y']
+    fig = plt.figure("Dnu guesses for %s"%star.name, figsize=d[n_panels]['size'])
+
+    params = star.params['plotting']['trial']
+    # ACF trials to determine numax
+    for i in range(star.params['n_trials2']):
+        ax = plt.subplot(x, y, n+i)
+        ax.plot(params[i]['x'], params[i]['y'], 'w-')
+        xran = max(params[i]['fitx'])-min(params[i]['fitx'])
+        ymax = params[i]['maxy']
+        ax.axvline(params[i]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
+        ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
+#        ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
+        yran = np.absolute(ymax)
+        ax.set_xlim([min(params[i]['x']), max(params[i]['x'])])
+        ax.set_ylim([-0.05, ymax+0.15*yran])
+        if params[i]['good_fit']:
+            ax.plot(params[i]['fitx'], params[i]['fity'], color='lime', linestyle='-', linewidth=1.5)
+            if max(params[i]['fity']) > params[i]['maxy']:
+                ymax = max(params[i]['fity'])
+            ax.axvline(params[i]['value'], color='lime', linestyle='--', linewidth=0.75)
+            ax.set_title(r'$\rm Trial \,\, %d \,\, | \,\, \Delta\nu \sim %.0f \, \mu Hz $'%(i+1, params[i]['value']))
+            ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
+    plt.tight_layout()
+    plt.show()
+    value = utils._ask_int('Which estimate would you like to use? ', star.params['n_trials2'])
+    if isinstance(value, int):
+        star.params['best'] = value
+        print('Selecting model %d' % value)
+    else:
+        star.params['dnu'] = value
+        print('Using dnu of %.2f muHz as an initial guess' % value)
+    plt.close()
+    return star
+
+
+def plot_estimates(star, filename='search_&_estimate.png', highlight=True):
     """
     Creates a plot summarizing the results of the find excess routine.
 
@@ -167,15 +226,15 @@ def _plot_estimates(star, filename='search_&_estimate.png', highlight=True):
         ax.plot(params[i]['x'], params[i]['y'], 'w-')
         ymax = params[i]['maxy']
         ax.axvline(params[i]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
-        ax.set_title(r'$\rm Collapsed \,\, ACF \,\, [trial \,\, %d]$' % (i+1))
+        ax.set_ylabel(r'$\rm Collapsed \,\, ACF \,\, [trial \,\, %d]$' % (i+1))
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
-        ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
+#        ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
         if params[i]['good_fit']:
             xran = max(params[i]['fitx'])-min(params[i]['fitx'])
             ax.plot(params[i]['fitx'], params[i]['fity'], color='lime', linestyle='-', linewidth=1.5)
             if max(params[i]['fity']) > params[i]['maxy']:
                 ymax = max(params[i]['fity'])
-            ax.axvline(params[i]['numax'], color='lime', linestyle='--', linewidth=0.75)
+            ax.axvline(params[i]['value'], color='lime', linestyle='--', linewidth=0.75)
         yran = np.absolute(ymax)
         ax.set_xlim([min(params[i]['x']), max(params[i]['x'])])
         ax.set_ylim([-0.05, ymax+0.15*yran])
@@ -202,7 +261,7 @@ def _plot_estimates(star, filename='search_&_estimate.png', highlight=True):
         plt.close()
 
 
-def _plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n_peaks=5, cmap='binary',):
+def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png'):
     """
     Creates a plot summarizing all derived parameters
 
@@ -215,11 +274,6 @@ def _plot_parameters(star, subfilename='background_only.png', filename='global_f
             the path or extension to save the figure to
         n_peaks : int
             the number of peaks to highlight in the zoomed-in power spectrum
-
-    .. note::
-
-       **NEW:** will *not* plot an empty panel if the time series data is not provided
-
 
     """
     if star.params['background'] and not star.params['globe']:
@@ -383,11 +437,12 @@ def _plot_parameters(star, subfilename='background_only.png', filename='global_f
         interpolation='nearest'
     n += 1
     # PANEL 8: echelle diagram
+    use_dnu = params['use_dnu']
     ax8 = fig.add_subplot(x, y, n)
     ax8.imshow(params['ed'], extent=params['extent'], interpolation=interpolation, aspect='auto', origin='lower', cmap=plt.get_cmap(star.params['cmap']))
-    ax8.axvline([params['obs_dnu']], color='white', linestyle='--', linewidth=1.5, dashes=(5, 5))
+    ax8.axvline([use_dnu], color='white', linestyle='--', linewidth=1.5, dashes=(5, 5))
     ax8.set_title(r'$\rm \grave{E}chelle \,\, diagram$')
-    ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % params['obs_dnu'])
+    ax8.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % use_dnu)
     ax8.set_ylabel(r'$\rm \nu \,\, [\mu Hz]$')
     ax8.set_xlim([params['extent'][0], params['extent'][1]])
     ax8.set_ylim([params['extent'][2], params['extent'][3]])
@@ -398,9 +453,9 @@ def _plot_parameters(star, subfilename='background_only.png', filename='global_f
     ax9 = fig.add_subplot(x, y, n)
     ax9.plot(params['x'], params['y'], color='white', linestyle='-', linewidth=0.75)
     ax9.set_title(r'$\rm Collapsed \,\, ED$')
-    ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % params['obs_dnu'])
+    ax9.set_xlabel(r'$\rm \nu \,\, mod \,\, %.2f \,\, [\mu Hz]$' % use_dnu)
     ax9.set_ylabel(r'$\rm Collapsed \,\, power$')
-    ax9.set_xlim([0.0, 2.0*params['obs_dnu']])
+    ax9.set_xlim([0.0, 2.0*use_dnu])
     ax9.set_ylim([min(params['y'])-0.025*(yrange), max(params['y'])+0.05*(yrange)])
 
     plt.tight_layout()
@@ -413,7 +468,7 @@ def _plot_parameters(star, subfilename='background_only.png', filename='global_f
         plt.close()
 
 
-def _plot_samples(star, filename='samples.png'):
+def plot_samples(star, filename='samples.png'):
     """
     Plot results of the Monte-Carlo sampling
 
@@ -448,7 +503,7 @@ def _plot_samples(star, filename='samples.png'):
         plt.close()
 
 
-def _plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
+def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
     """
     Comparison of the background model fits 
 
@@ -555,36 +610,11 @@ def _plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
         plt.close()
 
 
-def _create_comparison_plot(filename='comparison.png', variables=['numax','dnu'], show=False, 
+def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'], show=False, 
                             save=True, overwrite=False, npanels=2,):
     """
     Compare ensemble results between the ``pySYD`` and ``SYD`` pipelines
     for the *Kepler* legacy sample
-
-    Parameters
-        filename : str
-            the path or extension to save the figure to
-        variables : List[str]
-            list of parameters to compare between pipelines
-        show : bool, optional
-            show figure in real time (default=`True`)
-        save : bool, optional
-            save figure (default=`True`)
-        overwrite : bool, optional
-            if `True`, overwrites existing files with the same path/name
-        minor : float
-            length of (both) minor ticks
-        major : float
-            length of (both) major ticks
-        LW : float
-            width of axes ticks
-        label_size : float
-            size of axis labels
-        tick_size : float
-            size of tick labels
-        npanels : int
-            number of panels in this figure (default=`1`)
-
     
     """
     # optional modules
@@ -639,7 +669,7 @@ def _create_comparison_plot(filename='comparison.png', variables=['numax','dnu']
     plt.close()
 
 
-def _dnu_comparison(star, filename='dnu_comparison.png', methods=['M','A','D'], markers=['o','D','^'], 
+def dnu_comparison(star, filename='dnu_comparison.png', methods=['M','A','D'], markers=['o','D','^'], 
                    styles=['--','-.',':'], colors=['#FF9408','#00A9E0','g'], npanels=2):
 
     sig = 0.35*star.exp_dnu/2.35482 
@@ -699,10 +729,8 @@ def _dnu_comparison(star, filename='dnu_comparison.png', methods=['M','A','D'], 
         plt.close()
 
 
-
 def check_data(star, args, show=True):
     """
-
     Plot input data for a target
 
     """
@@ -710,9 +738,9 @@ def check_data(star, args, show=True):
         print(' - displaying figures')
     plt.style.use(MPLSTYLE)
     if star.lc:
-        _plot_light_curve(star, args)
+        plot_light_curve(star, args)
     if star.ps:
-        _plot_power_spectrum(star, args)
+        plot_power_spectrum(star, args)
     if star.params['show']:
         plt.show(block=False)
         input(' - press any key to exit')
@@ -720,7 +748,7 @@ def check_data(star, args, show=True):
     plt.close()
 
 
-def _plot_light_curve(star, args, filename='time_series.png', npanels=1):
+def plot_light_curve(star, args, filename='time_series.png', npanels=1):
     """
     Plot the light curve data
 
@@ -764,7 +792,7 @@ def _plot_light_curve(star, args, filename='time_series.png', npanels=1):
         plt.close()
 
 
-def _plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
+def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
     """
     Plot the power spectrum data
 
@@ -809,3 +837,56 @@ def _plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
         plt.savefig(path, dpi=300)
     if not star.params['show']:
         plt.close()
+
+
+def plot_1d_ed(star, filename='1d_ed.png', npanels=1):
+    """
+    Plot the light curve data
+
+    Parameters
+        star : target.Target
+            the pySYD pipeline object
+        filename : str
+            the path or extension to save the figure to
+        npanels : int
+            number of panels in this figure (default=`1`)
+
+    
+    """
+    d = utils.get_dict(type='plots')
+    x, y = d[npanels]['x'], d[npanels]['y']
+    fig = plt.figure("%s 1d ED"%star.name, figsize=d[npanels]['size'])
+    ax = plt.subplot(x,y,1)
+    ax.plot(star.x, star.y, 'w-')
+    ax.set_xlim([min(star.x), max(star.x)])
+    ax.tick_params(axis='both', which='minor', length=10, width=1.25, direction='inout')
+    ax.tick_params(axis='both', which='major', length=15, width=1.25, direction='inout')  
+    ax.tick_params(labelsize=22)
+    plt.xlabel(r'$\rm Folded \,\, Frequency \,\, [\mu Hz]$', fontsize=28)
+    plt.ylabel(r'$\rm Collapsed \,\, ED \,\, [power]$', fontsize=28)
+    plt.tight_layout()
+    plt.show(block=True)
+    plt.close()
+    if star.params['save']:
+        path = os.path.join(star.params['path'],filename)
+        if not star.params['overwrite']:
+            path = utils._get_next(path)
+        plt.savefig(path, dpi=300)
+    if not star.params['show']:
+        plt.close()
+
+
+def get_colors(n, cmap='cividis', min_value=0.0, max_value=1.0):
+    color_by = np.copy(n)
+    new_cmap = truncate_colormap(plt.get_cmap(cmap), minval=min_value, maxval=max_value)
+    colors = [new_cmap(i) for i in np.linspace(0, 1, color_by.shape[0])]
+    return colors
+
+
+def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=-1):
+    import matplotlib.colors as colors
+    if n == -1:
+        n = cmap.N
+    new_cmap = colors.LinearSegmentedColormap.from_list('trunc({name},{a:.2f},{b:.2f})'.format(name=cmap.name, a=minval, b=maxval), cmap(np.linspace(minval, maxval, n)))
+    return new_cmap
+
