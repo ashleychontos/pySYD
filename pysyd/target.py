@@ -1172,7 +1172,7 @@ class Target:
         self.estimate_background()
         self.get_background()
         # Requires bg fit to converge before moving on
-        if self.params['globe']:
+        if self.converge and self.params['globe']:
             self.global_fit()
         if not self.converge:
             for parameter in self.params['results'][self.module]:
