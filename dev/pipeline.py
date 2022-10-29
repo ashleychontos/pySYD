@@ -128,7 +128,7 @@ def pipe(group, args, progress=False):
             the command line arguments
 
     """
-    if args.mode == 'test' and args.params['verbose']:
+    if args.params['mode'] == 'test' and args.params['verbose']:
         progress=True
         print("\nTesting %d example stars:"%len(group))
         from tqdm import tqdm 
@@ -141,7 +141,7 @@ def pipe(group, args, progress=False):
             pbar.update(1)
     if progress:
         pbar.close()
-        if args.mode == 'test' and args.params['verbose']:
+        if args.params['mode'] == 'test' and args.params['verbose']:
             print("\n~ comparing w/ expected results ~\n")
 
 
@@ -297,8 +297,6 @@ def test(args, stars=[1435467,2309595,11618103], answers={}):
         
     
     """
-    import warnings
-    warnings.filterwarnings("ignore")
     if args.verbose:
         print('####################################################################\n#                                                                  #\n#                   Testing pySYD functionality                    #\n#                                                                  #\n####################################################################\n')
     # Load in example configurations + answers to compare to
@@ -323,7 +321,6 @@ def test(args, stars=[1435467,2309595,11618103], answers={}):
     # Compare results
     args.params = {}
     args.params['outdir'] = args.outdir
-    utils.scrape_output(args)
     df = pd.read_csv(os.path.join(args.outdir,'global.csv'))
     df = df[df['star'].isin(stars)]
     df.set_index('star', inplace=True)

@@ -1,6 +1,6 @@
 import setuptools
 
-exec(open("pysyd/version.py").read())
+exec(open("src/pysyd/version.py").read())
 
 setuptools.setup(
     name="pysyd",
@@ -44,9 +44,9 @@ setuptools.setup(
 #    },
 #    setup_requires = ['pytest-runner', 'flake8'],
 #    tests_require = ['pytest'],
-    packages=setuptools.find_packages(),
-    include_package_data=True,
-    package_data={'': ["data/*.csv", "data/*.mplstyle", "data/*.txt"]},
+    packages=['pysyd'],
+    package_dir={'pysyd':'src/pysyd'},
+    package_data={'pysyd': ["data/*.csv", "data/*.mplstyle", "data/*.txt", "data/dicts/*.dict"]},
     entry_points={'console_scripts':['pysyd=pysyd.cli:main']},
     python_requires=">=3",
 )

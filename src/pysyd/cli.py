@@ -431,7 +431,7 @@ def main():
 ####
 
     plot_parser = argparse.ArgumentParser(add_help=False)
-    plot_parser.add_argument('--all', '--showall',
+    plot_parser.add_argument('--showall',
                              dest='show_all',
                              help='plot background comparison figure',
                              default=False,
@@ -638,7 +638,7 @@ def main():
                                          formatter_class=argparse.MetavarTypeHelpFormatter,
                                          help='Easy setup of relevant directories and files',
                                          )
-    parser_setup.add_argument('-a', '--all', 
+    parser_setup.add_argument('--all',
                               dest='makeall',
                               help='Save all columns',
                               default=False, 
@@ -659,16 +659,10 @@ def main():
                                         formatter_class=argparse.MetavarTypeHelpFormatter,
                                         help='Test different utilities (currently under development)',  
                                         )
-    parser_test.add_argument('--methods', 
-                             dest='methods',
-                             help='Compare different dnu methods',
-                             default=False,
-                             action='store_true',
-    )
-    parser_test.add_argument('--models', 
-                             dest='models',
-                             help='Include different model fits',
-                             default=False,
+    parser_test.add_argument('--all', 
+                             dest='makeall',
+                             help='Save all columns',
+                             default=False, 
                              action='store_true',
     )
     parser_test.set_defaults(func=pipeline.test)

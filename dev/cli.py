@@ -659,18 +659,6 @@ def main():
                                         formatter_class=argparse.MetavarTypeHelpFormatter,
                                         help='Test different utilities (currently under development)',  
                                         )
-    parser_test.add_argument('--methods', 
-                             dest='methods',
-                             help='Compare different dnu methods',
-                             default=False,
-                             action='store_true',
-    )
-    parser_test.add_argument('--models', 
-                             dest='models',
-                             help='Include different model fits',
-                             default=False,
-                             action='store_true',
-    )
     parser_test.set_defaults(func=pipeline.test)
 
 

@@ -697,6 +697,7 @@ def get_dict(type='params'):
                 6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : models.harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
                 7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : models.harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
                }
+    print(__file__)
     path = os.path.join(os.path.dirname(__file__), 'dicts', '%s.dict'%type)
     with open(path, 'r') as f:
         return ast.literal_eval(f.read())
@@ -1071,6 +1072,22 @@ def delta_nu(numax):
     """
 
     return 0.22*(numax**0.797)
+
+
+def get_output(note=''):
+    with open(TESTFILE, "r") as f:
+        lines = f.readlines()
+    counts = [len(line) for line in lines]
+    width = os.get_terminal_size()[0]
+    if counts[0] > width:
+        value = int(np.ceil((counts[0]-width)/2.))
+        for line in lines:
+            note += '%s%s'%(line[value:-value],(''*((counts[0]-width)%2)))
+    else:
+        for line in lines:
+            note += line[:-2]
+        note += '|'
+    print(note)
 
 
 def _save_status(file, section, params):

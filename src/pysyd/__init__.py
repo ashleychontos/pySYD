@@ -16,6 +16,8 @@ PACKAGEDIR = os.path.abspath(os.path.dirname(__file__))
 SYDFILE = os.path.join(PACKAGEDIR, 'data', 'syd_results.txt')
 PYSYDFILE = os.path.join(PACKAGEDIR, 'data', 'pysyd_results.csv')
 MPLSTYLE = os.path.join(PACKAGEDIR, 'data', 'pysyd.mplstyle')
+TESTFILE = os.path.join(PACKAGEDIR, 'data', 'test.txt')
+DICTDIR = os.path.join(PACKAGEDIR, 'data', 'dicts')
 
 
 # enforce python version
