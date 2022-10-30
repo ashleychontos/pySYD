@@ -234,7 +234,7 @@ def test(args, stars=[1435467,2309595,11618103], note='', answers={}):
         
     
     """
-    print('\n -- testing pysyd installation --\n [this may take ~1-2 minutes]')
+    print('\n -- testing pysyd installation --\n   [this may take ~1-2 minutes]')
     args.stars = stars[:]
     if not os.path.exists(args.inpdir):
         verbose = args.verbose

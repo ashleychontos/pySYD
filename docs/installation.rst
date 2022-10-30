@@ -196,8 +196,8 @@ What's actually happening behind the scenes is that the software:
  #. compares the derived outputs to known values for numax and dnu
 
 In order for the software to pass this step, it must produce identical results to the hundredth 
-decimal place for all three stars. If you see something similar to the above message, you're 
-ready to get started using software!
+decimal place for both parameters for all three stars. If you see something similar to the above message, 
+you're good to go and ready to start doing some science with the software!
 
 
 -----
