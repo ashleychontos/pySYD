@@ -1,4 +1,0 @@
--r requirements.txt
-pytest-runner
-flake8
-pytest
