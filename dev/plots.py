@@ -12,7 +12,7 @@ import models
 MPLSTYLE = os.path.join(os.path.abspath(os.getcwd()),'info','data','pysyd.mplstyle')
 
 plt.style.use(MPLSTYLE)
-
+from utils import Question
 
 
 
@@ -92,7 +92,7 @@ def select_trial(star):
 
     plt.tight_layout()
     plt.show()
-    value = utils._ask_int('Which estimate would you like to use? ', star.params['n_trials'])
+    value = Question().ask_integer('Which estimate would you like to use? ', special=True, n_trials=star.params['n_trials'])
     if isinstance(value, int):
         star.params['best'] = value
         print('Selecting model %d' % value)
@@ -889,3 +889,4 @@ def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=-1):
         n = cmap.N
     new_cmap = colors.LinearSegmentedColormap.from_list('trunc({name},{a:.2f},{b:.2f})'.format(name=cmap.name, a=minval, b=maxval), cmap(np.linspace(minval, maxval, n)))
     return new_cmap
+

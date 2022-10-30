@@ -536,13 +536,13 @@ class Target:
         """
         seed = np.random.randint(lower,high=upper)
         df = pd.read_csv(os.path.join(self.params['infdir'], self.params['info']))
-        stars = [str(each) for each in df.stars.values.tolist()]
+        stars = [str(each) for each in df.star.values.tolist()]
         # check if star is in file and if not, adds it and the seed for reproducibility
         if str(self.name) in stars:
             idx = stars.index(str(self.name))
         else:
             idx = len(df)
-            df.loc[idx,'stars'] = str(self.name)
+            df.loc[idx,'star'] = str(self.name)
         df.loc[idx,'seed'] = '%d'%int(seed)
         self.params['seed'] = int(seed)
         df.to_csv(os.path.join(self.params['infdir'], self.params['info']), index=False)
@@ -730,8 +730,9 @@ class Target:
         """
         self.module = 'estimates'
         self.params['plotting'][self.module], self.params['results'][self.module] = {}, {}
-        self.params['plotting'][self.module].update({'time':np.copy(self.params['data']['time_fin']),
-                                                     'flux':np.copy(self.params['data']['flux_fin'])})
+        if self.lc:
+            self.params['plotting'][self.module].update({'time':np.copy(self.params['data']['time_fin']),
+                                                         'flux':np.copy(self.params['data']['flux_fin'])})
         # If running the first module, mask out any unwanted frequency regions
         self.frequency, self.power = np.copy(self.freq_os), np.copy(self.pow_os)
         self.params['resolution'] = self.frequency[1]-self.frequency[0]
@@ -751,7 +752,7 @@ class Target:
         self.params['plotting'][self.module].update({'freq':np.copy(self.freq),'pow':np.copy(self.pow)})
         if self.params['n_trials'] > max_trials:
             self.params['n_trials'] = max_trials
-        if (self.params['numax'] is not None and self.params['numax'] <= 500.) or (self.nyquist is not None and self.nyquist <= 300.):
+        if (self.params['numax'] is not None and self.params['numax'] <= 500.) or (self.nyquist is not None and self.nyquist <= 300.) or (max(self.frequency) < 300.):
             self.params['boxes'] = np.logspace(np.log10(0.5), np.log10(25.), self.params['n_trials'])
         else:
             self.params['boxes'] = np.logspace(np.log10(50.), np.log10(500.), self.params['n_trials'])
@@ -998,8 +999,9 @@ class Target:
         """
         self.module = 'parameters'
         self.params['plotting'][self.module], self.params['results'][self.module] = {}, {}
-        self.params['plotting'][self.module].update({'time':np.copy(self.params['data']['time_fin']),
-                                                     'flux':np.copy(self.params['data']['flux_fin'])})
+        if self.lc:
+            self.params['plotting'][self.module].update({'time':np.copy(self.params['data']['time_fin']),
+                                                         'flux':np.copy(self.params['data']['flux_fin'])})
         self.frequency, self.power = np.copy(self.freq_os), np.copy(self.pow_os)
         self.params['resolution'] = self.frequency[1]-self.frequency[0]
         if self.params['lower_bg'] is not None:
@@ -1172,7 +1174,7 @@ class Target:
         self.estimate_background()
         self.get_background()
         # Requires bg fit to converge before moving on
-        if self.params['globe']:
+        if self.converge and self.params['globe']:
             self.global_fit()
         if not self.converge:
             for parameter in self.params['results'][self.module]:

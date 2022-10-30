@@ -9,13 +9,13 @@ from astropy.stats import mad_std
 from scipy.signal import find_peaks
 # Development mode
 import models
-SYDFILE = os.path.join(os.path.abspath(os.getcwd()),'info','data','syd_results.txt')
-PYSYDFILE = os.path.join(os.path.abspath(os.getcwd()),'info','data','pysyd_results.csv')
-_ROOT = '/Users/ashleychontos/Research/Code/special/pySYD/dev'
-INFDIR = os.path.join(_ROOT,'info')
-INPDIR = os.path.join(_ROOT,'data')
-OUTDIR = os.path.join(_ROOT,'results')
-
+SYDFILE = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/src/pysyd','data','syd_results.txt')
+PYSYDFILE = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/src/pysyd','data','pysyd_results.csv')
+INFDIR = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/dev','info')
+INPDIR = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/dev','data')
+OUTDIR = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/dev','results')
+TESTFILE = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/src/pysyd','data','test.txt')
+DICTDIR = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/src/pysyd','data','dicts')
 class PySYDInputError(Exception):
     """Class for pySYD user input errors."""
     def __init__(self, error):
@@ -543,7 +543,7 @@ class Parameters(Constants):
             assert args.n_laws <= max_laws, "We likely cannot resolve %d Harvey-like components for point sources. Please select a smaller number."%args.n_laws
 
 
-class Questions:
+class Question:
 
     # QUESTIONS CLASS
     def __init__(self, max_attempts=10):
@@ -593,7 +593,7 @@ class Questions:
         return None
 
     # ASK INTEGER
-    def ask_integer(self, question, count=1, special=False): 
+    def ask_integer(self, question, count=1, special=False, n_trials=None): 
         """Integer user input
         
         Asks for an integer input -- this is specifically formatted for the module that searches
@@ -622,7 +622,7 @@ class Questions:
                 if float(answer).is_integer():
                     if special:
                         if int(answer) == 0:
-                            self.ask_float(question='\nWhat is your value for numax? ', count=count)
+                            return self.ask_float(question='\nWhat is your value for numax? ', count=count)
                         elif int(answer) >= 1 and int(answer) <= n_trials:
                             return int(answer)
                         else:
@@ -659,10 +659,11 @@ class Questions:
         while count < self.max_attempts:
             answer = input('\n%s'%question)
             try:
-                if float(answer).is_integer():
-                    break
+                if float(answer):
+                    return float(answer)
             except ValueError:
-                pass
+                print("ERROR: not a valid response \n")
+            count += 1
         print('Exceeded maximum number of attempts.\nPlease check your input and try again.')
         return None
 
@@ -697,8 +698,7 @@ def get_dict(type='params'):
                 6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : models.harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
                 7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : models.harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
                }
-    print(__file__)
-    path = os.path.join(os.path.dirname(__file__), 'dicts', '%s.dict'%type)
+    path = os.path.join(DICTDIR, '%s.dict'%type)
     with open(path, 'r') as f:
         return ast.literal_eval(f.read())
 
@@ -805,7 +805,7 @@ def _save_parameters(star):
     results = star.params['results']['parameters']
     df = pd.DataFrame(results)
     star.df = df.copy()
-    new_df = pd.DataFrame(columns=cols)
+    new_df = pd.DataFrame(columns=['parameter','value'])
     for c, col in enumerate(df.columns.values.tolist()):
         new_df.loc[c, 'parameter'] = col
         new_df.loc[c, 'value'] = df.loc[0,col]
@@ -1074,20 +1074,246 @@ def delta_nu(numax):
     return 0.22*(numax**0.797)
 
 
-def get_output(note=''):
-    with open(TESTFILE, "r") as f:
-        lines = f.readlines()
-    counts = [len(line) for line in lines]
-    width = os.get_terminal_size()[0]
-    if counts[0] > width:
-        value = int(np.ceil((counts[0]-width)/2.))
-        for line in lines:
-            note += '%s%s'%(line[value:-value],(''*((counts[0]-width)%2)))
+def setup_dirs(args, note='', dl_dict={}):
+    """Setup pySYD directories
+    
+    Primarily most of pipeline.setup functionality to keep the pipeline script from
+    getting too long. Still calls/downloads things in the same way: 1) info directory,
+    2) input + data directory and 3) results directory.
+
+    Parameters
+        args : argparse.NameSpace
+            command-line arguments
+        note : str
+            verbose output
+        dl_dict : Dict[str,str]
+            dictionary to keep track of files that need to be downloaded
+
+    Returns
+        dl_dict : Dict[str,str]
+            dictionary of files to download for setup
+        note : str
+            updated verbose output
+
+    """
+    dl_dict, note = get_infdir(args, dl_dict, note)
+    dl_dict, note = get_inpdir(args, dl_dict, note)
+    note = get_outdir(args, note)
+    # Download files that do not already exist
+    if dl_dict:
+        # downloading example data will generate output in terminal, so always include this regardless
+        print('\nDownloading example data from source:')
+        for infile, outfile in dl_dict.items():
+            subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
+    # option to get ALL columns since only subset is included in the example
+    if args.makeall:
+        df_temp = pd.read_csv(args.info)
+        df = pd.DataFrame(columns=utils.get_dict('columns')['setup'])
+        for col in df_temp.columns.values.tolist():
+            if col in df.columns.values.tolist():
+                df[col] = df_temp[col]
+        df.to_csv(args.info, index=False)
+        note+=' - ALL columns saved to the star info file\n'
+    # verbose output
+    if args.verbose:
+        if note == '':
+            print("\nLooks like you've probably done this\nbefore since you already have everything!\n")
+        else:
+            print('\nNote(s):\n%s'%note)
+
+
+def get_infdir(args, dl_dict, note, source='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
+    """Create info directory
+    
+    Parameters
+        args : argparse.NameSpace
+            command-line arguments
+        note : str
+            verbose output
+        dl_dict : Dict[str,str]
+            dictionary to keep track of files that need to be downloaded
+        source : str
+            path to pysyd source directory on github
+
+    Returns
+        dl_dict : Dict[str,str]
+            dictionary of files to download for setup
+        note : str
+            updated verbose output
+
+    """
+    # INFO DIRECTORY
+    # create info directory (INFDIR)
+    if not os.path.exists(args.infdir):
+        os.mkdir(args.infdir)
+        note+=' - created input file directory at %s \n'%args.infdir
+    # Example input files  
+    # 'todo.txt' aka basic text file with list of stars to process 
+    if not os.path.exists(args.todo):
+        dl_dict.update({'%sinfo/todo.txt'%source:args.todo})
+        note+=' - saved an example of a star list\n'
+    # 'star_info.csv' aka star information file                             
+    if not os.path.exists(args.info):
+        dl_dict.update({'%sinfo/star_info.csv'%source:args.info})
+        note+=' - saved an example for the star information file\n'
+    return dl_dict, note
+
+
+def get_inpdir(args, dl_dict, note, save=False, examples=['1435467','2309595','11618103'], exts=['LC','PS'],
+               source='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
+    """Create data (i.e. input) directory
+    
+    Parameters
+        args : argparse.NameSpace
+            command-line arguments
+        note : str
+            verbose output
+        dl_dict : Dict[str,str]
+            dictionary to keep track of files that need to be downloaded
+        source : str
+            path to pysyd source directory on github
+        examples : List[str]
+            KIC IDs for 3 example stars
+        exts : List[str]
+            data types to download for each star
+
+    Returns
+        dl_dict : Dict[str,str]
+            dictionary of files to download for setup
+        note : str
+            updated verbose output
+
+    """
+    # DATA DIRECTORY
+    # create data directory (INPDIR)
+    if not os.path.exists(args.inpdir):
+        os.mkdir(args.inpdir)
+        note+=' - created data directory at %s \n'%args.inpdir
+    # Example data for 3 (Kepler) stars
+    for target in examples:
+        for ext in exts:
+            infile='%sdata/%s_%s.txt'%(source, target, ext)
+            outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
+            if not os.path.exists(outfile):
+                save=True
+                dl_dict.update({infile:outfile})
+    if save:
+        note+=' - example data saved to data directory\n'
+    return dl_dict, note
+
+
+def get_outdir(args, note):
+    """Create results directory
+    
+    Parameters
+        args : argparse.Namespace
+            command-line arguments
+        note : str
+            verbose output
+
+    Returns
+        note : str
+            updated verbose output
+
+    """
+    # RESULTS DIRECTORY
+    # create results directory (OUTDIR)
+    if not os.path.exists(args.outdir):
+        os.mkdir(args.outdir)
+        note+=' - results will be saved to %s\n'%args.outdir
+    return note
+
+
+def set_examples(args):
+    """Create results directory
+    
+    Parameters
+        args : argparse.Namespace
+            command-line arguments
+
+    Returns
+        args : argparse.Namespace
+            updated command-line arguments
+
+    """
+    args.answers = {}
+    # Load in example configurations + answers to compare to
+    defaults = get_dict(type='tests')
+    # Save defaults to file to reproduce identical results
+    if os.path.exists(args.info):
+        df = pd.read_csv(args.info)
+        targets = [each for each in df.star.values.tolist()]
     else:
-        for line in lines:
-            note += line[:-2]
-        note += '|'
-    print(note)
+        df = pd.DataFrame(columns=get_dict(type='columns')['setup'])
+        targets = args.stars[:]
+    for star in args.stars:
+        # first copy known answers
+        args.answers.update({star:defaults[star].pop('results')})
+        # then copy defaults to csv file to ensure reproducibility
+        idx = targets.index(star)
+        for key in defaults[star]:
+            df.loc[idx,key] = defaults[star][key]
+    df.to_csv(args.info, index=False)
+    return args
+
+
+def check_examples(args, note='', note_cols=['KIC','  Parameter:','Install derived:','Actual answer:'],
+                   note_formats=[">10s","<20s","<20s","<20s"],):
+    """Create results directory
+    
+    Parameters
+        args : argparse.Namespace
+            command-line arguments
+
+    Returns
+        args : argparse.Namespace
+            updated command-line arguments
+
+    """
+    # Compare results
+    df = pd.read_csv(os.path.join(args.outdir,'global.csv'))
+    df = df[df['star'].isin(args.stars)]
+    df.set_index('star', inplace=True)
+    # Track values
+    text = '{:{}}'*len(note_cols)+'\n'
+    fmt = sum(zip(note_cols,note_formats),())
+    note += text.format(*fmt)
+    for star in args.stars:
+        for param in args.answers[star]:
+            for label, each in zip(['%s','%s_err'],['value','error']):
+                assert '%.2f'%float(df.loc[star,label%param]) == '%.2f'%float(args.answers[star][param][each])
+            values = ['%d'%star, '  %s'%param, '%.2f +/- %.2f'%(float(df.loc[star,'%s'%param]),float(df.loc[star,'%s_err'%param])), '%.2f +/- %.2f'%(float(args.answers[star][param]['value']),float(args.answers[star][param]['error']))]
+            text = '{:{}}'*len(values)+'\n'
+            fmt = sum(zip(values,note_formats),())
+            note += text.format(*fmt)
+    if args.verbose:
+        print(note)
+
+
+def get_output(fun=False):
+    """Print logo output
+
+    Used within test mode when current installation is successfully tested.
+
+    Parameters
+        fun : bool, False
+            if calling module for 'fun', only prints logo but doesn't test software
+
+    """
+    with open(TESTFILE, "r") as f:
+        lines = [line[:-2] for line in f.readlines()]
+    if fun:
+        lines = lines[:-2]
+    counts = [len(line) for line in lines]
+    width, height = os.get_terminal_size()[0], os.get_terminal_size()[-1]
+    if height < len(lines):
+        lines = lines[len(lines)-height:]
+    for line in lines:
+        sentence = line
+        if len(sentence) > width:
+            value = int(np.ceil((counts[0]-width)/2.))
+            sentence = sentence[value:-value]
+        print(sentence.center(width,' '))
 
 
 def _save_status(file, section, params):

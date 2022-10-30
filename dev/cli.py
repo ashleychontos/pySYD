@@ -431,7 +431,7 @@ def main():
 ####
 
     plot_parser = argparse.ArgumentParser(add_help=False)
-    plot_parser.add_argument('--all', '--showall',
+    plot_parser.add_argument('--showall',
                              dest='show_all',
                              help='plot background comparison figure',
                              default=False,
@@ -513,7 +513,7 @@ def main():
     parser_check = sub_parser.add_parser('check',
                                          parents=[parent_parser, data_parser, plot_parser],
                                          formatter_class=argparse.MetavarTypeHelpFormatter,
-                                         help='Check data for a target or other relevant information',
+                                         help='Check target data',
                                         )
 
     parser_check.add_argument('-c', '--cols', '--columns',
@@ -569,6 +569,11 @@ def main():
                               type=float,
     )
     parser_check.set_defaults(func=pipeline.check)
+
+    parser_fun = sub_parser.add_parser('fun',
+                                       help='Print logo and exit',
+                                       )
+    parser_fun.set_defaults(func=pipeline.fun)
 
 ####
 
@@ -638,7 +643,7 @@ def main():
                                          formatter_class=argparse.MetavarTypeHelpFormatter,
                                          help='Easy setup of relevant directories and files',
                                          )
-    parser_setup.add_argument('-a', '--all', 
+    parser_setup.add_argument('--all',
                               dest='makeall',
                               help='Save all columns',
                               default=False, 
@@ -657,8 +662,14 @@ def main():
     parser_test = sub_parser.add_parser('test',
                                         parents=[parent_parser, data_parser, main_parser, plot_parser], 
                                         formatter_class=argparse.MetavarTypeHelpFormatter,
-                                        help='Test different utilities (currently under development)',  
+                                        help='Test current installation',  
                                         )
+    parser_test.add_argument('--all', 
+                             dest='makeall',
+                             help='Save all columns',
+                             default=False, 
+                             action='store_true',
+    )
     parser_test.set_defaults(func=pipeline.test)
 
 
@@ -671,3 +682,4 @@ def main():
 if __name__ == '__main__':
 
     main()
+

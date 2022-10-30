@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from . import utils
 from . import models
 from . import MPLSTYLE
-
+from .utils import Question
 
 def make_plots(star, show_all=False,):
     """Make plots
@@ -92,7 +92,7 @@ def select_trial(star):
 
     plt.tight_layout()
     plt.show()
-    value = utils._ask_int('Which estimate would you like to use? ', star.params['n_trials'])
+    value = Question().ask_integer('Which estimate would you like to use? ', special=True, n_trials=star.params['n_trials'])
     if isinstance(value, int):
         star.params['best'] = value
         print('Selecting model %d' % value)

@@ -543,7 +543,7 @@ class Parameters(Constants):
             assert args.n_laws <= max_laws, "We likely cannot resolve %d Harvey-like components for point sources. Please select a smaller number."%args.n_laws
 
 
-class Questions:
+class Question:
 
     # QUESTIONS CLASS
     def __init__(self, max_attempts=10):
@@ -593,7 +593,7 @@ class Questions:
         return None
 
     # ASK INTEGER
-    def ask_integer(self, question, count=1, special=False): 
+    def ask_integer(self, question, count=1, special=False, n_trials=None): 
         """Integer user input
         
         Asks for an integer input -- this is specifically formatted for the module that searches
@@ -622,7 +622,7 @@ class Questions:
                 if float(answer).is_integer():
                     if special:
                         if int(answer) == 0:
-                            self.ask_float(question='\nWhat is your value for numax? ', count=count)
+                            return self.ask_float(question='\nWhat is your value for numax? ', count=count)
                         elif int(answer) >= 1 and int(answer) <= n_trials:
                             return int(answer)
                         else:
@@ -659,10 +659,11 @@ class Questions:
         while count < self.max_attempts:
             answer = input('\n%s'%question)
             try:
-                if float(answer).is_integer():
-                    break
+                if float(answer):
+                    return float(answer)
             except ValueError:
-                pass
+                print("ERROR: not a valid response \n")
+            count += 1
         print('Exceeded maximum number of attempts.\nPlease check your input and try again.')
         return None
 
