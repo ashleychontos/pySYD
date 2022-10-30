@@ -8,13 +8,13 @@ import argparse
 
 
 
-
-
 # Package mode
 import pysyd
 from pysyd import pipeline
 from pysyd import INFDIR, INPDIR, OUTDIR
 from .version import __version__
+
+
 
 def main():
 
@@ -513,7 +513,7 @@ def main():
     parser_check = sub_parser.add_parser('check',
                                          parents=[parent_parser, data_parser, plot_parser],
                                          formatter_class=argparse.MetavarTypeHelpFormatter,
-                                         help='Check data for a target or other relevant information',
+                                         help='Check target data',
                                         )
 
     parser_check.add_argument('-c', '--cols', '--columns',
@@ -569,6 +569,11 @@ def main():
                               type=float,
     )
     parser_check.set_defaults(func=pipeline.check)
+
+    parser_fun = sub_parser.add_parser('fun',
+                                       help='Print logo and exit',
+                                       )
+    parser_fun.set_defaults(func=pipeline.fun)
 
 ####
 
@@ -657,7 +662,7 @@ def main():
     parser_test = sub_parser.add_parser('test',
                                         parents=[parent_parser, data_parser, main_parser, plot_parser], 
                                         formatter_class=argparse.MetavarTypeHelpFormatter,
-                                        help='Test different utilities (currently under development)',  
+                                        help='Test current installation',  
                                         )
     parser_test.add_argument('--all', 
                              dest='makeall',

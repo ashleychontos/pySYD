@@ -1239,8 +1239,12 @@ def set_examples(args):
     # Load in example configurations + answers to compare to
     defaults = get_dict(type='tests')
     # Save defaults to file to reproduce identical results
-    df = pd.read_csv(args.info)
-    targets = [each for each in df.star.values.tolist()]
+    if os.path.exists(args.info):
+        df = pd.read_csv(args.info)
+        targets = [each for each in df.star.values.tolist()]
+    else:
+        df = pd.DataFrame(columns=get_dict(type='columns')['setup'])
+        targets = args.stars[:]
     for star in args.stars:
         # first copy known answers
         args.answers.update({star:defaults[star].pop('results')})
@@ -1281,16 +1285,30 @@ def check_examples(args, note='', note_cols=['KIC','  Parameter:','Install deriv
             text = '{:{}}'*len(values)+'\n'
             fmt = sum(zip(values,note_formats),())
             note += text.format(*fmt)
-    return note
+    if args.verbose:
+        print(note)
 
 
-def get_output():
+def get_output(fun=False):
+    """Print logo output
+
+    Used within test mode when current installation is successfully tested.
+
+    Parameters
+        fun : bool, False
+            if calling module for 'fun', only prints logo but doesn't test software
+
+    """
     with open(TESTFILE, "r") as f:
-        lines = f.readlines()
+        lines = [line[:-2] for line in f.readlines()]
+    if fun:
+        lines = lines[:-2]
     counts = [len(line) for line in lines]
-    width = os.get_terminal_size()[0]
+    width, height = os.get_terminal_size()[0], os.get_terminal_size()[-1]
+    if height < len(lines):
+        lines = lines[len(lines)-height:]
     for line in lines:
-        sentence = line[:-2]
+        sentence = line
         if len(sentence) > width:
             value = int(np.ceil((counts[0]-width)/2.))
             sentence = sentence[value:-value]

@@ -36,6 +36,17 @@ def check(args):
     plots.check_data(star, args)
 
 
+def fun(args):
+    """Get logo output
+    
+    Parameters
+        args : argparse.Namespace
+            the command line arguments
+    
+    """
+    utils.get_output(fun=True)
+
+
 def load(args):
     """
     
@@ -223,21 +234,25 @@ def test(args, stars=[1435467,2309595,11618103], note='', answers={}):
         
     
     """
-    print('\n ~ testing pysyd software ~')
+    print('\n -- testing pysyd installation --\n [this may take ~1-2 minutes]')
     args.stars = stars[:]
     if not os.path.exists(args.inpdir):
+        verbose = args.verbose
         args.verbose = False
         utils.setup_dirs(args)
+        args.verbose = verbose
     # Load in example defaults for reproducibility (including seed)
     args = utils.set_examples(args)
-    print("\nRunning sampler for %d example stars:\n[this might take ~1-2 minutes]"%len(stars))
-    from tqdm import tqdm 
-    pbar = tqdm(total=len(stars))
+    if args.verbose:
+        print("\nRunning sampler for %d example stars:"%len(stars))
+        from tqdm import tqdm 
+        pbar = tqdm(total=len(stars))
     for star in stars:
         subprocess.call(['pysyd run --star %d --mc 200'%star], shell=True)
-        pbar.update(1)
-    pbar.close()
-    print("\nComparing to expected results:")
-    note = utils.check_examples(args)
-    print(note)
+        if args.verbose:
+            pbar.update(1)
+    if args.verbose:
+        pbar.close()
+        print("\nComparing to expected results:")
+    utils.check_examples(args)
     utils.get_output()
