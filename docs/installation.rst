@@ -184,10 +184,13 @@ window:
       |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||  
 
 
-As mentioned in the output, this step runs the sampler 200 times per target so naturally it will take
-a couple minutes to complete so don't worry if it seems to get bogged up. Using set seeds, the derived
-outputs for numax and dnu *must* match to the hundred decimal place for all three stars in
+As sugggested in the output, this step runs the sampler 200 times per target so naturally it will take
+a couple minutes to complete -- so don't worry if it seems to get bogged up. What's actually happening
+behind the scenes is that the software, using set seeds, is comparing the derived outputs to known 
+values for numax and dnu, which *must* match to the hundred decimal place for all three stars in
 order to pass.
+
+If you see something similar to the above message, you're ready to get started using software!
 
 
 -----
