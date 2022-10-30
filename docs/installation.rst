@@ -148,8 +148,9 @@ Testing
 #######
 
 To test the full functional suite of the pySYD package, a new test mode has been added
-that will run the core sampling process on three example stars. Simply type into a terminal
-window:
+that will run the core software features for three example stars. 
+
+Simply type into a terminal window:
 
 .. code-block::
 
@@ -158,39 +159,45 @@ window:
    
     -- testing pysyd installation --
     [this may take ~1-2 minutes]
-                                              |    ||  |                                              
-                                              |    ||  |            |                                 
-                                    |         |    ||  |    |       |                                 
-                                    |  |      |    ||  |    |       |                                 
-                                    |  |      |   |||  |    |       |                                 
-                                    |  |      |   |||  ||   |       |                                 
-                        |           |  ||     |   |||  ||   |    |  |                                 
-                        |     |    ||  ||   | |   |||  ||   |   ||  |      |                          
-                        |     |    ||  ||   | ||  |||  ||   |   ||  ||     |                          
-                        |     |    ||  ||   | ||  |||  ||   ||  ||  ||     |                          
-                        |     |    ||  ||  || ||  |||  ||   ||  ||  || |   ||   |                     
-                        |    ||    ||  ||| || ||  |||  ||   ||  ||  || |   ||   |                     
-                 |  |  ||    ||    ||  ||| || ||  ||| |||   ||  ||  || || |||   |     | |             
-           |     |  |  ||    ||   |||  ||| || ||  ||| ||||  || ||| ||| || |||   |     | |    |        
-           ||   || ||  ||   ||||  |||| ||| || ||  ||| |||| ||| ||| ||| || |||  |||   || ||   ||       
-           ||   || ||  |||  ||||  |||| ||| || || |||| |||| ||| ||||||| || |||  ||| | || ||| |||       
-          |||  ||| || ||||  ||||  |||| ||| ||||| |||| |||| ||| ||||||| ||||||| ||| | || ||| ||||      
-         ||||  ||| || ||||| ||||| |||| ||||||||| |||| |||| ||||||||||| ||||||| ||| | |||||| ||||      
-         ||||||||| |||||||| ||||| |||| ||||||||| ||||||||| ||||||||||||||||||| ||||| ||||||||||||     
-        |||||||||| ||||||||||||||||||||||||||||| ||||||||||||||||||||||||||||||||||| |||||||||||||    
-       ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||   
-      |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||   
-      |||||||||||||||||||||||||||||| SUCCESSFUL SOFTWARE INSTALLATION |||||||||||||||||||||||||||||   
-      |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||  
+                                             |    ||  |                                              
+                                             |    ||  |            |                                 
+                                   |         |    ||  |    |       |                                 
+                                   |  |      |    ||  |    |       |                                 
+                                   |  |      |   |||  |    |       |                                 
+                                   |  |      |   |||  ||   |       |                                 
+                       |           |  ||     |   |||  ||   |    |  |                                 
+                       |     |    ||  ||   | |   |||  ||   |   ||  |      |                          
+                       |     |    ||  ||   | ||  |||  ||   |   ||  ||     |                          
+                       |     |    ||  ||   | ||  |||  ||   ||  ||  ||     |                          
+                       |     |    ||  ||  || ||  |||  ||   ||  ||  || |   ||   |                     
+                       |    ||    ||  ||| || ||  |||  ||   ||  ||  || |   ||   |                     
+                |  |  ||    ||    ||  ||| || ||  ||| |||   ||  ||  || || |||   |     | |             
+          |     |  |  ||    ||   |||  ||| || ||  ||| ||||  || ||| ||| || |||   |     | |    |        
+          ||   || ||  ||   ||||  |||| ||| || ||  ||| |||| ||| ||| ||| || |||  |||   || ||   ||       
+          ||   || ||  |||  ||||  |||| ||| || || |||| |||| ||| ||||||| || |||  ||| | || ||| |||       
+         |||  ||| || ||||  ||||  |||| ||| ||||| |||| |||| ||| ||||||| ||||||| ||| | || ||| ||||      
+        ||||  ||| || ||||| ||||| |||| ||||||||| |||| |||| ||||||||||| ||||||| ||| | |||||| ||||      
+        ||||||||| |||||||| ||||| |||| ||||||||| ||||||||| ||||||||||||||||||| ||||| ||||||||||||     
+       |||||||||| ||||||||||||||||||||||||||||| ||||||||||||||||||||||||||||||||||| |||||||||||||    
+      ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||   
+     |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||   
+     |||||||||||||||||||||||||||||| SUCCESSFUL SOFTWARE INSTALLATION |||||||||||||||||||||||||||||   
+     |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||  
 
 
 As sugggested in the output, this step runs the sampler 200 times per target so naturally it will take
-a couple minutes to complete -- so don't worry if it seems to get bogged up. What's actually happening
-behind the scenes is that the software, using set seeds, is comparing the derived outputs to known 
-values for numax and dnu, which *must* match to the hundred decimal place for all three stars in
-order to pass.
+a couple minutes to complete -- so don't worry if it seems to get bogged up. 
 
-If you see something similar to the above message, you're ready to get started using software!
+What's actually happening behind the scenes is that the software:
+ #. saves default parameters (including seeds) for reproducibile results
+ #. downloads example star data (if needed)
+ #. calls a bash subprocess to process each star as if it were being processed via command line 
+ #. generates a summary table for all processed stars
+ #. compares the derived outputs to known values for numax and dnu
+
+In order for the software to pass this step, it must produce identical results to the hundredth 
+decimal place for all three stars. If you see something similar to the above message, you're 
+ready to get started using software!
 
 
 -----
