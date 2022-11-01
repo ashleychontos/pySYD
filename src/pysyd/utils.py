@@ -158,6 +158,7 @@ class Parameters(Constants):
             'infdir' : INFDIR,
             'outdir' : OUTDIR,
             'save' : True,
+            'test' : False,
             'verbose' : False,
             'overwrite' : False,
             'warnings' : True,
@@ -492,7 +493,7 @@ class Parameters(Constants):
 
 
         """
-        if args.cli:
+        if args.params['cli']:
             self.check_cli(args)
             # CLI options overwrite defaults
             for key, value in args.__dict__.items():

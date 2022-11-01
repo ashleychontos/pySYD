@@ -1,5 +1,5 @@
 {
-   1435467:{'seed':737499,'smooth_width':10.0,'lower_ex':100.0,'upper_ex':5000.0,'lower_bg':100.0,'results':{'numax_smooth':{'value':1299.81,'error':56.64,},'dnu':{'value':70.68,'error':0.82,},},},
-   2309595:{'seed':2904822,'smooth_width':5.0,'lower_ex':100.0,'lower_bg':100.0,'results':{'numax_smooth':{'value':642.56,'error':9.50,},'dnu':{'value':36.82,'error':1.58,},},},
-   11618103:{'seed':3454566,'smooth_width':5.0,'results':{'numax_smooth':{'value':106.31,'error':1.07,},'dnu':{'value':9.26,'error':0.07,},},},
+   1435467:{'seed':737499,'smoothwidth':10.0,'lowerx':100.0,'upperx':5000.0,'lowerb':100.0,'results':{'numax_smooth':{'value':1299.81,'error':56.64,},'dnu':{'value':70.68,'error':0.82,},},},
+   2309595:{'seed':2904822,'smoothwidth':5.0,'lowerx':100.0,'lowerb':100.0,'results':{'numax_smooth':{'value':642.56,'error':9.50,},'dnu':{'value':36.82,'error':1.58,},},},
+   11618103:{'seed':3454566,'smoothwidth':5.0,'results':{'numax_smooth':{'value':106.31,'error':1.07,},'dnu':{'value':9.26,'error':0.07,},},},
 }

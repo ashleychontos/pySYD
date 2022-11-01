@@ -138,6 +138,8 @@ class Target:
         self.params['results'], self.params['plotting'] = {}, {}
         self.estimate_parameters()
         self.derive_parameters()
+        if self.params['test']:
+            return self.params['results'].pop({'parameters'})
         self.show_results()
 
 

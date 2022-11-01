@@ -56,9 +56,15 @@ def main():
     )
     parent_parser.add_argument('-s', '--save',
                                dest='save',
-                               help='Do not save output figures and results.',
+                               help='Do not save output figures and results',
                                default=True, 
                                action='store_false',
+    )
+    parent_parser.add_argument('-t', '--test',
+                               dest='test',
+                               help='Test core functionality of software on example stars',
+                               default=False, 
+                               action='store_true',
     )
     parent_parser.add_argument('-o', '--overwrite',
                                dest='overwrite',
