@@ -1,6 +1,6 @@
 import setuptools
 
-from src.pysyd.version import __version__
+exec(open("src/pysyd/version.py").read())
 
 setuptools.setup(
     name="pysyd",
