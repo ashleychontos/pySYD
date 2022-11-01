@@ -1075,7 +1075,7 @@ class Target:
         scale = self.constants['numax_sun']/self.params['numax']
         # make sure interval is not empty
         if not list(self.frequency[(self.frequency>=self.params['ps_mask'][0])&(self.frequency<=self.params['ps_mask'][1])]):
-            raise PySYDInputError("ERROR: frequency region for power excess is null\nPlease specify an appropriate numax and/or frequency limits for the power excess (via --lp/--up)")
+            raise utils.PySYDInputError("ERROR: frequency region for power excess is null\nPlease specify an appropriate numax and/or frequency limits for the power excess (via --lp/--up)")
         # Estimate granulation time scales
         if scaling == 'tau_sun_single':
             taus = np.array(self.constants['tau_sun_single'])*scale

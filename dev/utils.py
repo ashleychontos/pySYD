@@ -507,7 +507,7 @@ class Parameters(Constants):
             self.params['stars'] = args.stars
 
 
-    def check_cli(self, args):
+    def check_cli(self, args, max_laws=3):
         """Check CLI
     
         Make sure that any command-line inputs are the proper lengths, types, etc.
@@ -515,6 +515,8 @@ class Parameters(Constants):
         Parameters
             args : argparse.Namespace
                 the command line arguments
+            max_laws : int, default=3
+                maximum number of Harvey laws to be fit
 
         Asserts
             - the length of each array provided (in override) is equal
@@ -1108,7 +1110,7 @@ def setup_dirs(args, note='', dl_dict={}):
     # option to get ALL columns since only subset is included in the example
     if args.makeall:
         df_temp = pd.read_csv(args.info)
-        df = pd.DataFrame(columns=utils.get_dict('columns')['setup'])
+        df = pd.DataFrame(columns=get_dict('columns')['setup'])
         for col in df_temp.columns.values.tolist():
             if col in df.columns.values.tolist():
                 df[col] = df_temp[col]
@@ -1257,7 +1259,7 @@ def set_examples(args):
     return args
 
 
-def check_examples(args, note='', note_cols=['KIC','  Parameter:','Install derived:','Actual answer:'],
+def check_examples(args, note='', note_cols=['KIC','  Parameter','Install derived','Actual answer'],
                    note_formats=[">10s","<20s","<20s","<20s"],):
     """Create results directory
     
@@ -1314,55 +1316,3 @@ def get_output(fun=False):
             value = int(np.ceil((counts[0]-width)/2.))
             sentence = sentence[value:-value]
         print(sentence.center(width,' '))
-
-
-def _save_status(file, section, params):
-    """Save pipeline status ** TODO **
-
-    see radvel for inspo
-
-    Parameters
-        file : str 
-            name of output config file
-        section : str
-            name of section in config file
-        params : Dict() 
-            dictionary of all options to populate in the specified section
-
-
-    """
-    import configparser
-    config = configparser.ConfigParser()
-
-    if os.path.isfile(file):
-        config.read(file)
-
-    if not config.has_section(section):
-        config.add_section(section)
-
-    for key, val in params.items():
-        config.set(section, key, val)
-
-    with open(file, 'w') as f:
-        config.write(f)
-
-
-def _load_status(file):
-    """Load pipeline status ** TODO **
-
-    see radvel for inspo
-
-    Parameters
-        file : str
-            name of output config file
-
-    Returns
-        config : configparser.ConfigParser
-            config file with pipeline status
-
-    """
-
-    config = configparser.ConfigParser()
-    gl = config.read(file)
-
-    return config

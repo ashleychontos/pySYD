@@ -711,7 +711,7 @@ def dnu_comparison(star, filename='dnu_comparison.png', methods=['M','A','D'], m
         ax1.axvline(star.obs_dnu, linestyle=styles[m], color=colors[m], linewidth=2.5, zorder=2)
         for lag in star.peaks_l:
             ax2.axvline(lag, linestyle=styles[m], color=colors[m], linewidth=0.75, zorder=2)
-        ax2.axvline(star.obs_dnu, linestyle=styles[m], color=colors[m], linewidth=2.5, zorder=2, label=r'$\rm \Delta\nu \,\, %s$'%names[m])
+        ax2.axvline(star.obs_dnu, linestyle=styles[m], color=colors[m], linewidth=2.5, zorder=2, label=r'$\rm \Delta\nu \,\, %s$'%method)
         ax2.axvspan(min(star.zoom_lag), max(star.zoom_lag), color=colors[m], alpha=0.25, zorder=0)
     star.globe['method'] = method_0
     ax1.axvline(star.globe['results'][star.name]['dnu'][0], linestyle='-', color='lime', linewidth=2.5, zorder=99, label=r'$\rm Observed \,\, \Delta\nu$')

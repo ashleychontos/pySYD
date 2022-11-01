@@ -104,11 +104,9 @@ def gaussian(frequency, offset, amplitude, center, width):
             the Gaussian distribution
 
     """
-
     model = np.zeros_like(frequency)
     model += amplitude*np.exp(-(center-frequency)**2.0/(2.0*width**2))
     model += offset
-
     return model
 
 
@@ -134,18 +132,54 @@ def power(frequency, coefficient, exponent):
     """
 
     model = np.zeros_like(frequency)
-    model += amplitude*np.exp(-(center-frequency)**2.0/(2.0*width**2))
-    model += offset
+    model += coefficient*(frequency**(exponent))
+    return model
 
+def white(frequency, white_noise):
+    """Testing"""
+    model = np.zeros_like(frequency)
+    model += white_noise
     return model
 
 
 def harvey_regular(frequency, tau, sigma, mode='regular', ab=False,):
+    """Testing"""
+    model = np.zeros_like(frequency)
     if not ab:
-        model += (4.*(guesses[(i*2)+1]**2.)*guesses[i*2])/(1.0+(2.*np.pi*guesses[i*2]*frequency)**2.0+(2.*np.pi*guesses[i*2]*frequency)**4.0)
+        model += (4.*(sigma**2.)*tau)/(1.0+((2.*np.pi*tau*frequency)**2.0)+((2.*np.pi*tau*frequency)**4.0))
     else:
-        model += tau/(1.0+(guesses[(i*2)+1]*frequency)**2.0+(guesses[(i*2)+1]*frequency)**4.0)
+        model += tau/(1.0+((sigma*frequency)**2.0)+((sigma*frequency)**4.0))
+    return model
 
+
+def harvey_second(frequency, tau, sigma, mode='regular', ab=False,):
+    """Testing"""
+    model = np.zeros_like(frequency)
+    if not ab:
+        model += (4.*(sigma**2.)*tau)/(1.0+((2.*np.pi*tau*frequency)**2.0))
+    else:
+        model += tau/(1.0+((sigma*frequency)**2.0))
+    return model
+
+
+def harvey_fourth(frequency, tau, sigma, mode='regular', ab=False,):
+    """Testing"""
+    model = np.zeros_like(frequency)
+    if not ab:
+        model += (4.*(sigma**2.)*tau)/(1.0+((2.*np.pi*tau*frequency)**4.0))
+    else:
+        model += tau/(1.0+((sigma*frequency)**4.0))
+    return model
+
+
+def harvey_fit(frequency, tau, sigma, exponent, mode='regular', ab=False,):
+    """Testing"""
+    model = np.zeros_like(frequency)
+    if not ab:
+        model += (4.*(sigma**2.)*tau)/(1.0+((2.*np.pi*tau*frequency)**exponent))
+    else:
+        model += tau/(1.0+((sigma*frequency)**exponent))
+    return model
 
 
 def harvey_none(frequency, white_noise, ab=False):
@@ -173,13 +207,6 @@ def harvey_none(frequency, white_noise, ab=False):
 
     """
 
-    model = np.zeros_like(frequency)
-    model += white_noise
-
-    return model
-
-
-def white(frequency, white_noise):
     model = np.zeros_like(frequency)
     model += white_noise
     return model

@@ -113,15 +113,13 @@ def parallel(args):
     import multiprocessing as mp
     # Load relevant pySYD parameters
     args = utils.Parameters(args)
+    args.add_stars(stars=args.stars)
     # Creates the separate, asyncrhonous (nthread) processes
     pool = mp.Pool(args.n_threads)
     result_objects = [pool.apply_async(pipe, args=(group, args)) for group in args.params['groups']]
     results = [r.get() for r in result_objects]
     pool.close()
     pool.join()               # postpones execution of the next line until all processes finish
-      
-    if args.params['verbose']:
-        print('Combining results into single csv file.\n')
     # Concatenates output into two files
     utils.scrape_output(args)
 
@@ -193,11 +191,9 @@ def run(args):
     """
     # Load relevant pySYD parameters
     args = utils.Parameters(args)
+    args.add_stars(stars=args.stars)
     # Run single batch of stars
     pipe(args.params['stars'], args)
-    # check to make sure that at least one star was successfully run (i.e. there are results)  
-    if args.params['verbose']:
-        print(' - combining results into single csv file\n-----------------------------------------------------------\n')
     # Concatenates output into two files
     utils.scrape_output(args)
 
