@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from astropy.stats import mad_std
 
-import ..cli
+from .. import cli
 from ..utils import Parameters, get_dict
 from ..target import Target
 
