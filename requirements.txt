@@ -1,6 +1,6 @@
 astropy>=4.0.0
 matplotlib>=1.5.3
-numpy
+numpy>=1.23.0
 pandas>=1.0.5
-scipy
-tqdm
+scipy>=1.9.0
+tqdm>=4.64.0
