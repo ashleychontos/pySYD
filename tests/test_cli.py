@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 from astropy.stats import mad_std
 
-import pysyd
 import pysyd.cli
 from pysyd import utils
 from pysyd.target import Target

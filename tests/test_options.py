@@ -4,7 +4,7 @@ import requests
 import numpy as np
 
 
-import pysyd
+
 from pysyd import utils
 from pysyd.target import Target
 

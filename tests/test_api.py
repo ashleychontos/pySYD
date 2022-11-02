@@ -1,8 +1,7 @@
 import numpy as np
-import pandas as pd
 
 
-import pysyd
+
 from pysyd import utils
 
 
