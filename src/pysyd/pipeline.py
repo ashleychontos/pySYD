@@ -1,6 +1,6 @@
-import os
-import subprocess
+import numpy as np
 import pandas as pd
+import multiprocessing as mp
 
 
 
@@ -32,8 +32,8 @@ def check(args):
 
     
     """
-    star, args = load(args)
-    plots.check_data(star, args)
+    star = load(args)
+    plots.check_data(star)
 
 
 def fun(args):
@@ -85,12 +85,13 @@ def load(args):
             assert len(args.stars) == 1, "No more than one star can be checked at a time."
         if args.verbose:
             print('\n\nChecking data for target %s:'%args.stars[0])
-    display, verbose = args.plot, args.verbose
     # Load in data for a given star
-    new_args = utils.Parameters(args)
-    star = Target(args.stars[0], new_args)
-    star.params['show'], star.params['verbose'] = args.plot, args.verbose
-    return star, args
+    params = utils.Parameters(args=args)
+    # Add target stars
+    params.add_targets(stars=args.stars)
+    # Load target data
+    star = Target(args.stars[0], params)
+    return star
 
 
 def parallel(args):
@@ -108,23 +109,21 @@ def parallel(args):
     .. seealso:: :mod:`pysyd.pipeline.run`
     
     """
-    # Import relevant (external) python modules
-    import numpy as np
-    import multiprocessing as mp
     # Load relevant pySYD parameters
-    args = utils.Parameters(args)
-    args.add_targets(stars=args.stars)
+    params = utils.Parameters(args=args)
+    # Add target stars
+    params.add_targets(stars=args.stars)
     # Creates the separate, asyncrhonous (nthread) processes
     pool = mp.Pool(args.n_threads)
-    result_objects = [pool.apply_async(pipe, args=(group, args)) for group in args.params['groups']]
+    result_objects = [pool.apply_async(pipe, args=(group, params)) for group in params.params['groups']]
     results = [r.get() for r in result_objects]
     pool.close()
     pool.join()               # postpones execution of the next line until all processes finish
     # Concatenates output into two files
-    utils.scrape_output(args)
+    utils.scrape_output(params)
 
 
-def pipe(group, args, progress=False):
+def pipe(group, params, progress=False):
     """
 
     This function is called by both :mod:`pysyd.pipeline.run` and :mod:`pysyd.pipeline.parallel`
@@ -139,7 +138,7 @@ def pipe(group, args, progress=False):
     """
     # Iterate through and run stars in a given star 'group'
     for name in group:
-        star = Target(name, args)
+        star = Target(name, params)
         star.process_star()
 
 
@@ -164,10 +163,9 @@ def plot(args):
         plots.create_comparison_plot(show=args.show, save=args.save, overwrite=args.overwrite,)
     if args.results:
         if args.stars is None:
-            raise utils.PySYDInputError("Please provide a star to plot results for")
+            raise utils.InputError("\nPlease provide a star to plot results for\n")
         else:
             assert len(args.stars) == 1, "No more than one star can be checked at a time."
-        assert os.path.exists(os.path.join(args.params['outdir'],args.stars[0]))
         if args.verbose:
             print('\n\nPlotting results for target %s:'%args.stars[0])
 
@@ -189,13 +187,14 @@ def run(args):
 
 
     """
-    # Load relevant pySYD parameters
-    args = utils.Parameters(args)
-    args.add_targets(stars=args.stars)
+    # Load default pySYD parameters
+    params = utils.Parameters(args=args)
+    # Update with CL options
+    params.add_targets(stars=args.stars)
     # Run single batch of stars
-    pipe(args.params['stars'], args)
+    pipe(args.stars, params)
     # Concatenates output into two files
-    utils.scrape_output(args)
+    utils.scrape_output(params)
 
 
 def setup(args):

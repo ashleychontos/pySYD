@@ -72,8 +72,7 @@ class Target:
             self.params = args.params[name]
         else:
             # if not available, loads defaults
-            args.add_stars(stars=[name])
-            self.params = args.params[name]
+            self.params = utils.Parameters()
         if not test:
             self._load_star()
 

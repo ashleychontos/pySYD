@@ -109,12 +109,11 @@ class Parameters(Constants):
         # makes sure to inherit constants
         super().__init__()
         self.get_defaults()
-        self.add_cli(args)
+        if args is not None:
+            self.add_cli(args)
 
-
-    def __repr__(self):
+    def __str__(self):
         return "<PySYD Parameters>"
-
 
     def get_defaults(self):
         """Load defaults
@@ -143,7 +142,6 @@ class Parameters(Constants):
         # Get plotting info
         self.get_plot()
 
-
     def get_parent(self):
         """Get parent parser
    
@@ -167,7 +165,6 @@ class Parameters(Constants):
             'cli' : False,
             'notebook' : False,
         })
-
 
     def get_data(self):
         """Get data parser
@@ -197,7 +194,6 @@ class Parameters(Constants):
             'notching' : False,
         })
 
-
     def get_main(self):
         """Get main parser
    
@@ -224,7 +220,6 @@ class Parameters(Constants):
         # Estimate parameters
         self.get_sampling()
 
-
     def get_estimate(self):
         """Search and estimate parameters
     
@@ -247,7 +242,6 @@ class Parameters(Constants):
             'lower_ex' : 1.0,
             'upper_ex' : 8000.0,
         })
-
 
     def get_background(self):
         """Background parameters
@@ -273,7 +267,6 @@ class Parameters(Constants):
             'functions' : get_dict(type='functions'),
         })
 
-
     def get_global(self):
         """Global fitting parameters
     
@@ -298,7 +291,6 @@ class Parameters(Constants):
             'n_peaks' : 5,
         })
 
-
     def get_sampling(self):
         """Sampling parameters
     
@@ -316,7 +308,6 @@ class Parameters(Constants):
             'samples' : False,
             'n_threads' : 0,
         })
-
 
     def get_plot(self):
         """Get plot parser
@@ -342,7 +333,6 @@ class Parameters(Constants):
             'smooth_ech' : None,
         })
 
-
     def add_cli(self, args):
         """Add CLI
 
@@ -356,18 +346,12 @@ class Parameters(Constants):
 
 
         """
-        if self.params['cli']:
-            self.check_cli(args)
-            # CLI options overwrite defaults
-            for key, value in args.__dict__.items():
-                # Make sure it is not a variable with a >1 length
-                if key not in self.override:
-                    self.params[key] = value
-
-            # were stars provided
-            if self.params['stars'] is None:
-                self.star_list()
-
+        self.check_cli(args)
+        # CLI options overwrite defaults
+        for key, value in args.__dict__.items():
+            # Make sure it is not a variable with a >1 length
+            if key not in self.override:
+                self.params[key] = value
 
     def check_cli(self, args, max_laws=3):
         """Check CLI
@@ -400,25 +384,23 @@ class Parameters(Constants):
         }
         for each in self.override:
             if self.override[each] is not None:
-                assert len(args.stars) == len(self.override[each]), "The number of values provided for %s does not equal the number of stars"%each
-        if args.oversampling_factor is not None:
-            assert isinstance(args.oversampling_factor, int), "The oversampling factor for the input PS must be an integer"
-        if args.n_laws is not None:
-            assert args.n_laws <= max_laws, "We likely cannot resolve %d Harvey-like components for point sources. Please select a smaller number."%args.n_laws
-
-
+                assert len(args.stars) == len(self.override[each]), "The number of values provided for %s MUST equal the number of stars" % each
+        if args.oversampling_factor is not None and not isinstance(args.oversampling_factor, int):
+            raise InputWarning("\nThe oversampling factor for the input PS must be an integer\n")
+        if args.n_laws is not None and args.n_laws > max_laws:
+            args.n_laws = max_laws
+            raise InputWarning("\nWe probs cannot resolve %d Harvey components. \nnlaws changed to %d\n" % max_laws)
 
     def add_targets(self, stars=None):
         if stars is not None:
             self.params['stars'] = stars
         else:
             try:
-                load_starlist()
+                self.load_starlist()
             except InputError as error:
                 print(error.msg)
         if self.params['stars'] is not None:
             self.make_dicts()
-
 
     def load_starlist(self):
         """Load star list
@@ -433,12 +415,11 @@ class Parameters(Constants):
             with open(self.params['todo'], "r") as f:
                 self.params['stars'] = [line.strip().split()[0] for line in f.readlines()]
 
-
     def make_dicts(self):
-        """Add stars
+        """Add star dicts
 
         This routine will load in target stars, sets up "groups" (relevant for parallel
-        processing) and then load in the relevant information
+        processing) and then load in all relevant information
 
 
         """
@@ -449,8 +430,9 @@ class Parameters(Constants):
             if self.params['save'] and not os.path.exists(self.params[star]['path']):
                 os.makedirs(self.params[star]['path'])
         self.get_groups()
-        self.add_info()
-
+        self.load_starinfo()
+        self.load_clinfo()
+        self.add_derived()
 
     def get_groups(self):
         """Get star groups
@@ -471,23 +453,62 @@ class Parameters(Constants):
         else:
             self.params['groups'] = np.array(self.params['stars'])
 
+    def load_starinfo(self):
+        """Load star info csv
 
-    def add_info(self):
-        """Add info
+        """
+        if os.path.exists(self.params['info']):
+            columns = get_dict(type='columns')
+            df = pd.read_csv(self.params['info'])
+            df.set_index(inplace=True, drop=True)
+            stars = [str(star) for star in df.index.values.tolist()]
+            for star in self.params['stars']:
+                if str(star) in stars:
+                    idx = stars.index(str(star))
+                    for column in df.columns.values.tolist():
+                        if not np.isnan(df.loc[idx,column]) and column in columns['int']:
+                            self.params[star][column] = int(df.loc[idx,column])
+                        elif not np.isnan(df.loc[idx,column]) and column in columns['float']:
+                            self.params[star][column] = float(df.loc[idx,column])
+                        elif not np.isnan(df.loc[idx,column]) and column in columns['bool']:
+                            self.params[star][column] = df.loc[idx,column]
+                        elif not np.isnan(df.loc[idx,column]) and column in columns['str']:
+                            self.params[star][column] = str(df.loc[idx,column])
+                        else:
+                            pass
 
-        Checks and saves all default information for stars separately
+    def load_clinfo(self):
+        """Load command-line values
+
+        """
+        columns = get_dict(type='columns')
+        # make sure all keys exist, even if they are None
+        for star in self.params['stars']:
+            for column in columns['all']:
+                if column in list(self.params.keys()) and column not in columns['override']:
+                    self.params[star][column] = self.params[column]
+                else:
+                    if column not in self.params[star]:
+                        self.params[star][column] = None
+        # CLI override parameters
+        if hasattr(self, 'override'):
+            for column in columns['override']:
+                if self.override[column] is not None:
+                    for i, star in enumerate(self.params['stars']):
+                        self.params[star][column] = self.override[column][i]
+
+    def add_derived(self):
+        """Add derived properties
 
         """
         self.load_info()
         for star in self.params['stars']:
             if self.params[star]['numax'] is not None:
                 self.params[star]['estimate'] = False
-                if self.params[star]['dnu'] is not None:
-                    self.params[star]['force'] = self.params[star]['dnu']
-                self.params[star]['dnu'] = delta_nu(self.params[star]['numax'])
+                if self.params[star]['dnu'] is None:
+                    self.params[star]['dnu'] = delta_nu(self.params[star]['numax'])
             else:
-                if 'rs' in self.params[star] and self.params[star]['rs'] is not None and \
-                  'logg' in self.params[star] and self.params[star]['logg'] is not None:
+                if 'rs' in self.params[star] and self.params[star]['rs'] is not None and 'logg' in self.params[star] and self.params[star]['logg'] is not None:
                     self.params[star]['ms'] = ((((self.params[star]['rs']*self.constants['r_sun'])**(2.0))*10**(self.params[star]['logg'])/self.constants['G'])/self.constants['m_sun'])
                     self.params[star]['numax'] = self.constants['numax_sun']*self.params[star]['ms']*(self.params[star]['rs']**(-2.0))*((self.params[star]['teff']/self.constants['teff_sun'])**(-0.5))
                     self.params[star]['dnu'] = self.constants['dnu_sun']*(self.params[star]['ms']**(0.5))*(self.params[star]['rs']**(-1.5))  
@@ -495,61 +516,6 @@ class Parameters(Constants):
                 self.params[star]['ech_mask'] = [self.params[star]['lower_ech'], self.params[star]['upper_ech']]
             else:
                 self.params[star]['ech_mask'] = None
-
-
-    def load_info(self):
-        """Load star info
-    
-        This function retrieves any and all information available for any targets and the
-        order is important here. The main dictionary is either the command-line arguments
-        or all the defaults that were loaded in *but* this can be different on a single
-        star basis and therefore we need to handle this in special steps:
-         #. first initializes all keys for each star
-         #. copy values from the csv file when applicable
-         #. copy defaults when value is not available
-         #. any command-line arguments override previous assignments
-
-        .. todo:: if unsure, can (re)set up this file with a simple command
-
-
-        """
-        columns = get_dict(type='columns')
-        # Create all keys first
-        for star in self.params['stars']:
-            for column in columns['all']:
-                if column in self.params:
-                    self.params[star][column] = self.params[column]
-                else:
-                    self.params[star][column] = None
-
-        # Open csv file if it exists
-        if os.path.exists(self.params['info']):
-            df = pd.read_csv(self.params['info'])
-            stars = [str(each) for each in df.star.values.tolist()]
-            for star in self.params['stars']:
-                if str(star) in stars:
-                    idx = stars.index(str(star))
-                    # Update information from columns
-                    for column in df.columns.values.tolist():
-                        if not np.isnan(df.loc[idx,column]):
-                            if column in columns['int']:
-                                self.params[star][column] = int(df.loc[idx,column])
-                            elif column in columns['float']:
-                                self.params[star][column] = float(df.loc[idx,column])
-                            elif column in columns['bool']:
-                                self.params[star][column] = df.loc[idx,column]
-                            elif column in columns['str']:
-                                self.params[star][column] = str(df.loc[idx,column])
-                            else:
-                                pass
-
-        if not self.params['cli']:
-            return
-        # CLI will override anything from before
-        for column in get_dict(type='columns')['override']:
-            if self.override[column] is not None:
-                for i, star in enumerate(self.params['stars']):
-                    self.params[star][column] = self.override[column][i]
 
 
 class Question:
