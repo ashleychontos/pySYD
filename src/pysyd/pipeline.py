@@ -113,7 +113,7 @@ def parallel(args):
     import multiprocessing as mp
     # Load relevant pySYD parameters
     args = utils.Parameters(args)
-    args.add_stars(stars=args.stars)
+    args.add_targets(stars=args.stars)
     # Creates the separate, asyncrhonous (nthread) processes
     pool = mp.Pool(args.n_threads)
     result_objects = [pool.apply_async(pipe, args=(group, args)) for group in args.params['groups']]
@@ -191,7 +191,7 @@ def run(args):
     """
     # Load relevant pySYD parameters
     args = utils.Parameters(args)
-    args.add_stars(stars=args.stars)
+    args.add_targets(stars=args.stars)
     # Run single batch of stars
     pipe(args.params['stars'], args)
     # Concatenates output into two files
