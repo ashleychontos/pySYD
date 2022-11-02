@@ -501,7 +501,6 @@ class Parameters(Constants):
         """Add derived properties
 
         """
-        self.load_info()
         for star in self.params['stars']:
             if self.params[star]['numax'] is not None:
                 self.params[star]['estimate'] = False
