@@ -94,9 +94,10 @@ def test_single_run():
               'test' : True,
               'results' : {'numax_smooth':106.31, 'dnu':9.26},
     }
+    star = params.pop('star')
     # Load relevant pySYD parameters
     args = Parameters()
-    args.add_targets(stars=[params.pop('star')])
+    args.add_targets(stars=[star])
     target = Target(star, args, test=True)
     target = _load_data(target)
     target.lc, target.ps = False, False
@@ -120,9 +121,10 @@ def test_sampler_run():
               'test' : True,
               'results' : {'numax_smooth':{'value':1299.81, 'error':56.64,}, 'dnu':{'value':70.68, 'error':0.82,},},
     }
+    star = params.pop('star')
     # Load relevant pySYD parameters
     args = Parameters()
-    args.add_targets(stars=[params.pop('star')])
+    args.add_targets(stars=[star])
     target = Target(star, args, test=True)
     target = _load_data(target)
     target.lc, target.ps = False, False

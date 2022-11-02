@@ -20,13 +20,7 @@ def _load_data(target, source='https://raw.githubusercontent.com/ashleychontos/p
     return target
 
 # KEPLER ARTEFACT CORRECTION
-def test_kepcorr(
-    star = 2309595,
-    kep_corr = True,
-    seed = 2904822,
-    lowf = [240.0,380.0],
-    highf = [4530.0,4534.0],
-    ):
+def test_kepcorr(star=2309595, kep_corr=True, seed=2904822, lowf=[240.0,380.0], highf=[4530.0,4534.0],):
     args = Parameters()
     args.add_targets(stars=[star])
     args.params[star]['kep_corr'], args.params[star]['seed'] = kep_corr, seed
@@ -49,14 +43,8 @@ def test_kepcorr(
     for idx in indices:
         assert pow_after[idx] < pow_before[idx], "Issue with artefact whitening module"
 
-# WHITEN MIXED MODES (BY SIMULATING WHITE NOISE)
-def test_whiten(
-    star = 2309595,
-    seed = 2904822,
-    dnu = 36.82,
-    ech_mask = [10.0,25.0],
-    notching = False,
-    ):
+# WHITENING MODULE
+def test_whiten(star=2309595, seed=2904822, dnu=36.82, ech_mask=[10.0,25.0], notching=False,):
     args = Parameters()
     args.add_targets(stars=[star])
     args.params[star]['ech_mask'], args.params[star]['dnu'], args.params[star]['seed'], args.params[star]['notching'] = ech_mask, dnu, seed, notching
@@ -73,14 +61,8 @@ def test_whiten(
     # power in that region should now be less if it were removing signal
     assert np.sum(pow_after[mask]) < np.sum(pow_before[mask]), "Mixed mode module is not working properly"
 
-# WHITEN MIXED MODES BY USING NOTCHING TECHNIQUE
-def test_notch(
-    star = 2309595,
-    seed = 2904822,
-    dnu = 36.82,
-    ech_mask = [10.0,25.0],
-    notching = True,
-    ):
+# NOTCHING TECHNIQUE
+def test_notch(star=2309595, seed=2904822, dnu=36.82, ech_mask=[10.0,25.0], notching=False,):
     args = Parameters()
     args.add_targets(stars=[star])
     args.params[star]['ech_mask'], args.params[star]['dnu'], args.params[star]['seed'], args.params[star]['notching'] = ech_mask, dnu, seed, notching
