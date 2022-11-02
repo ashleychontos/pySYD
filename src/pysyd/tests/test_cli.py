@@ -8,7 +8,7 @@ import pandas as pd
 from astropy.stats import mad_std
 import pytest
 
-import pysyd
+import ..
 from .. import cli
 from ..utils import Parameters, get_dict
 from ..target import Target
