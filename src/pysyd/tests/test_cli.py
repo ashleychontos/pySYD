@@ -103,7 +103,7 @@ def test_single_run():
     target.lc, target.ps = False, False
     answers = params.pop('results')
     for param in list(params.keys()):       
-        target.params[param] = defaults[param]
+        target.params[param] = params[param]
     df = pd.DataFrame(target.process_star())
     assert '%.2f' % (float(df.loc[0,'numax_smooth'])) == '%.2f' % (float(answers['numax_smooth'])), "Incorrect numax for single iteration"
     assert '%.2f' % (float(df.loc[0,'dnu'])) == '%.2f' % (float(answers['dnu'])), "Incorrect dnu for single iteration"
@@ -119,7 +119,7 @@ def test_sampler_run():
               'lower_bg' : 100.0,
               'mc_iter' : 200,
               'test' : True,
-              'results' : {'numax_smooth':{'value':1299.81, 'error':56.64,}, 'dnu':{'value':70.68, 'error':0.82,},},
+              'results' : {'numax_smooth':{'value':1299.90, 'error':59.81,}, 'dnu':{'value':70.68, 'error':0.82,},},
     }
     star = params.pop('star')
     # Load relevant pySYD parameters
