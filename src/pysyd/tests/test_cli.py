@@ -92,7 +92,7 @@ def test_single_run():
               'smooth_width' : 5.0,
               'mc_iter' : 1,
               'test' : True,
-              'results' : {'numax_smooth':106.31, 'dnu':9.26},
+              'results' : {'numax_smooth':106.29, 'dnu':9.26},
     }
     star = params.pop('star')
     # Load relevant pySYD parameters
@@ -119,7 +119,7 @@ def test_sampler_run():
               'lower_bg' : 100.0,
               'mc_iter' : 200,
               'test' : True,
-              'results' : {'numax_smooth':{'value':1299.90, 'error':59.81,}, 'dnu':{'value':70.68, 'error':0.82,},},
+              'results' : {'numax_smooth':{'value':1299.90, 'error':59.81,}, 'dnu':{'value':70.68, 'error':0.75,},},
     }
     star = params.pop('star')
     # Load relevant pySYD parameters
