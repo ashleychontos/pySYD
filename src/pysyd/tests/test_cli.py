@@ -6,7 +6,9 @@ import subprocess
 import numpy as np
 import pandas as pd
 from astropy.stats import mad_std
+import pytest
 
+import pysyd
 from .. import cli
 from ..utils import Parameters, get_dict
 from ..target import Target
