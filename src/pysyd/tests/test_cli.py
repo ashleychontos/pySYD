@@ -84,11 +84,6 @@ def _fix_data(target):
     target.pow_cs = np.array(target.power[target.params['oversampling_factor']-1::target.params['oversampling_factor']])
     return target
 
-   1435467:{'seed':,,'lower_ex':100.0,'upper_ex':5000.0,'lower_bg':100.0,'results':{'numax_smooth':{'value':1299.81,'error':56.64,},'dnu':{'value':70.68,'error':0.82,},},},
-   2309595:{'seed':2904822,'smooth_width':5.0,'lower_ex':100.0,'lower_bg':100.0,'results':{'numax_smooth':{'value':642.56,'error':9.50,},'dnu':{'value':36.82,'error':1.58,},},},
-   11618103:,
-
-
 # TEST SINGLE STAR W/ NO SAMPLING
 def test_single_run():
     params = {
