@@ -16,27 +16,41 @@ from . import SYDFILE, PYSYDFILE
 from . import INFDIR, INPDIR, OUTDIR, DICTDIR, TESTFILE
 
 
-class PySYDInputError(Exception):
-    """Class for pySYD user input errors."""
-    def __init__(self, error):
-        self.error
+class InputError(Exception):
+    """Class for pySYD user input errors (i.e., halts execution)."""
+    def __init__(self, error, width=60):
+        self.msg, self.width = error, width
     def __repr__(self):
-        return "<PySYDInputError>%s"%self.error
+        return "pysyd.utils.InputError(error=%r)"%self.msg
+    def __str__(self):
+        return "<InputError>"
 
-class PySYDProcessingError(Exception):
-    """Class for pySYD processing exceptions."""
-    def __init__(self, error):
-        self.error = error
+class ProcessingError(Exception):
+    """Class for pySYD processing errors (i.e., halts execution)."""
+    def __init__(self, error, width=60):
+        self.msg, self.width = error, width
     def __repr__(self):
-        return "<pySYDProcessingError>%s"%self.error
+        return "pysyd.utils.ProcessingError(error=%r)"%self.msg
+    def __str__(self):
+        return "<ProcessingError>"
 
-class PySYDInputWarning(Warning):
+class InputWarning(Warning):
     """Class for pySYD user input warnings."""
-    def __init__(self, warning):
-        self.warning = warning
+    def __init__(self, warning, width=60):
+        self.msg, self.width = warning, width
     def __repr__(self):
-        import warnings
-        return warnings.warn(self.warning)
+        return "pysyd.utils.InputWarning(warning=%r)"%self.msg
+    def __str__(self):
+        return "<InputWarning>"
+
+class ProcessingWarning(Warning):
+    """Class for pySYD user input warnings."""
+    def __init__(self, warning, width=60):
+        self.msg, self.width = warning, width
+    def __repr__(self):
+        return "pysyd.utils.ProcessingWarning(warning=%r)"%self.msg
+    def __str__(self):
+        return "<ProcessingWarning>"
 
 
 class Constants:
@@ -47,7 +61,7 @@ class Constants:
     
     """
 
-    def __init__(self, defaults=['solar','conversions','constants']):
+    def __init__(self):
         """
         UNITS ARE IN THE SUPERIOR CGS 
         COME AT ME
@@ -83,7 +97,7 @@ class Parameters(Constants):
 
     """
 
-    def __init__(self, args=None, stars=None):
+    def __init__(self, args=None):
         """
 
         Calls super method to inherit all relevant constants and then
@@ -95,23 +109,11 @@ class Parameters(Constants):
         # makes sure to inherit constants
         super().__init__()
         self.get_defaults()
-        if not self.is_interactive():
-            self.add_cli(args)
-        else:
-            if stars is None:
-                self.star_list()
-            else:
-                self.params['stars'] = stars
-        self.assign_stars()
+        self.add_cli(args)
 
 
     def __repr__(self):
         return "<PySYD Parameters>"
-
-
-    def is_interactive(self):
-        import __main__ as main
-        return not hasattr(main, '__file__')
 
 
     def get_defaults(self):
@@ -310,6 +312,7 @@ class Parameters(Constants):
         """
         self.params.update({
             'mc_iter' : 1,
+            'seed' : None,
             'samples' : False,
             'n_threads' : 0,
         })
@@ -340,15 +343,98 @@ class Parameters(Constants):
         })
 
 
-    def add_stars(self, stars=None):
+    def add_cli(self, args):
+        """Add CLI
+
+        Save any non-default parameters provided via command line but skips over any keys
+        in the override columns since those are star specific and have a given length --
+        it will come back to this
+
+        Parameters
+            args : argparse.Namespace
+                the command line arguments
+
+
+        """
+        if self.params['cli']:
+            self.check_cli(args)
+            # CLI options overwrite defaults
+            for key, value in args.__dict__.items():
+                # Make sure it is not a variable with a >1 length
+                if key not in self.override:
+                    self.params[key] = value
+
+            # were stars provided
+            if self.params['stars'] is None:
+                self.star_list()
+
+
+    def check_cli(self, args, max_laws=3):
+        """Check CLI
+    
+        Make sure that any command-line inputs are the proper lengths, types, etc.
+
+        Parameters
+            args : argparse.Namespace
+                the command line arguments
+            max_laws : int, default=3
+                maximum number of Harvey laws to be fit
+
+        Asserts
+            - the length of each array provided (in override) is equal
+            - the oversampling factor is an integer (if applicable)
+            - the number of Harvey laws to "force" is an integer (if applicable)
+
+        """
+        self.override = {
+            'numax': args.numax,
+            'dnu': args.dnu,
+            'lower_ex': args.lower_ex,
+            'upper_ex': args.upper_ex,
+            'lower_bg': args.lower_bg,
+            'upper_bg': args.upper_bg,
+            'lower_ps': args.lower_ps,
+            'upper_ps': args.upper_ps,
+            'lower_ech': args.lower_ech,
+            'upper_ech': args.upper_ech,
+        }
+        for each in self.override:
+            if self.override[each] is not None:
+                assert len(args.stars) == len(self.override[each]), "The number of values provided for %s does not equal the number of stars"%each
+        if args.oversampling_factor is not None:
+            assert isinstance(args.oversampling_factor, int), "The oversampling factor for the input PS must be an integer"
+        if args.n_laws is not None:
+            assert args.n_laws <= max_laws, "We likely cannot resolve %d Harvey-like components for point sources. Please select a smaller number."%args.n_laws
+
+
+
+    def add_targets(self, stars=None):
         if stars is not None:
             self.params['stars'] = stars
         else:
-            raise PySYDInputError("ERROR: no star provided")
-        self.assign_stars()
+            try:
+                load_starlist()
+            except InputError as error:
+                print(error.msg)
+        if self.params['stars'] is not None:
+            self.make_dicts()
 
 
-    def assign_stars(self,):
+    def load_starlist(self):
+        """Load star list
+
+        If no stars have been provided yet, it will read in the default text file
+        (and if that does not exist, it will raise an error)
+
+        """
+        if not os.path.exists(self.params['todo']):
+            raise InputError("\nERROR: no stars or star list provided.\n       please try again.\n")
+        else:
+            with open(self.params['todo'], "r") as f:
+                self.params['stars'] = [line.strip().split()[0] for line in f.readlines()]
+
+
+    def make_dicts(self):
         """Add stars
 
         This routine will load in target stars, sets up "groups" (relevant for parallel
@@ -364,20 +450,6 @@ class Parameters(Constants):
                 os.makedirs(self.params[star]['path'])
         self.get_groups()
         self.add_info()
-
-
-    def star_list(self,):
-        """Load star list
-
-        If no stars have been provided yet, it will read in the default text file
-        (and if that does not exist, it will raise an error)
-
-        """
-        if not os.path.exists(self.params['todo']):
-            raise PySYDInputError("ERROR: no stars or star list provided")
-        else:
-            with open(self.params['todo'], "r") as f:
-                self.params['stars'] = [line.strip().split()[0] for line in f.readlines()]
 
 
     def get_groups(self):
@@ -406,7 +478,7 @@ class Parameters(Constants):
         Checks and saves all default information for stars separately
 
         """
-        self.get_info()
+        self.load_info()
         for star in self.params['stars']:
             if self.params[star]['numax'] is not None:
                 self.params[star]['estimate'] = False
@@ -425,7 +497,7 @@ class Parameters(Constants):
                 self.params[star]['ech_mask'] = None
 
 
-    def get_info(self):
+    def load_info(self):
         """Load star info
     
         This function retrieves any and all information available for any targets and the
@@ -478,72 +550,6 @@ class Parameters(Constants):
             if self.override[column] is not None:
                 for i, star in enumerate(self.params['stars']):
                     self.params[star][column] = self.override[column][i]
-
-
-    def add_cli(self, args):
-        """Add CLI
-
-        Save any non-default parameters provided via command line but skips over any keys
-        in the override columns since those are star specific and have a given length --
-        it will come back to this
-
-        Parameters
-            args : argparse.Namespace
-                the command line arguments
-
-
-        """
-        if args.params['cli']:
-            self.check_cli(args)
-            # CLI options overwrite defaults
-            for key, value in args.__dict__.items():
-                # Make sure it is not a variable with a >1 length
-                if key not in self.override:
-                    self.params[key] = value
-
-            # were stars provided
-            if self.params['stars'] is None:
-                self.star_list()
-        else:
-            self.params['stars'] = args.stars
-
-
-    def check_cli(self, args, max_laws=3):
-        """Check CLI
-    
-        Make sure that any command-line inputs are the proper lengths, types, etc.
-
-        Parameters
-            args : argparse.Namespace
-                the command line arguments
-            max_laws : int, default=3
-                maximum number of Harvey laws to be fit
-
-        Asserts
-            - the length of each array provided (in override) is equal
-            - the oversampling factor is an integer (if applicable)
-            - the number of Harvey laws to "force" is an integer (if applicable)
-
-        """
-        self.override = {
-            'numax': args.numax,
-            'dnu': args.dnu,
-            'lower_ex': args.lower_ex,
-            'upper_ex': args.upper_ex,
-            'lower_bg': args.lower_bg,
-            'upper_bg': args.upper_bg,
-            'lower_ps': args.lower_ps,
-            'upper_ps': args.upper_ps,
-            'lower_ech': args.lower_ech,
-            'upper_ech': args.upper_ech,
-        }
-        for each in self.override:
-            if self.override[each] is not None:
-                assert len(args.stars) == len(self.override[each]), "The number of values provided for %s does not equal the number of stars"%each
-        if args.oversampling_factor is not None:
-            assert isinstance(args.oversampling_factor, int), "The oversampling factor for the input PS must be an integer"
-        if args.n_laws is not None:
-            assert args.n_laws <= max_laws, "We likely cannot resolve %d Harvey-like components for point sources. Please select a smaller number."%args.n_laws
 
 
 class Question:
@@ -944,7 +950,7 @@ def max_elements(x, y, npeaks, distance=None, exp_dnu=None):
         weights *= np.exp(-(xx-exp_dnu)**2./(2.*sig**2))*((sig*np.sqrt(2.*np.pi))**-1.)
     yy *= weights
     # provide threshold for finding peaks
-    if distance is not None:
+    if distance is not None and distance >= 1.0:
         peaks_idx, _ = find_peaks(yy, distance=distance)
     else:
         peaks_idx, _ = find_peaks(yy)
@@ -1009,7 +1015,7 @@ def _bin_data(x, y, width, log=False, mode='mean'):
     if log:
         mi = np.log10(min(x))
         ma = np.log10(max(x))
-        no = np.int(np.ceil((ma-mi)/width))
+        no = int(np.ceil((ma-mi)/width))
         bins = np.logspace(mi, mi+(no+1)*width, no)
     else:
         bins = np.arange(min(x), max(x)+width, width)
@@ -1025,6 +1031,24 @@ def _bin_data(x, y, width, log=False, mode='mean'):
         pass
     bin_yerr = np.array([y[digitized == i].std()/np.sqrt(len(y[digitized == i])) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
     return bin_x, bin_y, bin_yerr
+
+
+def delta_nu(numax):
+    """:math:`\\Delta\\nu`
+    
+    Estimates the large frequency separation using the numax scaling relation (add citation?)
+
+    Parameters
+        numax : float
+            the frequency corresponding to maximum power or numax (:math:`\\rm \\nu_{max}`)
+
+    Returns
+        dnu : float
+            the approximated frequency spacing or dnu (:math:`\\Delta\\nu`)
+
+    """
+
+    return 0.22*(numax**0.797)
 
 
 def _get_results(suffixes=['_idl', '_py'], max_numax=3200.,):
@@ -1057,24 +1081,6 @@ def _get_results(suffixes=['_idl', '_py'], max_numax=3200.,):
     df = pd.merge(idlsyd, pysyd, left_on='KIC', right_on='star', how='inner', suffixes=suffixes)
     df = df[df['numax_smooth'] <= max_numax]
     return df
-
-
-def delta_nu(numax):
-    """:math:`\\Delta\\nu`
-    
-    Estimates the large frequency separation using the numax scaling relation (add citation?)
-
-    Parameters
-        numax : float
-            the frequency corresponding to maximum power or numax (:math:`\\rm \\nu_{max}`)
-
-    Returns
-        dnu : float
-            the approximated frequency spacing or dnu (:math:`\\Delta\\nu`)
-
-    """
-
-    return 0.22*(numax**0.797)
 
 
 def setup_dirs(args, note='', dl_dict={}):
@@ -1225,72 +1231,6 @@ def get_outdir(args, note):
         os.mkdir(args.outdir)
         note+=' - results will be saved to %s\n'%args.outdir
     return note
-
-
-def set_examples(args):
-    """Create results directory
-    
-    Parameters
-        args : argparse.Namespace
-            command-line arguments
-
-    Returns
-        args : argparse.Namespace
-            updated command-line arguments
-
-    """
-    args.answers = {}
-    # Load in example configurations + answers to compare to
-    defaults = get_dict(type='tests')
-    # Save defaults to file to reproduce identical results
-    if os.path.exists(args.info):
-        df = pd.read_csv(args.info)
-        targets = [each for each in df.star.values.tolist()]
-    else:
-        df = pd.DataFrame(columns=get_dict(type='columns')['setup'])
-        targets = args.stars[:]
-    for star in args.stars:
-        # first copy known answers
-        args.answers.update({star:defaults[star].pop('results')})
-        # then copy defaults to csv file to ensure reproducibility
-        idx = targets.index(star)
-        for key in defaults[star]:
-            df.loc[idx,key] = defaults[star][key]
-    df.to_csv(args.info, index=False)
-    return args
-
-
-def check_examples(args, note='', note_cols=['KIC','  Parameter','Install derived','Actual answer'],
-                   note_formats=[">10s","<20s","<20s","<20s"],):
-    """Create results directory
-    
-    Parameters
-        args : argparse.Namespace
-            command-line arguments
-
-    Returns
-        args : argparse.Namespace
-            updated command-line arguments
-
-    """
-    # Compare results
-    df = pd.read_csv(os.path.join(args.outdir,'global.csv'))
-    df = df[df['star'].isin(args.stars)]
-    df.set_index('star', inplace=True)
-    # Track values
-    text = '{:{}}'*len(note_cols)+'\n'
-    fmt = sum(zip(note_cols,note_formats),())
-    note += text.format(*fmt)
-    for star in args.stars:
-        for param in args.answers[star]:
-            for label, each in zip(['%s','%s_err'],['value','error']):
-                assert '%.2f'%float(df.loc[star,label%param]) == '%.2f'%float(args.answers[star][param][each])
-            values = ['%d'%star, '  %s'%param, '%.2f +/- %.2f'%(float(df.loc[star,'%s'%param]),float(df.loc[star,'%s_err'%param])), '%.2f +/- %.2f'%(float(args.answers[star][param]['value']),float(args.answers[star][param]['error']))]
-            text = '{:{}}'*len(values)+'\n'
-            fmt = sum(zip(values,note_formats),())
-            note += text.format(*fmt)
-    if args.verbose:
-        print(note)
 
 
 def get_output(fun=False):

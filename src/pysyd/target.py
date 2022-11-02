@@ -42,7 +42,7 @@ class PowerSpectrum:
 
 class Target:
 
-    def __init__(self, name, args):
+    def __init__(self, name, args, test=False):
         """Main pipeline target object
 
         .. deprecated:: 1.6.0
@@ -74,7 +74,8 @@ class Target:
             # if not available, loads defaults
             args.add_stars(stars=[name])
             self.params = args.params[name]
-        self._load_star()
+        if not test:
+            self._load_star()
 
 
     def __repr__(self):
@@ -139,7 +140,7 @@ class Target:
         self.estimate_parameters()
         self.derive_parameters()
         if self.params['test']:
-            return self.params['results'].pop({'parameters'})
+            return self.params['results'].pop('parameters')
         self.show_results()
 
 
@@ -202,7 +203,7 @@ class Target:
         #     ->  cannot process, return user error
         if not self.ps:
             error = "\n\nERROR: no data found for target %s\n     -> please make sure you are in the correct\n        directory and try again!\n"%self.name
-            print(utils.PySYDInputError(error))
+            raise utils.InputError(error)
         if self.params['verbose']:
             if self.warnings != '\n##### OTHER WARNING(S): #####\n' and self.params['warnings']:
                 print(self.warnings)
@@ -306,10 +307,10 @@ class Target:
                 copy of the critically-sampled power spectrum (i.e. `frequency` & `power`)
 
         Raises
-            PySYDInputWarning
+            InputWarning
                 if the oversampling factor provided is different from that computed from the
                 time series data and power spectrum
-            PySYDInputError
+            InputError
                 if the oversampling factor calculated from the time series data and power 
                 spectrum is not an integer
 
@@ -346,10 +347,10 @@ class Target:
                 oversampling_factor = (1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])
                 if self.params['oversampling_factor'] is not None:
                     if int(oversampling_factor) != self.params['oversampling_factor'] and self.params['warnings']:
-                        print(utils.PySYDInputWarning("\nWARNING: \ncalculated vs. provided oversampling factor do NOT match"))
+                        raise utils.InputWarning("\nWARNING: \ncalculated vs. provided oversampling factor do NOT match\n")
                 else:
                     if not float('%.2f'%oversampling_factor).is_integer():
-                        print(utils.PySYDInputError("\nERROR: \nthe calculated oversampling factor is not an integer\nPlease check the input data and try again"))
+                        raise utils.InputError("\nERROR: \nthe calculated oversampling factor is not an integer\nPlease check the input data and try again\n")
                     else:
                         self.params['oversampling_factor'] = int(oversampling_factor)   
                 self.frequency, self.power = self.fix_data(self.frequency, self.power)
@@ -587,7 +588,6 @@ class Target:
 
 
         """
-        self.warnings += '#             - used Kepler artefact correction\n'
         frequency, power = np.copy(freq), np.copy(pow)
         resolution = frequency[1]-frequency[0]
         if self.params['seed'] is None:
@@ -649,7 +649,6 @@ class Target:
                 copy of the corrected power spectrum
 
         """
-        self.warnings += '#             - whitened PS to help w/ mixed modes**\n'
         frequency, power = np.copy(freq), np.copy(pow)
         if self.params['seed'] is None:
             self._set_seed()
@@ -659,7 +658,7 @@ class Target:
         else:
             white = min(power[(frequency >= max(frequency)-100.0)&(frequency <= max(frequency)-50.0)])
         # Take the provided dnu and "fold" the power spectrum
-        folded_freq = np.copy(frequency)%self.params['force']
+        folded_freq = np.copy(frequency)%self.params['dnu']
         mask = np.ma.getmask(np.ma.masked_inside(folded_freq, self.params['ech_mask'][0], self.params['ech_mask'][1]))
         # Set seed for reproducibility purposes
         np.random.seed(int(self.params['seed']))
@@ -669,8 +668,6 @@ class Target:
                 power[mask] = white
             else:
                 power[mask] = white*np.random.chisquare(2,np.sum(mask))/2.0
-        # switch "force" dnu value back
-        self.params['force'] = None
         return np.copy(frequency), np.copy(power)
 
 
@@ -1831,7 +1828,7 @@ class Target:
             y_mask = ((self.frequency >= y[i-1]) & (self.frequency < y[i]))
             for j in range(nx):
                 x_mask = ((self.frequency%(use_dnu) >= x[j]) & (self.frequency%(use_dnu) < x[j+1]))
-                if smooth_y[x_mask & y_mask] != []:
+                if np.sum(x_mask & y_mask) > 0:
                     z[i][j] = np.sum(smooth_y[x_mask & y_mask])
                 else:
                     z[i][j] = np.nan
@@ -1871,7 +1868,7 @@ class Target:
         modx = self.frequency%self.params['plotting'][self.module]['use_dnu']
         for k in range(n-1):
             mask = (modx >= xx[k])&(modx < xx[k+1])
-            if self.bg_corr[mask] != []:
+            if np.sum(mask) > 0:
                 xx[k] = np.median(modx[mask])
                 yy[k] = np.sum(self.bg_corr[mask])
         mask = np.ma.getmask(np.ma.masked_where(yy == 0.0, yy))

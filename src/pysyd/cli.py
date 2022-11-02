@@ -665,21 +665,6 @@ def main():
     parser_setup.set_defaults(func=pipeline.setup)
 
 
-    parser_test = sub_parser.add_parser('test',
-                                        parents=[parent_parser, data_parser, main_parser, plot_parser], 
-                                        formatter_class=argparse.MetavarTypeHelpFormatter,
-                                        help='Test current installation',  
-                                        )
-    parser_test.add_argument('--all', 
-                             dest='makeall',
-                             help='Save all columns',
-                             default=False, 
-                             action='store_true',
-    )
-    parser_test.set_defaults(func=pipeline.test)
-
-
-
     args = parser.parse_args()
     args.func(args)
 
