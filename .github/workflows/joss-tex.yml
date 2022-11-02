@@ -1,4 +1,4 @@
-name: Compile JOSS .tex
+name: JOSS
 on: [push]
 jobs:
   paper:
