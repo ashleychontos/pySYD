@@ -19,7 +19,7 @@ warnings.simplefilter('ignore')
 def test_cli():
     sys.argv = ["pysyd", "--version"]
     try:
-        pysyd.cli.main()
+        cli.main()
     except SystemExit:
         pass
 
@@ -84,53 +84,58 @@ def _fix_data(target):
     target.pow_cs = np.array(target.power[target.params['oversampling_factor']-1::target.params['oversampling_factor']])
     return target
 
+   1435467:{'seed':,,'lower_ex':100.0,'upper_ex':5000.0,'lower_bg':100.0,'results':{'numax_smooth':{'value':1299.81,'error':56.64,},'dnu':{'value':70.68,'error':0.82,},},},
+   2309595:{'seed':2904822,'smooth_width':5.0,'lower_ex':100.0,'lower_bg':100.0,'results':{'numax_smooth':{'value':642.56,'error':9.50,},'dnu':{'value':36.82,'error':1.58,},},},
+   11618103:,
+
+
 # TEST SINGLE STAR W/ NO SAMPLING
-def test_single_run(
-    star = 11618103,
-    has_lc = False,       # disables autosaving to a dictionary that does not exist
-    has_ps = False,
-    test = True,
-    mc_iter = 1,
-    ):
-    defaults = get_dict(type='tests')[star]                 # get known answers + defaults
+def test_single_run():
+    params = {
+              'star' : 11618103,
+              'seed' : 3454566, 
+              'smooth_width' : 5.0,
+              'mc_iter' : 1,
+              'test' : True,
+              'results' : {'numax_smooth':106.31, 'dnu':9.26},
+    }
     # Load relevant pySYD parameters
     args = Parameters()
-    args.add_targets(stars=[star])
+    args.add_targets(stars=[params.pop('star')])
     target = Target(star, args, test=True)
     target = _load_data(target)
-    target.lc, target.ps, target.params['test'], target.params['mc_iter'] = has_lc, has_ps, test, mc_iter
-    answers = defaults.pop('results')
-    for param in list(defaults.keys()):                     # make sure to copy seed
+    target.lc, target.ps = False, False
+    answers = params.pop('results')
+    for param in list(params.keys()):       
         target.params[param] = defaults[param]
-    result = target.process_star()
-    df = pd.DataFrame(result)
-    numax, dnu = df.loc[0,'numax_smooth'], df.loc[0,'dnu']
-    assert '%.2f' % (float(numax)) == '%.2f' % (float(answers['numax_smooth']['value'])), "Incorrect numax for Target %d"%star
-    assert '%.2f' % (float(dnu)) == '%.2f' % (float(answers['dnu']['value'])), "Incorrect dnu for Target %d"%star
+    df = pd.DataFrame(target.process_star())
+    assert '%.2f' % (float(df.loc[0,'numax_smooth'])) == '%.2f' % (float(answers['numax_smooth'])), "Incorrect numax for single iteration"
+    assert '%.2f' % (float(df.loc[0,'dnu'])) == '%.2f' % (float(answers['dnu'])), "Incorrect dnu for single iteration"
 
 # TEST SINGLE STAR W/ SAMPLING
-def test_sampler_run(
-    star = 1435467,
-    has_lc = False,       # disables autosaving to a dictionary that does not exist
-    has_ps = False,
-    test = True,
-    mc_iter = 200,
-    ):
-    defaults = get_dict(type='tests')[star]                 # get known answers + defaults
+def test_sampler_run():
+    params = {
+              'star' : 1435467,
+              'seed' : 737499, 
+              'smooth_width' : 10.0,
+              'lower_ex' : 100.0,
+              'upper_ex' : 5000.0,
+              'lower_bg' : 100.0,
+              'mc_iter' : 200,
+              'test' : True,
+              'results' : {'numax_smooth':{'value':1299.81, 'error':56.64,}, 'dnu':{'value':70.68, 'error':0.82,},},
+    }
     # Load relevant pySYD parameters
     args = Parameters()
-    args.add_targets(stars=[star])
+    args.add_targets(stars=[params.pop('star')])
     target = Target(star, args, test=True)
     target = _load_data(target)
-    target.lc, target.ps, target.params['test'], target.params['mc_iter'] = has_lc, has_ps, test, mc_iter
-    answers = defaults.pop('results')
-    for param in list(defaults.keys()):                     # make sure to copy seed
-        target.params[param] = defaults[param]
-    result = target.process_star()
-    df = pd.DataFrame(result)
+    target.lc, target.ps = False, False
+    answers = params.pop('results')
+    for param in list(params.keys()): 
+        target.params[param] = params[param]
+    df = pd.DataFrame(target.process_star())
     numax, numaxerr = df.loc[0,'numax_smooth'], mad_std(df['numax_smooth'].values)
     dnu, dnuerr = df.loc[0,'dnu'], mad_std(df['dnu'].values)
-    assert '%.2f +/- %.2f' % (float(numax), float(numaxerr)) == '%.2f +/- %.2f' % (float(answers['numax_smooth']['value']), float(answers['numax_smooth']['error'])), \
-           "Incorrect numax for Target %d"%star
-    assert '%.2f +/- %.2f' % (float(dnu), float(dnuerr)) == '%.2f +/- %.2f' % (float(answers['dnu']['value']), float(answers['dnu']['error'])), \
-           "Incorrect dnu for Target %d"%star
+    assert '%.2f +/- %.2f' % (float(numax), float(numaxerr)) == '%.2f +/- %.2f' % (float(answers['numax_smooth']['value']), float(answers['numax_smooth']['error'])), "Incorrect numax/error for sampler"
+    assert '%.2f +/- %.2f' % (float(dnu), float(dnuerr)) == '%.2f +/- %.2f' % (float(answers['dnu']['value']), float(answers['dnu']['error'])), "Incorrect dnu/error for sampler"
