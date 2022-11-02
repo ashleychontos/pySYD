@@ -38,15 +38,10 @@ setuptools.setup(
         'tqdm',
         'matplotlib>=1.5.3',
     ],
-#    extras_require = {
-#        'sampling': ['tqdm'],
-#        'plotting': ['matplotlib>=1.5.3', 'gridspec'],
-#    },
-#    setup_requires = ['pytest-runner', 'flake8'],
-#    tests_require = ['pytest'],
+    tests_require = ['pytest'],
     packages=['pysyd'],
     package_dir={'pysyd':'src/pysyd'},
     package_data={'pysyd': ["data/*.csv", "data/*.mplstyle", "data/*.txt", "data/dicts/*.dict"]},
     entry_points={'console_scripts':['pysyd=pysyd.cli:main']},
-    python_requires=">=3",
+    python_requires=">=3.8",
 )

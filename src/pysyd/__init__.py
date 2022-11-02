@@ -23,7 +23,7 @@ DICTDIR = os.path.join(PACKAGEDIR, 'data', 'dicts')
 # enforce python version
 # (same as check at beginning of setup.py)
 
-__minimum_python_version__ = "3.6"
+__minimum_python_version__ = "3.8"
 
 class PythonNotSupportedError(Exception):
     pass
