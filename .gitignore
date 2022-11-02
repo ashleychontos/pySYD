@@ -12,3 +12,4 @@ dist
 *__pycache__
 website
 results
+copy/*
