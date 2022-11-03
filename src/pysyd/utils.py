@@ -393,9 +393,12 @@ class Parameters(Constants):
     def add_targets(self, stars=None):
         self.params['stars'] = stars
         try:
-            self.load_starlist()
+            loadstars = self.load_starlist()
         except InputError as error:
             print(error.msg)
+        else:
+            if stars is None and loadstars is not None:
+                self.params['stars'] = loadstars
         if self.params['stars'] is not None:
             self.make_dicts()
 
@@ -408,9 +411,11 @@ class Parameters(Constants):
         """
         if not os.path.exists(self.params['todo']):
             raise InputError("\nERROR: no stars or star list provided.\n       please try again.\n")
+            return None
         else:
             with open(self.params['todo'], "r") as f:
-                self.params['stars'] = [line.strip().split()[0] for line in f.readlines()]
+                stars = [line.strip().split()[0] for line in f.readlines()]
+            return stars
 
     def make_dicts(self):
         """Add star dicts
@@ -457,8 +462,7 @@ class Parameters(Constants):
         if os.path.exists(self.params['info']):
             columns = get_dict(type='columns')
             df = pd.read_csv(self.params['info'])
-            df.set_index(inplace=True, drop=True)
-            stars = [str(star) for star in df.index.values.tolist()]
+            stars = [str(star) for star in df.star.values.tolist()]
             for star in self.params['stars']:
                 if str(star) in stars:
                     idx = stars.index(str(star))

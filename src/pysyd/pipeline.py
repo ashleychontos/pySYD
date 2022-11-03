@@ -111,6 +111,12 @@ def parallel(args):
     """
     # Load relevant pySYD parameters
     params = utils.Parameters(args=args)
+    if args.stars is None:
+        try:
+            args.stars = params.load_starlist()
+        except utils.InputError as error:
+            print(error.msg)
+            return
     # Add target stars
     params.add_targets(stars=args.stars)
     # Creates the separate, asyncrhonous (nthread) processes
@@ -189,6 +195,12 @@ def run(args):
     """
     # Load default pySYD parameters
     params = utils.Parameters(args=args)
+    if args.stars is None:
+        try:
+            args.stars = params.load_starlist()
+        except utils.InputError as error:
+            print(error.msg)
+            return
     # Update with CL options
     params.add_targets(stars=args.stars)
     # Run single batch of stars

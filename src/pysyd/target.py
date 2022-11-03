@@ -157,10 +157,10 @@ class Target:
         if self.params['verbose']:
             utils._verbose_output(self)
             if self.params['show']:
-                print(' - displaying figures')
+                print('- displaying figures -')
         plots.make_plots(self)
         if (self.params['cli'] and self.params['verbose']) or (not self.params['cli'] and not self.params['notebook']):
-            input(' - press RETURN to exit')
+            input('- press [RETURN] to exit -\n')
 
 
 ##########################################################################################
@@ -518,8 +518,23 @@ class Target:
             frequency, power = np.copy(freq), np.copy(pow)
         return frequency, power
 
+    def _get_seed(self):
+        if self.params['seed'] is None:
+            if os.path.exists(self.params['info']):
+                df = pd.read_csv(self.params['info'])
+                stars = [str(each) for each in df.star.values.tolist()]
+                # check if star is in file and if not, adds it and the seed for reproducibility
+                if str(self.name) in stars and 'seed' in df.columns.values.tolist():
+                    idx = stars.index(str(self.name))
+                    if not np.isnan(float(df.loc[idx,'seed'])):
+                        self.params['seed'] = int(df.loc[idx,'seed'])
+            # if still None, generate new seed
+            if self.params['seed'] is None:
+                self._new_seed()
+        if self.params['save']:
+            self._save_seed()
 
-    def _set_seed(self, lower=1, upper=10**7):
+    def _new_seed(self, lower=1, upper=10**7):
         """Set seed
     
         For *Kepler* targets that require a correction via CLI (--kc), a random seed is generated
@@ -536,19 +551,22 @@ class Target:
 
 
         """
-        seed = np.random.randint(lower,high=upper)
-        df = pd.read_csv(os.path.join(self.params['infdir'], self.params['info']))
-        stars = [str(each) for each in df.star.values.tolist()]
-        # check if star is in file and if not, adds it and the seed for reproducibility
-        if str(self.name) in stars:
-            idx = stars.index(str(self.name))
-        else:
-            idx = len(df)
-            df.loc[idx,'star'] = str(self.name)
-        df.loc[idx,'seed'] = '%d'%int(seed)
-        self.params['seed'] = int(seed)
-        df.to_csv(os.path.join(self.params['infdir'], self.params['info']), index=False)
+        self.params['seed'] = int(np.random.randint(lower,high=upper))
 
+    def _save_seed(self):
+        if os.path.exists(self.params['info']):
+            df = pd.read_csv(self.params['info'])
+            stars = [str(each) for each in df.star.values.tolist()]
+            if str(self.name) in stars:
+                idx = stars.index(str(self.name))
+                df.loc[idx,'seed'] = int(self.params['seed'])
+            else:
+                idx = len(df)
+                df.loc[idx,'star'], df.loc[idx,'seed'] = str(self.name), int(self.params['seed'])
+        else:
+            df = pd.DataFrame(columns=['star','seed'])
+            df.loc[0,'star'], df.loc[0,'seed'] = str(self.name), int(self.params['seed'])
+        df.to_csv(self.params['info'], index=False)
 
     def remove_artefact(self, freq, pow, lcp=1.0/(29.4244*60*1e-6), 
                         lf_lower=[240.0,500.0], lf_upper=[380.0,530.0], 
@@ -589,8 +607,7 @@ class Target:
         """
         frequency, power = np.copy(freq), np.copy(pow)
         resolution = frequency[1]-frequency[0]
-        if self.params['seed'] is None:
-            self._set_seed()
+        self._get_seed()
         # LC period in Msec -> 1/LC ~muHz
         artefact = (1.0+np.arange(14))*lcp
         # Estimate white noise
@@ -649,8 +666,7 @@ class Target:
 
         """
         frequency, power = np.copy(freq), np.copy(pow)
-        if self.params['seed'] is None:
-            self._set_seed()
+        self._get_seed()
         # Estimate white noise
         if not self.params['notching']:
             white = np.mean(power[(frequency >= max(frequency)-100.0)&(frequency <= max(frequency)-50.0)])
@@ -1137,8 +1153,9 @@ class Target:
             # global fit
             self.global_fit()
             if self.params['verbose'] and self.params['mc_iter'] > 1:
-                print('-----------------------------------------------------------\nSampling routine:')
-
+                # Set seed for reproducibility
+                self._get_seed()
+                print('-----------------------------------------------------------\nSampling routine (using seed=%d):' % int(self.params['seed']))
 
     def single_step(self,):
         """Single step
@@ -1206,9 +1223,6 @@ class Target:
         mask = np.ma.getmask(np.ma.masked_inside(self.freq_cs, self.params['bg_mask'][0], self.params['bg_mask'][1]))
         self.frequency, self.power = np.copy(self.freq_cs[mask]), np.copy(self.pow_cs[mask])
         self.params['resolution'] = self.frequency[1]-self.frequency[0]
-        # Set seed for reproducibility
-        if self.params['seed'] is None:
-            self._set_seed()
         np.random.seed(int(self.params['seed']))
         if self.params['verbose']:
             from tqdm import tqdm 

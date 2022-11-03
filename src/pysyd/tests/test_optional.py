@@ -65,6 +65,7 @@ def test_whiten(star=2309595, seed=2904822, dnu=36.82, ech_mask=[10.0,25.0], not
     # power in that region should now be less if it were removing signal
     assert np.sum(pow_after[mask]) < np.sum(pow_before[mask]), "Mixed mode module is not working properly"
 
+
 # NOTCHING TECHNIQUE
 def test_notch(star=2309595, seed=2904822, dnu=36.82, ech_mask=[10.0,25.0], notching=True, test=True):
     params = Parameters()
