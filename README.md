@@ -18,11 +18,11 @@
 
 ## Documentation
 
-The documentation for `pySYD` can be found on [Read the Docs](https://pysyd.readthedocs.io).
+The documentation for `pySYD` can be found [here](https://pysyd.readthedocs.io).
 
 ## Attribution
 
-If you make use of `pySYD` in your work, please cite our [JOSS paper](https://arxiv.org/abs/2108.00582):
+If you make use of `pySYD` in your work, please cite [Chontos et al. (2021)](https://arxiv.org/abs/2108.00582):
 
     @ARTICLE{2021arXiv210800582C,
            author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
@@ -37,22 +37,6 @@ If you make use of `pySYD` in your work, please cite our [JOSS paper](https://ar
            eprint = {2108.00582},
      primaryClass = {astro-ph.SR}, 
            adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},
-          adsnote = {Provided by the SAO/NASA Astrophysics Data System}
-    }
-    
-If applicable, please also use our [ASCL listing](https://ui.adsabs.harvard.edu/abs/2021ascl.soft11017C) as a software citation:
-
-    @MISC{2021ascl.soft11017C,
-           author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
-            title = "{pySYD: Measuring global asteroseismic parameters}",
-         keywords = {Software},
-             year = 2021,
-            month = nov,
-              eid = {ascl:2111.017},
-            pages = {ascl:2111.017},
-    archivePrefix = {ascl},
-           eprint = {2111.017},
-           adsurl = {https://ui.adsabs.harvard.edu/abs/2021ascl.soft11017C},
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
 
