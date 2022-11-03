@@ -42,7 +42,7 @@ class PowerSpectrum:
 
 class Target:
 
-    def __init__(self, name, args, test=False):
+    def __init__(self, name, args):
         """Main pipeline target object
 
         .. deprecated:: 1.6.0
@@ -73,7 +73,7 @@ class Target:
         else:
             # if not available, loads defaults
             self.params = utils.Parameters()
-        if not test:
+        if not self.params['test']:
             self._load_star()
 
 
@@ -699,7 +699,7 @@ class Target:
             # execute function
             self.estimate_numax()
             # save results
-            utils._save_estimates(self)
+            self = utils._save_estimates(self)
 
 
     def initial_estimates(self, lower_ex=1.0, upper_ex=8000.0, max_trials=6,):
@@ -884,9 +884,9 @@ class Target:
                 saved columns if the estimate_numax() function was run
 
         Raises
-            PySYDInputError
+            utils.InputError
                 if an invalid value was provided as input for numax
-            PySYDProcessingError
+            utils.ProcessingError
                 if it still cannot find any estimate for :term:`numax`
 
 
@@ -895,7 +895,7 @@ class Target:
         # Check if numax was provided as input
         if self.params['numax'] is not None:
             if np.isnan(float(self.params['numax'])):
-                raise utils.PySYDInputError("ERROR: invalid value for numax")
+                raise utils.InputError("ERROR: invalid value for numax")
         else:
             # If not, checks if estimate_numax module was run
             if glob.glob(os.path.join(self.params['path'],'estimates*')):
@@ -908,10 +908,10 @@ class Target:
                 for col in columns:
                     self.params[col] = df.loc[0, col]
                 if np.isnan(self.params['numax']):
-                    raise utils.PySYDProcessingError("\nERROR: invalid value for numax\n")
+                    raise utils.ProcessingError("\nERROR: invalid value for numax\n")
             else:
                 # Raise error
-                raise utils.PySYDProcessingError("\nERROR: no numax provided for global fit\n")
+                raise utils.ProcessingError("\nERROR: no numax provided for global fit\n")
 
 
 ##########################################################################################
@@ -1329,7 +1329,7 @@ class Target:
                 returns `False` if background model fails to converge
 
         Raises
-            PySYDProcessingError
+            utils.ProcessingError
                 if this failed to converge on a single model during the first iteration
 
 
@@ -1400,7 +1400,7 @@ class Target:
             # Otherwise raise error that fit did not converge
             else:
                 self.converge = False
-                raise utils.PySYDProcessingError("Background fit failed to converge for any models.\n\n We recommend disabling this feature using our boolean background flag ('-b' )")
+                raise utils.ProcessingError("Background fit failed to converge for any models.\n\n We recommend disabling this feature using our boolean background flag ('-b' )")
         else:
             if self.params['verbose']:
                 print('-----------------------------------------------------------\nWARNING: estimating global parameters from raw PS:')
@@ -1585,7 +1585,7 @@ class Target:
                 returns `False` if background model fails to converge
 
         Raises
-            PySYDProcessingError
+            utils.ProcessingError
                 if the Gaussian fit does not converge for the first step
 
 
@@ -1597,7 +1597,7 @@ class Target:
         except RuntimeError as _:
             self.converge = False
             if self.i == 0:
-                raise utils.PySYDProcessingError("Gaussian fit for numax failed to converge.\n\nPlease check your power spectrum and try again.")
+                raise utils.ProcessingError("Gaussian fit for numax failed to converge.\n\nPlease check your power spectrum and try again.")
         else:
             if self.i == 0:
                 # Create an array with finer resolution for plotting
@@ -1675,7 +1675,7 @@ class Target:
                 returns `False` if a Gaussian could not be fit within the `1000` iterations
 
         Raises
-            PySYDProcessingError
+            utils.ProcessingError
                 if a Gaussian could not be fit to the provided peak
 
         .. seealso:: :mod:`pysyd.target.Target.acf_cutout`, :mod:`pysyd.target.Target.optimize_ridges`,
@@ -1707,7 +1707,7 @@ class Target:
             self.converge = False
             if self.i == 0:
             # Raise error if it's the first step
-                raise utils.PySYDProcessingError("Gaussian fit for dnu failed to converge.\n\nPlease check your power spectrum and try again.")
+                raise utils.ProcessingError("Gaussian fit for dnu failed to converge.\n\nPlease check your power spectrum and try again.")
         # if fit converged, save appropriate results
         else:
             self.params['results'][self.module]['dnu'].append(gauss[2]) 

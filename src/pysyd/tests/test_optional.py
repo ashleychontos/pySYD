@@ -19,12 +19,14 @@ def _load_data(target, source='https://raw.githubusercontent.com/ashleychontos/p
         np.array([float(line.split()[0]) for line in lines]), np.array([float(line.split()[-1]) for line in lines])
     return target
 
+
 # KEPLER ARTEFACT CORRECTION
-def test_kepcorr(star=2309595, kep_corr=True, seed=2904822, lowf=[240.0,380.0], highf=[4530.0,4534.0],):
-    args = Parameters()
-    args.add_targets(stars=[star])
-    args.params[star]['kep_corr'], args.params[star]['seed'] = kep_corr, seed
-    target = Target(star, args, test=True)
+def test_kepcorr(star=2309595, kep_corr=True, test=True, seed=2904822, lowf=[240.0,380.0], highf=[4530.0,4534.0],):
+    params = Parameters()
+    params.params['save'] = False
+    params.add_targets(stars=[star])
+    params.params[star]['kep_corr'], params.params[star]['seed'], params.params[star]['test'] = kep_corr, seed, test
+    target = Target(star, params)
     target = _load_data(target)
     # generate a handful (n=5) of medium amplitude artefacts at low frequencies
     indices = [i for i, freq in enumerate(target.frequency) if freq > lowf[0] and freq <= lowf[-1]]
@@ -43,12 +45,14 @@ def test_kepcorr(star=2309595, kep_corr=True, seed=2904822, lowf=[240.0,380.0], 
     for idx in indices:
         assert pow_after[idx] < pow_before[idx], "Issue with artefact whitening module"
 
+
 # WHITENING MODULE
-def test_whiten(star=2309595, seed=2904822, dnu=36.82, ech_mask=[10.0,25.0], notching=False,):
-    args = Parameters()
-    args.add_targets(stars=[star])
-    args.params[star]['ech_mask'], args.params[star]['dnu'], args.params[star]['seed'], args.params[star]['notching'] = ech_mask, dnu, seed, notching
-    target = Target(star, args, test=True)
+def test_whiten(star=2309595, seed=2904822, dnu=36.82, ech_mask=[10.0,25.0], notching=False, test=True):
+    params = Parameters()
+    params.params['save'] = False
+    params.add_targets(stars=[star])
+    params.params[star]['ech_mask'], params.params[star]['dnu'], params.params[star]['seed'], params.params[star]['notching'], params.params[star]['test'] = ech_mask, dnu, seed, notching, test
+    target = Target(star, params)
     target = _load_data(target)
     # Estimate white noise as average
     white = np.mean(target.power[(target.frequency >= max(target.frequency)-100.0)&(target.frequency <= max(target.frequency)-50.0)])
@@ -62,11 +66,12 @@ def test_whiten(star=2309595, seed=2904822, dnu=36.82, ech_mask=[10.0,25.0], not
     assert np.sum(pow_after[mask]) < np.sum(pow_before[mask]), "Mixed mode module is not working properly"
 
 # NOTCHING TECHNIQUE
-def test_notch(star=2309595, seed=2904822, dnu=36.82, ech_mask=[10.0,25.0], notching=True,):
-    args = Parameters()
-    args.add_targets(stars=[star])
-    args.params[star]['ech_mask'], args.params[star]['dnu'], args.params[star]['seed'], args.params[star]['notching'] = ech_mask, dnu, seed, notching
-    target = Target(star, args, test=True)
+def test_notch(star=2309595, seed=2904822, dnu=36.82, ech_mask=[10.0,25.0], notching=True, test=True):
+    params = Parameters()
+    params.params['save'] = False
+    params.add_targets(stars=[star])
+    params.params[star]['ech_mask'], params.params[star]['dnu'], params.params[star]['seed'], params.params[star]['notching'], params.params[star]['test'] = ech_mask, dnu, seed, notching, test
+    target = Target(star, params)
     target = _load_data(target)
     # Estimate white noise as minimum (for notching)
     white = min(target.power[(target.frequency >= max(target.frequency)-100.0)&(target.frequency <= max(target.frequency)-50.0)])

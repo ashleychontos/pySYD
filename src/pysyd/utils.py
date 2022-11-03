@@ -179,7 +179,6 @@ class Parameters(Constants):
 
         """
         self.params.update({
-            'stars' : None,
             'info' : os.path.join(INFDIR, 'star_info.csv'),
             'todo' : os.path.join(INFDIR, 'todo.txt'),
             'mode' : 'load',
@@ -392,13 +391,11 @@ class Parameters(Constants):
             raise InputWarning("\nWe probs cannot resolve %d Harvey components. \nnlaws changed to %d\n" % max_laws)
 
     def add_targets(self, stars=None):
-        if stars is not None:
-            self.params['stars'] = stars
-        else:
-            try:
-                self.load_starlist()
-            except InputError as error:
-                print(error.msg)
+        self.params['stars'] = stars
+        try:
+            self.load_starlist()
+        except InputError as error:
+            print(error.msg)
         if self.params['stars'] is not None:
             self.make_dicts()
 
@@ -756,10 +753,13 @@ def _save_estimates(star, variables=['star','numax','dnu','snr']):
     if 'best' in star.params:
         best = star.params['best']
         results = [star.name, star.params['results']['estimates'][best]['value'], delta_nu(star.params['results']['estimates'][best]['value']), star.params['results']['estimates'][best]['snr']]
-        save_path = os.path.join(star.params['path'], 'estimates.csv')
-        if not star.params['overwrite']:
-            save_path = _get_next(save_path)
-        ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
+        if star.params['save']:
+            save_path = os.path.join(star.params['path'], 'estimates.csv')
+            if not star.params['overwrite']:
+                save_path = _get_next(save_path)
+            ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
+        star.params['numax'], star.params['dnu'], star.params['snr'] = results[1], results[2], results[3]
+    return star
 
 
 def _save_parameters(star):
@@ -776,26 +776,27 @@ def _save_parameters(star):
             columns used to construct a pandas dataframe
 
     """
-    results = star.params['results']['parameters']
-    df = pd.DataFrame(results)
-    star.df = df.copy()
-    new_df = pd.DataFrame(columns=['parameter','value'])
-    for c, col in enumerate(df.columns.values.tolist()):
-        new_df.loc[c, 'parameter'] = col
-        new_df.loc[c, 'value'] = df.loc[0,col]
-        if star.params['mc_iter'] > 1:
-            new_df.loc[c, 'uncertainty'] = mad_std(df[col].values)
-    save_path = os.path.join(star.params['path'], 'global.csv')
-    if not star.params['overwrite']:
-        save_path = _get_next(save_path)
-    new_df.to_csv(save_path, index=False)
-    if star.params['samples']:
-        save_path = os.path.join(star.params['path'], 'samples.csv')
+    if star.params['save']:
+        results = star.params['results']['parameters']
+        df = pd.DataFrame(results)
+        star.df = df.copy()
+        new_df = pd.DataFrame(columns=['parameter','value'])
+        for c, col in enumerate(df.columns.values.tolist()):
+            new_df.loc[c, 'parameter'] = col
+            new_df.loc[c, 'value'] = df.loc[0,col]
+            if star.params['mc_iter'] > 1:
+                new_df.loc[c, 'uncertainty'] = mad_std(df[col].values)
+        save_path = os.path.join(star.params['path'], 'global.csv')
         if not star.params['overwrite']:
             save_path = _get_next(save_path)
-        df.to_csv(save_path, index=False)
-    if star.params['mc_iter'] > 1:
-        star.params['plotting']['samples'] = {'df':star.df.copy()}
+        new_df.to_csv(save_path, index=False)
+        if star.params['mc_iter'] > 1:
+            star.params['plotting']['samples'] = {'df':star.df.copy()}
+        if star.params['samples']:
+            save_path = os.path.join(star.params['path'], 'samples.csv')
+            if not star.params['overwrite']:
+                save_path = _get_next(save_path)
+            df.to_csv(save_path, index=False)
 
 
 def _verbose_output(star, note=''):
