@@ -12,28 +12,6 @@
 
 -----
 
-.. _install-dependencies:
-
-Dependencies
-############
-
-This package has the following dependencies:
-
- * `Python <https://www.python.org>`_ (>=3)
- * `Numpy <https://numpy.org>`_
- * `pandas <https://pandas.pydata.org>`_ 
- * `Astropy <https://www.astropy.org>`_
- * `scipy <https://docs.scipy.org/doc/>`_
- * `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
- * `tqdm <https://tqdm.github.io>`_
-
-
-Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
-and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
-`conda` should install and enforce these versions automatically. 
-
------
-
 Installation
 ############
 
@@ -140,69 +118,28 @@ The next step is to build and install the project:
 which needs to be executed from the top-level directory inside the 
 cloned ``pySYD`` repo.
 
+
 -----
 
-.. _install-test:
+.. _install-dependencies:
 
-Testing 
-#######
+Dependencies
+############
 
-To test the full functional suite of the pySYD package, a new test mode has been added
-that will run the core software features for three example stars. 
+This package has the following dependencies:
 
-Simply type into a terminal window:
-
-.. code-block::
-
-   $ pysyd test
-   
-   
-    -- testing pysyd installation --
-      [this may take ~1-2 minutes]
-                                                |                                                  
-                                                |                                                  
-                                                |   |                                              
-                                                |   |                                              
-                                                |   |                                              
-                                           |    ||  |                                              
-                                           |    ||  |            |                                 
-                                 |         |    ||  |    |       |                                 
-                                 |  |      |    ||  |    |       |                                 
-                                 |  |      |   |||  |    |       |                                 
-                                 |  |      |   |||  ||   |       |                                 
-                     |           |  ||     |   |||  ||   |    |  |                                 
-                     |     |    ||  ||   | |   |||  ||   |   ||  |      |                          
-                     |     |    ||  ||   | ||  |||  ||   |   ||  ||     |                          
-                     |     |    ||  ||   | ||  |||  ||   ||  ||  ||     |                          
-                     |     |    ||  ||  || ||  |||  ||   ||  ||  || |   ||   |                     
-                     |    ||    ||  ||| || ||  |||  ||   ||  ||  || |   ||   |                     
-              |  |  ||    ||    ||  ||| || ||  ||| |||   ||  ||  || || |||   |     | |             
-        |     |  |  ||    ||   |||  ||| || ||  ||| ||||  || ||| ||| || |||   |     | |    |        
-        ||   || ||  ||   ||||  |||| ||| || ||  ||| |||| ||| ||| ||| || |||  |||   || ||   ||       
-        ||   || ||  |||  ||||  |||| ||| || || |||| |||| ||| ||||||| || |||  ||| | || ||| |||       
-       |||  ||| || ||||  ||||  |||| ||| ||||| |||| |||| ||| ||||||| ||||||| ||| | || ||| ||||      
-      ||||  ||| || ||||| ||||| |||| ||||||||| |||| |||| ||||||||||| ||||||| ||| | |||||| ||||      
-      ||||||||| |||||||| ||||| |||| ||||||||| ||||||||| ||||||||||||||||||| ||||| ||||||||||||     
-     |||||||||| ||||||||||||||||||||||||||||| ||||||||||||||||||||||||||||||||||| |||||||||||||    
-    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||   
-   ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||  
-  |||||||||||||||||||||||||||| successful pysyd software installation |||||||||||||||||||||||||||| 
- ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ * `Python <https://www.python.org>`_ (>=3)
+ * `Numpy <https://numpy.org>`_
+ * `pandas <https://pandas.pydata.org>`_ 
+ * `Astropy <https://www.astropy.org>`_
+ * `scipy <https://docs.scipy.org/doc/>`_
+ * `Matplotlib <https://matplotlib.org/index.html#module-matplotlib>`_
+ * `tqdm <https://tqdm.github.io>`_
 
 
-As sugggested in the output, this step runs the sampler 200 times per target so naturally it will take
-a couple minutes to complete -- so don't worry if it seems to get bogged up. 
-
-What's actually happening behind the scenes is that the software:
- #. saves default parameters (including seeds) for reproducibile results
- #. downloads example star data (if needed)
- #. calls a bash subprocess to process each star as if it were being processed via command line 
- #. generates a summary table for all processed stars
- #. compares the derived outputs to known values for numax and dnu
-
-In order for the software to pass this step, it must produce identical results to the hundredth 
-decimal place for both parameters for all three stars. If you see something similar to the above message, 
-you're good to go and ready to start doing some science with the software!
+Explicit version requirements are specified in the project `requirements.txt <https://github.com/ashleychontos/pySYD/requirements.txt>`_ 
+and `setup.cfg <https://github.com/ashleychontos/pySYD/setup.cfg>`_. However, using `pip` or 
+`conda` should install and enforce these versions automatically. 
 
 
 -----
@@ -312,7 +249,6 @@ Use the following to get up and running right away:
    mkdir pysyd
    cd pysyd
    pysyd setup [optional]
-   pysyd test [optional]
 
 The last command which will provide you with example data and files to immediately get 
 going. This is essentially a summary of all the steps discussed on this page but a more
@@ -320,3 +256,38 @@ consolidated version.
 
 *You are now ready to do some asteroseismology!*
 
+Enter `pysyd fun` for a little surprise:
+
+.. code-block::
+
+   pysyd fun   
+                                              |                                              
+                                              |                                              
+                                              |   |                                          
+                                              |   |                                          
+                                              |   |                                          
+                                         |    ||  |                                          
+                                         |    ||  |            |                             
+                               |         |    ||  |    |       |                             
+                               |  |      |    ||  |    |       |                             
+                               |  |      |   |||  |    |       |                             
+                               |  |      |   |||  ||   |       |                             
+                   |           |  ||     |   |||  ||   |    |  |                             
+                   |     |    ||  ||   | |   |||  ||   |   ||  |      |                      
+                   |     |    ||  ||   | ||  |||  ||   |   ||  ||     |                      
+                   |     |    ||  ||   | ||  |||  ||   ||  ||  ||     |                      
+                   |     |    ||  ||  || ||  |||  ||   ||  ||  || |   ||   |                 
+                   |    ||    ||  ||| || ||  |||  ||   ||  ||  || |   ||   |                 
+            |  |  ||    ||    ||  ||| || ||  ||| |||   ||  ||  || || |||   |     | |         
+      |     |  |  ||    ||   |||  ||| || ||  ||| ||||  || ||| ||| || |||   |     | |    |    
+      ||   || ||  ||   ||||  |||| ||| || ||  ||| |||| ||| ||| ||| || |||  |||   || ||   ||   
+      ||   || ||  |||  ||||  |||| ||| || || |||| |||| ||| ||||||| || |||  ||| | || ||| |||   
+     |||  ||| || ||||  ||||  |||| ||| ||||| |||| |||| ||| ||||||| ||||||| ||| | || ||| ||||  
+    ||||  ||| || ||||| ||||| |||| ||||||||| |||| |||| ||||||||||| ||||||| ||| | |||||| ||||  
+    ||||||||| |||||||| ||||| |||| ||||||||| ||||||||| ||||||||||||||||||| ||||| |||||||||||| 
+   |||||||||| ||||||||||||||||||||||||||||| ||||||||||||||||||||||||||||||||||| |||||||||||| 
+   ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 
+   ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 
+
+
+-----
