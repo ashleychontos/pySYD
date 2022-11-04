@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 # Package mode
 from . import utils
 from . import models
-from . import MPLSTYLE
+from . import PACKAGEDIR
 from .utils import Question
 
 
-
+MPLSTYLE = os.path.join(PACKAGEDIR,'data','pysyd.mplstyle')
 plt.style.use(MPLSTYLE)
 
 d = utils.get_dict(type='plots')

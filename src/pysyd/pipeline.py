@@ -145,7 +145,8 @@ def pipe(group, params, progress=False):
     # Iterate through and run stars in a given star 'group'
     for name in group:
         star = Target(name, params)
-        star.process_star()
+        if star.load_data():
+            star.process_star()
 
 
 def plot(args):

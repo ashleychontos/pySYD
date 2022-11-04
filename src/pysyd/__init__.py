@@ -19,27 +19,18 @@ __url__ = "https://pysyd.readthedocs.io"
 __author__ = "Ashley Chontos<ashleychontos@astro.princeton.edu>"
 __license__ = "MIT"
 __description__ = "Automated measurements of global asteroseismic parameters"
+__version__ = '6.4.7'
+
+__all__ = ['cli','models','pipeline','plots','target','utils']
 
 import os
 import sys 
 
-__all__ = ['cli','pipeline','models','target','plots','utils']
-from .version import __version__ 
-
 # Directory with personal pysyd data & info
 _ROOT = os.path.abspath(os.getcwd())
-INFDIR = os.path.join(_ROOT, 'info')
-INPDIR = os.path.join(_ROOT, 'data')
-OUTDIR = os.path.join(_ROOT, 'results')
 
 # Package directory & data
 PACKAGEDIR = os.path.abspath(os.path.dirname(__file__))
-SYDFILE = os.path.join(PACKAGEDIR, 'data', 'syd_results.txt')
-PYSYDFILE = os.path.join(PACKAGEDIR, 'data', 'pysyd_results.csv')
-MPLSTYLE = os.path.join(PACKAGEDIR, 'data', 'pysyd.mplstyle')
-TESTFILE = os.path.join(PACKAGEDIR, 'data', 'test.txt')
-DICTDIR = os.path.join(PACKAGEDIR, 'data', 'dicts')
-
 
 # enforce python version
 # (same as check at beginning of setup.py)

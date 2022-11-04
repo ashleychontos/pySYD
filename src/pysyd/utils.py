@@ -12,8 +12,8 @@ from scipy.signal import find_peaks
 
 # Package mode
 from . import models
-from . import SYDFILE, PYSYDFILE
-from . import INFDIR, INPDIR, OUTDIR, DICTDIR, TESTFILE
+from . import _ROOT, PACKAGEDIR
+
 
 
 class InputError(Exception):
@@ -21,7 +21,7 @@ class InputError(Exception):
     def __init__(self, error, width=60):
         self.msg, self.width = error, width
     def __repr__(self):
-        return "pysyd.utils.InputError(error=%r)"%self.msg
+        return "pysyd.utils.InputError(error=%r)" % self.msg
     def __str__(self):
         return "<InputError>"
 
@@ -30,7 +30,7 @@ class ProcessingError(Exception):
     def __init__(self, error, width=60):
         self.msg, self.width = error, width
     def __repr__(self):
-        return "pysyd.utils.ProcessingError(error=%r)"%self.msg
+        return "pysyd.utils.ProcessingError(error=%r)" % self.msg
     def __str__(self):
         return "<ProcessingError>"
 
@@ -39,7 +39,7 @@ class InputWarning(Warning):
     def __init__(self, warning, width=60):
         self.msg, self.width = warning, width
     def __repr__(self):
-        return "pysyd.utils.InputWarning(warning=%r)"%self.msg
+        return "pysyd.utils.InputWarning(warning=%r)" % self.msg
     def __str__(self):
         return "<InputWarning>"
 
@@ -48,13 +48,13 @@ class ProcessingWarning(Warning):
     def __init__(self, warning, width=60):
         self.msg, self.width = warning, width
     def __repr__(self):
-        return "pysyd.utils.ProcessingWarning(warning=%r)"%self.msg
+        return "pysyd.utils.ProcessingWarning(warning=%r)" % self.msg
     def __str__(self):
         return "<ProcessingWarning>"
 
 
 class Constants:
-    """
+    """Constants
     
     Container class for constants and known values -- which is
     primarily solar asteroseismic values for our purposes.
@@ -86,8 +86,11 @@ class Constants:
             'deg2rad' : np.pi/180.,
         }
 
-    def __repr__(self):
+    def __str__(self):
         return "<Constants>"
+
+    def __repr__(self):
+        return "utils.Constants()"
 
 
 class Parameters(Constants):
@@ -112,8 +115,14 @@ class Parameters(Constants):
         if args is not None:
             self.add_cli(args)
 
+
     def __str__(self):
-        return "<PySYD Parameters>"
+        return "<Parameters>"
+
+
+    def __repr__(self):
+        return "utils.Parameters(Constants, params={})"
+
 
     def get_defaults(self):
         """Load defaults
@@ -142,6 +151,7 @@ class Parameters(Constants):
         # Get plotting info
         self.get_plot()
 
+
     def get_parent(self):
         """Get parent parser
    
@@ -154,17 +164,18 @@ class Parameters(Constants):
 
         """
         self.params.update({
-            'inpdir' : INPDIR,
-            'infdir' : INFDIR,
-            'outdir' : OUTDIR,
+            'inpdir' : os.path.join(_ROOT, 'data'),
+            'infdir' : os.path.join(_ROOT, 'info'),
+            'outdir' : os.path.join(_ROOT, 'results'),
             'save' : True,
             'test' : False,
             'verbose' : False,
             'overwrite' : False,
-            'warnings' : True,
-            'cli' : False,
+            'warnings' : False,
+            'cli' : True,
             'notebook' : False,
         })
+
 
     def get_data(self):
         """Get data parser
@@ -179,9 +190,10 @@ class Parameters(Constants):
 
         """
         self.params.update({
-            'info' : os.path.join(INFDIR, 'star_info.csv'),
-            'todo' : os.path.join(INFDIR, 'todo.txt'),
-            'mode' : 'load',
+            'info' : os.path.join(_ROOT, 'info', 'star_info.csv'),
+            'todo' : os.path.join(_ROOT, 'info', 'todo.txt'),
+            'stars' : None,
+            'mode' : 'run',
             'gap' : 20,
             'stitch' : False,
             'oversampling_factor' : None,
@@ -192,6 +204,7 @@ class Parameters(Constants):
             'upper_ech' : None,
             'notching' : False,
         })
+
 
     def get_main(self):
         """Get main parser
@@ -219,6 +232,7 @@ class Parameters(Constants):
         # Estimate parameters
         self.get_sampling()
 
+
     def get_estimate(self):
         """Search and estimate parameters
     
@@ -232,15 +246,16 @@ class Parameters(Constants):
         """
         self.params.update({
             'estimate' : True,
-            'smooth_width' : 10.0,
+            'smooth_width' : 20.0,
             'binning' : 0.005,
             'bin_mode' : 'mean',
             'step' : 0.25,
             'n_trials' : 3,
             'ask' : False,
-            'lower_ex' : 1.0,
-            'upper_ex' : 8000.0,
+            'lower_ex' : None,
+            'upper_ex' : None,
         })
+
 
     def get_background(self):
         """Background parameters
@@ -261,10 +276,11 @@ class Parameters(Constants):
             'n_laws' : None,
             'fix_wn' : False,
             'metric' : 'bic',
-            'lower_bg' : 1.0,
-            'upper_bg' : 8000.0,
+            'lower_bg' : None,
+            'upper_bg' : None,
             'functions' : get_dict(type='functions'),
         })
+
 
     def get_global(self):
         """Global fitting parameters
@@ -290,6 +306,7 @@ class Parameters(Constants):
             'n_peaks' : 5,
         })
 
+
     def get_sampling(self):
         """Sampling parameters
     
@@ -307,6 +324,7 @@ class Parameters(Constants):
             'samples' : False,
             'n_threads' : 0,
         })
+
 
     def get_plot(self):
         """Get plot parser
@@ -332,6 +350,7 @@ class Parameters(Constants):
             'smooth_ech' : None,
         })
 
+
     def add_cli(self, args):
         """Add CLI
 
@@ -351,6 +370,7 @@ class Parameters(Constants):
             # Make sure it is not a variable with a >1 length
             if key not in self.override:
                 self.params[key] = value
+
 
     def check_cli(self, args, max_laws=3):
         """Check CLI
@@ -383,24 +403,37 @@ class Parameters(Constants):
         }
         for each in self.override:
             if self.override[each] is not None:
-                assert len(args.stars) == len(self.override[each]), "The number of values provided for %s MUST equal the number of stars" % each
+                raise InputError("\nWhen running multiple stars via command line, the number \n of values provided for %s MUST equal the number of stars\n" % each)
         if args.oversampling_factor is not None and not isinstance(args.oversampling_factor, int):
-            raise InputWarning("\nThe oversampling factor for the input PS must be an integer\n")
+            raise InputError("\nThe oversampling factor for the input PS must be an integer\n")
         if args.n_laws is not None and args.n_laws > max_laws:
             args.n_laws = max_laws
             raise InputWarning("\nWe probs cannot resolve %d Harvey components. \nnlaws changed to %d\n" % max_laws)
 
+
     def add_targets(self, stars=None):
-        self.params['stars'] = stars
-        try:
-            loadstars = self.load_starlist()
-        except InputError as error:
-            print(error.msg)
-        else:
-            if stars is None and loadstars is not None:
-                self.params['stars'] = loadstars
-        if self.params['stars'] is not None:
-            self.make_dicts()
+        """Add targets
+
+        This was mostly added for non-command-line users, since this makes
+        API usage easier.
+
+        """
+        if 'stars' not in self.params or self.params['stars'] is None:
+            if stars is not None:
+                if isinstance(stars, list):
+                    self.params['stars'] = stars
+                else:
+                    self.params['stars'] = [stars]
+            else:
+                try:
+                    loadstars = self.load_starlist()
+                except InputError as error:
+                    print(error.msg)
+                    return
+                else:
+                    self.params['stars'] = loadstars
+        self.make_dicts()
+
 
     def load_starlist(self):
         """Load star list
@@ -410,12 +443,13 @@ class Parameters(Constants):
 
         """
         if not os.path.exists(self.params['todo']):
-            raise InputError("\nERROR: no stars or star list provided.\n       please try again.\n")
+            raise InputError("\nERROR: no stars or star list were provided for the software to run -- please try again\n       alternatively, you can run 'pysyd setup' to easily download example files\n")
             return None
         else:
             with open(self.params['todo'], "r") as f:
                 stars = [line.strip().split()[0] for line in f.readlines()]
             return stars
+
 
     def make_dicts(self):
         """Add star dicts
@@ -436,6 +470,7 @@ class Parameters(Constants):
         self.load_clinfo()
         self.add_derived()
 
+
     def get_groups(self):
         """Get star groups
     
@@ -454,6 +489,7 @@ class Parameters(Constants):
             self.params['groups'] = np.array([todo[digitized == i] for i in range(1, self.params['n_threads']+1)], dtype=object)
         else:
             self.params['groups'] = np.array(self.params['stars'])
+
 
     def load_starinfo(self):
         """Load star info csv
@@ -478,6 +514,7 @@ class Parameters(Constants):
                         else:
                             pass
 
+
     def load_clinfo(self):
         """Load command-line values
 
@@ -497,6 +534,7 @@ class Parameters(Constants):
                 if self.override[column] is not None:
                     for i, star in enumerate(self.params['stars']):
                         self.params[star][column] = self.override[column][i]
+
 
     def add_derived(self):
         """Add derived properties
@@ -556,14 +594,14 @@ class Question:
         """
         print()
         while count < self.max_attempts:
-            answer = input('\n%s'%question)
+            answer = input('\n%s' % question)
             if answer in ["y", "Y", "1", "yes", "Yes", "YES", "yy", "YY", "T", "True", "TRUE", "t", "true", 1, 1.0]:
                 return True
             elif answer in ["n", "N", "0", "no", "NO", "nn", "No", "NN", "F", "False", "FALSE", "f", "false", 0, 0.0]:
                 return False
             else:
                 count += 1
-                print("ERROR: not a valid response \nPlease try again (%d attempts remaining)"%(self.max_attempts-count))
+                print("ERROR: not a valid response \nPlease try again (%d attempts remaining)" % (self.max_attempts-count))
         print('Exceeded maximum number of attempts.\nPlease check your input and try again.')
         return None
 
@@ -673,7 +711,7 @@ def get_dict(type='params'):
                 6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : models.harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
                 7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : models.harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
                }
-    path = os.path.join(DICTDIR, '%s.dict'%type)
+    path = os.path.join(PACKAGEDIR, 'data', 'dicts', '%s.dict'%type)
     with open(path, 'r') as f:
         return ast.literal_eval(f.read())
 
@@ -1041,9 +1079,11 @@ def _get_results(suffixes=['_idl', '_py'], max_numax=3200.,):
             pandas dataframe with merged results
 
     """
+    pathidl = os.path.join(PACKAGEDIR,'data','syd_results.txt')
     # load in both pipeline results
-    idlsyd = pd.read_csv(SYDFILE, skiprows=20, delimiter='|', names=get_dict('columns')['syd'])
-    pysyd = pd.read_csv(PYSYDFILE)
+    idlsyd = pd.read_csv(pathidl, skiprows=20, delimiter='|', names=get_dict('columns')['syd'])
+    pathpy =  os.path.join(PACKAGEDIR,'data','pysyd_results.csv')
+    pysyd = pd.read_csv(pathpy)
     # make sure they can crossmatch
     idlsyd.KIC = idlsyd.KIC.astype(str)
     pysyd.star = pysyd.star.astype(str)
@@ -1083,7 +1123,7 @@ def setup_dirs(args, note='', dl_dict={}):
         # downloading example data will generate output in terminal, so always include this regardless
         print('\nDownloading example data from source:')
         for infile, outfile in dl_dict.items():
-            subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
+            subprocess.call(['curl %s > %s' % (infile, outfile)], shell=True)
     # option to get ALL columns since only subset is included in the example
     if args.makeall:
         df_temp = pd.read_csv(args.info)
@@ -1092,13 +1132,13 @@ def setup_dirs(args, note='', dl_dict={}):
             if col in df.columns.values.tolist():
                 df[col] = df_temp[col]
         df.to_csv(args.info, index=False)
-        note+=' - ALL columns saved to the star info file\n'
+        note += ' - ALL columns saved to the star info file\n'
     # verbose output
     if args.verbose:
         if note == '':
             print("\nLooks like you've probably done this\nbefore since you already have everything!\n")
         else:
-            print('\nNote(s):\n%s'%note)
+            print('\nNote(s):\n%s' % note)
 
 
 def get_infdir(args, dl_dict, note, source='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
@@ -1125,16 +1165,16 @@ def get_infdir(args, dl_dict, note, source='https://raw.githubusercontent.com/as
     # create info directory (INFDIR)
     if not os.path.exists(args.infdir):
         os.mkdir(args.infdir)
-        note+=' - created input file directory at %s \n'%args.infdir
+        note += ' - created input file directory at %s \n' % args.infdir
     # Example input files  
     # 'todo.txt' aka basic text file with list of stars to process 
     if not os.path.exists(args.todo):
-        dl_dict.update({'%sinfo/todo.txt'%source:args.todo})
-        note+=' - saved an example of a star list\n'
+        dl_dict.update({'%sinfo/todo.txt' % source : args.todo})
+        note += ' - saved an example of a star list\n'
     # 'star_info.csv' aka star information file                             
     if not os.path.exists(args.info):
-        dl_dict.update({'%sinfo/star_info.csv'%source:args.info})
-        note+=' - saved an example for the star information file\n'
+        dl_dict.update({'%sinfo/star_info.csv' % source : args.info})
+        note += ' - saved an example for the star information file\n'
     return dl_dict, note
 
 
@@ -1167,15 +1207,15 @@ def get_inpdir(args, dl_dict, note, save=False, examples=['1435467','2309595','1
     # create data directory (INPDIR)
     if not os.path.exists(args.inpdir):
         os.mkdir(args.inpdir)
-        note+=' - created data directory at %s \n'%args.inpdir
+        note += ' - created data directory at %s \n' % args.inpdir
     # Example data for 3 (Kepler) stars
     for target in examples:
         for ext in exts:
-            infile='%sdata/%s_%s.txt'%(source, target, ext)
-            outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
+            infile = '%sdata/%s_%s.txt' % (source, target, ext)
+            outfile = os.path.join(args.inpdir, '%s_%s.txt' % (target, ext))
             if not os.path.exists(outfile):
-                save=True
-                dl_dict.update({infile:outfile})
+                save = True
+                dl_dict.update({infile : outfile})
     if save:
         note+=' - example data saved to data directory\n'
     return dl_dict, note
@@ -1199,7 +1239,7 @@ def get_outdir(args, note):
     # create results directory (OUTDIR)
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
-        note+=' - results will be saved to %s\n'%args.outdir
+        note += ' - results will be saved to %s\n' % args.outdir
     return note
 
 
@@ -1213,7 +1253,7 @@ def get_output(fun=False):
             if calling module for 'fun', only prints logo but doesn't test software
 
     """
-    with open(TESTFILE, "r") as f:
+    with open(os.path.join(PACKAGEDIR, 'data', 'test.txt'), "r") as f:
         lines = [line[:-2] for line in f.readlines()]
     if fun:
         lines = lines[:-2]

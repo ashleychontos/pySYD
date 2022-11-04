@@ -72,7 +72,6 @@ def test_single_run():
     assert '%.2f' % (float(df.loc[0,'dnu'])) == '%.2f' % (float(answers['dnu'])), "Incorrect dnu for single iteration"
 
 
-
 # TEST SINGLE STAR W/ SAMPLING
 def test_sampler_run():
     defaults = {

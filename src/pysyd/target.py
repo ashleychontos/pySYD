@@ -63,7 +63,6 @@ class Target:
             params : Dict
                 copy of args.params[name] dictionary with pysyd parameters and options
 
-
         """
         self.name = name
         self.constants = args.constants
@@ -73,9 +72,6 @@ class Target:
         else:
             # if not available, loads defaults
             self.params = utils.Parameters()
-        if not self.params['test']:
-            self._load_star()
-
 
     def __repr__(self):
         return "<Star {}>".format(self.name)
@@ -122,6 +118,20 @@ class Target:
                 self.params['smooth_ps'] = 1.5           
         """
 
+    def load_data(self,):
+        try:
+            self._load_star()
+        except utils.InputWarning as warning:
+            print(warning.msg)
+        except utils.InputError as error:
+            print(error.msg)
+            if os.path.exists(self.params['outdir']):
+                try:
+                    os.rmdir(self.params['outdir'])
+                except OSError:
+                    pass
+            return False
+        return True
 
     def process_star(self,):
         """Run `pySYD`
@@ -132,7 +142,6 @@ class Target:
             - :mod:`estimate_parameters`
             - :mod:`derive_parameters`
             - :mod:`show_results`
-
 
         """
         self.params['results'], self.params['plotting'] = {}, {}
@@ -159,7 +168,7 @@ class Target:
             if self.params['show']:
                 print('- displaying figures -')
         plots.make_plots(self)
-        if (self.params['cli'] and self.params['verbose']) or (not self.params['cli'] and not self.params['notebook']):
+        if self.params['cli'] and self.params['verbose'] and self.params['show']:
             input('- press [RETURN] to exit -\n')
 
 
@@ -977,11 +986,11 @@ class Target:
 
 
     def initial_parameters(self, lower_bg=1.0, upper_bg=8000.0,):
-        """
+        """Initial guesses
     
-        Gets initial guesses for granulation components (i.e. timescales and amplitudes) using
-        solar scaling relations. This resets the power spectrum and has its own independent
-        filter (i.e. [lower,upper] mask) to use for this subroutine.
+        Estimates initial guesses for background components (i.e. timescales and amplitudes) using
+        solar scaling relations. This resets the power spectrum and has its own independent filter 
+        or bounds (via [lower_bg, upper_bg]) to use for this subroutine
 
         Parameters
             lower_bg : float, default=1.0
@@ -1008,7 +1017,6 @@ class Target:
 
             This is typically sufficient for most stars but may affect evolved stars and
             need to be adjusted!
-
 
         """
         self.module = 'parameters'
@@ -1047,7 +1055,7 @@ class Target:
 
     def solar_scaling(self, numax=None, scaling='tau_sun_single', max_laws=3, ex_width=1.0,
                       lower_ps=None, upper_ps=None,):
-        """Initial values
+        r"""Initial values
         
         Using the initial starting value for :math:`\\rm \\nu_{max}`, estimates the rest of
         the parameters needed for *both* the background and global fits. Uses scaling relations 

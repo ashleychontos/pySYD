@@ -1,10 +1,18 @@
+import os
+import re
 import setuptools
 
-exec(open("src/pysyd/version.py").read())
+
+
+def get_property(variable, project='pysyd'):
+    fname = os.path.join('src', project, '__init__.py')
+    result = re.search(r'{}\s*=\s*[\'"]([^\'"]*)[\'"]'.format(variable), open(fname).read())
+    return result.group(1)
+
 
 setuptools.setup(
     name="pysyd",
-    version=__version__,
+    version=get_property('__version__'),
     author="Ashley Chontos",
     author_email="achontos@hawaii.edu",
     description="automated measurements of global asteroseismic parameters",
