@@ -167,7 +167,8 @@ directory can be whatever is most convenient for you:
 
 .. code-block::
     
-   mkdir pysyd
+   $ mkdir pysyd
+   $ cd pysyd
     
 
 :underlined:`Initialize setup`
@@ -178,7 +179,7 @@ Now all you need to do is change into that directory, run the following command 
 
 .. code-block::
 
-   pysyd setup -v
+   $ pysyd setup -v
 
 We used the :term:`verbose<-v, --verbose>` command so you can see what is being downloaded
 and where it is being downloaded to.
@@ -228,7 +229,7 @@ you will get the following *lovely* reminder:
 
 .. code-block::
 
-   pysyd setup -v
+   $ pysyd setup -v
    
    Looks like you've probably done this
    before since you already have everything!
@@ -245,10 +246,10 @@ Use the following to get up and running right away:
 
 .. code-block::
 
-   python -m pip install pysyd
-   mkdir pysyd
-   cd pysyd
-   pysyd setup [optional]
+   $ python -m pip install pysyd
+   $ mkdir pysyd
+   $ cd pysyd
+   $ pysyd setup [optional]
 
 The last command which will provide you with example data and files to immediately get 
 going. This is essentially a summary of all the steps discussed on this page but a more
@@ -256,7 +257,7 @@ consolidated version.
 
 *You are now ready to do some asteroseismology!*
 
-p.s. enter `pysyd fun` for a little surprise:
+P.S. enter `'pysyd fun'` for a little surprise:
 
 .. code-block::
 
@@ -289,5 +290,3 @@ p.s. enter `pysyd fun` for a little surprise:
     ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 
     ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 
 
-
------
