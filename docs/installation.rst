@@ -1,9 +1,9 @@
 .. role:: underlined
    :class: underlined
 
-**********************************
-:underlined:`Installation & setup`
-**********************************
+*****************************
+:underlined:`Getting started`
+*****************************
 
 .. link-button:: install-quickstart
     :type: ref

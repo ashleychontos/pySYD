@@ -1,31 +1,32 @@
+.. role:: underlined
+   :class: underlined
+
+**************************
+:underlined:`Introduction`
+**************************
+
 .. _library-about:
 
-************
-Introduction
-************
-
-`pySYD` was initially established as a one-to-one translation of the `IDL`-based `SYD` pipeline 
+``pySYD`` was initially established as a one-to-one translation of the `IDL`-based ``SYD`` pipeline 
 from `Huber et al. (2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H>`_. In the 
-*Kepler* days, `SYD` was extensively used to measure :term:`global asteroseismic parameters` 
-for many stars (e.g., [huber2011]_; [chaplin2014]_; [serenelli2017]_; [yu2018]_).
+*Kepler* days, ``SYD`` was extensively used to measure :term:`global asteroseismic parameters` 
+for many stars (e.g., [H2011]_; [C2014]_; [S2017a]_; [Y2018]_).
 
 In order to process and analyze the enormous amounts of data from *Kepler* in real time, there were a
 :ref:`a handful of other closed-source pipelines <library-about-related>` developed around the same time that perform roughly
 similar types of analyses. In fact, there were several papers that compared results from each
 of these pipelines in order to ensure the reproducibility of science results from the 
-:term:`Kepler legacy sample` ([lund2017]_; [silva2017]_).
+:term:`Kepler legacy sample` ([L2017]_; [S2017b]_).
 
-`pySYD` adapts the well-tested methodology from `SYD` while simultaneously improving these 
+``pySYD`` adapts the well-tested methodology from ``SYD`` while simultaneously improving these 
 existing analyses and expanding upon numerous new features. Some improvements include:
 
- - automated best-fit background model selection
- - parallel processing
- - easily accessible + command-line friendly interface
+ - automated background model comparison and selection
+ - parallel processing and other easy compatabilities for running many stars
+ - easily customizable with command-line friendly interface
  - modular and adaptable across different applications
- - overly customizable experience
  - saves reproducible samples for future analyses (i.e. seeds)
 
-.. TODO:: implement seeds for any random parts of the pipeline for reproducibility purposes
 
 -----
 
@@ -34,8 +35,8 @@ existing analyses and expanding upon numerous new features. Some improvements in
 Benchmarking to the *Kepler* legacy sample
 ##########################################
 
-We ran `pySYD` on ~100 *Kepler* legacy stars (defined :term:`here <Kepler legacy sample>`) 
-observed in short-cadence and compared the output to ``SYD`` results from [serenelli2017]_. 
+We ran ``pySYD`` on ~100 *Kepler* legacy stars (defined :term:`here <Kepler legacy sample>`) 
+observed in short-cadence and compared the output to ``SYD`` results from [S2017a]_. 
 The same time series and power spectra were used for both analyses, which are publicly available
 and hosted online c/o KASOC [#]_. The resulting values are compared for the two methods below for 
 :term:`numax` (:math:`\rm \nu_{max}`, left) and :term:`dnu` (:math:`\Delta\nu`, right). 
@@ -46,12 +47,10 @@ and hosted online c/o KASOC [#]_. The resulting values are compared for the two 
 
 The residuals show no strong systematics to within <0.5% in Dnu and <~1% in numax, which 
 is smaller than the typical random uncertainties. This confirms that the open-source `Python` 
-package `pySYD` provides consistent results with the legacy IDL version that has been 
+package ``pySYD`` provides consistent results with the legacy IDL version that has been 
 used extensively in the literature.
 
 .. TODO:: Add script or jupyter notebook to reproduce this figure.
-
-.. [#] `Kepler Asteroseismic Science Operations Center <https://kasoc.phys.au.dk>`_
 
 -----
 
@@ -62,7 +61,7 @@ Related Tools
 
 ``pySYD`` provides general purpose tools for performing asteroseismic analysis in the frequency domain.
 Several tools have been developed to solve related scientific and data analysis problems. We have compiled 
-a list of software packages that performs similar or complementary analyses.
+a list of software packages that perform similar or complementary analyses.
 
  * `AMP`:
     - language: 
@@ -73,7 +72,7 @@ a list of software packages that performs similar or complementary analyses.
 
  * `A2Z`: determining global parameters of the oscillations of solar-like stars
     - language: `?`
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2010A%26A...511A..46M>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2010A%26A...511A..46M>`_
     - documentation: no
     - publicly available: no
     - requires license: n/a
@@ -82,28 +81,28 @@ a list of software packages that performs similar or complementary analyses.
     - language: `c++11`
     - reference: no
     - documentation: no
-    - publicly available: yes <https://github.com/EnricoCorsaro/Background>
+    - publicly available: `yes<https://github.com/EnricoCorsaro/Background>`_
     - requires license: no
 
  * `CAN`: on the detection of Lorentzian profiles in a power spectrum
     - language: `?`
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2009A%26A...506.1043G>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2009A%26A...506.1043G>`_
     - documentation: no
     - publicly available: no
     - requires license: n/a
 
  * `COR`: on detecting the large separation in the autocorrelation of stellar oscillation times series
     - language: `?`
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2009A%26A...508..877M>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2009A%26A...508..877M>`_
     - documentation: no
     - publicly available: no
     - requires license: n/a
 
  * `DIAMONDS`: high-DImensional And multi-MOdal NesteD Sampling
     - language: `c++11`
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2014A%26A...571A..71C>
-    - documentation: yes <https://diamonds.readthedocs.io/en/latest/>
-    - publicly available: yes <https://github.com/EnricoCorsaro/DIAMONDS>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2014A%26A...571A..71C>`_
+    - documentation: `yes<https://diamonds.readthedocs.io/en/latest/>`_
+    - publicly available: `yes<https://github.com/EnricoCorsaro/DIAMONDS>`_
     - requires license: n/a
 
  * `DLB`:
@@ -115,9 +114,9 @@ a list of software packages that performs similar or complementary analyses.
 
  * `FAMED`: Fast & AutoMated pEakbagging with Diamonds
     - language: `IDL` (currently being developed in `Python`)
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2020A%26A...640A.130C>
-    - documentation: yes <https://famed.readthedocs.io/en/latest/>
-    - publicly available: yes <https://github.com/EnricoCorsaro/FAMED>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2020A%26A...640A.130C>`_
+    - documentation: `yes<https://famed.readthedocs.io/en/latest/>`_
+    - publicly available: `yes<https://github.com/EnricoCorsaro/FAMED>`_
     - requires license: yes
 
  * Flicker Flipper?: 
@@ -129,7 +128,7 @@ a list of software packages that performs similar or complementary analyses.
 
  * `KAB`: automated asteroseismic analysis of solar-type stars
     - language: `?`
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2010arXiv1003.4167K>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2010arXiv1003.4167K>`_
     - documentation: no
     - publicly available: no
     - requires license: n/a
@@ -137,27 +136,27 @@ a list of software packages that performs similar or complementary analyses.
  * `lightkurve`: a friendly Python package for making discoveries with *Kepler* & TESS
     - language: `Python`
     - reference: no
-    - documentation: yes <https://docs.lightkurve.org>
-    - publicly available: yes <https://github.com/lightkurve/lightkurve>
+    - documentation: `yes<https://docs.lightkurve.org>`_
+    - publicly available: `yes<https://github.com/lightkurve/lightkurve>`_
     - requires license: no 
 
  * `OCT`: automated pipeline for extracting oscillation parameters of solar-like main-sequence stars
     - language: `?`
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2010MNRAS.402.2049H>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2010MNRAS.402.2049H>`_
     - documentation: no
     - publicly available: no
     - requires license: n/a
 
  * `ORK`: using the comb response function method to identify spacings
     - language: `?`
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2008ApJ...676.1248B>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2008ApJ...676.1248B>`_
     - documentation: no
     - publicly available: no
     - requires license: n/a
 
  * `QML`: a power-spectrum autocorrelation technique to detect global asteroseismic parameters
     - language: `?`
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2011arXiv1104.0631V>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2011arXiv1104.0631V>`_
     - documentation: no
     - publicly available: no
     - requires license: n/a
@@ -165,13 +164,13 @@ a list of software packages that performs similar or complementary analyses.
  * `PBjam`: a python package for automating asteroseismology of solar-like oscillators
     - language: `Python`
     - reference: yes <https://ui.adsabs.harvard.edu/abs/2021AJ....161...62N>
-    - documentation: yes <https://pbjam.readthedocs.io/en/latest/>
-    - publicly available: yes <https://github.com/grd349/PBjam>
+    - documentation: `yes<https://pbjam.readthedocs.io/en/latest/>`_
+    - publicly available: `yes<https://github.com/grd349/PBjam>`_
     - requires license: no 
 
  * `SYD`: automated extraction of oscillation parameters for *Kepler* observations of solar-type stars
     - language: `IDL`
-    - reference: yes <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H>
+    - reference: `yes<https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H>`_
     - documentation: no
     - publicly available: no
     - requires license: yes
@@ -194,9 +193,11 @@ References
    verner2011
    boole1854
 
-.. [huber2011] `Huber et al., 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H>`_
-.. [chaplin2014] `Chaplin et al., 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C>`_
-.. [serenelli2017] `Serenelli et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S>`_
-.. [yu2018] `Yu et al., 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y>`_
-.. [lund2017] `Lund et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJ...835..172L>`_
-.. [silva2017] `Silva Aguirre et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJ...835..173S>`_
+.. [#] `Kepler Asteroseismic Science Operations Center <https://kasoc.phys.au.dk>`_
+
+.. [C2014] `Chaplin et al., 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C>`_
+.. [H2011] `Huber et al., 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H>`_
+.. [L2017] `Lund et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJ...835..172L>`_
+.. [S2017a] `Serenelli et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S>`_
+.. [S2017b] `Silva Aguirre et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJ...835..173S>`_
+.. [Y2018] `Yu et al., 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y>`_

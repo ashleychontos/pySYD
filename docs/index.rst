@@ -36,8 +36,8 @@ is too small!
    :caption: Software
    :hidden:
    
-   Installation & setup <installation>
-   Getting started <quickstart>
+   Getting started <installation>
+   Crashteroseismology <quickstart>
    library/index
    usage/index
    Glossary <glossary>

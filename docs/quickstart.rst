@@ -1,11 +1,11 @@
 .. role:: underlined
    :class: underlined
 
-*****************************
-:underlined:`Getting started`
-*****************************
+*********************************
+:underlined:`Crashteroseismology`
+*********************************
 
-A brief timeout
+A quick timeout
 ###############
 
 The examples on this page assume that the user already has some basic-level knowledge or
@@ -37,8 +37,8 @@ to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
 .. _quickstart-crash:
 
-Crashteroseismology: a crash course in asteroseismology
-#######################################################
+A crash course in asteroseismology
+##################################
 
 For purposes of this first example, we'll assume that we don't know anything about the star or
 its properties so that the software runs from start to finish on its own. In any normal circumstance,
