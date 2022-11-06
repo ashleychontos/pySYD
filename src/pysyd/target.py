@@ -73,14 +73,20 @@ class Target:
             # if not available, loads defaults
             self.params = utils.Parameters()
 
+
     def __repr__(self):
+        return "pysyd.target.Target(name=%r, params=%r)" % (self.name, self.params)
+
+
+    def __str__(self):
         return "<Star {}>".format(self.name)
 
 
     def _adjust_parameters(self, adjust=True, defaults=None,):
-        """ 
+        """Adjust low/high numax
     
-        Adjusts default parameters for low vs high numax configurations
+        Adjusts default parameters for low vs high numax configurations (not tested yet -
+        need to do)
 
         Parameters
             star : str
@@ -118,6 +124,7 @@ class Target:
                 self.params['smooth_ps'] = 1.5           
         """
 
+
     def load_data(self,):
         try:
             self._load_star()
@@ -133,15 +140,16 @@ class Target:
             return False
         return True
 
+
     def process_star(self,):
-        """Run `pySYD`
+        """Run pipeline
 
         Processes a given star with `pySYD`
 
         Methods
-            - :mod:`estimate_parameters`
-            - :mod:`derive_parameters`
-            - :mod:`show_results`
+            - :mod:`pysyd.target.Target.estimate_parameters`
+            - :mod:`pysyd.target.Target.derive_parameters`
+            - :mod:`pysyd.target.Target.show_results`
 
         """
         self.params['results'], self.params['plotting'] = {}, {}
@@ -194,7 +202,7 @@ class Target:
             :mod:`pysyd.target.Target._get_warnings`   
 
         Raises
-            PySYDInputError
+            :mod:`pysyd.utils.InputError`
                 if no data is found for a given target   
 
         """
@@ -243,7 +251,7 @@ class Target:
                 isn't known and needs to be assumed
 
         Raises
-            PySYDInputWarning
+            :mod:`pysyd.utils.InputWarning`
                 if no information or time series data is provided (i.e. *has* to assume the PS is critically-sampled) 
 
         """
@@ -315,10 +323,10 @@ class Target:
                 copy of the critically-sampled power spectrum (i.e. `frequency` & `power`)
 
         Raises
-            InputWarning
+            :mod:`pysyd.utils.InputWarning`
                 if the oversampling factor provided is different from that computed from the
                 time series data and power spectrum
-            InputError
+            :mod:`pysyd.utils.InputError`
                 if the oversampling factor calculated from the time series data and power 
                 spectrum is not an integer
 
@@ -391,7 +399,6 @@ class Target:
             x, y : numpy.ndarray, numpy.ndarray
                 the independent and dependent variables, respectively
 
-
         """
         # Open file
         with open(path, "r") as f:
@@ -420,7 +427,7 @@ class Target:
                 the corrected time series array
 
         Raises
-            PySYDInputWarning
+            :mod:`pysyd.utils.InputWarning`
                 when using this method since it's technically not a great thing to do
 
         .. warning::
@@ -576,6 +583,7 @@ class Target:
             df = pd.DataFrame(columns=['star','seed'])
             df.loc[0,'star'], df.loc[0,'seed'] = str(self.name), int(self.params['seed'])
         df.to_csv(self.params['info'], index=False)
+
 
     def remove_artefact(self, freq, pow, lcp=1.0/(29.4244*60*1e-6), 
                         lf_lower=[240.0,500.0], lf_upper=[380.0,530.0], 
@@ -1473,10 +1481,10 @@ class Target:
         # Save background-corrected power spectrum
         self.bg_div = self.random_pow/models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
         if self.params['save']:
-            utils.save_file(self.frequency, self.bg_div, os.path.join(self.params['path'], '%s_BDPS.txt'%self.name), overwrite=self.params['overwrite'])
+            utils._save_file(self.frequency, self.bg_div, os.path.join(self.params['path'], '%s_BDPS.txt'%self.name), overwrite=self.params['overwrite'])
         self.bg_sub = self.random_pow-models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
         if self.params['save']:
-            utils.save_file(self.frequency, self.bg_sub, os.path.join(self.params['path'], '%s_BSPS.txt'%self.name), overwrite=self.params['overwrite'])
+            utils._save_file(self.frequency, self.bg_sub, os.path.join(self.params['path'], '%s_BSPS.txt'%self.name), overwrite=self.params['overwrite'])
         self.params['plotting'][self.module].update({'models':self.params['models'],
                                                      'model':self.params['selected'],
                                                      'paras':self.params['paras'],
@@ -1589,7 +1597,7 @@ class Target:
         self.pssm_bgcorr = self.pssm-models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
         mask = np.ma.getmask(np.ma.masked_inside(self.frequency, self.params['ps_mask'][0], self.params['ps_mask'][1]))
         self.region_freq, self.region_pow = self.frequency[mask], self.pssm_bgcorr[mask]
-        idx, max_freq, max_pow = utils.return_max(self.region_freq, self.region_pow)
+        idx, max_freq, max_pow = utils._return_max(self.region_freq, self.region_pow)
         self.params['results'][self.module]['numax_smooth'].append(max_freq)
         self.params['results'][self.module]['A_smooth'].append(max_pow)
         self.params['numax_smoo'] = self.params['results'][self.module]['numax_smooth'][0]
@@ -1713,11 +1721,11 @@ class Target:
         """
         if self.i == 0:
             # Get actual peaks from ACF for plotting purposes before any weighting
-            pl, pa, _ = utils.max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], distance=self.params['exp_dnu']/4.)
+            pl, pa, _ = utils._max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], distance=self.params['exp_dnu']/4.)
             # Get peaks from ACF by providing dnu to weight the array 
-            peaks_l, peaks_a, weights = utils.max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], distance=self.params['exp_dnu']/4., exp_dnu=self.params['exp_dnu'])
+            peaks_l, peaks_a, weights = utils._max_elements(self.lag, self.auto, npeaks=self.params['n_peaks'], distance=self.params['exp_dnu']/4., exp_dnu=self.params['exp_dnu'])
             # Pick "best" peak in ACF (i.e. closest to expected dnu)
-            idx , self.params['best_lag'], self.params['best_auto'] = utils.return_max(peaks_l, peaks_a, exp_dnu=self.params['exp_dnu'])
+            idx , self.params['best_lag'], self.params['best_auto'] = utils._return_max(peaks_l, peaks_a, exp_dnu=self.params['exp_dnu'])
             self._acf_cutout()
         self.zoom_lag = self.lag[(self.lag >= self.params['acf_mask'][0]) & (self.lag <= self.params['acf_mask'][1])]
         self.zoom_auto = self.auto[(self.lag >= self.params['acf_mask'][0]) & (self.lag <= self.params['acf_mask'][1])]
@@ -1735,7 +1743,7 @@ class Target:
             self.params['results'][self.module]['dnu'].append(gauss[2]) 
             if self.i == 0:
                 self.params['obs_dnu'] = gauss[2]
-                idx, _, _ = utils.return_max(pl, pa, exp_dnu=self.params['obs_dnu'])
+                idx, _, _ = utils._return_max(pl, pa, exp_dnu=self.params['obs_dnu'])
                 l, a = pl.pop(idx), pa.pop(idx)
                 self.params['plotting'][self.module].update({'obs_dnu':gauss[2], 
                   'peaks_l':np.copy(pl),'peaks_a':np.copy(pa),'best_lag':self.params['best_lag'],

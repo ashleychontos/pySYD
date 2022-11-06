@@ -13,10 +13,15 @@ from . import PACKAGEDIR
 from .utils import Question
 
 
+
+
+
 MPLSTYLE = os.path.join(PACKAGEDIR,'data','pysyd.mplstyle')
 plt.style.use(MPLSTYLE)
 
 d = utils.get_dict(type='plots')
+
+
 
 def make_plots(star, show_all=False,):
     """Make plots
@@ -30,6 +35,11 @@ def make_plots(star, show_all=False,):
         showall : bool, optional
             option to plot, save and show the different background models (default=`False`)
 
+    Calls
+        :mod:`pysyd.plots.plot_estimates`
+        :mod:`pysyd.plots.plot_parameters`
+        :mod:`pysyd.plots.plot_bgfits` [optional]
+        :mod:`pysyd.plots.plot_samples`
     
     """
     if 'estimates' in star.params['plotting']:
@@ -45,21 +55,20 @@ def make_plots(star, show_all=False,):
 
 
 def select_trial(star):
-    """Select trial
+    r"""Select trial
 
-    This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
-    This feature used to be called as part of a method in the `pysyd.target.Target` class but left a
+    This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\\rm \\nu_{max}`)
+    This feature used to be called as part of a method in the :mod:`pysyd.target.Target` class but left a
     stale figure open -- this way it can be closed after the value is selected
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the pySYD pipeline object
 
     Returns
         value : int or float
             depending on which `trial` was selected, this can be of integer or float type
 
-    
     """
     x, y = d[star.params['n_trials']]['x'], d[star.params['n_trials']]['y']
     params = star.params['plotting']['estimates']
@@ -83,7 +92,6 @@ def select_trial(star):
         ax.set_xlim([min(params[i]['x']), max(params[i]['x'])])
         ax.set_ylim([-0.05, ymax+0.15*yran])
         ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
-
     plt.tight_layout()
     plt.show()
     value = Question().ask_integer('Which estimate would you like to use? ', special=True, n_trials=star.params['n_trials'])
@@ -98,7 +106,7 @@ def select_trial(star):
     return star
 
 
-def select_trial2(star):
+def _select_trial2(star):
     """Select trial
 
     This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
@@ -106,7 +114,7 @@ def select_trial2(star):
     stale figure open -- this way it can be closed after the value is selected
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the pySYD pipeline object
 
     Returns
@@ -151,11 +159,12 @@ def select_trial2(star):
 
 
 def plot_estimates(star, filename='search_&_estimate.png', highlight=True, n=0):
-    """
+    """Plot estimates
+
     Creates a plot summarizing the results of the find excess routine.
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the pySYD pipeline object
         filename : str
             the path or extension to save the figure to
@@ -236,7 +245,6 @@ def plot_estimates(star, filename='search_&_estimate.png', highlight=True, n=0):
         else:
             if params[i]['good_fit']:
                 ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
-
     plt.tight_layout()
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
@@ -248,18 +256,17 @@ def plot_estimates(star, filename='search_&_estimate.png', highlight=True, n=0):
 
 
 def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n=0):
-    """
+    """Plot parameters
+
     Creates a plot summarizing all derived parameters
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the main pipeline Target class object
         subfilename : str
             separate filename in the event that only the background is being fit
         filename : str
             the path or extension to save the figure to
-        n_peaks : int
-            the number of peaks to highlight in the zoomed-in power spectrum
 
     """
     if star.params['background'] and not star.params['globe']:

@@ -94,15 +94,11 @@ class Constants:
 
 
 class Parameters(Constants):
-    """
-
-    Container class for ``pySYD``
+    """Container class for ``pySYD`` parameters
 
     """
-
     def __init__(self, args=None):
         """
-
         Calls super method to inherit all relevant constants and then
         stores the default values for all pysyd modules
 
@@ -127,8 +123,8 @@ class Parameters(Constants):
     def get_defaults(self):
         """Load defaults
 
-        Gets default pySYD parameters by calling functions analogous to the command-line 
-        parsers 
+        Gets default pySYD parameters by calling functions which are analogous to 
+        available command-line parsers and arguments
 
         Attributes
             params : Dict[str[Dict[,]]]
@@ -152,7 +148,8 @@ class Parameters(Constants):
         self.get_plot()
 
 
-    def get_parent(self):
+    def get_parent(self, inpdir='data', infdir='info', outdir='results', save=True, test=False,
+                   verbose=False, overwrite=False, warnings=False, cli=True, notebook=False):
         """Get parent parser
    
         Load parameters available in the parent parser i.e. higher-level software functionality
@@ -160,7 +157,6 @@ class Parameters(Constants):
         Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
-
 
         """
         self.params.update({
@@ -177,7 +173,9 @@ class Parameters(Constants):
         })
 
 
-    def get_data(self):
+    def get_data(self, info='info/star_info.csv', todo='info/todo.txt', stars=None, mode='run',
+                 gap=20, stitch=False, oversampling_factor=None, kep_corr=False, notching=False,
+                 dnu=None, lower_ech=None, upper_ech=None):
         """Get data parser
    
         Load parameters available in the data parser, which is mostly related to initial
@@ -186,7 +184,6 @@ class Parameters(Constants):
         Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
-
 
         """
         self.params.update({
@@ -221,7 +218,6 @@ class Parameters(Constants):
             - :mod:`pysyd.utils.Parameters.get_global`
             - :mod:`pysyd.utils.Parameters.get_sampling`
 
-
         """
         # Initialize parameters for the estimate routine
         self.get_estimate()
@@ -233,7 +229,8 @@ class Parameters(Constants):
         self.get_sampling()
 
 
-    def get_estimate(self):
+    def get_estimate(self, estimate=True, smooth_width=20.0, binning=0.005, bin_mode='mean', step=0.25,
+                     n_trials=3, ask=False, lower_ex=None, upper_ex=None):
         """Search and estimate parameters
     
         Get parameters relevant for the optional first module that looks for and identifies
@@ -257,7 +254,8 @@ class Parameters(Constants):
         })
 
 
-    def get_background(self):
+    def get_background(self, background=True, basis='tau_sigma', box_filter=1.0, ind_width=20.0, n_rms=20,
+                       n_laws=None, fix_wn=False, metric='bic', lower_bg=None, upper_bg=None, functions=None):
         """Background parameters
     
         Gets parameters used during the automated background-fitting analysis 
@@ -282,7 +280,8 @@ class Parameters(Constants):
         })
 
 
-    def get_global(self):
+    def get_global(self, globe=True, numax=None, lower_ps=None, upper_ps=None, ex_width=1.0, 
+                   sm_par=None, smooth_ps=2.5, fft=True, threshold=1.0, n_peaks=5):
         """Global fitting parameters
     
         Get default parameters that are relevant for deriving global asteroseismic parameters 
@@ -307,7 +306,7 @@ class Parameters(Constants):
         })
 
 
-    def get_sampling(self):
+    def get_sampling(self, mc_iter=1, seed=None, samples=False, n_threads=0):
         """Sampling parameters
     
         Get parameters relevant for the sampling steps i.e. estimating uncertainties
@@ -315,7 +314,6 @@ class Parameters(Constants):
         Attributes
             params : Dict[str,Dict[,]]
                 the updated parameters
-
 
         """
         self.params.update({
@@ -326,7 +324,8 @@ class Parameters(Constants):
         })
 
 
-    def get_plot(self):
+    def get_plot(self, show_all=False, show=False, cmap='binary', hey=False, clip_value=3.0,
+                 interp_ech=False, nox=None, noy='0+0', npb=10, ridges=False, smooth_ech=None):
         """Get plot parser
     
         Save all parameters related to any of the output figures
@@ -362,7 +361,6 @@ class Parameters(Constants):
             args : argparse.Namespace
                 the command line arguments
 
-
         """
         self.check_cli(args)
         # CLI options overwrite defaults
@@ -372,7 +370,7 @@ class Parameters(Constants):
                 self.params[key] = value
 
 
-    def check_cli(self, args, max_laws=3):
+    def check_cli(self, args, max_laws=3, override=['numax','dnu','lower_ex','upper_ex','lower_bg','upper_bg','lower_ps','upper_ps','lower_ech','upper_ech']):
         """Check CLI
     
         Make sure that any command-line inputs are the proper lengths, types, etc.
@@ -380,7 +378,7 @@ class Parameters(Constants):
         Parameters
             args : argparse.Namespace
                 the command line arguments
-            max_laws : int, default=3
+            max_laws : int
                 maximum number of Harvey laws to be fit
 
         Asserts
@@ -402,7 +400,7 @@ class Parameters(Constants):
             'upper_ech': args.upper_ech,
         }
         for each in self.override:
-            if self.override[each] is not None:
+            if self.override[each] is not None and len(self.override[each]) != len(args.stars):
                 raise InputError("\nWhen running multiple stars via command line, the number \n of values provided for %s MUST equal the number of stars\n" % each)
         if args.oversampling_factor is not None and not isinstance(args.oversampling_factor, int):
             raise InputError("\nThe oversampling factor for the input PS must be an integer\n")
@@ -426,16 +424,16 @@ class Parameters(Constants):
                     self.params['stars'] = [stars]
             else:
                 try:
-                    loadstars = self.load_starlist()
+                    loadstars = self._load_starlist()
                 except InputError as error:
                     print(error.msg)
                     return
                 else:
                     self.params['stars'] = loadstars
-        self.make_dicts()
+        self._make_dicts()
 
 
-    def load_starlist(self):
+    def _load_starlist(self):
         """Load star list
 
         If no stars have been provided yet, it will read in the default text file
@@ -451,12 +449,11 @@ class Parameters(Constants):
             return stars
 
 
-    def make_dicts(self):
+    def _make_dicts(self):
         """Add star dicts
 
         This routine will load in target stars, sets up "groups" (relevant for parallel
         processing) and then load in all relevant information
-
 
         """
         # Set file paths and make directories if they don't yet exist
@@ -465,13 +462,13 @@ class Parameters(Constants):
             self.params[star]['path'] = os.path.join(self.params['outdir'], str(star))
             if self.params['save'] and not os.path.exists(self.params[star]['path']):
                 os.makedirs(self.params[star]['path'])
-        self.get_groups()
-        self.load_starinfo()
-        self.load_clinfo()
-        self.add_derived()
+        self._get_groups()
+        self._load_starinfo()
+        self._load_clinfo()
+        self._add_derived()
 
 
-    def get_groups(self):
+    def _get_groups(self):
         """Get star groups
     
         Mostly relevant for parallel processing -- which sets up star groups to run 
@@ -491,7 +488,7 @@ class Parameters(Constants):
             self.params['groups'] = np.array(self.params['stars'])
 
 
-    def load_starinfo(self):
+    def _load_starinfo(self):
         """Load star info csv
 
         """
@@ -515,7 +512,7 @@ class Parameters(Constants):
                             pass
 
 
-    def load_clinfo(self):
+    def _load_clinfo(self):
         """Load command-line values
 
         """
@@ -536,7 +533,7 @@ class Parameters(Constants):
                         self.params[star][column] = self.override[column][i]
 
 
-    def add_derived(self):
+    def _add_derived(self):
         """Add derived properties
 
         """
@@ -716,7 +713,7 @@ def get_dict(type='params'):
         return ast.literal_eval(f.read())
 
 
-def save_file(x, y, path, overwrite=False, formats=[">15.8f", ">18.10e"]):
+def _save_file(x, y, path, overwrite=False, formats=[">15.8f", ">18.10e"]):
     """Saves basic text files
     
     After determining the best-fit stellar background model, this module
@@ -868,7 +865,7 @@ def _verbose_output(star, note=''):
     print(note)
 
 
-def scrape_output(args, columns=['star','numax','dnu','snr']):
+def _scrape_output(args, columns=['star','numax','dnu','snr']):
     """Concatenate results
     
     Automatically concatenates and summarizes the results for all processed stars in each
@@ -929,7 +926,7 @@ def _sort_table(df, outdir, type='global'):
     df_new.to_csv(os.path.join(outdir,'%s.csv'%type), index=False)
 
 
-def max_elements(x, y, npeaks, distance=None, exp_dnu=None):
+def _max_elements(x, y, npeaks, distance=None, exp_dnu=None):
     """N highest peaks
     
     Module to obtain the x and y values for the n highest peaks in a 2D array 
@@ -971,7 +968,7 @@ def max_elements(x, y, npeaks, distance=None, exp_dnu=None):
     return list(peaks_x), list(peaks_y), weights
 
 
-def return_max(x, y, exp_dnu=None,):
+def _return_max(x, y, exp_dnu=None,):
     """Return max
     
     Return the peak (and/or the index of the peak) in a given 2D array
@@ -1113,6 +1110,11 @@ def setup_dirs(args, note='', dl_dict={}):
             dictionary of files to download for setup
         note : str
             updated verbose output
+
+    Calls
+        - :mod:`pysyd.utils.get_infdir`
+        - :mod:`pysyd.utils.get_inpdir`
+        - :mod:`pysyd.utils.get_outdir`
 
     """
     dl_dict, note = get_infdir(args, dl_dict, note)

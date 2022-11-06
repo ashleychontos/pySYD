@@ -17,7 +17,7 @@ from .target import Target
 
 
 def check(args):
-    """
+    """Check target
     
     This is intended to be a way to check a target before running it by plotting the
     times series data and/or power spectrum. This works in the most basic way  but has
@@ -28,9 +28,9 @@ def check(args):
             the command line arguments
     
     .. important::
-        has not been extensively tested
+        has not been extensively tested - also it is exactly the same as "load" so think 
+        through if this is actually needed and decided which is easier to understand
 
-    
     """
     star = load(args)
     plots.check_data(star)
@@ -48,10 +48,9 @@ def fun(args):
 
 
 def load(args):
-    """
+    """Load target
     
-    Module to load in all relevant information and dictionaries
-    required to run the pipeline
+    Load in a given target to check data or figures
     
     .. note::
         this does *not* load in a target or target data, this is purely
@@ -61,20 +60,6 @@ def load(args):
     Parameters
         args : argparse.Namespace
             the command line arguments
-        star : object, optional
-            pretty sure this is only used from jupyter notebook
-        verbose : bool, optional
-            again, this is only used if not using command line
-        command : str, optional
-            which of the 5 ``pysyd.pipeline`` modes to execute from the notebook
-
-    Returns
-        single : target.Target
-            current data available for the provided target
-
-    Deprecated
-        single : target.Target
-            current data available for the provided target
 
     """
     if args.data:
@@ -91,13 +76,12 @@ def load(args):
     params.add_targets(stars=args.stars)
     # Load target data
     star = Target(args.stars[0], params)
-    return star
 
 
 def parallel(args):
-    """
+    """Parallel execution
     
-    Run ``pySYD`` in parallel for a large number of stars
+    Run ``pySYD`` concurrently for a large number of stars
 
     Parameters
         args : argparse.Namespace
@@ -113,7 +97,7 @@ def parallel(args):
     params = utils.Parameters(args=args)
     if args.stars is None:
         try:
-            args.stars = params.load_starlist()
+            args.stars = params._load_starlist()
         except utils.InputError as error:
             print(error.msg)
             return
@@ -121,15 +105,15 @@ def parallel(args):
     params.add_targets(stars=args.stars)
     # Creates the separate, asyncrhonous (nthread) processes
     pool = mp.Pool(args.n_threads)
-    result_objects = [pool.apply_async(pipe, args=(group, params)) for group in params.params['groups']]
+    result_objects = [pool.apply_async(_pipe, args=(group, params)) for group in params.params['groups']]
     results = [r.get() for r in result_objects]
     pool.close()
     pool.join()               # postpones execution of the next line until all processes finish
     # Concatenates output into two files
-    utils.scrape_output(params)
+    utils._scrape_output(params)
 
 
-def pipe(group, params, progress=False):
+def _pipe(group, params, progress=False):
     """
 
     This function is called by both :mod:`pysyd.pipeline.run` and :mod:`pysyd.pipeline.parallel`
@@ -150,7 +134,7 @@ def pipe(group, params, progress=False):
 
 
 def plot(args):
-    """
+    """Make plots
     
     Module to load in all relevant information and dictionaries
     required to run the pipeline
@@ -178,40 +162,41 @@ def plot(args):
 
 
 def run(args):
-    """
+    """Run pySYD
     
-    Main function to initiate the pySYD pipeline (consecutively, not
-    in parallel)
+    Main function to initiate the pySYD pipeline for one or many stars (the latter is run
+    consecutively *not* concurrently)
 
     Parameters
         args : argparse.Namespace
             the command line arguments
 
     Methods
-        pipe
+        :mod:`pysyd.utils.Parameters`
+        :mod:`pysyd.pipeline.pipe`
+        :mod:`pysyd.utils._scrape_output`
 
     .. seealso:: :mod:`pysyd.pipeline.parallel`
-
 
     """
     # Load default pySYD parameters
     params = utils.Parameters(args=args)
     if args.stars is None:
         try:
-            args.stars = params.load_starlist()
+            args.stars = params._load_starlist()
         except utils.InputError as error:
             print(error.msg)
             return
     # Update with CL options
     params.add_targets(stars=args.stars)
     # Run single batch of stars
-    pipe(args.stars, params)
+    _pipe(args.stars, params)
     # Concatenates output into two files
-    utils.scrape_output(params)
+    utils._scrape_output(params)
 
 
 def setup(args):
-    """
+    """Quick software setup
     
     Running this after installation will create the appropriate directories in the current working
     directory as well as download example data and files to test your pySYD installation
