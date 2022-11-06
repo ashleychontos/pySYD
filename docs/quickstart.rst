@@ -8,10 +8,9 @@
 A quick timeout
 ###############
 
-The examples on this page assume that the user already has some basic-level knowledge or
-experience with `Python`. If not, we recommend visiting the Python website and going through
-some of `their tutorials <https://docs.python.org/3/tutorial/>`_ first before attempting 
-ours.
+The examples on this page assume that the user already has some basic-level experience with Python
+and therefore if not, we highly recommend that you first visit the Python website and going through
+some of `their tutorials <https://docs.python.org/3/tutorial/>`_ before attempting ours.
 
 We will work through two examples -- each demonstrating a different application of the software. 
 The first example will run `pySYD` as a script from command line since this is what
@@ -24,13 +23,7 @@ If you have *any* questions, check out our :ref:`user guide <user-guide>` for mo
 information. If this still does not address your question or problem, please do not hesitate
 to contact `Ashley <achontos@hawaii.edu>`_ directly.
 
-.. warning::
 
-    It is **critical** that the input data are in the proper units in order for ``pySYD`` 
-    to work properly and provide reliable results. If you are unsure about any of your units, 
-    we recommend that you use *only* the light curve (in days) as input. In this case, the
-    software will compute and normalize the power spectrum for you! For more information 
-    about formatting and input data, please visit :ref:`this page <library-input>`.
 
 
 -----
@@ -123,6 +116,14 @@ The software operates in roughly the following steps:
 For each step, we will first show the relevant block of printed (or :term:`verbose<-v, --verbose>`) output, then
 describe what the software is doing behind the scenes and if applicable, conclude with the section-specific 
 results (i.e. files, figures, etc.).
+
+
+.. warning::
+
+    Please make sure that all input data are in the correct units in order for the software  
+    to provide reliable results. If you are unsure, please visit :ref:`this page <library-input>` 
+    for more information about formatting and input data.
+
 
 .. _quickstart-script-steps-one:
 
