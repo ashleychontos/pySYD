@@ -15,22 +15,24 @@ authors:
    affiliation: "1, 2"
  - name: Daniel Huber
    orcid: 0000-0001-8832-4488
-   affiliation: 1
+   affiliation: 3
  - name: Maryum Sayeed 
    orcid: 0000-0001-6180-8482
-   affiliation: 3
- - name: Pavadol Yamsiri
    affiliation: 4
+ - name: Pavadol Yamsiri
+   affiliation: 5
 affiliations:
- - name: Institute for Astronomy, University of Hawai'i, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
+ - name: Department of Astrophysical Sciences, Princeton University, 4 Ivy Lane, Princeton, NJ 08540, USA
    index: 1
- - name: NSF Graduate Research Fellow
+ - name: Henry Norris Russell Fellow
    index: 2
- - name: Department of Astronomy, Columbia University, Pupin Physics Laboratories, New York, NY 10027, USA
+ - name: Institute for Astronomy, University of Hawai'i, 2680 Woodlawn Drive, Honolulu, HI 96822, USA
    index: 3
- - name: Sydney Institute for Astronomy, School of Physics, University of Sydney, NSW 2006, Australia
+ - name: Department of Astronomy, Columbia University, Pupin Physics Laboratories, New York, NY 10027, USA
    index: 4
-date: 1 Aug 2021
+ - name: Sydney Institute for Astronomy, School of Physics, University of Sydney, NSW 2006, Australia
+   index: 5
+date: 6 Nov 2022
 bibliography: paper.bib
 ---
 
@@ -190,11 +192,7 @@ relevant links or similar keyword arguments.
 
 We thank Dennis Stello, Tim Bedding, Marc Hon, Yifan Chen, Yaguang Li, and other
 `pySYD` users for discussion and suggestions which helped with the development
-of this software.
-
-We also acknowledge support from: 
-- The National Science Foundation (DGE-1842402)
-- The National Aeronautics and Space Administration (80NSSC19K0597, 80NSSC21K0652)
-- The Alfred P. Sloan Foundation
+of this software. We acknowledge support from the National Aeronautics and Space 
+Administration (80NSSC19K0597, 80NSSC21K0652) as well the Alfred P. Sloan Foundation.
 
 # References
