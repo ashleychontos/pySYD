@@ -155,7 +155,7 @@ online package documentation:
   frequency distributions used to fit and model properties in a given power spectrum
 - [`cli`](https://pysyd.readthedocs.io/en/latest/usage/intro.html) & 
   [`pipeline`](https://pysyd.readthedocs.io/en/latest/library/pipeline.html) are the main 
-  entry points for command-line usage
+  entry points for terminal and command prompt usage
 - [`utils`](https://pysyd.readthedocs.io/en/latest/library/utils.html) includes a suite 
   of utilities such as the container class `Parameters`, which contains all default 
   parameters, or utility functions like binning data or finding peaks in a series of data 
