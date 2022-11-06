@@ -1,7 +1,7 @@
 .. _library-pipeline:
 
 **************
-Pipeline modes
+Software modes
 **************
 
 
