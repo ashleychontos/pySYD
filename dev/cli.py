@@ -1,7 +1,7 @@
 import os
 import argparse
 
-from version import __version__ 
+__version__ = 'doesntmattaaa'
 SYDFILE = os.path.join(os.path.abspath(os.getcwd()),'info','data','syd_results.txt')
 PYSYDFILE = os.path.join(os.path.abspath(os.getcwd()),'info','data','pysyd_results.csv')
 _ROOT = '/Users/ashleychontos/Research/Code/special/pySYD/dev'

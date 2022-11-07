@@ -22,12 +22,4 @@ closed-source tools.
     for easy comparisons. Please let us know if we've somehow missed yours --
     we would be happy to add it!
 
- 
-Goals
-#####
-
-The initial vision of this project was intended to be a direct translation of 
-the IDL-based ``SYD`` pipeline
-
-
 

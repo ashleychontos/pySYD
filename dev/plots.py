@@ -9,10 +9,16 @@ import matplotlib.pyplot as plt
 # Development mode
 import utils
 import models
+from utils import Question
+
+
+
 MPLSTYLE = os.path.join(os.path.abspath(os.getcwd()),'info','data','pysyd.mplstyle')
 
+
 plt.style.use(MPLSTYLE)
-from utils import Question
+
+d = utils.get_dict(type='plots')
 
 
 
@@ -28,10 +34,13 @@ def make_plots(star, show_all=False,):
         showall : bool, optional
             option to plot, save and show the different background models (default=`False`)
 
+    Calls
+        :mod:`pysyd.plots.plot_estimates`
+        :mod:`pysyd.plots.plot_parameters`
+        :mod:`pysyd.plots.plot_bgfits` [optional]
+        :mod:`pysyd.plots.plot_samples`
     
     """
-    # set defaults
-    plt.style.use(MPLSTYLE)
     if 'estimates' in star.params['plotting']:
         plot_estimates(star)
     if 'parameters' in star.params['plotting']:
@@ -45,40 +54,33 @@ def make_plots(star, show_all=False,):
 
 
 def select_trial(star):
-    """Select trial
+    r"""Select trial
 
-    This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
-    This feature used to be called as part of a method in the `pysyd.target.Target` class but left a
+    This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\\rm \\nu_{max}`)
+    This feature used to be called as part of a method in the :mod:`pysyd.target.Target` class but left a
     stale figure open -- this way it can be closed after the value is selected
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the pySYD pipeline object
 
     Returns
         value : int or float
             depending on which `trial` was selected, this can be of integer or float type
 
-    
     """
-    d = utils.get_dict(type='plots')
-    n_panels = star.params['n_trials']
-    # set defaults
-    plt.style.use(MPLSTYLE)
-    n = 1
-    x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Numax guesses for %s"%star.name, figsize=d[n_panels]['size'])
-
+    x, y = d[star.params['n_trials']]['x'], d[star.params['n_trials']]['y']
     params = star.params['plotting']['estimates']
+
+    fig = plt.figure("Numax guesses for %s"%star.name, figsize=d[star.params['n_trials']]['size'])
     # ACF trials to determine numax
     for i in range(star.params['n_trials']):
-        ax = plt.subplot(x, y, n+i)
+        ax = plt.subplot(x, y, 1+i)
         ax.plot(params[i]['x'], params[i]['y'], 'w-')
         xran = max(params[i]['fitx'])-min(params[i]['fitx'])
         ymax = params[i]['maxy']
         ax.axvline(params[i]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
-#        ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
         if params[i]['good_fit']:
             ax.plot(params[i]['fitx'], params[i]['fity'], color='lime', linestyle='-', linewidth=1.5)
             if max(params[i]['fity']) > params[i]['maxy']:
@@ -89,7 +91,6 @@ def select_trial(star):
         ax.set_xlim([min(params[i]['x']), max(params[i]['x'])])
         ax.set_ylim([-0.05, ymax+0.15*yran])
         ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
-
     plt.tight_layout()
     plt.show()
     value = Question().ask_integer('Which estimate would you like to use? ', special=True, n_trials=star.params['n_trials'])
@@ -104,7 +105,7 @@ def select_trial(star):
     return star
 
 
-def select_trial2(star):
+def _select_trial2(star):
     """Select trial
 
     This is called when ``--ask`` is `True` (i.e. select which trial to use for :math:`\rm \nu_{max}`)
@@ -112,7 +113,7 @@ def select_trial2(star):
     stale figure open -- this way it can be closed after the value is selected
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the pySYD pipeline object
 
     Returns
@@ -121,24 +122,18 @@ def select_trial2(star):
 
     
     """
-    d = utils.get_dict(type='plots')
-    n_panels = star.params['n_trials2']
-    # set defaults
-    plt.style.use(MPLSTYLE)
-    n = 1
-    x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Dnu guesses for %s"%star.name, figsize=d[n_panels]['size'])
-
+    x, y = d[star.params['n_trials2']]['x'], d[star.params['n_trials2']]['y']
     params = star.params['plotting']['trial']
+
+    fig = plt.figure("Dnu guesses for %s"%star.name, figsize=d[star.params['n_trials2']]['size'])
     # ACF trials to determine numax
     for i in range(star.params['n_trials2']):
-        ax = plt.subplot(x, y, n+i)
+        ax = plt.subplot(x, y, 1+i)
         ax.plot(params[i]['x'], params[i]['y'], 'w-')
         xran = max(params[i]['fitx'])-min(params[i]['fitx'])
         ymax = params[i]['maxy']
         ax.axvline(params[i]['maxx'], linestyle='dotted', color='r', linewidth=0.75)
         ax.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
-#        ax.set_ylabel(r'$\rm Arbitrary \,\, units$')
         yran = np.absolute(ymax)
         ax.set_xlim([min(params[i]['x']), max(params[i]['x'])])
         ax.set_ylim([-0.05, ymax+0.15*yran])
@@ -162,12 +157,13 @@ def select_trial2(star):
     return star
 
 
-def plot_estimates(star, filename='search_&_estimate.png', highlight=True):
-    """
+def plot_estimates(star, filename='search_&_estimate.png', highlight=True, n=0):
+    """Plot estimates
+
     Creates a plot summarizing the results of the find excess routine.
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the pySYD pipeline object
         filename : str
             the path or extension to save the figure to
@@ -176,17 +172,15 @@ def plot_estimates(star, filename='search_&_estimate.png', highlight=True):
 
     
     """
-    d = utils.get_dict(type='plots')
     n_panels = 3+star.params['n_trials']
     if not star.lc:
         n_panels -= 1
-    n = 0
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Estimates for %s"%star.name, figsize=d[n_panels]['size'])
-
     params = star.params['plotting']['estimates']
+
+    fig = plt.figure("Estimates for %s"%star.name, figsize=d[n_panels]['size'])
     n += 1
-    if star.lc:
+    if 'time' in params:
         # PANEL 1: time series data
         ax1 = plt.subplot(y, x, n)
         ax1.plot(params['time'], params['flux'], 'w-')
@@ -250,7 +244,6 @@ def plot_estimates(star, filename='search_&_estimate.png', highlight=True):
         else:
             if params[i]['good_fit']:
                 ax.annotate(r'$\rm SNR = %3.2f$' % params[i]['snr'], xy=(min(params[i]['fitx'])+0.05*xran, ymax+0.025*yran), fontsize=18)
-
     plt.tight_layout()
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
@@ -261,19 +254,18 @@ def plot_estimates(star, filename='search_&_estimate.png', highlight=True):
         plt.close()
 
 
-def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png'):
-    """
+def plot_parameters(star, subfilename='background_only.png', filename='global_fit.png', n=0):
+    """Plot parameters
+
     Creates a plot summarizing all derived parameters
 
     Parameters
-        star : target.Target
+        star : pysyd.target.Target
             the main pipeline Target class object
         subfilename : str
             separate filename in the event that only the background is being fit
         filename : str
             the path or extension to save the figure to
-        n_peaks : int
-            the number of peaks to highlight in the zoomed-in power spectrum
 
     """
     if star.params['background'] and not star.params['globe']:
@@ -282,16 +274,13 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
         n_panels=9
     if not star.lc:
         n_panels -= 1
-    n = 0
-    d = utils.get_dict(type='plots')
     x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Global fit for %s"%star.name, figsize=d[n_panels]['size'])
-
     params = star.params['plotting']['parameters']
 
+    fig = plt.figure("Global fit for %s"%star.name, figsize=d[n_panels]['size'])
     n += 1
     # PANEL 1: time series data
-    if star.lc:
+    if 'time' in params:
         ax1 = fig.add_subplot(x, y, n)
         ax1.plot(params['time'], params['flux'], 'w-')
         ax1.set_xlim([min(params['time']), max(params['time'])])
@@ -479,20 +468,17 @@ def plot_samples(star, filename='samples.png'):
             the path or extension to save the figure to
     
     """
-    n_panels = len(star.df.columns.values.tolist())
-    d = utils.get_dict(type='plots')
+    x, y = d[len(star.df.columns.values.tolist())]['x'], d[len(star.df.columns.values.tolist())]['y']
     params = utils.get_dict()
-    x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Posteriors for %s"%star.name, figsize=d[n_panels]['size'])
-
     sample = star.params['plotting']['samples']
+
+    fig = plt.figure("Posteriors for %s"%star.name, figsize=d[len(star.df.columns.values.tolist())]['size'])
     for i, col in enumerate(sample['df'].columns.values.tolist()):
         ax = plt.subplot(x, y, i+1)
         ax.hist(sample['df'][col], bins=20, color='cyan', histtype='step', lw=2.5, facecolor='0.75')
         ax.set_yticks([])
         ax.set_yticklabels([])
         ax.set_title(params[col]['label'], fontsize=16)
-
     plt.tight_layout()
     if star.params['save']:
         path = os.path.join(star.params['path'],filename)
@@ -517,11 +503,9 @@ def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
     
     """
     params = star.params['plotting']['parameters']
-    n_panels = len(params['models'])+1
-    d = utils.get_dict(type='plots')
-    x, y = d[n_panels]['x'], d[n_panels]['y']
-    fig = plt.figure("Background model comparison for %s"%star.name, figsize=d[n_panels]['size'])
+    x, y = d[len(params['models'])+1]['x'], d[len(params['models'])+1]['y']
 
+    fig = plt.figure("Background model comparison for %s"%star.name, figsize=d[len(params['models'])+1]['size'])
     # Initial background guesses
     ax1 = fig.add_subplot(x, y, 1)
     ax1.plot(params['frequency'], params['random_pow'], c='lightgrey', zorder=0, alpha=0.5)
@@ -610,8 +594,7 @@ def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
         plt.close()
 
 
-def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'], show=False, 
-                            save=True, overwrite=False, npanels=2,):
+def create_benchmark_plot(filename='comparison.png', variables=['numax','dnu'], show=False, save=True, overwrite=False, npanels=2,):
     """
     Compare ensemble results between the ``pySYD`` and ``SYD`` pipelines
     for the *Kepler* legacy sample
@@ -652,7 +635,7 @@ def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'],
         ax2.tick_params(axis='both', which='major', length=15, width=1.25, direction='inout')
         ax2.tick_params(labelsize=22)
         # add stats
-        STR1='Offset: {0:.5f}'.format(np.median(residuals))+' $\pm$ ' +'{0:.5f}'.format(1.25*np.std(residuals)/np.sqrt(len(residuals)))
+        STR1='Offset: {0:.5f} +/- {0:.5f}'.format(np.median(residuals), 1.25*np.std(residuals)/np.sqrt(len(residuals)))
         STR2='Scatter (MAD): {0:.5f}'.format(mad_std(residuals))
         STR3='Scatter (SD): {0:.5f}'.format(np.std(residuals))
         t = ax1.text(0.03,0.9, s=STR1+STR2+STR3, color='k', ha='left', va='center', transform=ax1.transAxes)
@@ -669,74 +652,12 @@ def create_comparison_plot(filename='comparison.png', variables=['numax','dnu'],
     plt.close()
 
 
-def dnu_comparison(star, filename='dnu_comparison.png', methods=['M','A','D'], markers=['o','D','^'], 
-                   styles=['--','-.',':'], colors=['#FF9408','#00A9E0','g'], npanels=2):
-
-    sig = 0.35*star.exp_dnu/2.35482 
-    weights = 1./(sig*np.sqrt(2.*np.pi))*np.exp(-(star.lag-star.exp_dnu)**2./(2.*sig**2))
-    new_weights = weights/max(weights)
-    weighted_acf = star.auto*weights
-    obs_dnu=star.globe['results'][star.name]['dnu'][0]
-
-    d = utils.get_dict(type='plots')
-    y, x = d[npanels]['x'], d[npanels]['y']
-    fig = plt.figure("Dnu trials for %s"%star.name, figsize=(12,12))
-    ax1 = fig.add_subplot(x, y, 1)
-    ax1.plot(star.lag, star.auto, 'w-', zorder=0, linewidth=1.)
-    ax1.plot(star.lag, new_weights, c='yellow', linestyle=':', zorder = 0, linewidth = 1.0)
-    ax1.axvline(star.exp_dnu, color='red', linestyle=':', linewidth=1.5, zorder=5)
-    ax1.set_title(r'$\rm ACF$', fontsize=28)
-    ax1.set_xlim([min(star.lag), max(star.lag)])
-    ax1.set_ylim([min(star.auto)-0.05*(max(star.auto)-min(star.auto)), max(star.auto)+0.1*(max(star.auto)-min(star.auto))])
-    ax1.set_xticklabels([])
-    ax1.set_yticks([])
-    ax1.set_yticklabels([])
-
-    ax2 = fig.add_subplot(x, y, 2)
-    ax2.plot(star.lag, weighted_acf, 'w-', zorder=0, linewidth=1.)
-    ax2.axvline(star.exp_dnu, color='red', linestyle=':', linewidth=1.5, zorder=5)
-    ax2.set_yticks([])
-    ax2.set_yticklabels([])
-    ax2.set_xlabel(r'$\rm Frequency \,\, separation \,\, [\mu Hz]$', fontsize=28)
-    ax2.set_xlim([min(star.lag), max(star.lag)])
-    ax2.set_ylim([min(weighted_acf)-0.05*(max(weighted_acf)-min(weighted_acf)), max(weighted_acf)+0.1*(max(weighted_acf)-min(weighted_acf))])
-
-    method_0 = star.globe['method']
-    for m, method in enumerate(methods):
-        star.globe['method'] = method
-        star.initial_dnu()
-        star.get_acf_cutout()
-        star.globe['results'][star.name]['dnu'] = star.globe['results'][star.name]['dnu'][:-1]
-        ax1.scatter(star.peaks_l, star.peaks_a, s=30.0, edgecolor=colors[m], marker=markers[m], facecolor='none', linewidths=1.0, label=r'$\rm %s$'%method)
-        ax1.axvline(star.obs_dnu, linestyle=styles[m], color=colors[m], linewidth=2.5, zorder=2)
-        for lag in star.peaks_l:
-            ax2.axvline(lag, linestyle=styles[m], color=colors[m], linewidth=0.75, zorder=2)
-        ax2.axvline(star.obs_dnu, linestyle=styles[m], color=colors[m], linewidth=2.5, zorder=2, label=r'$\rm \Delta\nu \,\, %s$'%method)
-        ax2.axvspan(min(star.zoom_lag), max(star.zoom_lag), color=colors[m], alpha=0.25, zorder=0)
-    star.globe['method'] = method_0
-    ax1.axvline(star.globe['results'][star.name]['dnu'][0], linestyle='-', color='lime', linewidth=2.5, zorder=99, label=r'$\rm Observed \,\, \Delta\nu$')
-    ax2.axvline(star.globe['results'][star.name]['dnu'][0], linestyle='-', color='lime', linewidth=2.5, zorder=99, label=r'$\rm Observed \,\, \Delta\nu$')
-    ax1.legend(fontsize=24, loc='upper right', scatteryoffsets=[0.5], handletextpad=0.25, markerscale=1.5, handlelength=0.75, labelspacing=0.3, columnspacing=0.1)
-    ax2.legend(fontsize=24)
-    plt.tight_layout()
-    plt.tight_layout()
-    if star.params['save']:
-        path = os.path.join(star.params['path'],filename)
-        if not star.params['overwrite']:
-            path = utils._get_next(path)
-        plt.savefig(path, dpi=300)
-    if not star.params['show']:
-        plt.close()
-
-
 def check_data(star, args, show=True):
-    """
-    Plot input data for a target
+    """Plot input data for a target
 
     """
     if star.params['verbose']:
         print(' - displaying figures')
-    plt.style.use(MPLSTYLE)
     if star.lc:
         plot_light_curve(star, args)
     if star.ps:
@@ -749,8 +670,7 @@ def check_data(star, args, show=True):
 
 
 def plot_light_curve(star, args, filename='time_series.png', npanels=1):
-    """
-    Plot the light curve data
+    """Plot light curve data
 
     Parameters
         star : target.Target
@@ -762,8 +682,8 @@ def plot_light_curve(star, args, filename='time_series.png', npanels=1):
 
     
     """
-    d = utils.get_dict(type='plots')
     x, y = d[npanels]['x'], d[npanels]['y']
+
     fig = plt.figure("%s time series"%star.name, figsize=d[npanels]['size'])
     ax = plt.subplot(x,y,1)
     ax.plot(star.time, star.flux, 'w-')
@@ -793,8 +713,7 @@ def plot_light_curve(star, args, filename='time_series.png', npanels=1):
 
 
 def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
-    """
-    Plot the power spectrum data
+    """Plot power spectrum
 
     Parameters
         star : target.Target
@@ -806,8 +725,8 @@ def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
 
     
     """
-    d = utils.get_dict(type='plots')
     x, y = d[npanels]['x'], d[npanels]['y']
+
     fig = plt.figure("%s power spectrum"%star.name, figsize=d[npanels]['size'])
     ax = plt.subplot(1,1,1)
     ax.plot(star.frequency, star.power, 'w-')
@@ -840,8 +759,7 @@ def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
 
 
 def plot_1d_ed(star, filename='1d_ed.png', npanels=1):
-    """
-    Plot the light curve data
+    """Plot collapsed ED
 
     Parameters
         star : target.Target
@@ -853,8 +771,8 @@ def plot_1d_ed(star, filename='1d_ed.png', npanels=1):
 
     
     """
-    d = utils.get_dict(type='plots')
     x, y = d[npanels]['x'], d[npanels]['y']
+
     fig = plt.figure("%s 1d ED"%star.name, figsize=d[npanels]['size'])
     ax = plt.subplot(x,y,1)
     ax.plot(star.x, star.y, 'w-')

@@ -7,19 +7,10 @@
 
 .. _library-about:
 
-``pySYD`` was initially established as a one-to-one translation of the `IDL`-based ``SYD`` pipeline 
-from `Huber et al. (2009) <https://ui.adsabs.harvard.edu/abs/2009CoAst.160...74H>`_. In the 
-*Kepler* days, ``SYD`` was extensively used to measure :term:`global asteroseismic parameters` 
-for many stars (e.g., [H2011]_; [C2014]_; [S2017a]_; [Y2018]_).
-
-In order to process and analyze the enormous amounts of data from *Kepler* in real time, there were a
-:ref:`a handful of other closed-source pipelines <library-about-related>` developed around the same time that perform roughly
-similar types of analyses. In fact, there were several papers that compared results from each
-of these pipelines in order to ensure the reproducibility of science results from the 
-:term:`Kepler legacy sample` ([L2017]_; [S2017b]_).
-
-``pySYD`` adapts the well-tested methodology from ``SYD`` while simultaneously improving these 
-existing analyses and expanding upon numerous new features. Some improvements include:
+``pySYD`` is an open-source asteroseismology package that adapts the same well-tested methodology 
+from the well-known and widely-used `IDL`-based ``SYD`` pipeline. In addition to not needing a license
+to perform rigorous asteroseismic analyses, we have expanded the capabilities and features to
+include:
 
  - automated background model comparison and selection
  - parallel processing and other easy compatabilities for running many stars
@@ -32,14 +23,17 @@ existing analyses and expanding upon numerous new features. Some improvements in
 
 .. _library-about-benchmark:
 
-Benchmarking to the *Kepler* legacy sample
-##########################################
+Reproducible *Kepler* mision results
+#####################################
 
-We ran ``pySYD`` on ~100 *Kepler* legacy stars (defined :term:`here <Kepler legacy sample>`) 
+In order to ensure the reproducibility of scientific results from the *Kepler* mission, we
+ran ``pySYD`` on ~100 *Kepler* legacy stars (defined :term:`here <Kepler legacy sample>`) 
 observed in short-cadence and compared the output to ``SYD`` results from [S2017a]_. 
 The same time series and power spectra were used for both analyses, which are publicly available
-and hosted online c/o KASOC [#]_. The resulting values are compared for the two methods below for 
-:term:`numax` (:math:`\rm \nu_{max}`, left) and :term:`dnu` (:math:`\Delta\nu`, right). 
+and hosted online c/o KASOC [#]_. 
+
+The resulting values are compared for the two methods below for :term:`numax` (:math:`\rm \nu_{max}`, 
+left) and :term:`dnu` (:math:`\Delta\nu`, right). 
 
 .. image:: ../_static/comparison.png
   :width: 680
@@ -193,11 +187,11 @@ References
    verner2011
    boole1854
 
-.. [#] `Kepler Asteroseismic Science Operations Center <https://kasoc.phys.au.dk>`_
+.. [#] `Kepler Asteroseismic Science Operations Center <https://kasoc.phys.au.dk>`_ 
 
-.. [C2014] `Chaplin et al., 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C>`_
-.. [H2011] `Huber et al., 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H>`_
-.. [L2017] `Lund et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJ...835..172L>`_
-.. [S2017a] `Serenelli et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S>`_
-.. [S2017b] `Silva Aguirre et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJ...835..173S>`_
-.. [Y2018] `Yu et al., 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y>`_
+.. [C2014] `Chaplin et al., 2014 <https://ui.adsabs.harvard.edu/abs/2014ApJS..210....1C>`_ 
+.. [H2011] `Huber et al., 2011 <https://ui.adsabs.harvard.edu/abs/2011ApJ...743..143H>`_ 
+.. [L2017] `Lund et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJ...835..172L>`_ 
+.. [S2017a] `Serenelli et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJS..233...23S>`_ 
+.. [S2017b] `Silva Aguirre et al., 2017 <https://ui.adsabs.harvard.edu/abs/2017ApJ...835..173S>`_ 
+.. [Y2018] `Yu et al., 2018 <https://ui.adsabs.harvard.edu/abs/2018ApJS..236...42Y>`_ 

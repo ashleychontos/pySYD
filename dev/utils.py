@@ -7,53 +7,68 @@ from astropy.io import ascii
 import multiprocessing as mp
 from astropy.stats import mad_std
 from scipy.signal import find_peaks
+
+
+
 # Development mode
 import models
-SYDFILE = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/src/pysyd','data','syd_results.txt')
-PYSYDFILE = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/src/pysyd','data','pysyd_results.csv')
-INFDIR = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/dev','info')
-INPDIR = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/dev','data')
-OUTDIR = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/dev','results')
-TESTFILE = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/src/pysyd','data','test.txt')
-DICTDIR = os.path.join('/Users/ashleychontos/Research/Code/special/pySYD/src/pysyd','data','dicts')
-class PySYDInputError(Exception):
-    """Class for pySYD user input errors."""
-    def __init__(self, error):
-        self.error
-    def __repr__(self):
-        return "<PySYDInputError>%s"%self.error
+_ROOT = '/Users/ashleychontos/Research/Code/special/pySYD/dev'
+PACKAGEDIR = os.path.join(os.path.abspath(os.getcwd()),'info')
 
-class PySYDProcessingError(Exception):
-    """Class for pySYD processing exceptions."""
-    def __init__(self, error):
-        self.error = error
-    def __repr__(self):
-        return "<pySYDProcessingError>%s"%self.error
 
-class PySYDInputWarning(Warning):
+class InputError(Exception):
+    """Class for pySYD user input errors (i.e., halts execution)."""
+    def __init__(self, error, width=60):
+        self.msg, self.width = error, width
+    def __repr__(self):
+        return "pysyd.utils.InputError(error=%r)" % self.msg
+    def __str__(self):
+        return "<InputError>"
+
+class ProcessingError(Exception):
+    """Class for pySYD processing errors (i.e., halts execution)."""
+    def __init__(self, error, width=60):
+        self.msg, self.width = error, width
+    def __repr__(self):
+        return "pysyd.utils.ProcessingError(error=%r)" % self.msg
+    def __str__(self):
+        return "<ProcessingError>"
+
+class InputWarning(Warning):
     """Class for pySYD user input warnings."""
-    def __init__(self, warning):
-        self.warning = warning
+    def __init__(self, warning, width=60):
+        self.msg, self.width = warning, width
     def __repr__(self):
-        import warnings
-        return warnings.warn(self.warning)
+        return "pysyd.utils.InputWarning(warning=%r)" % self.msg
+    def __str__(self):
+        return "<InputWarning>"
+
+class ProcessingWarning(Warning):
+    """Class for pySYD user input warnings."""
+    def __init__(self, warning, width=60):
+        self.msg, self.width = warning, width
+    def __repr__(self):
+        return "pysyd.utils.ProcessingWarning(warning=%r)" % self.msg
+    def __str__(self):
+        return "<ProcessingWarning>"
 
 
-class Constants:
-    """
+class Constants(object):
+    """Constants
     
     Container class for constants and known values -- which is
     primarily solar asteroseismic values for our purposes.
     
     """
 
-    def __init__(self, defaults=['solar','conversions','constants']):
+    def __init__(self):
         """
         UNITS ARE IN THE SUPERIOR CGS 
         COME AT ME
 
         """
-        self.constants = {
+        super().__init__()
+        constants = {
             'm_sun' : 1.9891e33,
             'r_sun' : 6.95508e10,
             'rho_sun' : 1.41,
@@ -71,54 +86,24 @@ class Constants:
             'rad2deg' : 180./np.pi,
             'deg2rad' : np.pi/180.,
         }
+        for constant in constants:
+            self.__dict__[constant] = constants[constant]
 
     def __repr__(self):
+        return "utils.Constants(%r)" % self.__dict__
+
+    def __str__(self):
         return "<Constants>"
 
 
-class Parameters(Constants):
+class Defaults(object):
+    """pySYD defaults
     """
+    def __init__(self):
+        """Get defaults
 
-    Container class for ``pySYD``
-
-    """
-
-    def __init__(self, args=None, stars=None):
-        """
-
-        Calls super method to inherit all relevant constants and then
-        stores the default values for all pysyd modules
-
-        Methods
-
-        """
-        # makes sure to inherit constants
-        super().__init__()
-        self.get_defaults()
-        if not self.is_interactive():
-            self.add_cli(args)
-        else:
-            if stars is None:
-                self.star_list()
-            else:
-                self.params['stars'] = stars
-        self.assign_stars()
-
-
-    def __repr__(self):
-        return "<PySYD Parameters>"
-
-
-    def is_interactive(self):
-        import __main__ as main
-        return not hasattr(main, '__file__')
-
-
-    def get_defaults(self):
-        """Load defaults
-
-        Gets default pySYD parameters by calling functions analogous to the command-line 
-        parsers 
+        Gets default pySYD parameters by calling functions which are analogous to the
+        available command-line parsers and arguments
 
         Attributes
             params : Dict[str[Dict[,]]]
@@ -131,7 +116,7 @@ class Parameters(Constants):
             - :mod:`pysyd.utils.Parameters.get_plot`
 
         """
-        self.params = {}
+        super().__init__()
         # Initialize high level functionality
         self.get_parent()
         # Get parameters related to data loading/saving
@@ -141,8 +126,14 @@ class Parameters(Constants):
         # Get plotting info
         self.get_plot()
 
+    def __repr__(self):
+        return "utils.Defaults(%r)" % self.__dict__
 
-    def get_parent(self):
+    def __str__(self):
+        return "<pySYD defaults>"
+
+    def get_parent(self, inpdir='data', infdir='info', outdir='results', save=True, test=False,
+                   verbose=False, overwrite=False, warnings=False, cli=True, notebook=False):
         """Get parent parser
    
         Load parameters available in the parent parser i.e. higher-level software functionality
@@ -151,22 +142,25 @@ class Parameters(Constants):
             params : Dict[str,Dict[,]]
                 the updated parameters
 
-
         """
-        self.params.update({
-            'inpdir' : INPDIR,
-            'infdir' : INFDIR,
-            'outdir' : OUTDIR,
+        params = {
+            'inpdir' : os.path.join(_ROOT, 'data'),
+            'infdir' : os.path.join(_ROOT, 'info'),
+            'outdir' : os.path.join(_ROOT, 'results'),
             'save' : True,
+            'test' : False,
             'verbose' : False,
             'overwrite' : False,
-            'warnings' : True,
-            'cli' : False,
+            'warnings' : False,
+            'cli' : True,
             'notebook' : False,
-        })
+        }
+        for param in params:
+            self.__dict__[param] = params[param]
 
-
-    def get_data(self):
+    def get_data(self, info='info/star_info.csv', todo='info/todo.txt', stars=None, mode='run',
+                 gap=20, stitch=False, oversampling_factor=None, kep_corr=False, notching=False,
+                 dnu=None, lower_ech=None, upper_ech=None):
         """Get data parser
    
         Load parameters available in the data parser, which is mostly related to initial
@@ -176,13 +170,12 @@ class Parameters(Constants):
             params : Dict[str,Dict[,]]
                 the updated parameters
 
-
         """
-        self.params.update({
+        params = {
+            'info' : os.path.join(_ROOT, 'info', 'star_info.csv'),
+            'todo' : os.path.join(_ROOT, 'info', 'todo.txt'),
             'stars' : None,
-            'info' : os.path.join(INFDIR, 'star_info.csv'),
-            'todo' : os.path.join(INFDIR, 'todo.txt'),
-            'mode' : 'load',
+            'mode' : 'run',
             'gap' : 20,
             'stitch' : False,
             'oversampling_factor' : None,
@@ -192,8 +185,9 @@ class Parameters(Constants):
             'lower_ech' : None,
             'upper_ech' : None,
             'notching' : False,
-        })
-
+        }
+        for param in params:
+            self.__dict__[param] = params[param]
 
     def get_main(self):
         """Get main parser
@@ -210,7 +204,6 @@ class Parameters(Constants):
             - :mod:`pysyd.utils.Parameters.get_global`
             - :mod:`pysyd.utils.Parameters.get_sampling`
 
-
         """
         # Initialize parameters for the estimate routine
         self.get_estimate()
@@ -221,8 +214,8 @@ class Parameters(Constants):
         # Estimate parameters
         self.get_sampling()
 
-
-    def get_estimate(self):
+    def get_estimate(self, estimate=True, smooth_width=20.0, binning=0.005, bin_mode='mean', step=0.25,
+                     n_trials=3, ask=False, lower_ex=None, upper_ex=None):
         """Search and estimate parameters
     
         Get parameters relevant for the optional first module that looks for and identifies
@@ -233,20 +226,22 @@ class Parameters(Constants):
                 the updated parameters
 
         """
-        self.params.update({
+        params = {
             'estimate' : True,
-            'smooth_width' : 10.0,
+            'smooth_width' : 20.0,
             'binning' : 0.005,
             'bin_mode' : 'mean',
             'step' : 0.25,
             'n_trials' : 3,
             'ask' : False,
-            'lower_ex' : 1.0,
-            'upper_ex' : 8000.0,
-        })
+            'lower_ex' : None,
+            'upper_ex' : None,
+        }
+        for param in params:
+            self.__dict__[param] = params[param]
 
-
-    def get_background(self):
+    def get_background(self, background=True, basis='tau_sigma', box_filter=1.0, ind_width=20.0, n_rms=20,
+                       n_laws=None, fix_wn=False, metric='bic', lower_bg=None, upper_bg=None, functions=None):
         """Background parameters
     
         Gets parameters used during the automated background-fitting analysis 
@@ -256,7 +251,7 @@ class Parameters(Constants):
                 the updated parameters
 
         """
-        self.params.update({
+        params = {
             'background' : True,
             'basis' : 'tau_sigma',
             'box_filter' : 1.0,
@@ -265,13 +260,15 @@ class Parameters(Constants):
             'n_laws' : None,
             'fix_wn' : False,
             'metric' : 'bic',
-            'lower_bg' : 1.0,
-            'upper_bg' : 8000.0,
+            'lower_bg' : None,
+            'upper_bg' : None,
             'functions' : get_dict(type='functions'),
-        })
+        }
+        for param in params:
+            self.__dict__[param] = params[param]
 
-
-    def get_global(self):
+    def get_global(self, globe=True, numax=None, lower_ps=None, upper_ps=None, ex_width=1.0, 
+                   sm_par=None, smooth_ps=2.5, fft=True, threshold=1.0, n_peaks=5):
         """Global fitting parameters
     
         Get default parameters that are relevant for deriving global asteroseismic parameters 
@@ -282,7 +279,7 @@ class Parameters(Constants):
                 the updated parameters
 
         """
-        self.params.update({
+        params = {
             'globe' : True,
             'numax' : None,
             'lower_ps' : None,
@@ -293,10 +290,11 @@ class Parameters(Constants):
             'fft' : True,
             'threshold' : 1.0,
             'n_peaks' : 5,
-        })
+        }
+        for param in params:
+            self.__dict__[param] = params[param]
 
-
-    def get_sampling(self):
+    def get_sampling(self, mc_iter=1, seed=None, samples=False, n_threads=0):
         """Sampling parameters
     
         Get parameters relevant for the sampling steps i.e. estimating uncertainties
@@ -305,16 +303,18 @@ class Parameters(Constants):
             params : Dict[str,Dict[,]]
                 the updated parameters
 
-
         """
-        self.params.update({
+        params = {
             'mc_iter' : 1,
+            'seed' : None,
             'samples' : False,
             'n_threads' : 0,
-        })
+        }
+        for param in params:
+            self.__dict__[param] = params[param]
 
-
-    def get_plot(self):
+    def get_plot(self, show_all=False, show=False, cmap='binary', hey=False, clip_value=3.0,
+                 interp_ech=False, nox=None, noy='0+0', npb=10, ridges=False, smooth_ech=None):
         """Get plot parser
     
         Save all parameters related to any of the output figures
@@ -324,7 +324,7 @@ class Parameters(Constants):
                 the updated parameters
 
         """
-        self.params.update({
+        params = {
             'show_all' : False,
             'show' : False,
             'cmap' : 'binary',
@@ -336,148 +336,24 @@ class Parameters(Constants):
             'npb' : 10,
             'ridges' : False,
             'smooth_ech' : None,
-        })
+        }
+        for param in params:
+            self.__dict__[param] = params[param]
 
 
-    def add_stars(self, stars=None):
-        if stars is not None:
-            self.params['stars'] = stars
-        else:
-            raise PySYDInputError("ERROR: no star provided")
-        self.assign_stars()
+class Parameters(Constants, Defaults):
 
+    def __init__(self, args=None):
+        super().__init__()
+        if args is not None:
+            self.add_cli(args)
+            self.add_targets()
 
-    def assign_stars(self,):
-        """Add stars
+    def __repr__(self):
+        return "utils.Parameters(%r)" % self.__dict__
 
-        This routine will load in target stars, sets up "groups" (relevant for parallel
-        processing) and then load in the relevant information
-
-
-        """
-        # Set file paths and make directories if they don't yet exist
-        for star in self.params['stars']:
-            self.params[star] = {}
-            self.params[star]['path'] = os.path.join(self.params['outdir'], str(star))
-            if self.params['save'] and not os.path.exists(self.params[star]['path']):
-                os.makedirs(self.params[star]['path'])
-        self.get_groups()
-        self.add_info()
-
-
-    def star_list(self,):
-        """Load star list
-
-        If no stars have been provided yet, it will read in the default text file
-        (and if that does not exist, it will raise an error)
-
-        """
-        if not os.path.exists(self.params['todo']):
-            raise PySYDInputError("ERROR: no stars or star list provided")
-        else:
-            with open(self.params['todo'], "r") as f:
-                self.params['stars'] = [line.strip().split()[0] for line in f.readlines()]
-
-
-    def get_groups(self):
-        """Get star groups
-    
-        Mostly relevant for parallel processing -- which sets up star groups to run 
-        in parallel based on the number of threads
-
-        """
-        if hasattr(self, 'mode') and self.params['mode'] == 'parallel':
-            todo = np.array(self.params['stars'])
-            if self.params['n_threads'] == 0:
-                self.params['n_threads'] = mp.cpu_count()
-            if len(todo) < self.params['n_threads']:
-                self.params['n_threads'] = len(todo)
-            # divide stars into groups set by number of cpus/nthreads available
-            digitized = np.digitize(np.arange(len(todo)) % self.params['n_threads'], np.arange(self.params['n_threads']))
-            self.params['groups'] = np.array([todo[digitized == i] for i in range(1, self.params['n_threads']+1)], dtype=object)
-        else:
-            self.params['groups'] = np.array(self.params['stars'])
-
-
-    def add_info(self):
-        """Add info
-
-        Checks and saves all default information for stars separately
-
-        """
-        self.get_info()
-        for star in self.params['stars']:
-            if self.params[star]['numax'] is not None:
-                self.params[star]['estimate'] = False
-                if self.params[star]['dnu'] is not None:
-                    self.params[star]['force'] = self.params[star]['dnu']
-                self.params[star]['dnu'] = delta_nu(self.params[star]['numax'])
-            else:
-                if 'rs' in self.params[star] and self.params[star]['rs'] is not None and \
-                  'logg' in self.params[star] and self.params[star]['logg'] is not None:
-                    self.params[star]['ms'] = ((((self.params[star]['rs']*self.constants['r_sun'])**(2.0))*10**(self.params[star]['logg'])/self.constants['G'])/self.constants['m_sun'])
-                    self.params[star]['numax'] = self.constants['numax_sun']*self.params[star]['ms']*(self.params[star]['rs']**(-2.0))*((self.params[star]['teff']/self.constants['teff_sun'])**(-0.5))
-                    self.params[star]['dnu'] = self.constants['dnu_sun']*(self.params[star]['ms']**(0.5))*(self.params[star]['rs']**(-1.5))  
-            if self.params[star]['lower_ech'] is not None and self.params[star]['upper_ech'] is not None:
-                self.params[star]['ech_mask'] = [self.params[star]['lower_ech'], self.params[star]['upper_ech']]
-            else:
-                self.params[star]['ech_mask'] = None
-
-
-    def get_info(self):
-        """Load star info
-    
-        This function retrieves any and all information available for any targets and the
-        order is important here. The main dictionary is either the command-line arguments
-        or all the defaults that were loaded in *but* this can be different on a single
-        star basis and therefore we need to handle this in special steps:
-         #. first initializes all keys for each star
-         #. copy values from the csv file when applicable
-         #. copy defaults when value is not available
-         #. any command-line arguments override previous assignments
-
-        .. todo:: if unsure, can (re)set up this file with a simple command
-
-
-        """
-        columns = get_dict(type='columns')
-        # Create all keys first
-        for star in self.params['stars']:
-            for column in columns['all']:
-                if column in self.params:
-                    self.params[star][column] = self.params[column]
-                else:
-                    self.params[star][column] = None
-
-        # Open csv file if it exists
-        if os.path.exists(self.params['info']):
-            df = pd.read_csv(self.params['info'])
-            stars = [str(each) for each in df.star.values.tolist()]
-            for star in self.params['stars']:
-                if str(star) in stars:
-                    idx = stars.index(str(star))
-                    # Update information from columns
-                    for column in df.columns.values.tolist():
-                        if not np.isnan(df.loc[idx,column]):
-                            if column in columns['int']:
-                                self.params[star][column] = int(df.loc[idx,column])
-                            elif column in columns['float']:
-                                self.params[star][column] = float(df.loc[idx,column])
-                            elif column in columns['bool']:
-                                self.params[star][column] = df.loc[idx,column]
-                            elif column in columns['str']:
-                                self.params[star][column] = str(df.loc[idx,column])
-                            else:
-                                pass
-
-        if not self.params['cli']:
-            return
-        # CLI will override anything from before
-        for column in get_dict(type='columns')['override']:
-            if self.override[column] is not None:
-                for i, star in enumerate(self.params['stars']):
-                    self.params[star][column] = self.override[column][i]
-
+    def __str__(self):
+        return "<pySYD parameters>"
 
     def add_cli(self, args):
         """Add CLI
@@ -490,24 +366,15 @@ class Parameters(Constants):
             args : argparse.Namespace
                 the command line arguments
 
-
         """
-        if args.cli:
-            self.check_cli(args)
-            # CLI options overwrite defaults
-            for key, value in args.__dict__.items():
-                # Make sure it is not a variable with a >1 length
-                if key not in self.override:
-                    self.params[key] = value
+        self.check_cli(args)
+        # CLI options overwrite defaults
+        for key, value in args.__dict__.items():
+            # Make sure it is not a variable with a >1 length
+            if key not in self.override:
+                self.__dict__[key] = value
 
-            # were stars provided
-            if self.params['stars'] is None:
-                self.star_list()
-        else:
-            self.params['stars'] = args.stars
-
-
-    def check_cli(self, args, max_laws=3):
+    def check_cli(self, args, max_laws=3, override=['numax','dnu','lower_ex','upper_ex','lower_bg','upper_bg','lower_ps','upper_ps','lower_ech','upper_ech']):
         """Check CLI
     
         Make sure that any command-line inputs are the proper lengths, types, etc.
@@ -515,7 +382,7 @@ class Parameters(Constants):
         Parameters
             args : argparse.Namespace
                 the command line arguments
-            max_laws : int, default=3
+            max_laws : int
                 maximum number of Harvey laws to be fit
 
         Asserts
@@ -537,12 +404,142 @@ class Parameters(Constants):
             'upper_ech': args.upper_ech,
         }
         for each in self.override:
-            if self.override[each] is not None:
-                assert len(args.stars) == len(self.override[each]), "The number of values provided for %s does not equal the number of stars"%each
-        if args.oversampling_factor is not None:
-            assert isinstance(args.oversampling_factor, int), "The oversampling factor for the input PS must be an integer"
-        if args.n_laws is not None:
-            assert args.n_laws <= max_laws, "We likely cannot resolve %d Harvey-like components for point sources. Please select a smaller number."%args.n_laws
+            if self.override[each] is not None and len(self.override[each]) != len(args.stars):
+                raise InputError("\nWhen running multiple stars via command line, the number \n of values provided for %s MUST equal the number of stars\n" % each)
+
+    def add_targets(self, stars=None):
+        """Add targets
+
+        This was mostly added for non-command-line users, since this makes
+        API usage easier.
+
+        """
+        if 'stars' not in self.__dict__ or self.stars is None:
+            if stars is not None:
+                if isinstance(stars, list):
+                    self.stars = stars
+                else:
+                    self.stars = [stars]
+            else:
+                try:
+                    loadstars = self._load_starlist()
+                except InputError as error:
+                    print(error.msg)
+                    return
+                else:
+                    self.stars = loadstars
+        self._make_dicts()
+
+    def _load_starlist(self):
+        """Load star list
+
+        If no stars have been provided yet, it will read in the default text file
+        (and if that does not exist, it will raise an error)
+
+        """
+        if not os.path.exists(self.params['todo']):
+            raise InputError("\nERROR: no stars or star list were provided for the software to run -- please try again\n       alternatively, you can run 'pysyd setup' to easily download example files\n")
+            return None
+        else:
+            with open(self.params['todo'], "r") as f:
+                stars = [line.strip().split()[0] for line in f.readlines()]
+            return stars
+
+    def _make_dicts(self):
+        """Add star dicts
+
+        This routine will load in target stars, sets up "groups" (relevant for parallel
+        processing) and then load in all relevant information
+
+        """
+        # Set file paths and make directories if they don't yet exist
+        for star in self.stars:
+            self.__dict__[star] = {}
+            self.__dict__[star]['path'] = os.path.join(self.outdir, str(star))
+            if self.save and not os.path.exists(self.__dict__[star]['path']):
+                os.makedirs(self.__dict__[star]['path'])
+        self._get_groups()
+        self._load_starinfo()
+        self._load_clinfo()
+        self._add_derived()
+
+    def _get_groups(self):
+        """Get star groups
+    
+        Mostly relevant for parallel processing -- which sets up star groups to run 
+        in parallel based on the number of threads
+
+        """
+        if hasattr(self, 'mode') and self.mode == 'parallel':
+            todo = np.array(self.stars)
+            if self.n_threads == 0:
+                self.n_threads = mp.cpu_count()
+            if len(todo) < self.n_threads:
+                self.n_threads = len(todo)
+            # divide stars into groups set by number of cpus/nthreads available
+            digitized = np.digitize(np.arange(len(todo)) % self.n_threads, np.arange(self.n_threads))
+            self.groups = np.array([todo[digitized == i] for i in range(1, self.n_threads+1)], dtype=object)
+        else:
+            self.groups = np.array(self.stars)
+
+    def _load_starinfo(self):
+        """Load star info csv
+        """
+        if os.path.exists(self.info):
+            columns = get_dict(type='columns')
+            df = pd.read_csv(self.info)
+            stars = [str(star) for star in df.star.values.tolist()]
+            for star in self.stars:
+                if str(star) in stars:
+                    idx = stars.index(str(star))
+                    for column in df.columns.values.tolist():
+                        if not np.isnan(df.loc[idx,column]) and column in columns['int']:
+                            self.__dict__[star][column] = int(df.loc[idx,column])
+                        elif not np.isnan(df.loc[idx,column]) and column in columns['float']:
+                            self.__dict__[star][column] = float(df.loc[idx,column])
+                        elif not np.isnan(df.loc[idx,column]) and column in columns['bool']:
+                            self.__dict__[star][column] = df.loc[idx,column]
+                        elif not np.isnan(df.loc[idx,column]) and column in columns['str']:
+                            self.__dict__[star][column] = str(df.loc[idx,column])
+                        else:
+                            pass
+
+    def _load_clinfo(self):
+        """Load command-line values
+        """
+        columns = get_dict(type='columns')
+        # make sure all keys exist, even if they are None
+        for star in self.stars:
+            for column in columns['all']:
+                if hasattr(self, column) and column not in columns['override']:
+                    self.__dict__[star][column] = self.__dict__[column]
+                else:
+                    if column not in self.__dict__[star]:
+                        self.__dict__[star][column] = None
+        # CLI override parameters
+        if hasattr(self, 'override'):
+            for column in columns['override']:
+                if self.override[column] is not None:
+                    for i, star in enumerate(self.stars):
+                        self.__dict__[star][column] = self.override[column][i]
+
+    def _add_derived(self):
+        """Add derived properties
+        """
+        for star in self.stars:
+            if self.__dict__[star]['numax'] is not None:
+                self.__dict__[star]['estimate'] = False
+                if self.__dict__[star]['dnu'] is None:
+                    self.__dict__[star]['dnu'] = delta_nu(self.__dict__[star]['numax'])
+            else:
+                if 'rs' in self.__dict__[star] and self.__dict__[star]['rs'] is not None and 'logg' in self.__dict__[star] and self.__dict__[star]['logg'] is not None:
+                    self.__dict__[star]['ms'] = ((((self.__dict__[star]['rs']*self.r_sun)**(2.0))*10**(self.__dict__[star]['logg'])/self.G)/self.m_sun)
+                    self.__dict__[star]['numax'] = self.numax_sun*self.__dict__[star]['ms']*(self.__dict__[star]['rs']**(-2.0))*((self.__dict__[star]['teff']/self.teff_sun)**(-0.5))
+                    self.__dict__[star]['dnu'] = self.dnu_sun*(self.__dict__[star]['ms']**(0.5))*(self.__dict__[star]['rs']**(-1.5))  
+            if self.__dict__[star]['lower_ech'] is not None and self.__dict__[star]['upper_ech'] is not None:
+                self.__dict__[star]['ech_mask'] = [self.__dict__[star]['lower_ech'], self.__dict__[star]['upper_ech']]
+            else:
+                self.__dict__[star]['ech_mask'] = None
 
 
 class Question:
@@ -559,7 +556,7 @@ class Question:
         self.max_attempts = max_attempts
 
     def __repr__(self):
-        pass
+        return "utils.Question(max_attemps=%r)" % self.max_attempts
 
     # ASK BOOLEAN/BINARY
     def ask_boolean(self, question, count=1):
@@ -583,14 +580,14 @@ class Question:
         """
         print()
         while count < self.max_attempts:
-            answer = input('\n%s'%question)
+            answer = input('\n%s' % question)
             if answer in ["y", "Y", "1", "yes", "Yes", "YES", "yy", "YY", "T", "True", "TRUE", "t", "true", 1, 1.0]:
                 return True
             elif answer in ["n", "N", "0", "no", "NO", "nn", "No", "NN", "F", "False", "FALSE", "f", "false", 0, 0.0]:
                 return False
             else:
                 count += 1
-                print("ERROR: not a valid response \nPlease try again (%d attempts remaining)"%(self.max_attempts-count))
+                print("ERROR: not a valid response \nPlease try again (%d attempts remaining)" % (self.max_attempts-count))
         print('Exceeded maximum number of attempts.\nPlease check your input and try again.')
         return None
 
@@ -700,12 +697,12 @@ def get_dict(type='params'):
                 6: lambda white_noise : (lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3 : models.harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise)),
                 7: lambda frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise : models.harvey_three(frequency, tau_1, sigma_1, tau_2, sigma_2, tau_3, sigma_3, white_noise),
                }
-    path = os.path.join(DICTDIR, '%s.dict'%type)
+    path = os.path.join(PACKAGEDIR, 'data', 'dicts', '%s.dict'%type)
     with open(path, 'r') as f:
         return ast.literal_eval(f.read())
 
 
-def save_file(x, y, path, overwrite=False, formats=[">15.8f", ">18.10e"]):
+def _save_file(x, y, path, overwrite=False, formats=[">15.8f", ">18.10e"]):
     """Saves basic text files
     
     After determining the best-fit stellar background model, this module
@@ -784,10 +781,13 @@ def _save_estimates(star, variables=['star','numax','dnu','snr']):
     if 'best' in star.params:
         best = star.params['best']
         results = [star.name, star.params['results']['estimates'][best]['value'], delta_nu(star.params['results']['estimates'][best]['value']), star.params['results']['estimates'][best]['snr']]
-        save_path = os.path.join(star.params['path'], 'estimates.csv')
-        if not star.params['overwrite']:
-            save_path = _get_next(save_path)
-        ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
+        if star.params['save']:
+            save_path = os.path.join(star.params['path'], 'estimates.csv')
+            if not star.params['overwrite']:
+                save_path = _get_next(save_path)
+            ascii.write(np.array(results), save_path, names=variables, delimiter=',', overwrite=True)
+        star.params['numax'], star.params['dnu'], star.params['snr'] = results[1], results[2], results[3]
+    return star
 
 
 def _save_parameters(star):
@@ -804,26 +804,27 @@ def _save_parameters(star):
             columns used to construct a pandas dataframe
 
     """
-    results = star.params['results']['parameters']
-    df = pd.DataFrame(results)
-    star.df = df.copy()
-    new_df = pd.DataFrame(columns=['parameter','value'])
-    for c, col in enumerate(df.columns.values.tolist()):
-        new_df.loc[c, 'parameter'] = col
-        new_df.loc[c, 'value'] = df.loc[0,col]
-        if star.params['mc_iter'] > 1:
-            new_df.loc[c, 'uncertainty'] = mad_std(df[col].values)
-    save_path = os.path.join(star.params['path'], 'global.csv')
-    if not star.params['overwrite']:
-        save_path = _get_next(save_path)
-    new_df.to_csv(save_path, index=False)
-    if star.params['samples']:
-        save_path = os.path.join(star.params['path'], 'samples.csv')
+    if star.params['save']:
+        results = star.params['results']['parameters']
+        df = pd.DataFrame(results)
+        star.df = df.copy()
+        new_df = pd.DataFrame(columns=['parameter','value'])
+        for c, col in enumerate(df.columns.values.tolist()):
+            new_df.loc[c, 'parameter'] = col
+            new_df.loc[c, 'value'] = df.loc[0,col]
+            if star.params['mc_iter'] > 1:
+                new_df.loc[c, 'uncertainty'] = mad_std(df[col].values)
+        save_path = os.path.join(star.params['path'], 'global.csv')
         if not star.params['overwrite']:
             save_path = _get_next(save_path)
-        df.to_csv(save_path, index=False)
-    if star.params['mc_iter'] > 1:
-        star.params['plotting']['samples'] = {'df':star.df.copy()}
+        new_df.to_csv(save_path, index=False)
+        if star.params['mc_iter'] > 1:
+            star.params['plotting']['samples'] = {'df':star.df.copy()}
+        if star.params['samples']:
+            save_path = os.path.join(star.params['path'], 'samples.csv')
+            if not star.params['overwrite']:
+                save_path = _get_next(save_path)
+            df.to_csv(save_path, index=False)
 
 
 def _verbose_output(star, note=''):
@@ -853,7 +854,7 @@ def _verbose_output(star, note=''):
     print(note)
 
 
-def scrape_output(args, columns=['star','numax','dnu','snr']):
+def _scrape_output(args, columns=['star','numax','dnu','snr']):
     """Concatenate results
     
     Automatically concatenates and summarizes the results for all processed stars in each
@@ -914,7 +915,7 @@ def _sort_table(df, outdir, type='global'):
     df_new.to_csv(os.path.join(outdir,'%s.csv'%type), index=False)
 
 
-def max_elements(x, y, npeaks, distance=None, exp_dnu=None):
+def _max_elements(x, y, npeaks, distance=None, exp_dnu=None):
     """N highest peaks
     
     Module to obtain the x and y values for the n highest peaks in a 2D array 
@@ -943,7 +944,7 @@ def max_elements(x, y, npeaks, distance=None, exp_dnu=None):
         weights *= np.exp(-(xx-exp_dnu)**2./(2.*sig**2))*((sig*np.sqrt(2.*np.pi))**-1.)
     yy *= weights
     # provide threshold for finding peaks
-    if distance is not None:
+    if distance is not None and distance >= 1.0:
         peaks_idx, _ = find_peaks(yy, distance=distance)
     else:
         peaks_idx, _ = find_peaks(yy)
@@ -956,7 +957,7 @@ def max_elements(x, y, npeaks, distance=None, exp_dnu=None):
     return list(peaks_x), list(peaks_y), weights
 
 
-def return_max(x, y, exp_dnu=None,):
+def _return_max(x, y, exp_dnu=None,):
     """Return max
     
     Return the peak (and/or the index of the peak) in a given 2D array
@@ -1008,7 +1009,7 @@ def _bin_data(x, y, width, log=False, mode='mean'):
     if log:
         mi = np.log10(min(x))
         ma = np.log10(max(x))
-        no = np.int(np.ceil((ma-mi)/width))
+        no = int(np.ceil((ma-mi)/width))
         bins = np.logspace(mi, mi+(no+1)*width, no)
     else:
         bins = np.arange(min(x), max(x)+width, width)
@@ -1024,6 +1025,24 @@ def _bin_data(x, y, width, log=False, mode='mean'):
         pass
     bin_yerr = np.array([y[digitized == i].std()/np.sqrt(len(y[digitized == i])) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
     return bin_x, bin_y, bin_yerr
+
+
+def delta_nu(numax):
+    """:math:`\\Delta\\nu`
+    
+    Estimates the large frequency separation using the numax scaling relation (add citation?)
+
+    Parameters
+        numax : float
+            the frequency corresponding to maximum power or numax (:math:`\\rm \\nu_{max}`)
+
+    Returns
+        dnu : float
+            the approximated frequency spacing or dnu (:math:`\\Delta\\nu`)
+
+    """
+
+    return 0.22*(numax**0.797)
 
 
 def _get_results(suffixes=['_idl', '_py'], max_numax=3200.,):
@@ -1046,9 +1065,11 @@ def _get_results(suffixes=['_idl', '_py'], max_numax=3200.,):
             pandas dataframe with merged results
 
     """
+    pathidl = os.path.join(PACKAGEDIR,'data','syd_results.txt')
     # load in both pipeline results
-    idlsyd = pd.read_csv(SYDFILE, skiprows=20, delimiter='|', names=get_dict('columns')['syd'])
-    pysyd = pd.read_csv(PYSYDFILE)
+    idlsyd = pd.read_csv(pathidl, skiprows=20, delimiter='|', names=get_dict('columns')['syd'])
+    pathpy =  os.path.join(PACKAGEDIR,'data','pysyd_results.csv')
+    pysyd = pd.read_csv(pathpy)
     # make sure they can crossmatch
     idlsyd.KIC = idlsyd.KIC.astype(str)
     pysyd.star = pysyd.star.astype(str)
@@ -1056,24 +1077,6 @@ def _get_results(suffixes=['_idl', '_py'], max_numax=3200.,):
     df = pd.merge(idlsyd, pysyd, left_on='KIC', right_on='star', how='inner', suffixes=suffixes)
     df = df[df['numax_smooth'] <= max_numax]
     return df
-
-
-def delta_nu(numax):
-    """:math:`\\Delta\\nu`
-    
-    Estimates the large frequency separation using the numax scaling relation (add citation?)
-
-    Parameters
-        numax : float
-            the frequency corresponding to maximum power or numax (:math:`\\rm \\nu_{max}`)
-
-    Returns
-        dnu : float
-            the approximated frequency spacing or dnu (:math:`\\Delta\\nu`)
-
-    """
-
-    return 0.22*(numax**0.797)
 
 
 def setup_dirs(args, note='', dl_dict={}):
@@ -1097,6 +1100,11 @@ def setup_dirs(args, note='', dl_dict={}):
         note : str
             updated verbose output
 
+    Calls
+        - :mod:`pysyd.utils.get_infdir`
+        - :mod:`pysyd.utils.get_inpdir`
+        - :mod:`pysyd.utils.get_outdir`
+
     """
     dl_dict, note = get_infdir(args, dl_dict, note)
     dl_dict, note = get_inpdir(args, dl_dict, note)
@@ -1106,7 +1114,7 @@ def setup_dirs(args, note='', dl_dict={}):
         # downloading example data will generate output in terminal, so always include this regardless
         print('\nDownloading example data from source:')
         for infile, outfile in dl_dict.items():
-            subprocess.call(['curl %s > %s'%(infile, outfile)], shell=True)
+            subprocess.call(['curl %s > %s' % (infile, outfile)], shell=True)
     # option to get ALL columns since only subset is included in the example
     if args.makeall:
         df_temp = pd.read_csv(args.info)
@@ -1115,13 +1123,13 @@ def setup_dirs(args, note='', dl_dict={}):
             if col in df.columns.values.tolist():
                 df[col] = df_temp[col]
         df.to_csv(args.info, index=False)
-        note+=' - ALL columns saved to the star info file\n'
+        note += ' - ALL columns saved to the star info file\n'
     # verbose output
     if args.verbose:
         if note == '':
             print("\nLooks like you've probably done this\nbefore since you already have everything!\n")
         else:
-            print('\nNote(s):\n%s'%note)
+            print('\nNote(s):\n%s' % note)
 
 
 def get_infdir(args, dl_dict, note, source='https://raw.githubusercontent.com/ashleychontos/pySYD/master/dev/'):
@@ -1148,16 +1156,16 @@ def get_infdir(args, dl_dict, note, source='https://raw.githubusercontent.com/as
     # create info directory (INFDIR)
     if not os.path.exists(args.infdir):
         os.mkdir(args.infdir)
-        note+=' - created input file directory at %s \n'%args.infdir
+        note += ' - created input file directory at %s \n' % args.infdir
     # Example input files  
     # 'todo.txt' aka basic text file with list of stars to process 
     if not os.path.exists(args.todo):
-        dl_dict.update({'%sinfo/todo.txt'%source:args.todo})
-        note+=' - saved an example of a star list\n'
+        dl_dict.update({'%sinfo/todo.txt' % source : args.todo})
+        note += ' - saved an example of a star list\n'
     # 'star_info.csv' aka star information file                             
     if not os.path.exists(args.info):
-        dl_dict.update({'%sinfo/star_info.csv'%source:args.info})
-        note+=' - saved an example for the star information file\n'
+        dl_dict.update({'%sinfo/star_info.csv' % source : args.info})
+        note += ' - saved an example for the star information file\n'
     return dl_dict, note
 
 
@@ -1190,15 +1198,15 @@ def get_inpdir(args, dl_dict, note, save=False, examples=['1435467','2309595','1
     # create data directory (INPDIR)
     if not os.path.exists(args.inpdir):
         os.mkdir(args.inpdir)
-        note+=' - created data directory at %s \n'%args.inpdir
+        note += ' - created data directory at %s \n' % args.inpdir
     # Example data for 3 (Kepler) stars
     for target in examples:
         for ext in exts:
-            infile='%sdata/%s_%s.txt'%(source, target, ext)
-            outfile=os.path.join(args.inpdir, '%s_%s.txt'%(target, ext))
+            infile = '%sdata/%s_%s.txt' % (source, target, ext)
+            outfile = os.path.join(args.inpdir, '%s_%s.txt' % (target, ext))
             if not os.path.exists(outfile):
-                save=True
-                dl_dict.update({infile:outfile})
+                save = True
+                dl_dict.update({infile : outfile})
     if save:
         note+=' - example data saved to data directory\n'
     return dl_dict, note
@@ -1222,74 +1230,8 @@ def get_outdir(args, note):
     # create results directory (OUTDIR)
     if not os.path.exists(args.outdir):
         os.mkdir(args.outdir)
-        note+=' - results will be saved to %s\n'%args.outdir
+        note += ' - results will be saved to %s\n' % args.outdir
     return note
-
-
-def set_examples(args):
-    """Create results directory
-    
-    Parameters
-        args : argparse.Namespace
-            command-line arguments
-
-    Returns
-        args : argparse.Namespace
-            updated command-line arguments
-
-    """
-    args.answers = {}
-    # Load in example configurations + answers to compare to
-    defaults = get_dict(type='tests')
-    # Save defaults to file to reproduce identical results
-    if os.path.exists(args.info):
-        df = pd.read_csv(args.info)
-        targets = [each for each in df.star.values.tolist()]
-    else:
-        df = pd.DataFrame(columns=get_dict(type='columns')['setup'])
-        targets = args.stars[:]
-    for star in args.stars:
-        # first copy known answers
-        args.answers.update({star:defaults[star].pop('results')})
-        # then copy defaults to csv file to ensure reproducibility
-        idx = targets.index(star)
-        for key in defaults[star]:
-            df.loc[idx,key] = defaults[star][key]
-    df.to_csv(args.info, index=False)
-    return args
-
-
-def check_examples(args, note='', note_cols=['KIC','  Parameter','Install derived','Actual answer'],
-                   note_formats=[">10s","<20s","<20s","<20s"],):
-    """Create results directory
-    
-    Parameters
-        args : argparse.Namespace
-            command-line arguments
-
-    Returns
-        args : argparse.Namespace
-            updated command-line arguments
-
-    """
-    # Compare results
-    df = pd.read_csv(os.path.join(args.outdir,'global.csv'))
-    df = df[df['star'].isin(args.stars)]
-    df.set_index('star', inplace=True)
-    # Track values
-    text = '{:{}}'*len(note_cols)+'\n'
-    fmt = sum(zip(note_cols,note_formats),())
-    note += text.format(*fmt)
-    for star in args.stars:
-        for param in args.answers[star]:
-            for label, each in zip(['%s','%s_err'],['value','error']):
-                assert '%.2f'%float(df.loc[star,label%param]) == '%.2f'%float(args.answers[star][param][each])
-            values = ['%d'%star, '  %s'%param, '%.2f +/- %.2f'%(float(df.loc[star,'%s'%param]),float(df.loc[star,'%s_err'%param])), '%.2f +/- %.2f'%(float(args.answers[star][param]['value']),float(args.answers[star][param]['error']))]
-            text = '{:{}}'*len(values)+'\n'
-            fmt = sum(zip(values,note_formats),())
-            note += text.format(*fmt)
-    if args.verbose:
-        print(note)
 
 
 def get_output(fun=False):
@@ -1302,7 +1244,7 @@ def get_output(fun=False):
             if calling module for 'fun', only prints logo but doesn't test software
 
     """
-    with open(TESTFILE, "r") as f:
+    with open(os.path.join(PACKAGEDIR, 'data', 'test.txt'), "r") as f:
         lines = [line[:-2] for line in f.readlines()]
     if fun:
         lines = lines[:-2]
