@@ -371,10 +371,10 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     # PANEL 4: smoothed power excess 
     ax4 = fig.add_subplot(x, y, n)
     ax4.plot(params['region_freq'], params['region_pow'], 'w-', zorder=3)
-    _, f, p = utils.return_max(params['region_freq'], params['region_pow'])
+    _, f, p = utils._return_max(params['region_freq'], params['region_pow'])
     ax4.axvline([f], color='orange', linestyle='--', linewidth=1.5, zorder=4)
     ax4.scatter([f], [p], s=35.0, edgecolor='orange', marker='X', facecolor='none', linewidths=1.0, zorder=5)
-    _, ff, pp = utils.return_max(params['new_freq'], params['numax_fit'])
+    _, ff, pp = utils._return_max(params['new_freq'], params['numax_fit'])
     ax4.plot(params['new_freq'], params['numax_fit'], 'b-', zorder=0)
     ax4.axvline(ff, color='cyan', linestyle=':', linewidth=1.5, zorder=1)
     ax4.scatter([ff], [pp], s=25.0, edgecolor='cyan', marker='s', facecolor='none', linewidths=1.0, zorder=2)
@@ -384,7 +384,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax4.set_xlim([min(params['region_freq']), max(params['region_freq'])])
 
     yrange = max(params['zoom_pow'])-min(params['zoom_pow'])
-    peaks_f, peaks_p, _ = utils.max_elements(params['zoom_freq'], params['zoom_pow'], npeaks=10, distance=params['obs_dnu']/4.)
+    peaks_f, peaks_p, _ = utils._max_elements(params['zoom_freq'], params['zoom_pow'], npeaks=10, distance=params['obs_dnu']/4.)
     n += 1
     # PANEL 5: background-corrected power spectrum 
     ax5 = fig.add_subplot(x, y, n)
