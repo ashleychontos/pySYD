@@ -1397,7 +1397,7 @@ class Target:
                     *guesses, = self.params['guesses'][-int(2*(n_free//2)+1):-1]
                 else:
                     note += 'white noise term'
-                    bounds[0].append(10.**-2)
+                    bounds[0].append(0.)
                     bounds[1].append(np.inf)
                     *guesses, = self.params['guesses'][-int(2*(n_free//2)+1):]
                 self.params['bounds'].append(bounds)
