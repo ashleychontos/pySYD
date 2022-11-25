@@ -312,7 +312,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax2.axvline(star.params['ps_mask'][1], color='darkorange', linestyle='dashed', linewidth=2.0, zorder=1, dashes=(5,5))
     ax2.axhline(params['noise'], color='blue', linestyle='dashed', linewidth=1.5, zorder=3, dashes=(5, 5))
     ax2.set_xlim([min(params['frequency']), max(params['frequency'])])
-    ax2.set_ylim([min(params['random_pow']), max(params['random_pow'])*1.25])
+    ax2.set_ylim([np.percentile(params['random_pow'], 1), max(params['random_pow'])*1.25])
     ax2.set_title(r'$\rm Initial \,\, guesses$')
     ax2.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax2.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
@@ -350,7 +350,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
         mask = np.ma.getmask(np.ma.masked_inside(params['frequency'], star.params['ps_mask'][0], star.params['ps_mask'][1]))
         ax3.plot(params['frequency'][mask], params['pssm'][mask], color='yellow', linewidth=2.0, linestyle='dashed', zorder=6)
     ax3.set_xlim([min(params['frequency']), max(params['frequency'])])
-    ax3.set_ylim([min(params['random_pow']), max(params['random_pow'])*1.25])
+    ax3.set_ylim([np.percentile(params['random_pow'], 1.), max(params['random_pow'])*1.25])
     ax3.set_title(r'$\rm Fitted \,\, model$')
     ax3.set_xlabel(r'$\rm Frequency \,\, [\mu Hz]$')
     ax3.set_ylabel(r'$\rm Power \,\, [ppm^{2} \mu Hz^{-1}]$')
@@ -371,10 +371,10 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     # PANEL 4: smoothed power excess 
     ax4 = fig.add_subplot(x, y, n)
     ax4.plot(params['region_freq'], params['region_pow'], 'w-', zorder=3)
-    _, f, p = utils.return_max(params['region_freq'], params['region_pow'])
+    _, f, p = utils._return_max(params['region_freq'], params['region_pow'])
     ax4.axvline([f], color='orange', linestyle='--', linewidth=1.5, zorder=4)
     ax4.scatter([f], [p], s=35.0, edgecolor='orange', marker='X', facecolor='none', linewidths=1.0, zorder=5)
-    _, ff, pp = utils.return_max(params['new_freq'], params['numax_fit'])
+    _, ff, pp = utils._return_max(params['new_freq'], params['numax_fit'])
     ax4.plot(params['new_freq'], params['numax_fit'], 'b-', zorder=0)
     ax4.axvline(ff, color='cyan', linestyle=':', linewidth=1.5, zorder=1)
     ax4.scatter([ff], [pp], s=25.0, edgecolor='cyan', marker='s', facecolor='none', linewidths=1.0, zorder=2)
@@ -384,7 +384,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
     ax4.set_xlim([min(params['region_freq']), max(params['region_freq'])])
 
     yrange = max(params['zoom_pow'])-min(params['zoom_pow'])
-    peaks_f, peaks_p, _ = utils.max_elements(params['zoom_freq'], params['zoom_pow'], npeaks=10, distance=params['obs_dnu']/4.)
+    peaks_f, peaks_p, _ = utils._max_elements(params['zoom_freq'], params['zoom_pow'], npeaks=10, distance=params['obs_dnu']/4.)
     n += 1
     # PANEL 5: background-corrected power spectrum 
     ax5 = fig.add_subplot(x, y, n)
