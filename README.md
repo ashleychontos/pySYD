@@ -22,21 +22,24 @@ The documentation for `pySYD` can be found [here](https://pysyd.readthedocs.io)
 
 ## Attribution
 
-If you make use of `pySYD` in your work, please cite [Chontos et al. (2021)](https://arxiv.org/abs/2108.00582):
+If you make use of `pySYD` in your work, please cite [Chontos et al. (2022)](https://joss.theoj.org/papers/10.21105/joss.03331):
 
-    @ARTICLE{2021arXiv210800582C,
+    @ARTICLE{2022JOSS....7.3331C,
            author = {{Chontos}, Ashley and {Huber}, Daniel and {Sayeed}, Maryum and {Yamsiri}, Pavadol},
-            title = "{$\texttt{pySYD}$: Automated measurements of global asteroseismic parameters}",
-          journal = {arXiv e-prints},
-         keywords = {Astrophysics - Solar and Stellar Astrophysics, Astrophysics - Instrumentation and Methods for Astrophysics},
-             year = 2021,
-            month = aug,
-              eid = {arXiv:2108.00582},
-            pages = {arXiv:2108.00582},
+            title = "{pySYD: Automated measurements of global asteroseismic parameters}",
+          journal = {The Journal of Open Source Software},
+         keywords = {Python, fundamental stellar properties, solar-like oscillations, stellar oscillations, stellar astrophysics, asteroseismology, astronomy, global asteroseismology, Astrophysics - Solar and Stellar Astrophysics, Astrophysics - Instrumentation and Methods for Astrophysics},
+             year = 2022,
+            month = nov,
+           volume = {7},
+           number = {79},
+              eid = {3331},
+            pages = {3331},
+              doi = {10.21105/joss.03331},
     archivePrefix = {arXiv},
            eprint = {2108.00582},
-     primaryClass = {astro-ph.SR}, 
-           adsurl = {https://ui.adsabs.harvard.edu/abs/2021arXiv210800582C},
+     primaryClass = {astro-ph.SR},
+           adsurl = {https://ui.adsabs.harvard.edu/abs/2022JOSS....7.3331C},
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
 
