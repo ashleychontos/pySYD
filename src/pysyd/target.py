@@ -161,7 +161,7 @@ class Target:
 
 
     def show_results(self, show=False, verbose=False,):
-        """
+        """Show results
 
         Parameters
             show : bool, optional
@@ -191,15 +191,14 @@ class Target:
         event that there is not one
 
         Attributes
-            lc : bool, default=False
+            lc : bool
                 `True` if object has light curve
-            ps : bool, default=False
+            ps : bool
                 `True` if object has power spectrum
 
         Methods
-            :mod:`pysyd.target.Target.load_power_spectrum`
-            :mod:`pysyd.target.Target.load_time_series`
-            :mod:`pysyd.target.Target._get_warnings`   
+            - :mod:`pysyd.target.Target.load_power_spectrum`
+            - :mod:`pysyd.target.Target.load_time_series`
 
         Raises
             :mod:`pysyd.utils.InputError`
@@ -227,7 +226,7 @@ class Target:
 
 
     def load_power_spectrum(self, long=10**6,):
-        """Load power spectrum
+        r"""Load power spectrum
     
         Loads in available power spectrum and computes relevant information -- also checks
         for time series data and will raise a warning if there is none since it will have
@@ -284,15 +283,15 @@ class Target:
 
 
     def load_time_series(self, save=True, stitch=False, oversampling_factor=None,):
-        """Load light curve
+        r"""Load light curve
         
         Loads in time series data and calculates relevant parameters like the 
         cadence and nyquist frequency
 
         Parameters
-            save : bool, default=True
+            save : bool
                 save all data products
-            stitch : bool, default=False
+            stitch : bool
                 "stitches" together time series data with large "gaps"
             oversampling_factor : int, optional
                 oversampling factor of input power spectrum
@@ -360,15 +359,15 @@ class Target:
             else:
                 # CASE 1: LIGHT CURVE AND POWER SPECTRUM
                 #     ->  calculate oversampling factor from time series and compare
-                oversampling_factor = (1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])
+                oversampling_factor = int(np.ceil((1./((max(self.time)-min(self.time))*0.0864))/(self.frequency[1]-self.frequency[0])))
                 if self.params['oversampling_factor'] is not None:
-                    if int(oversampling_factor) != self.params['oversampling_factor'] and self.params['warnings']:
+                    if oversampling_factor != self.params['oversampling_factor'] and self.params['warnings']:
                         raise utils.InputWarning("\nWARNING: \ncalculated vs. provided oversampling factor do NOT match\n")
                 else:
                     if not float('%.2f'%oversampling_factor).is_integer():
                         raise utils.InputError("\nERROR: \nthe calculated oversampling factor is not an integer\nPlease check the input data and try again\n")
                     else:
-                        self.params['oversampling_factor'] = int(oversampling_factor)   
+                        self.params['oversampling_factor'] = oversampling_factor  
                 self.frequency, self.power = self.fix_data(self.frequency, self.power)
                 self.params['data'].update({'freq_fin':np.copy(self.frequency),'pow_fin':np.copy(self.power)})
             self.note += self.note2
@@ -385,7 +384,7 @@ class Target:
 
 
     def load_file(self, path):
-        """Load text file
+        r"""Load text file
     
         Load a light curve or a power spectrum from a basic 2xN txt file
         and stores the data into the `x` (independent variable) and `y`
@@ -410,14 +409,14 @@ class Target:
 
 
     def stitch_data(self, gap=20):
-        """Stitch light curve
+        r"""Stitch light curve
 
         For computation purposes and for special cases that this does not affect the integrity of the results,
         this module 'stitches' a light curve together for time series data with large gaps. For stochastic p-mode
         oscillations, this is justified if the lifetimes of the modes are smaller than the gap. 
 
         Parameters
-            gap : int, default=20
+            gap : int
                 how many consecutive missing cadences are considered a 'gap'
       
         Attributes
@@ -497,26 +496,31 @@ class Target:
         return frequency, power
 
 
-    def fix_data(self, frequency, power, kep_corr=False, ech_mask=None,):
-        """Fix frequency domain data
+    def fix_data(self, frequency, power, save=True, kep_corr=False, ech_mask=None, lower_ech=None,
+                 upper_ech=None):
+        r"""Fix frequency domain data
 
         Applies frequency-domain tools to power spectra to "fix" (i.e. manipulate) the data. 
         If no available options are used, it will simply return copies of the original arrays
 
         Parameters
-            save : bool, default=True
+            save : bool
                 save all data products
-            kep_corr : bool, default=False
+            kep_corr : bool
                 correct for known *Kepler* short-cadence artefacts
-            ech_mask : List[lower_ech,upper_ech], default=None
-                corrects for dipole mixed modes if not `None`
+            ech_mask : List[lower_ech,upper_ech]
+                corrects for mixed modes if not `None`
+            lower_ech : float
+                folded lower frequency limit (~[0,dnu])
+            upper_ech : float
+                folded upper frequency limit (~[0,dnu])
             frequency, power : numpy.ndarray, numpy.ndarray
                 input power spectrum to be corrected 
 
         Methods
-            :mod:`pysyd.target.Target.remove_artefact`
+            - :mod:`pysyd.target.Target.remove_artefact`
                 mitigate known *Kepler* artefacts
-            :mod:`pysyd.target.Target.whiten_mixed` 
+            - :mod:`pysyd.target.Target.whiten_mixed` 
                 mitigate mixed modes
 	   
         Returns
@@ -720,7 +724,6 @@ class Target:
             - :mod:`pysyd.target.Target.estimate_numax`
             - :mod:`pysyd.utils._save_estimates`
 
-
         """
         if 'results' not in self.params:
             self.params['results'] = {}
@@ -742,11 +745,11 @@ class Target:
         solar-like oscillations and estimates :term:`numax`
 
         Parameters
-            lower_ex : float, default=1.0
+            lower_ex : float
                 the lower frequency limit of the PS used to estimate numax
-            upper_ex : float, default=8000.0
+            upper_ex : float
                 the upper frequency limit of the PS used to estimate numax
-            max_trials : int, default=6
+            max_trials : int
 	               (arbitrary) maximum number of "guesses" or trials to perform to estimate numax
 
         Attributes
@@ -796,13 +799,13 @@ class Target:
         an initial starting point for :term:`numax` (:math:`\\nu_{\\mathrm{max}}`)
 
         Parameters
-            binning : float, default=0.005
+            binning : float
                 logarithmic binning width (i.e. evenly spaced in log space)
             bin_mode : {'mean', 'median', 'gaussian'}
                 mode to use when binning
-            smooth_width: float, default=20.0
+            smooth_width: float
                 box filter width (in :math:`\\rm \\mu Hz`) to smooth power spectrum
-            ask : bool, default=False
+            ask : bool
                 If `True`, it will ask which trial to use as the estimate for numax
 
         Attributes
@@ -839,7 +842,7 @@ class Target:
                                                      'interp_pow':np.copy(self.interp_pow),
                                                      'bgcorr_pow':np.copy(self.bgcorr_pow)})
         # Collapsed ACF to find numax
-        self._collapsed_acf()
+        self.collapsed_acf()
         self.params['best'] = self.params['compare'].index(max(self.params['compare']))+1
         # Select trial that resulted with the highest SNR detection
         if not self.params['ask']:
@@ -850,18 +853,18 @@ class Target:
             self = plots.select_trial(self)
 
 
-    def _collapsed_acf(self, n_trials=3, step=0.25, max_snr=100.0,):
+    def collapsed_acf(self, n_trials=3, step=0.25, max_snr=100.0,):
         """Collapsed ACF
 
         Computes a collapsed autocorrelation function (ACF) using n different box sizes in
         n different trials (i.e. `n_trials`)
 
         Parameters
-            n_trials : int, default=3
+            n_trials : int
                 the number of trials to run
-            step : float, default=0.25
+            step : float
                 fractional step size to use for the collapsed ACF calculation
-            max_snr : float, default=100.0
+            max_snr : float
                 the maximum signal-to-noise of the estimate (this is primarily for plot formatting)
 
 
@@ -908,7 +911,7 @@ class Target:
 
 
     def check_numax(self, columns=['numax', 'dnu', 'snr']):
-        """Check :math:`\\rm \\nu_{max}`
+        r"""Check :math:`\\rm \\nu_{max}`
     
         Checks if there is an initial starting point or estimate for :term:`numax`
 
@@ -993,17 +996,17 @@ class Target:
         utils._save_parameters(self)
 
 
-    def initial_parameters(self, lower_bg=1.0, upper_bg=8000.0,):
-        """Initial guesses
+    def initial_parameters(self, module='parameters', lower_bg=1.0, upper_bg=8000.0,):
+        r"""Initial guesses
     
         Estimates initial guesses for background components (i.e. timescales and amplitudes) using
         solar scaling relations. This resets the power spectrum and has its own independent filter 
         or bounds (via [lower_bg, upper_bg]) to use for this subroutine
 
         Parameters
-            lower_bg : float, default=1.0
+            lower_bg : float
                 lower frequency limit of PS to use for the background fit
-            upper_bg : float, default=8000.0
+            upper_bg : float
                 upper frequency limit of PS to use for the background fit
 
         Attributes
@@ -1011,10 +1014,10 @@ class Target:
                 copy of the entire oversampled (or critically-sampled) power spectrum (i.e. `freq_os` & `pow_os`) 
             frequency, random_pow : numpy.ndarray, numpy.ndarray
                 copy of the entire oversampled (or critically-sampled) power spectrum (i.e. `freq_os` & `pow_os`) after applying the mask~[lower_bg,upper_bg]
-            module : str, default='parameters'
+            module : str
                 which part of the pipeline is currently being used
-            i : int, default=0
-                iteration number
+            i : int
+                iteration number, starts at 0
 
         Methods
             :mod:`pysyd.target.Target.solar_scaling`
@@ -1131,7 +1134,7 @@ class Target:
 
 
     def first_step(self, background=True, globe=True,):
-        """First step
+        r"""First step
 
         Processes a given target for the first step, which has extra steps for each of the two 
         main parts of this method (i.e. background model and global fit):
@@ -1143,9 +1146,9 @@ class Target:
             (i.e. incorrect) peak, since this is a multi-modal parameter space
 
         Parameters
-            background : bool, default=True
+            background : bool
                 run the automated background-fitting routine
-            globe : bool, default=True
+            globe : bool
                 perform global asteroseismic analysis (really only relevant if interested in the background model *only*)
 
         Methods
@@ -1173,8 +1176,9 @@ class Target:
                 self._get_seed()
                 print('-----------------------------------------------------------\nSampling routine (using seed=%d):' % int(self.params['seed']))
 
+
     def single_step(self,):
-        """Single step
+        r"""Single step
 
         Similar to the first step, this function calls the same methods but uses the selected best-fit
         background model from the first step to estimate the parameters
@@ -1188,14 +1192,14 @@ class Target:
                 returns `True` if all relevant fits converged
 
         Methods
-            :mod:`pysyd.target.Target.estimate_background`
+            - :mod:`pysyd.target.Target.estimate_background`
                 estimates the amplitudes/levels of both correlated and frequency-independent noise
                 properties from the input power spectrum
-            :mod:`pysyd.target.Target.get_background`
+            - :mod:`pysyd.target.Target.get_background`
                 unlike the first step, which iterated through several models and performed a
                 best-fit model comparison, this only fits parameters from the selected model 
                 in the first step
-            :mod:`pysyd.target.Target.global_fit`
+            - :mod:`pysyd.target.Target.global_fit`
                 after correcting for the background model, this derives the :term:`global asteroseismic parameters`
 
         """
@@ -1215,7 +1219,7 @@ class Target:
 
 
     def get_samples(self,):
-        """Get samples
+        r"""Get samples
 
         Estimates uncertainties for parameters by randomizing the power spectrum and
         attempting to recover the same parameters by calling the :mod:`pysyd.target.Target.single_step`
@@ -1261,13 +1265,14 @@ class Target:
         red and white noise components
 
         Parameters
-            ind_width : float, default=20.0
+            ind_width : float
                 the independent average smoothing width (:math:`\\rm \\mu Hz`)
 
         Attributes
             bin_freq, bin_pow, bin_err : numpy.ndarray, numpy.ndarray, numpy.ndarray
                 binned power spectrum using the :term:`ind_width<--iw, --indwidth>` bin size   
 
+        Methods
 
         """
         # Bin power spectrum to model stellar background/correlated red noise components
@@ -1299,9 +1304,9 @@ class Target:
         number of points (via -nrms, default=20) for each Harvey-like component
 
         Parameters
-            box_filter : float, default=1.0
+            box_filter : float
                 the size of the 1D box smoothing filter
-            n_rms : int, default=20
+            n_rms : int
                 number of data points to average over to estimate red noise amplitudes 
 
         Attributes
@@ -1340,15 +1345,15 @@ class Target:
         (or `n_laws`)
 
         Parameters
-            n_laws : int, default=None
+            n_laws : int
                 specify number of Harvey-like components to use in background fit 
-            fix_wn : bool, default=False
+            fix_wn : bool
                 option to fix the white noise instead of it being an additional free parameter 
-            basis : str, default='tau_sigma'
+            basis : str
                 which basis to use for background fitting, e.g. {a,b} parametrization **TODO: not yet operational**
 
         Methods
-            :mod:`pysyd.models.background`
+            - :mod:`pysyd.models.background`
             - :mod:`scipy.curve_fit`
             - :mod:`pysyd.models._compute_aic`
             - :mod:`pysyd.models._compute_bic`
@@ -1441,7 +1446,7 @@ class Target:
 
 
     def correct_background(self, metric='bic'):
-        """Correct background
+        r"""Correct background
 
         Corrects for the stellar background contribution in the power spectrum by *both*
         dividing and subtracting this out, which also saves copies of each (i.e. `bg_div`
@@ -1548,10 +1553,10 @@ class Target:
         where the former is estimated two different ways.
 
         Methods
-            :mod:`numax_smooth`
-            :mod:`numax_gaussian`
-            :mod:`compute_acf`
-            :mod:`frequency_spacing`
+            :mod:`pysyd.target.Target.numax_smooth`
+            :mod:`pysyd.target.Target.numax_gaussian`
+            :mod:`pysyd.target.Target.compute_acf`
+            :mod:`pysyd.target.Target.frequency_spacing`
 
 
         """

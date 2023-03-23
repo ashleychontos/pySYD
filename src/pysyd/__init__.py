@@ -19,7 +19,7 @@ __url__ = "https://pysyd.readthedocs.io"
 __author__ = "Ashley Chontos<ashleychontos@astro.princeton.edu>"
 __license__ = "MIT"
 __description__ = "Automated measurements of global asteroseismic parameters"
-__version__ = '6.10.1a'
+__version__ = '6.10.5'
 
 __all__ = ['cli','models','pipeline','plots','target','utils']
 

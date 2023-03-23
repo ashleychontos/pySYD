@@ -400,10 +400,10 @@ class Parameters(Constants):
             'upper_ech': args.upper_ech,
         }
         for each in self.override:
-            if self.override[each] is not None and len(self.override[each]) != len(args.stars):
-                raise InputError("\nWhen running multiple stars via command line, the number \n of values provided for %s MUST equal the number of stars\n" % each)
+            if self.override[each] and len(self.override[each]) != len(args.stars):
+                raise InputError("\nThe number \n of values provided for %s MUST equal the number of stars\n" % each)
         if args.oversampling_factor is not None and not isinstance(args.oversampling_factor, int):
-            raise InputError("\nThe oversampling factor for the input PS must be an integer\n")
+            raise InputError("\nOversampling factor for input PS must be an integer\n")
         if args.n_laws is not None and args.n_laws > max_laws:
             args.n_laws = max_laws
             raise InputWarning("\nWe probs cannot resolve %d Harvey components. \nnlaws changed to %d\n" % max_laws)
