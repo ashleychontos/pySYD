@@ -423,29 +423,26 @@ Initially all defaults were set and saved from the command line parser but we re
 extended the software capabilities -- which means that it is more user-friendly and 
 how you choose to use it is now completely up to you! 
 
-Alright so let's import the package for this example.
+Alright first we need some info before running the pipeline.
 
     >>> from pysyd import utils 
-    >>> name = '1435467'
-    >>> args = utils.Parameters(stars=[name])
-    >>> args
+    >>> params = utils.Parameters()
+    >>> params
     <PySYD Parameters>
 
-Analogous to the command-line arguments, we have a container class (:mod:`pysyd.utils.Parameters`)
-that can easily be loaded in and modified to the user's needs. There are two keyword arguments that 
-the Parameter object accepts -- `args` and `stars` -- both which are `None` by default. In fact, 
-the `Parameters` class was also initialized in the first example but immediately knew it was executed 
-as a script instead because `args` was *not* `None`.
+The :mod:`pysyd.utils.Parameters` container class is an easy way to load in all software
+defaults which are analogous to all flags/options available for the command-line parser.
 
-As shown in the third line, we put the star list in list form **even though we are only processing 
-a single star**. This is because both `pySYD` modes that proess stars iterate through the lists, 
-so we feed it a list that is iterable so it doesn't get confused. 
+Now let's add a target i.e. the same one as above.
 
-Now that we have our parameters, let's create a pipeline :mod:`pysyd.target.Target` 
-object to process.
+    >>> name = '1435467'
+    >>> params.add_targets(stars=name)
+
+Now that we have a target and our parameters, let's create an instance of the :mod:`pysyd.target.Target` 
+to process.
 
     >>> from pysyd.target import Target
-    >>> star = Target(name, args)
+    >>> star = Target(name, params)
     >>> star
     <Star 1435467>
 
@@ -453,7 +450,7 @@ Instantiation of a `Target` star automatically searches for and loads in availab
 data (based on the given 'name'). This step will therefore flag anything that doesn't 
 seem right i.e., data is missing or paths are not correct. 
 
-Finally, before we process the star, we will need to adjust a couple settings so
+First we will adjust a couple settings from above so that the two runs are identical.
 that it runs similarly to the first example (sans the boolean flags). 
 
     >>> star.params['upper_ex'] = 5000.

@@ -12,17 +12,23 @@ Software modes
 Running as a script
 ###################
 
-When running the software,  `pySYD` will look in the following paths:
+When running the software from a terminal or command prompt, the __init__ file saves two important
+locations, defined as `_ROOT` and `PACKAGEDIR`, for software-related files. 
+
+The `_ROOT` directory has everything from input data and information to target results and therefore 
+by default, is defined in an easily accessible place (aka the current working directory.). From this,
+the software assumes there are 3 subdirectories:
 
 - `INFDIR` : '~/path/to/local/pysyd/directory/info'
 - `INPDIR` : '~/path/to/local/pysyd/directory/data'
 - `OUTDIR` : '~/path/to/local/pysyd/directory/results'
 
-which by default, is the absolute path of the current working directory (or wherever you
-ran setup from). We will eventually add an option to save the example data and files as
-package data (since it is easier to load in)
+The latter, `PACKAGEDIR` should never need to be touched unless for some reason the installation or setup 
+was modified by the user and intentionally left out package data (which is not recommended). For example, 
+the ``pySYD`` matplotlib stylesheet is saved there as well as relevant info dictionaries. Since this is 
+used a lot by the software and does not need to be modified by a user, this is typically installed in the
+user root directory within the pysyd directory (e.g., `/usr/local/lib/python3.10/site-packages/pysyd/data/`).
 
-**Important: when running** `pysyd` **as a script, there is one positional argument for the pipeline "mode".** 
 
 .. _library-pipeline-module:
 
