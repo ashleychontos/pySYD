@@ -249,7 +249,7 @@ def plot_estimates(star, filename='search_&_estimate.png', highlight=True, n=0):
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils._get_next(path)
-        plt.savefig(path, dpi=300)
+        plt.savefig(path, dpi=100)
     if not star.params['show']:
         plt.close()
 
@@ -361,7 +361,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
         path = os.path.join(star.params['path'],subfilename)
         if not star.params['overwrite']:
             path = utils._get_next(path)
-        plt.savefig(path, dpi=300)
+        plt.savefig(path, dpi=100)
         if not star.params['show']:
             plt.close()
         return
@@ -452,7 +452,7 @@ def plot_parameters(star, subfilename='background_only.png', filename='global_fi
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils._get_next(path)
-        plt.savefig(path, dpi=300)
+        plt.savefig(path, dpi=100)
     if not star.params['show']:
         plt.close()
 
@@ -484,7 +484,7 @@ def plot_samples(star, filename='samples.png'):
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils._get_next(path)
-        plt.savefig(path, dpi=300)
+        plt.savefig(path, dpi=100)
     if not star.params['show']:
         plt.close()
 
@@ -589,7 +589,7 @@ def plot_bgfits(star, filename='bgmodel_fits.png', highlight=True):
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils._get_next(path)
-        plt.savefig(path, dpi=300)
+        plt.savefig(path, dpi=100)
     if not star.params['show']:
         plt.close()
 
@@ -646,7 +646,7 @@ def create_benchmark_plot(filename='comparison.png', variables=['numax','dnu'], 
         path = os.path.join(os.path.abspath(os.getcwd()), filename)
         if not overwrite:
             path = utils._get_next(path)
-        plt.savefig(path, dpi=300, facecolor='white', edgecolor='white')
+        plt.savefig(path, dpi=100, facecolor='white', edgecolor='white')
     if show:
         plt.show()
     plt.close()
@@ -707,7 +707,7 @@ def plot_light_curve(star, args, filename='time_series.png', npanels=1):
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils._get_next(path)
-        plt.savefig(path, dpi=300)
+        plt.savefig(path, dpi=100)
     if not star.params['show']:
         plt.close()
 
@@ -753,7 +753,7 @@ def plot_power_spectrum(star, args, filename='power_spectrum.png', npanels=1):
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils._get_next(path)
-        plt.savefig(path, dpi=300)
+        plt.savefig(path, dpi=100)
     if not star.params['show']:
         plt.close()
 
@@ -789,7 +789,7 @@ def plot_1d_ed(star, filename='1d_ed.png', npanels=1):
         path = os.path.join(star.params['path'],filename)
         if not star.params['overwrite']:
             path = utils._get_next(path)
-        plt.savefig(path, dpi=300)
+        plt.savefig(path, dpi=100)
     if not star.params['show']:
         plt.close()
 
