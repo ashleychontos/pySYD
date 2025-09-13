@@ -1595,8 +1595,8 @@ class Target:
             sm_par = self.params['sm_par']
         else:
             sm_par = 4.*(self.params['numax']/self.constants['numax_sun'])**0.2
-        if sm_par < 1.:
-            sm_par = 1.
+        if sm_par < 2.:
+            sm_par = 2.
         sig = (sm_par*(self.params['dnu']/self.params['resolution']))/np.sqrt(8.0*np.log(2.0))
         self.pssm = convolve_fft(np.copy(self.random_pow), Gaussian1DKernel(int(sig)))
         self.pssm_bgcorr = self.pssm-models.background(self.frequency, self.params['pars'], noise=self.params['noise'])
