@@ -729,6 +729,10 @@ class Target:
             self.params['results'] = {}
         if 'plotting' not in self.params:
             self.params['plotting'] = {}
+			
+		if self.params['numax'] is not None:
+        	self.params['estimate'] = False
+			
         if self.params['estimate']:
             # get initial values and fix data
             self.initial_estimates()
