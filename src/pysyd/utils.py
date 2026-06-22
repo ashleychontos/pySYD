@@ -817,8 +817,7 @@ def _save_parameters(star):
     """
     if star.params['save']:
         results = star.params['results']['parameters']
-        print("results", results)
-        df = pd.DataFrame.from_dict(results,orient='index').transpose()
+        df = pd.DataFrame(results)
         star.df = df.copy()
         new_df = pd.DataFrame(columns=['parameter','value'])
         for c, col in enumerate(df.columns.values.tolist()):
@@ -969,35 +968,6 @@ def _max_elements(x, y, npeaks, distance=None, exp_dnu=None):
     return list(peaks_x), list(peaks_y), weights
 
 
-##def _return_max(x, y, exp_dnu=None,):
-##    """Return max
-##    
-##    Return the peak (and/or the index of the peak) in a given 2D array
-##
-##    Parameters
-##        x, y : numpy.ndarray, numpy.ndarray
-##            the independent and dependent axis, respectively
-##        exp_dnu : Required[float]
-##            the expected dnu. Default value is `None`.
-##
-##    Returns
-##        idx : int
-##            **New**: *always* returns the index first, followed by the corresponding peak from the x+y arrays
-##        xx[idx], yy[idx] : Union[int, float], Union[int, float]
-##            corresponding peak in the x and y arrays
-##
-##    """
-##    xx, yy = np.copy(x), np.copy(y)
-##    if list(yy) != []:
-##        if exp_dnu is not None:
-##            lst = list(np.absolute(xx-exp_dnu))
-##            idx = lst.index(min(lst))
-##        else:
-##            lst = list(yy)
-##            idx = lst.index(max(lst))
-##    else:
-##        return None, np.nan, np.nan
-##    return idx, xx[idx], yy[idx]
 def _return_max(x, y, exp_dnu=None,):
     """Return max
     
@@ -1019,14 +989,8 @@ def _return_max(x, y, exp_dnu=None,):
     xx, yy = np.copy(x), np.copy(y)
     if list(yy) != []:
         if exp_dnu is not None:
-            
-            new_idx = np.argmax(yy)
-            best_x = xx[new_idx]
-            if (best_x >= 0.75*exp_dnu) and (best_x <= 1.25*exp_dnu):
-                idx = new_idx
-            else:
-                lst = list(np.absolute(xx-exp_dnu))
-                idx = lst.index(min(lst))
+            lst = list(np.absolute(xx-exp_dnu))
+            idx = lst.index(min(lst))
         else:
             lst = list(yy)
             idx = lst.index(max(lst))
@@ -1034,114 +998,43 @@ def _return_max(x, y, exp_dnu=None,):
         return None, np.nan, np.nan
     return idx, xx[idx], yy[idx]
 
-##def _bin_data(x, y, width, log=False, mode='mean'):
-##    """Bin data
-##    
-##    Bins 2D series of data
-##
-##    Parameters
-##        x, y : numpy.ndarray, numpy.ndarray
-##            the x and y values of the data
-##        width : float
-##            bin width (typically in :math:`\\rm \\mu Hz`)
-##        log : bool, default=False
-##            creates equal bin sizes in logarithmic space when `True`
-##
-##    Returns
-##        bin_x, bin_y, bin_yerr : numpy.ndarray, numpy.ndarray, numpy.ndarray
-##            binned arrays (and error is computed using the standard deviation)
-##
-##    """
-##    #fres= x[1]- x[0]
-##    #width = width/fres
-##    print("fres", fres)
-##    print("np", width/fres)
-##    #width = width/fres
-##    fres = np.median(np.diff(x))
-##    print("bin size", fres)
-##    width  = width*fres
-##    print("width", width)
-##    if log:
-##        
-##        mi = np.log10(min(x))
-##        ma = np.log10(max(x))
-##        no = int(np.ceil((max(x)-min(x))/width))
-##        bins = np.logspace(mi, ma+width, no)
-##        print("no", no)
-##    else:
-##        print("yes")
-##        bins = np.arange(min(x), max(x)+width, width)
-##
-##    digitized = np.digitize(x, bins)
-##    if mode == 'mean':
-##        bin_x = np.array([x[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
-##        bin_y = np.array([y[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
-##    elif mode == 'median':
-##        bin_x = np.array([np.median(x[digitized == i]) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
-##        bin_y = np.array([np.median(y[digitized == i]) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
-##    else:
-##        pass
-##    bin_yerr = np.array([y[digitized == i].std()/np.sqrt(len(y[digitized == i])) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
-##    for i in range(len(bin_yerr)):
-##        if bin_yerr[i] == 0:
-##            bin_yerr[i] = 0.1*bin_y[i]
-##    print("from func", bin_x, bin_y, bin_yerr)
-##    return bin_x, bin_y, bin_yerr
 
-
-
-################## my version##########################
-
-def _bin_data(x, y, width, log, mode='mean'):
-
-    if log is False:
-        
-        x = np.array(x)
-        y = np.array(y)
-        no = width
-        arr = np.arange(0, len(x), 1, dtype = int)
-        sect = len(arr)/no
-        #x_bin_start = 8
-        #x_max = 12
-        bin_x =[]
-        bin_y =[]
-        bin_yerr =[]
-        gh = np.array_split(arr, sect)
-        for i in gh:
-            num_bin = x[i]
-            frac_bin = y[i]
-
-            bin_y.append(np.nanmean(frac_bin))
-            bin_yerr.append(np.nanstd(frac_bin)/(np.sqrt(len(frac_bin))))
-            bin_x.append((num_bin[0] + num_bin[-1])/2)
-        bin_x = np.array(bin_x)
-        bin_y = np.array(bin_y)
-        bin_yerr = np.array(bin_yerr)
+def _bin_data(x, y, width, log=False, mode='mean'):
+    """Bin data
     
-    else:
-        
-        x = np.asarray(x)
-        y = np.asarray(y)
-        
-        # Create logarithmic bins
-        log_bins = np.logspace(np.log10(np.min(x)), np.log10(np.max(x)), num=len(x)//width + 1)
+    Bins 2D series of data
 
-        # Initialize a list to hold binned values
-        binned_y = []
-        binned_x = []
-        binned_yerr = []
-        
-        # Loop over the bins and collect points
-        for i in range(len(log_bins) - 1):
-            # Get indices of points in the current bin range
-            indices = np.where((x >= log_bins[i]) & (x < log_bins[i + 1]))[0]
-            binned_x.append((x[indices][-1] + x[indices][0])/2)
-            binned_y.append(np.nanmean(y[indices]))
-            binned_yerr.append(np.nanstd(y[indices])/np.sqrt(len(y[indices])))
-        bin_x = np.array(binned_x)
-        bin_y = np.array(binned_y)
-        bin_yerr = np.array(binned_yerr)
-        
+    Parameters
+        x, y : numpy.ndarray, numpy.ndarray
+            the x and y values of the data
+        width : float
+            bin width (typically in :math:`\\rm \\mu Hz`)
+        log : bool, default=False
+            creates equal bin sizes in logarithmic space when `True`
+
+    Returns
+        bin_x, bin_y, bin_yerr : numpy.ndarray, numpy.ndarray, numpy.ndarray
+            binned arrays (and error is computed using the standard deviation)
+
+    """
+    if log:
+        mi = np.log10(min(x))
+        ma = np.log10(max(x))
+        no = int(np.ceil((ma-mi)/width))
+        bins = np.logspace(mi, mi+(no+1)*width, no)
+    else:
+        bins = np.arange(min(x), max(x)+width, width)
+
+    digitized = np.digitize(x, bins)
+    if mode == 'mean':
+        bin_x = np.array([x[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+        bin_y = np.array([y[digitized == i].mean() for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+    elif mode == 'median':
+        bin_x = np.array([np.median(x[digitized == i]) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+        bin_y = np.array([np.median(y[digitized == i]) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
+    else:
+        pass
+    bin_yerr = np.array([y[digitized == i].std()/np.sqrt(len(y[digitized == i])) for i in range(1, len(bins)) if len(x[digitized == i]) > 0])
     return bin_x, bin_y, bin_yerr
 
 
