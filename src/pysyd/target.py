@@ -731,7 +731,7 @@ class Target:
             self.params['plotting'] = {}
 			
 		if self.params['numax'] is not None:
-        	self.params['estimate'] = False
+            self.params['estimate'] = False
 			
         if self.params['estimate']:
             # get initial values and fix data
