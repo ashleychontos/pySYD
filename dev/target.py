@@ -1830,26 +1830,23 @@ class Target(LightCurve, PowerSpectrum):
             nx = int(np.ceil(use_dnu/self.params['resolution']/self.params['npb']))
         else:
             nx = int(self.params['nox'])
-        x = np.linspace(0.0, 2*use_dnu, 2*nx+1)
-        yy = np.arange(min(self.frequency),max(self.frequency),use_dnu)
-        lower = self.params['numax_smoo']-(use_dnu*(ny/2.))+(use_dnu*(nshift+0))
-        upper = self.params['numax_smoo']+(use_dnu*(ny/2.))+(use_dnu*(nshift+1))
-        y = yy[(yy >= lower)&(yy <= upper)]
-        z = np.zeros((ny+1,2*nx))
-        for i in range(1,ny+1):
-            y_mask = ((self.frequency >= y[i-1]) & (self.frequency < y[i]))
-            for j in range(nx):
-                x_mask = ((self.frequency%(use_dnu) >= x[j]) & (self.frequency%(use_dnu) < x[j+1]))
-                if smooth_y[x_mask & y_mask] != []:
-                    z[i][j] = np.sum(smooth_y[x_mask & y_mask])
-                else:
-                    z[i][j] = np.nan
-        z[0][:nx], z[-1][nx:] = np.nan, np.nan
-        for k in range(ny):
-            z[k][nx:] = z[k+1][:nx]
+        
+	fmin, fmax = self.params['numax_smoo']-(use_dnu*(ny/2.))+(use_dnu*(nshift+0)), self.params['numax_smoo']+(use_dnu*(ny/2.))+(use_dnu*(nshift+1))
+        fstart     = fmin-(fmin%use_dnu)
+        zoom_freq, zoom_pow = self.zoom_freq, self.zoom_pow
+        
+        x = np.linspace(0, 2*use_dnu, 2*nx)
+        z = np.zeros([ny+1, 2*nx])
+        
+        for istack in range(ny):
+	    z[-istack-1,:] = np.interp(fstart+istack * use_dnu + x, zoom_freq, zoom_pow)
+		
+	y = fstart + np.arange(0, ny+1, 1)*use_dnu + use_dnu/2
+	
         self.ed = np.copy(z)
         self.extent = [min(x),max(x),min(y),max(y)]
-        # make copy of ED to flatten and clip outliers
+        
+	# make copy of ED to flatten and clip outliers
         ed_copy = self.ed.flatten()
         if self.params['clip_value'] > 0:
             cut = np.nanmedian(ed_copy)+(self.params['clip_value']*np.nanmedian(ed_copy))
